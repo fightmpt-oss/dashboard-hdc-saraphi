@@ -333,9 +333,46 @@ for y in years:
         "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 20.0, "units": unit_data
     }
 
-# 1.7 s_ttm8
-master["indicators"]["ttm_massage"] = {
+# 1.7 s_ttm3
+master["indicators"]["ttm_age_sex"] = {
     "code": "TTM-7",
+    "name": "การจ่ายยาสมุนไพรตามอายุและเพศ",
+    "table": "s_ttm3",
+    "domain": "ttm",
+    "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+    "desc": "สัดส่วนการจ่ายยาสมุนไพรจำแนกตามช่วงอายุและเพศเทียบกับการรับบริการแผนไทย (HDC 1.3)",
+    "target": 50.0,
+    "unit": "%",
+    "num_label": "ครั้งจ่ายยาสมุนไพร",
+    "den_label": "ครั้งรับบริการแผนไทย",
+    "years": {}
+}
+for y in years:
+    rows = load_json(f"s_ttm3_{y}.json")
+    unit_data = []
+    tot_num = 0.0; tot_den = 0.0
+    for r in rows:
+        hcode = r.get('hospcode')
+        if hcode in SARAPHI_UNITS:
+            num = sum(int(clean_num(r.get(f'vs_s1q{q}') or 0)) for q in range(1, 5))
+            den = sum(int(clean_num(r.get(f'vs_s2q{q}') or 0)) for q in range(1, 5))
+            rate = round((num / den * 100), 2) if den > 0 else 0.0
+            tot_num += num; tot_den += den
+            unit_data.append({
+                "hospcode": hcode,
+                "name": SARAPHI_UNITS[hcode]["name"],
+                "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
+                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 50.0
+            })
+    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+    master["indicators"]["ttm_age_sex"]["years"][y] = {
+        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 50.0, "units": unit_data
+    }
+
+# 1.8 s_ttm8
+master["indicators"]["ttm_massage"] = {
+    "code": "TTM-8",
     "name": "บริการหัตถการแพทย์แผนไทย นวด อบ ประคบ (ครั้ง)",
     "table": "s_ttm8",
     "domain": "ttm",
@@ -372,9 +409,9 @@ for y in years:
         "num": int(tot_num), "den": int(tot_den), "rate": int(tot_num), "pass": True, "units": unit_data
     }
 
-# 1.8 s_ttm4 (Top Herbs)
+# 1.9 s_ttm4 (Top Herbs)
 master["indicators"]["ttm_top_herbs"] = {
-    "code": "TTM-8",
+    "code": "TTM-9",
     "name": "OPD-อันดับการใช้ยาสมุนไพรและมูลค่ายา (DIDSTD)",
     "table": "s_ttm4",
     "domain": "ttm",
