@@ -158,7 +158,7 @@
 
     <!-- TOP HEADER -->
     <header class="bg-white border-b border-slate-200/90 sticky top-0 z-20 shadow-xs">
-      <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
+      <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-3.5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 sm:gap-3.5">
         
         <!-- Brand & District Identity -->
         <div class="flex items-center space-x-3">
@@ -182,28 +182,31 @@
         </div>
 
         <!-- Global Filter Bar: Year & Service Unit -->
-        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full md:w-auto">
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full xl:w-auto">
           <!-- Year Selector -->
-          <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-medium w-full sm:w-auto justify-between sm:justify-start">
-            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs font-medium text-center" data-year="all">3 ปีย้อนหลัง</button>
-            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2567">2567</button>
-            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2568">2568</button>
-            <button type="button" class="year-btn active flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[10.5px] sm:text-xs font-bold num-font text-center" data-year="2569">2569</button>
+          <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-medium w-full sm:w-auto justify-between sm:justify-start shrink-0">
+            <button type="button" class="year-btn whitespace-nowrap flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs font-medium text-center" data-year="all">3 ปีย้อนหลัง</button>
+            <button type="button" class="year-btn whitespace-nowrap flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2567">2567</button>
+            <button type="button" class="year-btn whitespace-nowrap flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2568">2568</button>
+            <button type="button" class="year-btn active whitespace-nowrap flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[10.5px] sm:text-xs font-bold num-font text-center" data-year="2569">2569</button>
           </div>
 
-          <!-- Unit Dropdown -->
-          <div class="relative w-full sm:w-[220px] md:w-[250px] shrink-0">
-            <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 pr-8 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 truncate">
-              <option value="all">🏥 ภาพรวมอำเภอสารภี (14 แห่ง)</option>
-              <!-- Generated via JS -->
-            </select>
-          </div>
+          <!-- Unit Dropdown & Export Group -->
+          <div class="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial w-full sm:w-auto">
+            <!-- Unit Dropdown -->
+            <div class="relative flex-1 sm:w-[220px] md:w-[250px] min-w-0">
+              <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 pr-8 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 truncate">
+                <option value="all">🏥 ภาพรวมอำเภอสารภี (14 แห่ง)</option>
+                <!-- Generated via JS -->
+              </select>
+            </div>
 
-          <!-- Export CSV Button -->
-          <button id="export-csv-btn" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium shadow-xs flex items-center justify-center space-x-1.5 transition w-full sm:w-auto shrink-0">
-            <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
-            <span>ส่งออก CSV</span>
-          </button>
+            <!-- Export CSV Button -->
+            <button id="export-csv-btn" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium shadow-xs flex items-center justify-center space-x-1.5 transition shrink-0 whitespace-nowrap">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>ส่งออก CSV</span>
+            </button>
+          </div>
         </div>
 
       </div>
