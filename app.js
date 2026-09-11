@@ -34,11 +34,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
 
-  // Load Data
+  // Load Data with Cache-Busting
   try {
+    const cacheBuster = `?t=${Date.now()}`;
     const [resMaster, resCatalog] = await Promise.all([
-      fetch('data/saraphi_complete_master.json'),
-      fetch('data/moph_catalog.json').catch(() => ({ json: () => [] }))
+      fetch(`data/saraphi_complete_master.json${cacheBuster}`, { cache: 'no-cache' }),
+      fetch(`data/moph_catalog.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => [] }))
     ]);
     masterData = await resMaster.json();
     try {

@@ -1,11 +1,11 @@
 {
   "headers": [
     {
-      "source": "/data/(.*)",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=0, must-revalidate"
         },
         {
           "key": "Access-Control-Allow-Origin",
@@ -14,11 +14,15 @@
       ]
     },
     {
-      "source": "/(.*).(js|css|png|jpg|svg|ico)",
+      "source": "/data/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=604800, immutable"
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
     }
