@@ -1,0 +1,4481 @@
+{
+  "PCC - DM HbA1c": [
+    {
+      "source_table": "s_rlu_lab_hba1c_repeat_90day",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1C อย่างน้อยปีละ 1 ครั้ง xxxxx",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_hba1c_repeat_90day",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1c ซ้ำภายใน 90 วัน",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_hba1c_1year",
+      "report_name": "ร้อยละผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1c อย่างน้อยปีละ 1 ครั้ง",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_dm_hba1c",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานที่ได้รับการตรวจ HbA1c อย่างน้อย 1 ครั้ง/ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_ckd_hba1c",
+      "report_name": "CKD 2.5 การชะลอความเสื่อมของไต ผู้ป่วย(เฉพาะที่มีเบาหวานร่วม)ที่มารับบริการโรงพยาบาลได้รับการตรวจ HbA1c และมีค่าผลการตรวจตั้งแต่ 6.5% ถึง 7.5% ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    }
+  ],
+  "PCC - DM Control": [
+    {
+      "source_table": "s_dm_control_monk",
+      "report_name": "ผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดี  กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_dm_control_monk",
+      "report_name": "ผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดี  กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_dm_screen_risk",
+      "report_name": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคเบาหวาน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_screen_pop_age",
+      "report_name": "การคัดกรองเบาหวานในประชากรไทย จำแนกกลุ่มอายุ",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_visit_screen",
+      "report_name": "การเข้าถึงบริการและการคัดกรองโรคเบาหวาน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_screen_risk",
+      "report_name": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคเบาหวาน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_screen_pop_age",
+      "report_name": "การคัดกรองเบาหวานในประชากรไทย จำแนกกลุ่มอายุ",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_visit_screen",
+      "report_name": "การเข้าถึงบริการและการคัดกรองโรคเบาหวาน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_dm_death_age",
+      "report_name": "อัตราการป่วยตายด้วยโรคเบาหวาน",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_dm_pop_age",
+      "report_name": "อัตราการป่วยด้วยโรคเบาหวาน ",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_dm_incidence",
+      "report_name": "อัตราป่วยรายใหม่ของโรคเบาหวานต่อแสนประชากรในปีงบประมาณ",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_dm_death_age",
+      "report_name": "อัตราการป่วยตายด้วยโรคเบาหวาน",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_dm_pop_age",
+      "report_name": "อัตราการป่วยด้วยโรคเบาหวาน ",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_dm_control",
+      "report_name": "ร้อยละผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดี",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_dm_visit",
+      "report_name": "สัดส่วนผู้ป่วยนอกโรคเบาหวาน มารับบริการในศสม.และรพ.สต.เทียบกับโรงพยาบาลแม่ข่าย",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_dm_ctrl_pcu",
+      "report_name": "ร้อยละผู้ป่วยนอกโรคเบาหวาน ที่มารับบริการในศสม.และรพ.สต.มีผลการควบคุมโรคเบาหวาน ตามเกณฑ์",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_dm_ht_control",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานและโรคความดันโลหิตสูงที่ควบคุมได้",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_dm_visit",
+      "report_name": "สัดส่วนผู้ป่วยนอกโรคเบาหวาน มารับบริการในศสม.และรพ.สต.เทียบกับโรงพยาบาลแม่ข่าย",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_dm_ctrl_pcu",
+      "report_name": "ร้อยละผู้ป่วยนอกโรคเบาหวาน ที่มารับบริการในศสม.และรพ.สต.มีผลการควบคุมโรคเบาหวาน ตามเกณฑ์",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_rlu_lab_hba1c_repeat_90day",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1C อย่างน้อยปีละ 1 ครั้ง xxxxx",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_ldl_repeat_90day",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ LDL-Cholesterol ซ้ำภายใน 90 วัน",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_hba1c_repeat_90day",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1c ซ้ำภายใน 90 วัน",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_hba1c_1year",
+      "report_name": "ร้อยละผู้ป่วยโรคเบาหวาน ได้รับการตรวจ HbA1c อย่างน้อยปีละ 1 ครั้ง",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_ldl_1year",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานได้รับการตรวจ LDL-Cholesterol อย่างน้อยปีละ 1 ครั้ง",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rlu_lab_creatinine_1year",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวาน ได้รับการตรวจ Creatinine อย่างน้อยปีละ 1 ครั้ง",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_rdu12",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu11",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปีหรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_kpi_dental31",
+      "report_name": "OHSP ร้อยละผู้ป่วยเบาหวานได้ตรวจคัดกรองสุขภาพช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental32",
+      "report_name": "OHSP ร้อยละผู้ป่วยเบาหวาน ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_ncd_screen_repleatenone",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวานNone90",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_hypo",
+      "report_name": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_bp",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีความดันโลหิตควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_egfr",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูง ที่เป็น CKD 3-4 ชะลอการลดลงของ eGFR ได้ตามเป้าหมาย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ยังไม่มีภาวะแทรกซ้อนทางไตได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd1",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl_n1",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_pre_dm_diag",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่ม Pre-DM (ภาวะก่อนเบาหวาน) ปีที่ผ่านมา ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_visit",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_newcase",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานรายใหม่ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate",
+      "report_name": "ร้อยละของประชากรกลุ่มPre-DM (ภาวะก่อนเบาหวาน) ในพื้นที่รับผิดชอบของปีที่ผ่านมาได้รับการตรวจน้ำตาลซ้ำ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen",
+      "report_name": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_waistcm2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)] ลดลงจากงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl_n2",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_acei_arb",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่เป็น CKD 1-4 และได้รับยา ACEi/ARB",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_bmi2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วน [BMI >= 25 กก./ตร.ม.] ลดลงจากงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_foot",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางเท้า",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl",
+      "report_name": "อัตราผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และมีค่า LDL < 100 mg/dl",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_change20",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่มี CVD Risk ≥ 20% ในช่วงไตรมาส 1, 2 และมีผล CVD Risk ลดลงเป็น < 20% ในไตรมาส 3, 4",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_cvd_risk",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_retina_kpi",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางตา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate1",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cf_dm_diag",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจยืนยัน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_bmi",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)]",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen_n",
+      "report_name": "ร้อยละของประชากรอายุ 35-59 ปีที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_hba1c",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานที่ได้รับการตรวจ HbA1c อย่างน้อย 1 ครั้ง/ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_risk_score",
+      "report_name": "อัตราผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) จำแนกตาม Risk Score",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleatenone",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวานNone90",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_ckd_hba1c",
+      "report_name": "CKD 2.5 การชะลอความเสื่อมของไต ผู้ป่วย(เฉพาะที่มีเบาหวานร่วม)ที่มารับบริการโรงพยาบาลได้รับการตรวจ HbA1c และมีค่าผลการตรวจตั้งแต่ 6.5% ถึง 7.5% ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    }
+  ],
+  "PCC - HT Control": [
+    {
+      "source_table": "s_ht_screen_monk",
+      "report_name": "การคัดกรองความดันโลหิตสูง กลุ่มพระภิกษุ-สามเณร จำแนกกลุ่มอายุ",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_screen_risk_monk",
+      "report_name": "กลุ่มพระภิกษุ-สามเณร อายุ35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคความดันโลหิตสูง ",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_control_monk",
+      "report_name": "ผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมระดับความดันได้ดี  กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_screen_monk",
+      "report_name": "การคัดกรองความดันโลหิตสูง กลุ่มพระภิกษุ-สามเณร จำแนกกลุ่มอายุ",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_screen_risk_monk",
+      "report_name": "กลุ่มพระภิกษุ-สามเณร อายุ35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคความดันโลหิตสูง ",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_control_monk",
+      "report_name": "ผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมระดับความดันได้ดี  กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ht_screen_risk",
+      "report_name": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคความดันโลหิตสูง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_screen_pop_age",
+      "report_name": "การคัดกรองความดันโลหิตสูง ในประชากรไทย จำแนกกลุ่มอายุ",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_visit_screen",
+      "report_name": "การเข้าถึงบริการและการคัดกรองโรคความดันโลหิตสูง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_screen_risk",
+      "report_name": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคความดันโลหิตสูง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_screen_pop_age",
+      "report_name": "การคัดกรองความดันโลหิตสูง ในประชากรไทย จำแนกกลุ่มอายุ",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_visit_screen",
+      "report_name": "การเข้าถึงบริการและการคัดกรองโรคความดันโลหิตสูง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ht_death_age",
+      "report_name": "อัตราการป่วยตายด้วยโรคความดันโลหิตสูง",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_ht_incidence",
+      "report_name": "อัตราป่วยรายใหม่ของโรคความดันโลหิตสูงต่อแสนประชากรในปีงบประมาณ",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_ht_pop_age",
+      "report_name": "อัตราป่วยด้วยโรคความดันโลหิตสูงต่อประชากร",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_ht_death_age",
+      "report_name": "อัตราการป่วยตายด้วยโรคความดันโลหิตสูง",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_ht_pop_age",
+      "report_name": "อัตราป่วยด้วยโรคความดันโลหิตสูงต่อประชากร",
+      "cat_name": "การป่วยด้วยโรคไม่ติดต่อที่สำคัญ"
+    },
+    {
+      "source_table": "s_ht_control",
+      "report_name": "ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_ht_ctrl_pcu",
+      "report_name": "ร้อยละผู้ป่วยนอกโรคความดันโลหิตสูง ที่มารับบริการในศสม.และรพ.สต.มีผลการควบคุมความดันโลหิต ตามเกณฑ์",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_ht_visit",
+      "report_name": "สัดส่วนผู้ป่วยนอกโรคความดันโลหิตสูง มารับบริการในศสม.และรพ.สต.เทียบกับโรงพยาบาลแม่ข่าย",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_dm_ht_control",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานและโรคความดันโลหิตสูงที่ควบคุมได้",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_kpi_ht_visit",
+      "report_name": "สัดส่วนผู้ป่วยนอกโรคความดันโลหิตสูง มารับบริการในศสม.และรพ.สต.เทียบกับโรงพยาบาลแม่ข่าย",
+      "cat_name": "การเฝ้าระวัง"
+    },
+    {
+      "source_table": "s_rdu10",
+      "report_name": "ร้อยละของผู้ป่วยความดันสูง (Essential hypertension) ที่ใช้ RAS blockade (ACEI/ ARB/ Renin inhibitor) 2 ชนิดร่วมกันในการรักษาภาวะความดันเลือดสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ncd_bp",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีความดันโลหิตควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_egfr",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูง ที่เป็น CKD 3-4 ชะลอการลดลงของ eGFR ได้ตามเป้าหมาย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen_n",
+      "report_name": "ร้อยละของประชากรอายุ 35-59 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_4",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg ได้รับการวินิจฉัยเป็นผู้ป่วย โรคความดันโลหิตสูง I10 – I15 จากการค้นหาในโรงพยาบาล ในวันนั้น จำแนกรายเดือน (ไม่รวม ER)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_2",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล (ไม่นับรวม ER)\r\n",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_pre_ht_diag",
+      "report_name": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงรายใหม่จากผู้ที่มีค่าความดันโลหิตอยู่ในเกณฑ์ BP at risk (กลุ่มเสี่ยงความดันโลหิตสูง)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_newcase",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate2",
+      "report_name": "ร้อยละการตรวจติดตามกลุ่มสงสัยป่วยโรคความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_diag_follow",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen_follow",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp_new",
+      "report_name": "กลุ่มสงสัยป่วยด้วยโรคความดันโลหิตสูง จำแนกตามกลุ่มค่าความดันโลหิต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl_n2",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp",
+      "report_name": "อัตรากลุ่มสงสัยป่วยความดันโลหิตสูงในเขตรับผิดชอบได้รับการวัดความดันโลหิตที่บ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht180_diag",
+      "report_name": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 mmHg และ/หรือค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 mmHg จากการคัดกรอง ได้รับการวินิจฉัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_acei_arb",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่เป็น CKD 1-4 และได้รับยา ACEi/ARB",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_visit",
+      "report_name": "ร้อยละผู้ป่วยความดันโลหิตสูงที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new1",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี130-139,120-130",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_change20",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่มี CVD Risk ≥ 20% ในช่วงไตรมาส 1, 2 และมีผล CVD Risk ลดลงเป็น < 20% ในไตรมาส 3, 4",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen",
+      "report_name": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_cvd_risk",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht180_diag1",
+      "report_name": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 มม.ปรอท และ/หรือ ค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 มม.ปรอท จากการคัดกรองและได้การวัดความโลหิตซ้ำภายใน 7 วัน ได้รับการวินิจฉัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hbpm",
+      "report_name": "รายงานสรุปผลการคัดกรองความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_5",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล  (นับรวม ER)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_risk_score",
+      "report_name": "อัตราผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) จำแนกตาม Risk Score",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_homebp_incidence",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากผู้สงสัยป่วย(ทำ HomeBP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี120-139",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp_new",
+      "report_name": "กลุ่มสงสัยป่วยด้วยโรคความดันโลหิตสูง จำแนกตามกลุ่มค่าความดันโลหิต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new1",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี130-139,120-130",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hbpm",
+      "report_name": "รายงานสรุปผลการคัดกรองความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_homebp_incidence",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากผู้สงสัยป่วย(ทำ HomeBP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    }
+  ],
+  "PCC - Admit Complications": [
+    {
+      "source_table": "s_urgency",
+      "report_name": "อัตราการเสียชีวิตของผู้ป่วยวิกฤตฉุกเฉิน (triage level 1) ภายใน 24 ชั่วโมง ในโรงพยาบาลระดับ A, S, M1 (ทั้งที่ ER และ Admit) น้อยกว่าร้อยละ 12",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_ddd5",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd4",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd6",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดฉีดทุกรายการที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd5",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd4",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd6",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดฉีดทุกรายการที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_asthma_admit",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ต้องได้รับการรักษาในโรงพยาบาล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_asthma_admit",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ต้องได้รับการรักษาในโรงพยาบาล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_stroke_admit_death",
+      "report_name": "อัตราตายของผู้ป่วยใน โรคหลอดเลือดสมอง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_urgency_admit",
+      "report_name": "อัตราของผู้ป่วย triage level 1, 2 ที่มีข้อบ่งชี้ในการ Admit ได้รับ Admit ภายใน 2 ชม. ในโรงพยาบาลระดับ A, S, M1 ไม่ต่ำกว่าร้อยละ 60",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stroke_admit_death62",
+      "report_name": "อัตราตายของผู้ป่วยโรคหลอดเลือดสมองแตก (Hemorrhagic Stroke: I60-I62)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stroke_admit_death63",
+      "report_name": "อัตราตายของผู้ป่วยโรคหลอดเลือดสมองตีบ/อุดตัน (Ischemic Stroke: I63)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_dm_hypo",
+      "report_name": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ยังไม่มีภาวะแทรกซ้อนทางไตได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd1",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_foot",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางเท้า",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_retina_kpi",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางตา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    }
+  ],
+  "PPB - Child Development (0-5)": [
+    {
+      "source_table": "s_child0_5_pshyche_develop_workload",
+      "report_name": "ร้อยละของเด็กปฐมวัยที่มีพัฒนาการล่าช้าเข้าถึงบริการพัฒนาการและ สุขภาพจิตที่ได้มาตรฐาน (Work load)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_child0_5_pshyche_develop_coverage_hospcode",
+      "report_name": "ร้อยละของเด็กปฐมวัยที่มีพัฒนาการล่าช้าเข้าถึงบริการพัฒนาการและสุขภาพจิตที่ได้มาตรฐาน (Coverage) (Private)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_child0_5_pshyche_develop_coverage",
+      "report_name": "ร้อยละของเด็กปฐมวัยที่มีพัฒนาการล่าช้าเข้าถึงบริการพัฒนาการและสุขภาพจิตที่ได้มาตรฐาน (Coverage)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_child0_5_pshyche_develop_workload",
+      "report_name": "ร้อยละของเด็กปฐมวัยที่มีพัฒนาการล่าช้าเข้าถึงบริการพัฒนาการและ สุขภาพจิตที่ได้มาตรฐาน (Work load)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_mental_f84x",
+      "report_name": "จำนวนและร้อยละของความผิดปกติของพัฒนาการที่กระจายไปทุกด้าน (โรคออทิสติก) (F84.0- F84.9) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f81x",
+      "report_name": "จำนวนและร้อยละของความผิดปกติของพัฒนาการเฉพาะด้านทางทักษะในการเรียน (F81.xx) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental12",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติของพัฒนาการที่กระจายไปทุกด้าน (โรคออทิสติก) (F84.0-F84.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental14",
+      "report_name": "อัตราป่วยรายใหม่ของผู้ที่มีความผิดปกติของพัฒนาการเฉพาะด้านทางทักษะในการเรียน (F81.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_dental_0_5_cavity_free",
+      "report_name": "ร้อยละของเด็กอายุ0-5 ปี ฟันดีไม่มีผุ (Cavity Free) (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_height05",
+      "report_name": "ร้อยละของเด็กอายุ 0-5 ปี สูงดีสมส่วน และส่วนสูงเฉลี่ยที่อายุ 5 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_dental_0_5_cavity_free",
+      "report_name": "ร้อยละของเด็กอายุ0-5 ปี ฟันดีไม่มีผุ (Cavity Free) (คน)",
+      "cat_name": "แพทย์แผนไทย"
+    }
+  ],
+  "PPB - Weight Height (6-12)": [
+    {
+      "source_table": "s_kpi_dental9",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มเด็กอายุ 6-12 ปี เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental27",
+      "report_name": "OHSP ร้อยละเด็ก 6-12 ปี ได้รับการตรวจช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental64",
+      "report_name": "OHSP ร้อยละเด็กอายุ 6-12 ปี ได้รับการ เคลือบหลุมร่องฟันกรามแท้ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental30",
+      "report_name": "OHSP ร้อยละเด็ก 6-12 ปี ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_waistcm2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)] ลดลงจากงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_bmi",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)]",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_obesity05",
+      "report_name": "เด็กปฐมวัยมีภาวะอ้วน ไม่เกินร้อยละ 10 (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_09",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 5 ปี ดัชนีน้ำหนักตามเกณฑ์อายุ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition6",
+      "report_name": "ข้อมูลด้านโภชนาการ เด็กวัยเรียน อายุ 6-18 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_height1518o",
+      "report_name": "ร้อยละของวัยรุ่นอายุ 15-18 ปี สูงดีสมส่วนและส่วนสูงเฉลี่ยที่อายุ 18 ปี (นอกสถานศึกษา ตามปีงบประมาณ)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi80",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 80 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_hct1549",
+      "report_name": "ร้อยละของหญิงวัยเจริญพันธุ์ อายุ 15 – 49 ปี ที่ได้รับการคัดกรองภาวะโลหิตจาง ในขณะที่ไม่ได้ตั้งครรภ์ และพบภาวะโลหิตจาง",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_child_hct",
+      "report_name": "ร้อยละเด็กอายุครบ 12 เดือนในเขตรับผิดชอบ มีภาวะโลหิตจาง (Coverage)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc3234_hct",
+      "report_name": "ภาวะโลหิตจางในหญิงตั้งครรภ์อายุครรภ์ 32-34 สัปดาห์",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19-29 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_11",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 5 ปี ดัชนีน้ำหนักตามเกณฑ์ส่วนสูง  (ภาวะผอม สมส่วน ภาวะเริ่มอ้วนและอ้วน)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_01",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 2 ปี ดัชนีน้ำหนักตามเกณฑ์อายุ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_06",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 3 - 5 ปี ดัชนีส่วนสูงตามเกณฑ์อายุ (ภาวะเตี้ย)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi45w",
+      "report_name": " ร้อยละของประชากรวัยทำงานอายุ 45-59 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist2559",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 25-59 ปี มีรอบเอวปกติ (เตรียมความพร้อมสู่วัยสูงอายุที่มีสุขภาพดี)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi6069",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 – 69 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60c",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_height1518c",
+      "report_name": "ร้อยละของวัยรุ่นอายุ 15-18 ปี สูงดีสมส่วนและส่วนสูงเฉลี่ยที่อายุ 18 ปี (ทั้งหมด ตามปีงบประมาณ)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi18w",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19-29 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_child4_hct",
+      "report_name": "ร้อยละเด็กอายุครบ 5 ปีในเขตรับผิดชอบ มีภาวะโลหิตจาง (Coverage)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_height05",
+      "report_name": "ร้อยละของเด็กอายุ 0-5 ปี สูงดีสมส่วน และส่วนสูงเฉลี่ยที่อายุ 5 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_low_risk05",
+      "report_name": "ร้อยละเด็กปฐมวัยมีภาวะเตี้ย (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi7079",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 70 – 79 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_03",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 2 ปี ดัชนีน้ำหนักตามเกณฑ์ส่วนสูง (ภาวะผอม สมส่วน ภาวะเริ่มอ้วนและอ้วน)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist80",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 80 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_10",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 5 ปี ดัชนีส่วนสูงตามเกณฑ์อายุ (ภาวะเตี้ย)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_height19",
+      "report_name": "ส่วนสูงเฉลี่ยของคนไทยที่อายุ 19 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_height1518",
+      "report_name": "ร้อยละวัยรุ่น 15-18 ปี สูงดีสมส่วน  และส่วนสูงเฉลี่ยที่อายุ 18 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi2559",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 25-59 ปี มีค่าดัชนีมวลกายปกติ (เตรียมความพร้อมสู่วัยสูงอายุที่มีสุขภาพดี)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist1859",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19 - 59 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_anc_cid_iodine",
+      "report_name": "ความครอบคลุมการได้รับยาเม็ดเสริมไอโอดีน ธาตุเหล็ก และกรดโฟลิก ของหญิงตั้งครรภ์ที่คลอดบุตรแล้วในเขตรับผิดชอบ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_labor_hct",
+      "report_name": "ร้อยละของหญิงที่คลอดบุตรแล้วในเขตรับผิดชอบมีภาวะโลหิตจาง",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition15",
+      "report_name": "ข้อมูลด้านโภชนาการ ประชากรอายุ 15 ปีขึ้นไป",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist7079",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 70-79 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi60w",
+      "report_name": "ร้อยละของประชากรอายุ 60 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc_hct",
+      "report_name": "ภาวะโลหิตจางในหญิงตั้งครรภ์",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_02",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 0 - 2 ปี ดัชนีส่วนสูงตามเกณฑ์อายุ (ภาวะเตี้ย)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc12ga",
+      "report_name": "อายุครรภ์เฉลี่ยของหญิงตั้งครรภ์ได้รับการฝากครรภ์ครั้งแรกเมื่ออายุครรภ์ ≤ 12 สัปดาห์ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi1859w",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19-59 ปี มีค่าดัชนีมวลกายปกติ(Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist6069",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60-69 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_thin05",
+      "report_name": "ร้อยละเด็กปฐมวัยมีภาวะผอม (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi1859n",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19-59 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist1859w",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19 - 59 ปี มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_obes35",
+      "report_name": "ความชุกของภาวะอ้วน(BMI ≥ 25 กก/ม2 และหรือภาวะอ้วนลงพุง (รอบเอวเกิน ชาย 90 ซม. หญิง 80 ซม.)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 30-44 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_height614",
+      "report_name": "ร้อยละของเด็กอายุ 6 - 14 ปี สูงดีสมส่วน และส่วนสูงเฉลี่ยที่อายุ 12 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition05",
+      "report_name": "ข้อมูลด้านโภชนาการ เด็กอายุน้อยกว่า 6 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist30",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 30-44 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist45",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 45-59 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_04",
+      "report_name": "ร้อยละของเด็ก 0 – 2 ปี สูงดีสมส่วน และส่วนสูงเฉลี่ยเด็กอายุ 2 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_05",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 3 - 5 ปี ดัชนีน้ำหนักตามเกณฑ์อายุ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_07",
+      "report_name": "ภาวะโภชนาการของเด็กอายุ 3-5 ปี ดัชนีน้ำหนักตามเกณฑ์ส่วนสูง  (ภาวะผอม สมส่วน ภาวะเริ่มอ้วนและอ้วน)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition_08",
+      "report_name": "ร้อยละของเด็ก 3 – 5 ปี สูงดีสมส่วน",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_labor_anemia",
+      "report_name": "ร้อยละของหญิงคลอดที่มีภาวะโลหิตจางในขณะตั้งครรภ์ในเขตพื้นที่รับผิดชอบ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition6",
+      "report_name": "ข้อมูลด้านโภชนาการ เด็กวัยเรียน อายุ 6-18 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition15",
+      "report_name": "ข้อมูลด้านโภชนาการ ประชากรอายุ 15 ปีขึ้นไป",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc12ga",
+      "report_name": "อายุครรภ์เฉลี่ยของหญิงตั้งครรภ์ได้รับการฝากครรภ์ครั้งแรกเมื่ออายุครรภ์ ≤ 12 สัปดาห์ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_obes35",
+      "report_name": "ความชุกของภาวะอ้วน(BMI ≥ 25 กก/ม2 และหรือภาวะอ้วนลงพุง (รอบเอวเกิน ชาย 90 ซม. หญิง 80 ซม.)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_nutrition05",
+      "report_name": "ข้อมูลด้านโภชนาการ เด็กอายุน้อยกว่า 6 ปี",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_pregnant_anemia_coverage",
+      "report_name": "ร้อยละของหญิงตั้งครรภ์ในเขตรับผิดชอบมีภาวะโลหิตจาง (Coverage) Proxy",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_pregnant_anemia",
+      "report_name": "ร้อยละของหญิงคลอดที่เคยมีภาวะโลหิตจางระหว่างตั้งครรภ์",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_dental_83",
+      "report_name": "กลุ่มเด็ก 6-12 ปี ได้รับบริการทันตกรรม (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_86",
+      "report_name": "การเคลือบหลุมร่องฟันกรามแท้ ในกลุ่มเด็กอายุ 6-12 ปี (คน/ครั้ง/ซี่)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_63",
+      "report_name": "ตรวจสุขภาพช่องปาก ในเด็กอายุ 6-12 ปีโดยทันตบุคลากร (คน) (dental)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    }
+  ],
+  "PPB - Fluoride (4-12)": [
+    {
+      "source_table": "s_kpi_dental25",
+      "report_name": "OHSP ร้อยละเด็ก 3-5 ปี เคลือบ/ทา ฟลูออไรด์เฉพาะที่ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental63",
+      "report_name": "OHSP ร้อยละเด็กอายุ 4-12 ปี ได้รับการ เคลือบ/ทา ฟลูออไรด์เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental22",
+      "report_name": "OHSP ร้อยละเด็ก 0-2 ปี เคลือบ/ทา ฟลูออไรด์เฉพาะที่ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_dental_16",
+      "report_name": "ให้ฟลูออไรด์(ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_56",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 0-2 ปี(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_67",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_60",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 3-5 ปี(ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_68",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_59",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 3-5 ปี(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_77",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในกลุ่มก่อนวัยสูงอายุ (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_57",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 0-2 ปี(ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_85",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในกลุ่มเด็กอายุ 4-12 ปี (คน/ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_sc3",
+      "report_name": "ร้อยละของนักเรียนชั้น อนุบาล-ป.6 ได้รับการเคลือบ ทาฟลูออไรด์",
+      "cat_name": "อนามัยโรงเรียน"
+    }
+  ],
+  "PPB - Sealant (6-12)": [
+    {
+      "source_table": "s_kpi_dental28",
+      "report_name": "OHSP ร้อยละเด็ก 6 ปี ได้รับการเคลือบหลุมร่องฟันแท้ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental64",
+      "report_name": "OHSP ร้อยละเด็กอายุ 6-12 ปี ได้รับการ เคลือบหลุมร่องฟันกรามแท้ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_dental_86",
+      "report_name": "การเคลือบหลุมร่องฟันกรามแท้ ในกลุ่มเด็กอายุ 6-12 ปี (คน/ครั้ง/ซี่)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_14",
+      "report_name": "การเคลือบหลุมร่องฟันแท้ในเด็กอายุ 6 -12 ปี (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_12",
+      "report_name": "การเคลือบหลุมร่องฟันแท้ในเด็กอายุ 6 -12 ปี (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_13",
+      "report_name": "การเคลือบหลุมร่องฟัน (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_sc2",
+      "report_name": "ร้อยละของนักเรียนชั้น ป.1-ป.6 ได้รับการเคลือบหลุมร่องฟันแท้",
+      "cat_name": "อนามัยโรงเรียน"
+    },
+    {
+      "source_table": "s_dental_sc1",
+      "report_name": "ร้อยละของนักเรียนชั้น ป. 1 ได้รับการเคลือบหลุมร่องฟันแท้",
+      "cat_name": "อนามัยโรงเรียน"
+    }
+  ],
+  "PPB - Depression 60+": [
+    {
+      "source_table": "s_ipd10_sex_monk60",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยในตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ >= 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_opd10_monk60",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยนอกตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ < 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_opd10_monk60up",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยนอกตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ >= 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_ipd10_sex_monk60",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยในตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ >= 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_opd10_monk60",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยนอกตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ < 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_opd10_monk60up",
+      "report_name": "สาเหตุการป่วยของผู้ป่วยนอกตามกลุ่มโรค10 อันดับแรก ในกลุ่มอายุ >= 60 ปี กลุ่มพระภิกษุ-สามเณร",
+      "cat_name": "กลุ่มพระภิกษุ-สามเณร"
+    },
+    {
+      "source_table": "s_9q_remission",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้าหายทุเลา (Remission) 2568",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_2q_adl_test",
+      "report_name": "การประเมินและคัดกรองภาวะซึมเศร้าและความเสี่ยงต่อการฆ่าตัวตาย (2Q plus) ในกลุ่มผู้สูงอายุ",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_depressive_recover",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้ามีอาการทุเลาในการติดตาม 6 เดือน",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_depressive_remission",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้าหายทุเลา (Remission)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_mental_f3x",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้าเข้าถึงบริการ",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_depressive_recover",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้ามีอาการทุเลาในการติดตาม 6 เดือน",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_depressive_remission",
+      "report_name": "ร้อยละของผู้ป่วยโรคซึมเศร้าหายทุเลา (Remission)",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_r506_mental7",
+      "report_name": "จำนวนและร้อยละของโรคซึมเศร้า (F32.xx, F33.xx, F34.1, F38.xx, F39) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental3",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของโรคซึมเศร้า (F32.xx, F33.xx, F34.1x, F38.xx, F39.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_kpi_bmi60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60c",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi60w",
+      "report_name": "ร้อยละของประชากรอายุ 60 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    }
+  ],
+  "ANC - Maternal Child": [
+    {
+      "source_table": "s_infu_anc",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนไข้หวัดใหญ่ในหญิงตั้งครรภ์",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_infu_anc_w",
+      "report_name": "การได้รับวัคซีนไข้หวัดใหญ่ในหญิงตั้งครรภ์  (work load)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_infu_anc_w",
+      "report_name": "การได้รับวัคซีนไข้หวัดใหญ่ในหญิงตั้งครรภ์  (work load)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_kpi_anc_iodine",
+      "report_name": "ร้อยละหญิงตั้งครรภ์ ที่มารับบริการในหน่วยบริการ ได้รับยาเม็ดที่มีส่วนประกอบของไอโอดีน (Workload)",
+      "cat_name": "การเฝ้าระวังด้านส่งเสริมสุขภาพและอนามัยสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_opioid_acp_w",
+      "report_name": "ร้อยละการดูแลผู้ป่วยระยะท้ายแบบประคับประคอง มีกิจกรรม Family Meeting และมีการทำ Advance Care Planning (ACP) ร่วมกับผู้ป่วยและครอบครัว",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_kancha_use1",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนปัจจุบัน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_paliative_kancha1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่มีการวินิจฉัยระยะประคับประคอง (Palliative care) ที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่ได้รับยากัญชาทางการแพทย์แผนไทย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_paliative_kancha_w",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่มีการวินิจฉัยระยะประคับประคอง (Palliative care) ที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์ Workload",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use2",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนไทย)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_diff",
+      "report_name": "ผู้ป่วยทั้งหมดที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit",
+      "report_name": "ผู้ป่วยทั้งหมดที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์แผนปัจจุบัน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_ca_kancha1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยมะเร็งที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use1",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนปัจจุบัน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่ได้รับยากัญชาทางการแพทย์แผนไทย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use2",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนไทย)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_anc_hb",
+      "report_name": "ร้อยละของหญิงตั้งครรภ์ที่ได้รับการตรวจ HBsAg",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_anc3234_hct",
+      "report_name": "ภาวะโลหิตจางในหญิงตั้งครรภ์อายุครรภ์ 32-34 สัปดาห์",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_anc_cid_iodine",
+      "report_name": "ความครอบคลุมการได้รับยาเม็ดเสริมไอโอดีน ธาตุเหล็ก และกรดโฟลิก ของหญิงตั้งครรภ์ที่คลอดบุตรแล้วในเขตรับผิดชอบ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc_hct",
+      "report_name": "ภาวะโลหิตจางในหญิงตั้งครรภ์",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc12ga",
+      "report_name": "อายุครรภ์เฉลี่ยของหญิงตั้งครรภ์ได้รับการฝากครรภ์ครั้งแรกเมื่ออายุครรภ์ ≤ 12 สัปดาห์ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_anc12ga",
+      "report_name": "อายุครรภ์เฉลี่ยของหญิงตั้งครรภ์ได้รับการฝากครรภ์ครั้งแรกเมื่ออายุครรภ์ ≤ 12 สัปดาห์ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_alien_anc",
+      "report_name": "ประชากรต่างด้าวรับบริการฝากครรภ์",
+      "cat_name": "ต่างด้าว"
+    },
+    {
+      "source_table": "s_alien_anc",
+      "report_name": "ประชากรต่างด้าวรับบริการฝากครรภ์",
+      "cat_name": "ต่างด้าว"
+    }
+  ],
+  "Elderly - ผู้สูงอายุ": [
+    {
+      "source_table": "s_aged9_2",
+      "report_name": "ผู้สูงอายุที่พบสภาวะทดถอยจากการคัดกรอง<font color=red>โดยเจ้าหน้าที่สาธารณสุข</font> และหรือ ประเมินซ้ำ <font color=red>โดยเจ้าหน้าที่สาธารณสุข (Confirm STEP2)</font>",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9",
+      "report_name": "การคัดกรองผู้สูงอายุ 9 ด้าน (Basic/Community Screen STEP1)",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ageing",
+      "report_name": "จำนวนผู้สูงอายุในเขตพื้นที่รับผิดชอบ จำแนกตามความสามารถในการทำกิจวัตรประจำวัน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_risk",
+      "report_name": "ผลการติดตามผู้สูงอายุ ที่พบมีภาวะความถดทอย/พบความเสี่ยง ใน STEP1,2",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_app",
+      "report_name": "การคัดกรองผู้สูงอายุ 9 ด้าน จาก API",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_w",
+      "report_name": "การคัดกรองผู้สูงอายุ 9 ด้าน (Basic/Community Screen STEP1) workload",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_3",
+      "report_name": "ผู้สูงอายุที่ผิดปกติได้รับการจัดทำ Care Plan และให้โปรแกรมส่งเสริมสุขภาพ<font color=red> (Intervension STEP3 BigRock4)</font>",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged10",
+      "report_name": "การคัดกรองผู้สูงอายุ 10 เรื่อง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged4",
+      "report_name": "ร้อยละผู้สูงอายุได้รับการคัดกรองภาวะการถดถอยด้านสุขภาพ ที่ได้จัดทำ Care Plan และได้รับ Intervention อย่างน้อย 1 กิจกรรม",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_2",
+      "report_name": "ผู้สูงอายุที่พบสภาวะทดถอยจากการคัดกรอง<font color=red>โดยเจ้าหน้าที่สาธารณสุข</font> และหรือ ประเมินซ้ำ <font color=red>โดยเจ้าหน้าที่สาธารณสุข (Confirm STEP2)</font>",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ageing",
+      "report_name": "จำนวนผู้สูงอายุในเขตพื้นที่รับผิดชอบ จำแนกตามความสามารถในการทำกิจวัตรประจำวัน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_risk",
+      "report_name": "ผลการติดตามผู้สูงอายุ ที่พบมีภาวะความถดทอย/พบความเสี่ยง ใน STEP1,2",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_w",
+      "report_name": "การคัดกรองผู้สูงอายุ 9 ด้าน (Basic/Community Screen STEP1) workload",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged9_3",
+      "report_name": "ผู้สูงอายุที่ผิดปกติได้รับการจัดทำ Care Plan และให้โปรแกรมส่งเสริมสุขภาพ<font color=red> (Intervension STEP3 BigRock4)</font>",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_aged10",
+      "report_name": "การคัดกรองผู้สูงอายุ 10 เรื่อง",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_2q_adl_test",
+      "report_name": "การประเมินและคัดกรองภาวะซึมเศร้าและความเสี่ยงต่อการฆ่าตัวตาย (2Q plus) ในกลุ่มผู้สูงอายุ",
+      "cat_name": "การเข้าถึงระบบบริการสุขภาพจิต"
+    },
+    {
+      "source_table": "s_kpi_dental34",
+      "report_name": "OHSP ร้อยละผู้สูงอายุใส่ฟันเทียม (CD, SD, TP) ตามความจำเป็นเฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental51",
+      "report_name": "OHSP ร้อยละของกลุ่มก่อนวัยผู้สูงอายุที่ได้รับการคัดกรอง PMDs  (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental33",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ได้รับการตรวจช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental40",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental61",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ที่ติดบ้าน ติดเตียงได้รับการตรวจช่องปาก",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental10",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มผู้สูงอายุ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental52",
+      "report_name": "OHSP ร้อยละของกลุ่มผู้สูงอายุที่ได้รับการคัดกรอง PMDs (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental41",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันหลัง (แท้ หรือเทียม) ใช้งานที่เหมาะสม (ไม่น้อยกว่า 4 คู่สบ)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental45",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental46",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ที่ติดบ้าน ติดเตียงได้รับบริการทันตกรรม (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental48",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่ และฟันหลัง (แท้ หรือ เทียม) ใช้งานไม่น้อยกว่า 4 คู่สบ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_bmi60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi80",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 80 ปีขึ้นไป มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi6069",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 – 69 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60c",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_bmi7079",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 70 – 79 ปี มีค่าดัชนีมวลกายปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist80",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 80 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist7079",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 70-79 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist6069",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60-69 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_dental_67",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_68",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_65",
+      "report_name": "การตรวจช่องปากผู้สูงอายุโดยทันตบุคลากร (คน)(dental)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_88",
+      "report_name": "กลุ่มผู้สูงอายุ ได้รับบริการใส่ฟันเทียมถอดได้ทั้งปากหรือเกือบทั้งปาก(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_66",
+      "report_name": "ฝึกแปรงฟันแบบลงมือปฏิบัติ ในผู้สูงอายุ (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_79",
+      "report_name": "กลุ่มผู้สูงอายุ ได้รับบริการทันตกรรม (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    }
+  ],
+  "TTM - นวด อบ ประคบ": [
+    {
+      "source_table": "s_ageing",
+      "report_name": "จำนวนผู้สูงอายุในเขตพื้นที่รับผิดชอบ จำแนกตามความสามารถในการทำกิจวัตรประจำวัน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_ageing",
+      "report_name": "จำนวนผู้สูงอายุในเขตพื้นที่รับผิดชอบ จำแนกตามความสามารถในการทำกิจวัตรประจำวัน",
+      "cat_name": "การคัดกรอง"
+    },
+    {
+      "source_table": "s_pm25_2_in_week",
+      "report_name": "จํานวนผู้ป่วยที่อยู่อาศัยจริงตามเขตรับผิดชอบของสถานพยาบาล (รหัสสถานะบุคคล คือ 1 และ 3) โรคที่เกี่ยวข้องกับการรับสัมผัสฝุ่นละอองขนาดไม่เกิน 2.5 ไมครอน (PM2.5) รายสัปดาห์ที่เข้ารับบริการ และ รหัสโรค (ICD-10)",
+      "cat_name": "การป่วยด้วยโรคจากมลพิษทางอากาศ"
+    },
+    {
+      "source_table": "s_epi5",
+      "report_name": "ความครอบคลุมของเด็กอายุครบ 5 ปีที่ได้รับวัคซีน DTP5,โปลิโอ5 รายไตรมาส",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi2",
+      "report_name": "ความครอบคลุมของเด็กอายุครบ 2 ปีที่ได้รับวัคซีนแต่ละชนิด รายไตรมาส",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_complete",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 1 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi3",
+      "report_name": "ความครอบคลุมของเด็กอายุครบ 3 ปี ที่ได้รับวัคซีนแต่ละชนิด รายไตรมาส",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_infu_anc",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนไข้หวัดใหญ่ในหญิงตั้งครรภ์",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_p6",
+      "report_name": "ความครอบคลุมการได้รับวัคซีน dT ในเด็กนักเรียนชั้น ป.6 ",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi7",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 7 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_pertussis",
+      "report_name": "ความครอบคลุมวัคซีน Pertussis(ap/Tdap) ในหญิงตั้งครรภ์ ",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_rabie",
+      "report_name": "ความครอบคลุมการได้รับวีคซีนป้องกันโรคพิษสุนัขบ้า",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_p5_sc",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนเอชพีวีในเด็กนักเรียนหญิงชั้น ป.5",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_106",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนคอตีบ-บาดทะยัก ในผู้ใหญ่ ",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi1",
+      "report_name": "ความครอบคลุมของเด็กอายุครบ 1 ปีที่ได้รับวัคซีน BCG ,HBV1,DTP1,DTP3,HBV3,Hib3,โปลิโอ3, MMR1,IPV,Rota รายไตรมาส",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_complete",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 3 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_complete",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 5 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_complete",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 2 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_p6",
+      "report_name": "ความครอบคลุมการได้รับวัคซีน dT ในเด็กนักเรียนชั้น ป.6 ",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi7",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนแต่ละชนิดครบตามเกณฑ์ในเด็กอายุครบ 7 ปี (fully immunized)",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_pertussis",
+      "report_name": "ความครอบคลุมวัคซีน Pertussis(ap/Tdap) ในหญิงตั้งครรภ์ ",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_rabie",
+      "report_name": "ความครอบคลุมการได้รับวีคซีนป้องกันโรคพิษสุนัขบ้า",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_epi_p5_sc",
+      "report_name": "ความครอบคลุมการได้รับวัคซีนเอชพีวีในเด็กนักเรียนหญิงชั้น ป.5",
+      "cat_name": "การสร้างเสริมภูมิคุ้มกันโรค"
+    },
+    {
+      "source_table": "s_kpi_anc_iodine",
+      "report_name": "ร้อยละหญิงตั้งครรภ์ ที่มารับบริการในหน่วยบริการ ได้รับยาเม็ดที่มีส่วนประกอบของไอโอดีน (Workload)",
+      "cat_name": "การเฝ้าระวังด้านส่งเสริมสุขภาพและอนามัยสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_kpi_op_pcu",
+      "report_name": "KPI จังหวัด ร้อยละการใช้บริการของประชาชนในเขตรับผิดชอบใช้บริการผู้ป่วยนอก(OPD)ที่หน่วยบริการปฐมภูมิ",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_kpi_op_pcu",
+      "report_name": "KPI จังหวัด ร้อยละการใช้บริการของประชาชนในเขตรับผิดชอบใช้บริการผู้ป่วยนอก(OPD)ที่หน่วยบริการปฐมภูมิ",
+      "cat_name": "การใช้บริการสาธารณสุข"
+    },
+    {
+      "source_table": "s_referout4pa1",
+      "report_name": "การส่งต่อผู้ป่วยออกนอกเขตสุขภาพลดลง 4 สาขา จำแนกรายสาขา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan 4 สาขาหลัก"
+    },
+    {
+      "source_table": "s_referout4pa",
+      "report_name": "การส่งต่อผู้ป่วยออกนอกเขตสุขภาพลดลง 4 สาขา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan 4 สาขาหลัก"
+    },
+    {
+      "source_table": "s_referout4pa1",
+      "report_name": "การส่งต่อผู้ป่วยออกนอกเขตสุขภาพลดลง 4 สาขา จำแนกรายสาขา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan 4 สาขาหลัก"
+    },
+    {
+      "source_table": "s_opioid",
+      "report_name": "ร้อยละการบรรเทาอาการปวดและจัดการอาการต่างๆด้วย Strong Opioid ในผู้ป่วยประคับประคองอย่างมีคุณภาพ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_opioid_com",
+      "report_name": "ร้อยละการบรรเทาอาการปวดและจัดการอาการต่างๆด้วย Strong Opioid ในผู้ป่วยประคับประคอง และได้รับการเยี่ยมบ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_opioid_acp_w",
+      "report_name": "ร้อยละการดูแลผู้ป่วยระยะท้ายแบบประคับประคอง มีกิจกรรม Family Meeting และมีการทำ Advance Care Planning (ACP) ร่วมกับผู้ป่วยและครอบครัว",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_palliative_com",
+      "report_name": "ร้อยละของผู้ป่วยประคับประคองที่ได้รับการดูแลต่อเนื่องที่บ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_opioid_w",
+      "report_name": "ร้อยละการบรรเทาอาการปวดและจัดการอาการต่างๆด้วย Strong Opioid ในผู้ป่วยประคับประคองอย่างมีคุณภาพในโรงพยาบาล(Work Load)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_opioid_com",
+      "report_name": "ร้อยละการบรรเทาอาการปวดและจัดการอาการต่างๆด้วย Strong Opioid ในผู้ป่วยประคับประคอง และได้รับการเยี่ยมบ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_palliative_com",
+      "report_name": "ร้อยละของผู้ป่วยประคับประคองที่ได้รับการดูแลต่อเนื่องที่บ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา Intermediate & Palliative Care"
+    },
+    {
+      "source_table": "s_rdu21",
+      "report_name": "ร้อยละของโรงพยาบาล ส่งเสริมการใช้ยาอย่างสมเหตุผล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu20",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลันในผู้ป่วยนอก ระดับ รพ.สต. (AD - PCU)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu9",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในหญิงคลอดปกติครบกำหนดทางช่องคลอด ระดับโรงพยาบาล (APL)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu1",
+      "report_name": "ร้อยละรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_1ddd_opvisit",
+      "report_name": "ddd summary opvisit ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu7",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลันในผู้ป่วยนอก ระดับโรงพยาบาล (AD)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu18",
+      "report_name": "ร้อยละครั้งบริการ (visit) ผู้ป่วยเด็ก ที่ได้รับการวินิจฉัยเป็นโรคติดเชื้อของทางเดินหายใจ และได้รับยาต้านฮิสตามีนชนิด non-sedating",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu13",
+      "report_name": "ร้อยละของผู้ป่วยที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu17",
+      "report_name": "จำนวนสตรีตั้งครรภ์ที่ได้รับยาที่ห้ามใช้ ได้แก่ยา Warfarin หรือ Statins หรือ Ergots เมื่อรู้ว่าตั้งครรภ์แล้ว",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd1",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดรับประทานต่อ 1000 OP Visit แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd3",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดรับประทานทุกรายการต่อ 1000 OP Visit",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd5",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu10",
+      "report_name": "ร้อยละของผู้ป่วยความดันสูง (Essential hypertension) ที่ใช้ RAS blockade (ACEI/ ARB/ Renin inhibitor) 2 ชนิดร่วมกันในการรักษาภาวะความดันเลือดสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu16",
+      "report_name": "ร้อยละผู้ป่วยนอกสูงอายุที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu_pcu",
+      "report_name": "ร้อยละของรพ.สต.ที่มีอัตราการใช้ยาปฏิชีวนะในโรค Respiratory Infection และ Acute Diarrhea <= ร้อยละ20 ทั้ง 2 โรค (RUA PCU)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_1ddd_ipvisit",
+      "report_name": "ddd summary ipvisit day",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu14",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคไตเรื้อรังระดับ 3 ขึ้นไปที่ได้รับยา NSAIDs",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd2",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดรับประทานต่อ 1000 OP Visit แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd4",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu12",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu6",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก ระดับโรงพยาบาล (RI)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd6",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดฉีดทุกรายการที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu19",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก ระดับ รพ.สต.(RI - PCU)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu8",
+      "report_name": "ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ ระดับโรงพยาบาล (FTW)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu22",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคหืดที่ได้รับยา inhaled corticosteroid (All Dxtype)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu15",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคหืดที่ได้รับยา inhaled corticosteroid (PDx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu11",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปีหรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu21",
+      "report_name": "ร้อยละของโรงพยาบาล ส่งเสริมการใช้ยาอย่างสมเหตุผล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_1ddd_opvisit",
+      "report_name": "ddd summary opvisit ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd1",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดรับประทานต่อ 1000 OP Visit แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd3",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดรับประทานทุกรายการต่อ 1000 OP Visit",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd5",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_1ddd_ipvisit",
+      "report_name": "ddd summary ipvisit day",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd2",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดรับประทานต่อ 1000 OP Visit แยกตามกลุ่มยา (Class)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd4",
+      "report_name": "ค่า Defined Daily Dose (DDD) ของยาปฏิชีวนะชนิดฉีดที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน แยกตามชื่อสามัญทางยา (Generic name)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_ddd6",
+      "report_name": "ค่า Defined Daily Dose (DDD) รวมของยาปฏิชีวนะชนิดฉีดทุกรายการที่ใช้ในผู้ป่วยที่รับไว้รักษาในโรงพยาบาล (Admit) ต่อ 100 วันนอน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_rdu22",
+      "report_name": "ร้อยละของผู้ป่วยนอกโรคหืดที่ได้รับยา inhaled corticosteroid (All Dxtype)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขา RDU"
+    },
+    {
+      "source_table": "s_kancha_use1",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนปัจจุบัน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_paliative_kancha1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่มีการวินิจฉัยระยะประคับประคอง (Palliative care) ที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่ได้รับยากัญชาทางการแพทย์แผนไทย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_paliative_kancha_w",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่มีการวินิจฉัยระยะประคับประคอง (Palliative care) ที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์ Workload",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use2",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนไทย)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_diff",
+      "report_name": "ผู้ป่วยทั้งหมดที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit",
+      "report_name": "ผู้ป่วยทั้งหมดที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์แผนปัจจุบัน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_ca_kancha1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยมะเร็งที่ได้รับการรักษาด้วยยากัญชาทางการแพทย์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use1",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนปัจจุบัน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_visit1",
+      "report_name": "ร้อยละของจำนวนผู้ป่วยที่ได้รับยากัญชาทางการแพทย์แผนไทย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_kancha_use2",
+      "report_name": "ปริมาณการใช้กัญชาทางการแพทย์(แผนไทย)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขากัญชา"
+    },
+    {
+      "source_table": "s_rop1",
+      "report_name": "จำนวนทารกที่เกิดก่อนกำหนดแยกตามอายุครรภ์ (ROP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาตา"
+    },
+    {
+      "source_table": "s_rop2",
+      "report_name": "จำนวนทารกแรกเกิดแยกตามน้ำหนัก(ROP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาตา"
+    },
+    {
+      "source_table": "s_rop3",
+      "report_name": "จำนวนผู้ป่วยเป็นโรคจอตาผิดปกติจากการเกิดก่อนกำหนด (ROP) จำแนกตามเขตพื้นที่ เพศ และสัญชาติ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาตา"
+    },
+    {
+      "source_table": "s_rop4",
+      "report_name": "จำนวนผู้ป่วยเป็นโรคจอตาผิดปกติจากการเกิดก่อนกำหนด (ROP) จำแนกตามช่วงเวลาที่ได้รับหัตถการ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาตา"
+    },
+    {
+      "source_table": "s_rop5",
+      "report_name": "จำนวนหัตถการในผู้ป่วยเป็นโรคจอตาผิดปกติจากการเกิดก่อนกำหนด (ROP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาตา"
+    },
+    {
+      "source_table": "s_death28th",
+      "report_name": "อัตราตายทารกไทยแรกเกิด อายุน้อยกว่าหรือเท่ากับ 28 วัน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาทารกแรกเกิด"
+    },
+    {
+      "source_table": "s_child_hear",
+      "report_name": "ร้อยละความครอบคลุมการคัดกรองได้ยินของทารกแรกเกิด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาทารกแรกเกิด"
+    },
+    {
+      "source_table": "s_cigarette3year10",
+      "report_name": "Test 15 ปีขึ้นไป",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year1",
+      "report_name": "รายงานสรุปการคัดกรองและบำบัดบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year3",
+      "report_name": "รายงานจำแนกตามการบำบัดบุหรี่และผลการเลิกบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol7",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ระดับความเสี่ยงปานกลางและสูง ที่ได้รับการติดตาม (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year10",
+      "report_name": "ข้อมูลการป่วยจากโรคที่เกิดจากการสูบบุหรี่ ของประชากร ที่มีอายุ 15 ปีขึ้นไป",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm2",
+      "report_name": "การบำบัดรักษายาเสพติดโดยใช้สารทดแทนระยะยาว MMT/การจัดให้มีบริการป้องกันและดูแลรักษาอาการจากการใช้ยาเสพติดเกินขนาดในพื้นที่ เช่น การให้บริการ Naloxone",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm5",
+      "report_name": "การสนับสนุนให้ใช้ถุงยางอนามัย อย่างถูกวิธี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm7",
+      "report_name": "การคัดกรอง ตรวจวินิจฉัย และรักษาวัณโรค",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year5",
+      "report_name": "การเปลี่ยนแปลงสถานการณ์การสูบจากครั้งแรกกับครั้งสุดท้าย 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette2",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่ (specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year6",
+      "report_name": "ร้อยละผู้เข้าร่วมโครงการฯ และเลิกบุหรี่ได้ 6 เดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm10",
+      "report_name": "การได้รับบริการด้านการลดอันตรายจากยาเสพติด  จำแนกตามกลุ่มหลักรอง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่  (workload specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol1",
+      "report_name": "การคัดกรองและการบำบัดผู้ดื่มเครื่องดื่มแอลกอฮอล์ (specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year7",
+      "report_name": "ข้อมูลการคัดกรองและบำบัดบุหรี่ ของอาสาสมัครสาธารณสุขประจำหมู่บ้าน (อสม.)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year8",
+      "report_name": "ข้อมูลการป่วยจากโรคที่เกิดจากการสูบบุหรี่ของอาสาสมัครสาธารณสุขประจำหมู่บ้าน (อสม.)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year11",
+      "report_name": "ข้อมูลการตายจากโรคที่เกิดจากการสูบบุหรี่ ของประชากรที่มีอายุ 15 ปีขึ้นไป",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol10",
+      "report_name": "อุบัติการณ์ของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสุรา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette1",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่ สะสมรายเดือน(specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol4",
+      "report_name": "ประชากรอายุ 15 ปีขึ้นไปได้รับการคัดกรองพฤติกรรมการดื่มเครื่องดื่มแอลกอฮอล์ (Workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol6",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ในปีงบประมาณที่ได้รับการให้คำแนะนำ หรือได้รับการบำบัดแบบสั้น (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol8",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ระดับความเสี่ยงปานกลางและสูง ที่ได้รับการติดตาม (Workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year2",
+      "report_name": "รายงานการบำบัดบุหรี่และการเลิกบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year4",
+      "report_name": "รายงานจำนวนครั้งที่ประชากรในเขตรับผิดชอบได้รับการบันทึกข้อมูลเกี่ยวกับบุหรี่ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol3",
+      "report_name": "ประชากรอายุ 15 ปีขึ้นไปในเขตพื้นที่รับผิดชอบได้รับการคัดกรองพฤติกรรมการดื่มเครื่องดื่มแอลกอฮอล์ (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year9",
+      "report_name": "ข้อมูลการตายจากโรคที่เกิดจากการสูบบุหรี่ของอาสาสมัครสาธารณสุขประจำหมู่บ้าน (อสม.)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm3",
+      "report_name": "การให้คำปรึกษา และ/หรือ ตรวจการติดเชื้อเอชไอวีโดยสมัครใจ และ/หรือ ส่งต่อเข้ารับบริการดูแลรักษาด้วยยาต้านไวรัส",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm6",
+      "report_name": "การคัดกรอง ตรวจวินิจฉัย และ/หรือ รักษาโรคติดต่อทางเพศสัมพันธ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm1",
+      "report_name": "การให้ความรู้เกี่ยวกับโทษพิษภัย ยาเสพติด การป้องกันการติดเชื้อ เอชไอวี โรคติดต่อทางเพศสัมพันธ์  วัณโรคและไวรัสตับอักเสบบีและซี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol5",
+      "report_name": "ผลการคัดกรองประชากรอายุ 15 ปีขึ้นไปในเขตพื้นที่รับผิดชอบทั้งหมด ตามช่วงอายุ (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm9",
+      "report_name": "การเข้าถึงบริการและการได้รับความรู้ ความเข้าใจอันตรายที่เกิดจากยาเสพติด เพื่อลดอันตรายในกลุ่มผู้ใช้ยาเสพติด จำแนกกลุ่มหลักรอง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol11",
+      "report_name": "อุบัติการณ์ของผู้มีปัญหาการดื่มเครื่องดื่มแอลกอฮอล์ระดับเสี่ยงสูงที่ได้รับการวินิจฉัยว่ามีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสุรา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm4",
+      "report_name": "การให้คำปรึกษา ตรวจหา และส่งต่อเข้ารับบริการดูแลรักษาการติดเชื้อไวรัสตับอักเสบบีและซี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm8",
+      "report_name": "การคัดกรอง ตรวจวินิจฉัย และ/หรือ รักษาโรคทางจิตเวช",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol2",
+      "report_name": "การคัดกรองและการบำบัดผู้ดื่มเครื่องดื่มแอลกอฮอล์ (workload specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year1",
+      "report_name": "รายงานสรุปการคัดกรองและบำบัดบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year3",
+      "report_name": "รายงานจำแนกตามการบำบัดบุหรี่และผลการเลิกบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol7",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ระดับความเสี่ยงปานกลางและสูง ที่ได้รับการติดตาม (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm2",
+      "report_name": "การบำบัดรักษายาเสพติดโดยใช้สารทดแทนระยะยาว MMT/การจัดให้มีบริการป้องกันและดูแลรักษาอาการจากการใช้ยาเสพติดเกินขนาดในพื้นที่ เช่น การให้บริการ Naloxone",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm5",
+      "report_name": "การสนับสนุนให้ใช้ถุงยางอนามัย อย่างถูกวิธี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year5",
+      "report_name": "การเปลี่ยนแปลงสถานการณ์การสูบจากครั้งแรกกับครั้งสุดท้าย 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette2",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่ (specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year6",
+      "report_name": "ร้อยละผู้เข้าร่วมโครงการฯ และเลิกบุหรี่ได้ 6 เดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่  (workload specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol1",
+      "report_name": "การคัดกรองและการบำบัดผู้ดื่มเครื่องดื่มแอลกอฮอล์ (specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol10",
+      "report_name": "อุบัติการณ์ของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสุรา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette1",
+      "report_name": "การคัดกรองและการบำบัดผู้ติดบุหรี่ สะสมรายเดือน(specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol4",
+      "report_name": "ประชากรอายุ 15 ปีขึ้นไปได้รับการคัดกรองพฤติกรรมการดื่มเครื่องดื่มแอลกอฮอล์ (Workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol6",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ในปีงบประมาณที่ได้รับการให้คำแนะนำ หรือได้รับการบำบัดแบบสั้น (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol8",
+      "report_name": "ผู้ดื่มเครื่องดื่มแอลกอฮอล์ระดับความเสี่ยงปานกลางและสูง ที่ได้รับการติดตาม (Workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year2",
+      "report_name": "รายงานการบำบัดบุหรี่และการเลิกบุหรี่ของประชากรในเขตพื้นที่รับผิดชอบ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_cigarette3year4",
+      "report_name": "รายงานจำนวนครั้งที่ประชากรในเขตรับผิดชอบได้รับการบันทึกข้อมูลเกี่ยวกับบุหรี่ 3 ปีย้อนหลัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol3",
+      "report_name": "ประชากรอายุ 15 ปีขึ้นไปในเขตพื้นที่รับผิดชอบได้รับการคัดกรองพฤติกรรมการดื่มเครื่องดื่มแอลกอฮอล์ (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm3",
+      "report_name": "การให้คำปรึกษา และ/หรือ ตรวจการติดเชื้อเอชไอวีโดยสมัครใจ และ/หรือ ส่งต่อเข้ารับบริการดูแลรักษาด้วยยาต้านไวรัส",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm6",
+      "report_name": "การคัดกรอง ตรวจวินิจฉัย และ/หรือ รักษาโรคติดต่อทางเพศสัมพันธ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol5",
+      "report_name": "ผลการคัดกรองประชากรอายุ 15 ปีขึ้นไปในเขตพื้นที่รับผิดชอบทั้งหมด ตามช่วงอายุ (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol11",
+      "report_name": "อุบัติการณ์ของผู้มีปัญหาการดื่มเครื่องดื่มแอลกอฮอล์ระดับเสี่ยงสูงที่ได้รับการวินิจฉัยว่ามีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสุรา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm4",
+      "report_name": "การให้คำปรึกษา ตรวจหา และส่งต่อเข้ารับบริการดูแลรักษาการติดเชื้อไวรัสตับอักเสบบีและซี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_harm8",
+      "report_name": "การคัดกรอง ตรวจวินิจฉัย และ/หรือ รักษาโรคทางจิตเวช",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_alcohol2",
+      "report_name": "การคัดกรองและการบำบัดผู้ดื่มเครื่องดื่มแอลกอฮอล์ (workload specialpp)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขายาเสพติด"
+    },
+    {
+      "source_table": "s_f1x_visit_w",
+      "report_name": "ร้อยละผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาทที่มีโรคร่วมทางจิต จำแนกตามสถานพยาบาล (workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_selfharm_times",
+      "report_name": "จำนวนและร้อยละวิธีทำร้ายตนเองของการตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) จำแนกตามพื้นที่เกิดเหตุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_nicotine_dependence",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพยาสูบ (F17.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental13",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติแบบอยู่ไม่นิ่ง (โรคสมาธิสั้น) (F90.0-F90.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_selfharm_time",
+      "report_name": "จำนวนและร้อยละของวิธีทำร้ายตนเองของการตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) จำแนกตามช่วงเวลาเกิดเหตุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_selfharm_place",
+      "report_name": "จำนวนและร้อยละของวิธีทำร้ายตนเองของการตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) จำแนกตามสถานที่เกิดเหตุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_selfharm_times",
+      "report_name": "จำนวนและร้อยละของวิธีทำร้ายตนเองของการตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) จำแนกตามสถานที่เกิดเหตุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f84x",
+      "report_name": "จำนวนและร้อยละของความผิดปกติของพัฒนาการที่กระจายไปทุกด้าน (โรคออทิสติก) (F84.0- F84.9) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv_visit_diag",
+      "report_name": "จำนวนผู้ป่วยจิตเวชที่มีความเสี่ยงต่อการก่อความรุนแรง (SMI-V)ที่มารับบริการในปีงบประมาณ(คนต่อสถานพยาบาล) จำแนกตามการวินิจฉัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f7x_q9x",
+      "report_name": "จำนวนและร้อยละของภาวะบกพร่องทางสติปัญญา (F70.xx-F73.xx, F78.xx-F79.xx, Q87.xx, Q90.xx, Q91.xx, Q93.5, Q99.xx) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f81x",
+      "report_name": "จำนวนและร้อยละของความผิดปกติของพัฒนาการเฉพาะด้านทางทักษะในการเรียน (F81.xx) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental11",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของภาวะบกพร่องทางสติปัญญา (F70.xx-F73.xx, F78.xx-F79.xx,\nQ87.xx, Q90.xx, Q91.xx, Q93.5, Q99.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f20visit6m1",
+      "report_name": "ร้อยละของผู้ป่วยโรคจิตเภทได้รับการรักษาต่อเนื่องภายใน 6 เดือน(หน่วยงานสังกัดกรมสุขภาพจิต)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental15",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสุรา (F10.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv2",
+      "report_name": "ร้อยละผู้ป่วยจิตเวชที่มีความเสี่ยงสูงต่อการก่อความรุนแรง (SMI-V) ก่อความรุนแรง ลดลงเมื่อเปรียบเทียบระหว่างปีก่อนหน้าและปีปัจจุบัน  (เฉพาะหน่วยงานกรมสุขภาพจิต)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f90n",
+      "report_name": "ร้อยละของผู้ป่วยโรคสมาธิสั้นเข้าถึงบริการ6-15",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental18",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของภาวะเมเนียและโรคอารมณ์สองขั้ว (F30.xx-F31.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_psych_bed",
+      "report_name": "อัตราครองเตียงจิตเวชและยาเสพติดรายเดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_retention_rate",
+      "report_name": "ร้อยละของผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาทที่เข้าสู่กระบวนการบำบัดรักษาได้รับการดูแลและติดตามต่อเนื่อง (Retention Rate)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_prevalence_x68",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของการตั้งใจทำร้ายตนเอง (X60.xx-X84.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f1x_visit",
+      "report_name": "ร้อยละผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาทที่มีโรคร่วมทางจิต ตามภูมิลำเนา ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental7",
+      "report_name": "จำนวนและร้อยละของโรคซึมเศร้า (F32.xx, F33.xx, F34.1, F38.xx, F39) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f84n",
+      "report_name": "ร้อยละของผู้ป่วยโรคออทิสติกเข้าถึงบริการ2-5",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental3",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของโรคซึมเศร้า (F32.xx, F33.xx, F34.1x, F38.xx, F39.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_group",
+      "report_name": "แผนที่แสดงอัตรารับบริการของความผิดปกติทางจิตและพฤติกรรม (F00.xx-F99) รวมกับตั้งใจทำร้ายตนเอง (X60.xx-X84.xx)\n",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f20_5y",
+      "report_name": "ร้อยละของผู้ป่วยจิตเภทที่เข้าถึงบริการสะสมได้รับการดูแลต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental12",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติของพัฒนาการที่กระจายไปทุกด้าน (โรคออทิสติก) (F84.0-F84.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental16",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพสารกระตุ้นระบบประสาทอื่น รวมทั้งกาแฟ (F15.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental17",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของโรคจิตเภท (F20.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f90_age",
+      "report_name": "จํานวนผู้ป่วยสมาธิสั้นที่มารับบริการตามกลุ่มอายุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_psych_sleep_day",
+      "report_name": "จำนวนวันนอนและวันนอนเฉลี่ยผู้ป่วยจิตเวชและยาเสพติดรายเดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_attacked_xy",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของการถูกทำร้าย (X85-X99, Y00.xx-Y09.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv3",
+      "report_name": "ร้อยละผู้ป่วยจิตเวชที่มีความเสี่ยงสูงต่อการก่อความรุนแรง (SMI-V) ได้รับการติดตาม ดูแลเฝ้าระวัง ตามแนวทางที่กำหนด (Workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental6",
+      "report_name": "จำนวนและร้อยละของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพกัญชา (F12.xx) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_fx_smiv2",
+      "report_name": "ร้อยละของผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกกฤทธิ์ต่อจิตประสาท จำแนกตามสถานพยาบาล (workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental14",
+      "report_name": "อัตราป่วยรายใหม่ของผู้ที่มีความผิดปกติของพัฒนาการเฉพาะด้านทางทักษะในการเรียน (F81.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental4",
+      "report_name": "จำนวน(คน/ครั้ง)ตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) จำแนกตามพื้นที่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental1",
+      "report_name": "จำนวนและร้อยละของความผิดปกติทางจิตและพฤติกรรม (F00.xx-F99.xx) หรือตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) หรือถูกทำร้าย (X85.xx-X99.xx, Y00.xx-Y09.xx) จำแนกตามพื้นที่และเพศ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental8",
+      "report_name": "จำนวนและร้อยละของตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) และมีโรคอื่นร่วมด้วย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f90_w",
+      "report_name": "ผู้ป่วยโรคสมาธิสั้นเข้าถึงบริการ(workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_fx_smiv",
+      "report_name": "ร้อยละของผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกกฤทธิ์ต่อจิตประสาท จำแนกตามภูมิลำเนา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv31",
+      "report_name": "ร้อยละผู้ป่วยจิตเวชที่มีความเสี่ยงสูงต่อการก่อความรุนแรง (SMI-V) ได้รับการติดตาม ดูแลเฝ้าระวัง ตามแนวทางที่กำหนด(workload เฉพาะหน่วยงานกรมสุขภาพจิต)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_fx_smiv_moph",
+      "report_name": "จำนวนผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาทที่มีความเสี่ยงต่อการก่อความรุนแรง (SMI-V) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental1",
+      "report_name": "จำนวนและร้อยละของความผิดปกติทางจิตและพฤติกรรม (F00.xx-F99.xx) หรือตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) หรือถูกทำร้าย (X85.xx-X99.xx, Y00.xx-Y09.xx) จำแนกตามกลุ่มอายุและเพศ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental506_group",
+      "report_name": "จำนวน (คน/ครั้ง) ของความผิดปกติทางจิตและพฤติกรรม (F00.xx-F99) หรือตั้งใจทำร้ายตนเอง (X60.xx-X84.xx) หรือ ถูกทำร้าย (X85.xx-X99, Y00-Y09) จําแนกตามเพศ กลุ่มโรค และรายโรค (workload)\n",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_r506_mental2",
+      "report_name": "อัตราป่วยรายใหม่และความชุกของความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการเสพกัญชา (F12.xx)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f20_w",
+      "report_name": "ผู้ป่วยโรคจิตเภทเข้าถึงบริการ(workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f20visit6mr",
+      "report_name": "ร้อยละของผู้ป่วยโรคจิตเภทได้รับการรักษาต่อเนื่องภายใน 6 เดือน(Reverse )",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv1",
+      "report_name": "ร้อยละผู้ป่วยจิตเวชที่มีความเสี่ยงสูงต่อการก่อความรุนแรง (SMI-V) ไม่ก่อความรุนแรงซ้ำ(เฉพาะหน่วยงานกรมสุขภาพจิต)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv11",
+      "report_name": "ร้อยละผู้ป่วยจิตเวชที่มีความเสี่ยงสูงต่อการก่อความรุนแรง (SMI-V) ไม่ก่อความรุนแรงซ้า",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f20visit6m",
+      "report_name": "ร้อยละของผู้ป่วยโรคจิตเภทได้รับการรักษาต่อเนื่องภายใน 6 เดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f84_w",
+      "report_name": "ผู้ป่วยโรคออทิสติกเข้าถึงบริการ(workload)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_psychoactive_coverage",
+      "report_name": "อัตราการเข้าถึงบริการของผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาท",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv_followup",
+      "report_name": "ร้อยละของผู้ป่วยจิตเวชสารเสพติดก่อความรุนแรง (SMI-V) ในเขตสุขภาพเข้าถึงบริการได้รับการดูแลต่อเนื่องและไม่ก่อความรุนแรงซ้ำ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_smiv_classify",
+      "report_name": "จำนวนผู้ป่วยจิตเวชยาเสพติดก่อความรุนแรง (SMI-V) ที่ขาดการรักษาก่อความรุนแรงซ้ำจำแนกตามประเภทความรุนแรง ที่มารับการรักษาในปีงบประมาณ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f90n",
+      "report_name": "ร้อยละของผู้ป่วยโรคสมาธิสั้นเข้าถึงบริการ6-15",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_psych_bed",
+      "report_name": "อัตราครองเตียงจิตเวชและยาเสพติดรายเดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_retention_rate",
+      "report_name": "ร้อยละของผู้ป่วยที่มีความผิดปกติทางจิตและพฤติกรรมที่เกิดจากการใช้สารออกฤทธิ์ต่อจิตประสาทที่เข้าสู่กระบวนการบำบัดรักษาได้รับการดูแลและติดตามต่อเนื่อง (Retention Rate)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_mental_f84n",
+      "report_name": "ร้อยละของผู้ป่วยโรคออทิสติกเข้าถึงบริการ2-5",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f20_5y",
+      "report_name": "ร้อยละของผู้ป่วยจิตเภทที่เข้าถึงบริการสะสมได้รับการดูแลต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_f90_age",
+      "report_name": "จํานวนผู้ป่วยสมาธิสั้นที่มารับบริการตามกลุ่มอายุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_psych_sleep_day",
+      "report_name": "จำนวนวันนอนและวันนอนเฉลี่ยผู้ป่วยจิตเวชและยาเสพติดรายเดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพจิตและจิตเวช"
+    },
+    {
+      "source_table": "s_kpi_dental57",
+      "report_name": "OHSP ร้อยละผู้ป่วยปากแหว่งเพดานโหว่อายุ 0-14 ปีได้รับบริการสุขภาพช่องปาก",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental4",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการทันตกรรมพื้นฐาน เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental13",
+      "report_name": "OHSP ร้อยละจำนวนรายบริการทันตกรรมพื้นฐานต่อบริการทั้งหมด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental20",
+      "report_name": "OHSP ร้อยละเด็ก 0-2 ปี ได้รับการตรวจสุขภาพช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental25",
+      "report_name": "OHSP ร้อยละเด็ก 3-5 ปี เคลือบ/ทา ฟลูออไรด์เฉพาะที่ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental31",
+      "report_name": "OHSP ร้อยละผู้ป่วยเบาหวานได้ตรวจคัดกรองสุขภาพช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental34",
+      "report_name": "OHSP ร้อยละผู้สูงอายุใส่ฟันเทียม (CD, SD, TP) ตามความจำเป็นเฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental47",
+      "report_name": "OHSP ร้อยละเด็กกลุ่มอายุ 9 ปีมีฟันผุในฟันแท้",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental50",
+      "report_name": "OHSP ร้อยละเด็กพิการ 0 -14 ปีได้รับบริการสุขภาพช่องปาก (คน)(ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental51",
+      "report_name": "OHSP ร้อยละของกลุ่มก่อนวัยผู้สูงอายุที่ได้รับการคัดกรอง PMDs  (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental63",
+      "report_name": "OHSP ร้อยละเด็กอายุ 4-12 ปี ได้รับการ เคลือบ/ทา ฟลูออไรด์เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental1",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการทันตกรรมรวมทุกสิทธิ เฉพาะเขตรับผิดชอบ (คน)  (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental6",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มหญิงตั้งครรภ์ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental11",
+      "report_name": "OHSP ร้อยละ visit ตรวจฟันอย่างเดียว ต่อ visit ทั้งหมด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental15",
+      "report_name": "OHSP จำนวนคนไข้ (ครั้ง) เฉลี่ย ต่อทันตบุคลากรต่อปี ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental22",
+      "report_name": "OHSP ร้อยละเด็ก 0-2 ปี เคลือบ/ทา ฟลูออไรด์เฉพาะที่ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental18",
+      "report_name": "OHSP ร้อยละหญิงตั้งครรภ์ได้รับการฝึกแปรงฟันแบบลงมือปฏิบัติ หรือ ได้รับการฝึกแปรงฟันแบบลงมือปฏิบัติ และplaque control เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental28",
+      "report_name": "OHSP ร้อยละเด็ก 6 ปี ได้รับการเคลือบหลุมร่องฟันแท้ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental33",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ได้รับการตรวจช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental36",
+      "report_name": "OHSP ร้อยละเด็กกลุ่มอายุ 3 ปีมีฟันผุในฟันน้ำนม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental40",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_dental_caries_free",
+      "report_name": "OHSP ร้อยละของเด็กอายุ 12 ปี มีฟันดีไม่มีผุ (Cavity Free) (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental_42",
+      "report_name": "OHSP ร้อยละอำเภอที่จัดบริการสุขภาพช่องปากใน รพ.สต./ศสม. ที่มีคุณภาพตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental55",
+      "report_name": "OHSP ร้อยละของกลุ่มก่อนวัยสูงอายุ ที่มีฟันหลัง (แท้ หรือเทียม) ใช้งานที่เหมาะสม (ไม่น้อยกว่า 4 คู่สบ)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental9",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มเด็กอายุ 6-12 ปี เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental56",
+      "report_name": "OHSP ร้อยละของกลุ่มก่อนวัยสูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่ และฟันหลัง (แท้ หรือเทียม) ใช้งานไม่น้อยกว่า 4 คู่สบ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental54",
+      "report_name": "OHSP ร้อยละของกลุ่มก่อนวัยสูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental58",
+      "report_name": "OHSP ร้อยละผู้พิการได้รับบริการสุขภาพช่องปาก",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental8",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มเด็กอายุ 3-5 ปี เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental27",
+      "report_name": "OHSP ร้อยละเด็ก 6-12 ปี ได้รับการตรวจช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental53",
+      "report_name": "OHSP ร้อยละผู้ป่วยปากแหว่งเพดานโหว่ ได้รับบริการสุขภาพช่องปาก (คน)(ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental62",
+      "report_name": "OHSP ร้อยละหญิงตั้งครรภ์ได้รับการตรวจสุขภาพช่องปาก และขัดทำความสะอาดฟัน เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental32",
+      "report_name": "OHSP ร้อยละผู้ป่วยเบาหวาน ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental3",
+      "report_name": "OHSP อัตรา (ร้อยละ) การการใช้บริการ P&P เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental64",
+      "report_name": "OHSP ร้อยละเด็กอายุ 6-12 ปี ได้รับการ เคลือบหลุมร่องฟันกรามแท้ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental35",
+      "report_name": "OHSP ร้อยละเด็กกลุ่มอายุ 18 เดือนมีฟันผุในฟันน้ำนม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental61",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ที่ติดบ้าน ติดเตียงได้รับการตรวจช่องปาก",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental24",
+      "report_name": "OHSP ร้อยละเด็ก 3-5 ปี ได้รับการตรวจช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental10",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มผู้สูงอายุ เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental52",
+      "report_name": "OHSP ร้อยละของกลุ่มผู้สูงอายุที่ได้รับการคัดกรอง PMDs (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental30",
+      "report_name": "OHSP ร้อยละเด็ก 6-12 ปี ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental2",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการทันตกรรมสิทธิ UC เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental5",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการทันตกรรมเฉพาะทาง เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental7",
+      "report_name": "OHSP อัตรา (ร้อยละ) การใช้บริการ P&P ในกลุ่มเด็กอายุ 0-2 ปี เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental12",
+      "report_name": "OHSP ร้อยละจำนวนรายบริการส่งเสริมป้องกันต่อบริการทั้งหมด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental14",
+      "report_name": "OHSP ร้อยละจำนวนรายบริการทันตกรรมเฉพาะทางต่อบริการทั้งหมด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental17",
+      "report_name": "OHSP ร้อยละหญิงตั้งครรภ์ได้รับการตรวจสุขภาพช่องปาก เฉพาะเขตรับผิดชอบ (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental19",
+      "report_name": "OHSP ร้อยละหญิงตั้งครรภ์ได้รับบริการทันตกรรม (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental21",
+      "report_name": "OHSP ร้อยละเด็ก 0-2 ปี ผู้ปกครองได้รับการฝึกแปรงฟันแบบลงมือปฏิบัติ หรือ ได้รับการฝึกแปรงฟันแบบลงมือปฏิบัติ และplaque control นับรวมฝึกผู้ปกครองทำความสะอาดช่องปาก เฉพาะเขต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental23",
+      "report_name": "OHSP ร้อยละเด็ก 0-2 ปี ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental26",
+      "report_name": "OHSP ร้อยละเด็ก 3-5 ปี ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental37",
+      "report_name": "OHSP ร้อยละเด็กกลุ่มอายุ 6 ปีมีฟันผุในฟันแท้",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental38",
+      "report_name": "OHSP ร้อยละเด็กกลุ่มอายุ 12 ปีมีฟันผุในฟันแท้",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental39",
+      "report_name": "OHSP ค่าเฉลี่ยผุ ถอน อุดในฟันแท้ กลุ่มอายุ 12 ปี  (DMF)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental41",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันหลัง (แท้ หรือเทียม) ใช้งานที่เหมาะสม (ไม่น้อยกว่า 4 คู่สบ)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental44",
+      "report_name": "OHSP ร้อยละผู้มีอายุ 15-59 ปี ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental45",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ได้รับบริการทันตกรรม (คน) (ใช้แบบความครอบคลุม)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental46",
+      "report_name": "OHSP ร้อยละผู้สูงอายุ ที่ติดบ้าน ติดเตียงได้รับบริการทันตกรรม (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental48",
+      "report_name": "OHSP ร้อยละของผู้สูงอายุ ที่มีฟันแท้ใช้งานได้ไม่น้อยกว่า 20 ซี่ และฟันหลัง (แท้ หรือ เทียม) ใช้งานไม่น้อยกว่า 4 คู่สบ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_dental49",
+      "report_name": "OHSP ร้อยละ visit ตรวจฟันอย่างเดียวโดยทันตบุคลากร ต่อ visit ทั้งหมด ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_dental_0_5_cavity_free",
+      "report_name": "ร้อยละของเด็กอายุ0-5 ปี ฟันดีไม่มีผุ (Cavity Free) (คน)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาสุขภาพช่องปาก"
+    },
+    {
+      "source_table": "s_kpi_sp5_orthopedic",
+      "report_name": "การส่งต่อผู้ป่วย สาขาออโธปิดิกส์ จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาออร์โธปิดิกส์"
+    },
+    {
+      "source_table": "s_kpi_orthopedic",
+      "report_name": "ร้อยละของการดูแลรักษาผู้ป่วยที่มีกระดูกหักไม่ซับซ้อนในโรงพยาบาลระดับ M2 ลงไป",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาออร์โธปิดิกส์"
+    },
+    {
+      "source_table": "s_kpi_sp5_orthopedic",
+      "report_name": "การส่งต่อผู้ป่วย สาขาออโธปิดิกส์ จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาออร์โธปิดิกส์"
+    },
+    {
+      "source_table": "s_kpi_sepsis_septic",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด community-acquired",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_h",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด hospital-acquired",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_all",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด community-acquired (รวม A40.0-A41.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_hall",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด hospital-acquired(รวม A40.0-A41.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_h",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด hospital-acquired",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_all",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด community-acquired (รวม A40.0-A41.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_sepsis_septic_hall",
+      "report_name": "อัตราตายผู้ป่วยติดเชื้อในกระแสเลือดแบบรุนแรงชนิด hospital-acquired(รวม A40.0-A41.9)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาอายุรกรรม"
+    },
+    {
+      "source_table": "s_child_mom_hepb",
+      "report_name": "ร้อยละการติดเชื้อไวรัสตับอักเสบ บี ในเด็กที่เกิดจากแม่ที่ติดเชื้อไวรัส ตับอักเสบ บี เรื้อรังก่อนคลอด (ก่อนวันเกิดเด็ก)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_none_trauma1_4",
+      "report_name": "อัตราการป่วยตายในเด็ก 1 เดือนถึง 4 ปีจากโรคอื่นที่ไม่ใช่ การบาดเจ็บ non-trauma",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_pneumonia1",
+      "report_name": "อัตราป่วยตายโรคปอดบวมในเด็กไทย อายุ 1 เดือนถึง 1 ปีบริบูรณ์ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_ucovid_05",
+      "report_name": "อัตราป่วยตายของเด็กอายุ 0 – 5ปีที่ติดเชื้อโรคติดเชื้อไวรัสโคโรนา 2019 หรือโรคโควิด 19",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_surgery",
+      "report_name": "การส่งต่อผู้ป่วย สาขาศัลยกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_gynecology",
+      "report_name": "การส่งต่อผู้ป่วย สาขาสูติกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_labor_caesarean",
+      "report_name": "ร้อยละของผู้ป่วยที่ได้รับการผ่าตัดคลอดในโรงพยาบาลระดับ M2",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_death365th",
+      "report_name": "อัตราตายทารกไทย อายุน้อยกว่าหรือเท่ากับ 1 ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_trauma1_4",
+      "report_name": "อัตราการป่วยตายในเด็ก 1 เดือนถึง 4 ปีจากการบาดเจ็บกลุ่ม Trauma",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_dead1_4",
+      "report_name": "ลดอัตราการป่วยตายในเด็ก 0 - 4 ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_pediatrics",
+      "report_name": "การส่งต่อผู้ป่วย สาขากุมารเวชกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5",
+      "report_name": "การส่งต่อผู้ป่วย 5 สาขาหลัก จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_ucovid_01",
+      "report_name": "อัตราป่วยตายของเด็กอายุ 0 – 1ปีที่ติดเชื้อโรคติดเชื้อไวรัสโคโรนา 2019 หรือโรคโควิด 19",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_preterm",
+      "report_name": "ลดอัตราการคลอดก่อนกำหนด (อายุครรภ์น้อยกว่า 37 สัปดาห์) ลดลงร้อยละ 1 เทียบจากปีที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_ucovid_015",
+      "report_name": "อัตราป่วยตายของเด็กอายุ 0 – 15ปีที่ติดเชื้อโรคติดเชื้อไวรัสโคโรนา 2019 หรือโรคโควิด 19",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_haemorrhage",
+      "report_name": "ร้อยละของมารดาตายจากการตกเลือดหลังคลอด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_pneumonia",
+      "report_name": "อัตราป่วยตายโรคปอดบวมในเด็กไทย อายุ 1 เดือนถึง 5 ปีบริบูรณ์ ลดลงร้อยละ 10",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_anc_hb",
+      "report_name": "ร้อยละของหญิงตั้งครรภ์ที่ได้รับการตรวจ HBsAg",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_hygiene_death",
+      "report_name": "ร้อยละความครบชุด และจำนวนการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้าหลังสัมผัสโรค\n\n",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_none_trauma1_4",
+      "report_name": "อัตราการป่วยตายในเด็ก 1 เดือนถึง 4 ปีจากโรคอื่นที่ไม่ใช่ การบาดเจ็บ non-trauma",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_pneumonia1",
+      "report_name": "อัตราป่วยตายโรคปอดบวมในเด็กไทย อายุ 1 เดือนถึง 1 ปีบริบูรณ์ ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_surgery",
+      "report_name": "การส่งต่อผู้ป่วย สาขาศัลยกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_gynecology",
+      "report_name": "การส่งต่อผู้ป่วย สาขาสูติกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_death365th",
+      "report_name": "อัตราตายทารกไทย อายุน้อยกว่าหรือเท่ากับ 1 ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_trauma1_4",
+      "report_name": "อัตราการป่วยตายในเด็ก 1 เดือนถึง 4 ปีจากการบาดเจ็บกลุ่ม Trauma",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_dead1_4",
+      "report_name": "ลดอัตราการป่วยตายในเด็ก 0 - 4 ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5_pediatrics",
+      "report_name": "การส่งต่อผู้ป่วย สาขากุมารเวชกรรม จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_kpi_sp5",
+      "report_name": "การส่งต่อผู้ป่วย 5 สาขาหลัก จากรพช.แม่ข่าย (M2)Refer out ไป รพศ. /รพท. ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_preterm",
+      "report_name": "ลดอัตราการคลอดก่อนกำหนด (อายุครรภ์น้อยกว่า 37 สัปดาห์) ลดลงร้อยละ 1 เทียบจากปีที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_hygiene_death",
+      "report_name": "อัตราตายด้วยกลุ่มโรคที่เกิดจากน้ำ การสุขาภิบาลและสุขลักษณะที่ไม่ปลอดภัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_hb_immu",
+      "report_name": "ร้อยละของเด็กที่คลอดจากแม่ติดเชื้อไวรัสตับอักเสบบีที่ได้รับ HBIG",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_hygiene_diagnosis",
+      "report_name": "อัตราป่วยด้วยกลุ่มโรคที่เกิดจากน้ำ การสุขาภิบาลและสุขลักษณะที่ไม่ปลอดภัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาแม่และเด็ก"
+    },
+    {
+      "source_table": "s_asthma_admit",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ต้องได้รับการรักษาในโรงพยาบาล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_asthma_relapse",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ได้รับการรักษาในภาวะฉุกเฉิน ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_copd60",
+      "report_name": "อัตราการเกิดการกำเริบเฉียบพลันในผู้ป่วยโรคปอดอุดกั้นเรื้อรัง(ผู้ป่วยอายุ 40 ปีขึ้นไป)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_asthma_15under",
+      "report_name": "อัตราการกำเริบเฉียบพลันที่ได้รับการรักษาในห้องฉุกเฉินหรือ ผู้ป่วยนอก หรือต้องนอนรักษาในโรงพยาบาลในผู้ป่วยโรคหืด อายุน้อยกว่า 15 ปี (ครั้งต่อ 100 ผู้ป่วยโรคหืด)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_asthma_admit",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ต้องได้รับการรักษาในโรงพยาบาล",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_asthma_relapse",
+      "report_name": "อัตราการกำเริบเฉียบพลันในผู้ป่วยโรคหืด ที่ได้รับการรักษาในภาวะฉุกเฉิน ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคปอดอุดกั้นเรื้อรัง(COPD)"
+    },
+    {
+      "source_table": "s_stroke_admit_death",
+      "report_name": "อัตราตายของผู้ป่วยใน โรคหลอดเลือดสมอง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_urgency_admit",
+      "report_name": "อัตราของผู้ป่วย triage level 1, 2 ที่มีข้อบ่งชี้ในการ Admit ได้รับ Admit ภายใน 2 ชม. ในโรงพยาบาลระดับ A, S, M1 ไม่ต่ำกว่าร้อยละ 60",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_copd_death15",
+      "report_name": "อัตราการเกิดการกำเริบเฉียบพลันในผู้ป่วยโรคปอดอุดกั้นเรื้อรังต่อประชากรอายุ 15 ปีขึ้นไป",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stemi_death",
+      "report_name": "อัตราตายของผู้ป่วยโรคกล้ามเนื้อหัวใจตายเฉียบพลันชนิด STEMI",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_i2025_ldl",
+      "report_name": "ผู้ป่วยโรคหลอดเลือดหัวใจ ได้รับการตรวจไขมัน LDL และ มีค่า LDL < 100 mg/dl",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_i6069_ciga",
+      "report_name": "ผู้ป่วยโรคหลอดเลือดสมอง (STROKE) ที่ปัจจุบันสูบบุหรี่สามารถเลิกบุหรี่ได้สำเร็จ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_ihd_incidence_n",
+      "report_name": "อัตราผู้ป่วยรายใหม่จากโรคหลอดเลือดหัวใจ(I20-I24)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_i6069_ldl",
+      "report_name": "ผู้ป่วยโรคหลอดเลือดสมองตีบ/อุดตัน (I63) ได้รับการตรวจไขมัน LDL  มีค่า LDL < 100 mg/dl",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_kpi_stemi",
+      "report_name": "ร้อยละของการให้การรักษาผู้ป่วย STEMI ได้ตามมาตรฐานเวลาที่กำหนด",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stroke_admit_death62",
+      "report_name": "อัตราตายของผู้ป่วยโรคหลอดเลือดสมองแตก (Hemorrhagic Stroke: I60-I62)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stroke_admit_death63",
+      "report_name": "อัตราตายของผู้ป่วยโรคหลอดเลือดสมองตีบ/อุดตัน (Ischemic Stroke: I63)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_i2025_ciga",
+      "report_name": "ผู้ป่วยโรคหลอดเลือดหัวใจที่ปัจจุบันสูบบุหรี่สามารถเลิกบุหรี่ได้สำเร็จ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_stroke_incidence_n",
+      "report_name": "อัตราผู้ป่วยรายใหม่จากโรคหลอดเลือดสมอง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_kpi_stemi_death",
+      "report_name": "อัตราการเสียชีวิตในโรงพยาบาลของผู้ป่วยโรคกล้ามเนื้อหัวใจตายเฉียบพลันชนิด STEMI",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_kpi_stemi_death",
+      "report_name": "อัตราการเสียชีวิตในโรงพยาบาลของผู้ป่วยโรคกล้ามเนื้อหัวใจตายเฉียบพลันชนิด STEMI",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคหัวใจ และหลอดเลือด"
+    },
+    {
+      "source_table": "s_ncd_screen_repleatenone",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวานNone90",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_hypo",
+      "report_name": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_bp",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีความดันโลหิตควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_egfr",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูง ที่เป็น CKD 3-4 ชะลอการลดลงของ eGFR ได้ตามเป้าหมาย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen_n",
+      "report_name": "ร้อยละของประชากรอายุ 35-59 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ยังไม่มีภาวะแทรกซ้อนทางไตได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_ckd1",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_4",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg ได้รับการวินิจฉัยเป็นผู้ป่วย โรคความดันโลหิตสูง I10 – I15 จากการค้นหาในโรงพยาบาล ในวันนั้น จำแนกรายเดือน (ไม่รวม ER)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_2",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล (ไม่นับรวม ER)\r\n",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl_n1",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_pre_dm_diag",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่ม Pre-DM (ภาวะก่อนเบาหวาน) ปีที่ผ่านมา ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_pre_ht_diag",
+      "report_name": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงรายใหม่จากผู้ที่มีค่าความดันโลหิตอยู่ในเกณฑ์ BP at risk (กลุ่มเสี่ยงความดันโลหิตสูง)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_visit",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_newcase",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานรายใหม่ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_newcase",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่ลดลง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate2",
+      "report_name": "ร้อยละการตรวจติดตามกลุ่มสงสัยป่วยโรคความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate",
+      "report_name": "ร้อยละของประชากรกลุ่มPre-DM (ภาวะก่อนเบาหวาน) ในพื้นที่รับผิดชอบของปีที่ผ่านมาได้รับการตรวจน้ำตาลซ้ำ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_diag_follow",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen",
+      "report_name": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen_follow",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_change",
+      "report_name": "รายงานการเปลี่ยน SCORE ลดลงของกลุ่มเสี่ยงและเสี่ยงสูงต่อ CVD (SCORE 4,5) เปรียบเทียบรอบ 6 เดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_waistcm2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)] ลดลงจากงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp_new",
+      "report_name": "กลุ่มสงสัยป่วยด้วยโรคความดันโลหิตสูง จำแนกตามกลุ่มค่าความดันโลหิต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl_n2",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และควบคุมได้ตามเกณฑ์",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp",
+      "report_name": "อัตรากลุ่มสงสัยป่วยความดันโลหิตสูงในเขตรับผิดชอบได้รับการวัดความดันโลหิตที่บ้าน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht180_diag",
+      "report_name": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 mmHg และ/หรือค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 mmHg จากการคัดกรอง ได้รับการวินิจฉัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_ckd_acei_arb",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่เป็น CKD 1-4 และได้รับยา ACEi/ARB",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_visit",
+      "report_name": "ร้อยละผู้ป่วยความดันโลหิตสูงที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_bmi2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วน [BMI >= 25 กก./ตร.ม.] ลดลงจากงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new1",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี130-139,120-130",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_foot",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางเท้า",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_ldl",
+      "report_name": "อัตราผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และมีค่า LDL < 100 mg/dl",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_change20",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่มี CVD Risk ≥ 20% ในช่วงไตรมาส 1, 2 และมีผล CVD Risk ลดลงเป็น < 20% ในไตรมาส 3, 4",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen",
+      "report_name": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_cvd_risk",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_retina_kpi",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางตา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht180_diag1",
+      "report_name": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 มม.ปรอท และ/หรือ ค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 มม.ปรอท จากการคัดกรองและได้การวัดความโลหิตซ้ำภายใน 7 วัน ได้รับการวินิจฉัย",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleate1",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cf_dm_diag",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจยืนยัน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_bmi",
+      "report_name": "ร้อยละผู้ป่วยเบาหวานที่มีภาวะอ้วนลงพุง [รอบเอวมากกว่า (ส่วนสูง (ซม.)/2)]",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hbpm",
+      "report_name": "รายงานสรุปผลการคัดกรองความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_type1",
+      "report_name": "รายงาน DM TYPE1 จำแนกตามกลุ่มอายุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_score_change",
+      "report_name": "รายงานการเปลี่ยน SCORE ของกลุ่มเสี่ยงต่อ CVD เปรียบเทียบรอบ 6 เดือน จำแนกตาม SCORE",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen_n",
+      "report_name": "ร้อยละของประชากรอายุ 35-59 ปีที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hosp_bp180_5",
+      "report_name": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล  (นับรวม ER)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_hba1c",
+      "report_name": "ร้อยละของผู้ป่วยโรคเบาหวานที่ได้รับการตรวจ HbA1c อย่างน้อย 1 ครั้ง/ปี",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_risk_score",
+      "report_name": "อัตราผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) จำแนกตาม Risk Score",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_homebp_incidence",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากผู้สงสัยป่วย(ทำ HomeBP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ncd_screen_repleatenone",
+      "report_name": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวานNone90",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht_incidence",
+      "report_name": "อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_smoke2year",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่ปัจจุบันยังสูบบุหรี่ลดลงจากปีงบประมาณที่ผ่านมา",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี120-139",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองความดันสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_change",
+      "report_name": "รายงานการเปลี่ยน SCORE ลดลงของกลุ่มเสี่ยงและเสี่ยงสูงต่อ CVD (SCORE 4,5) เปรียบเทียบรอบ 6 เดือน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_screen60_follow",
+      "report_name": "ผู้สูงอายุคัดกรองเบาหวานสงสัยป่วยได้รับการติดตาม",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dmht3visit",
+      "report_name": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูง ที่ได้รับการดูแลต่อเนื่องอย่างน้อย 3 ครั้ง/ปี ในระบบ NCD Clinic Plus",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_home_bp_new",
+      "report_name": "กลุ่มสงสัยป่วยด้วยโรคความดันโลหิตสูง จำแนกตามกลุ่มค่าความดันโลหิต",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_complication",
+      "report_name": "ผู้ป่วยเบาหวานจำแนกตามภาวะแทรกซ้อน",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_ht_control_new1",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงที่ควบคุมระดับความดันโลหิตได้ดี130-139,120-130",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_hbpm",
+      "report_name": "รายงานสรุปผลการคัดกรองความดันโลหิตสูง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_dm_type1",
+      "report_name": "รายงาน DM TYPE1 จำแนกตามกลุ่มอายุ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_cvd_score_change",
+      "report_name": "รายงานการเปลี่ยน SCORE ของกลุ่มเสี่ยงต่อ CVD เปรียบเทียบรอบ 6 เดือน จำแนกตาม SCORE",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_homebp_incidence",
+      "report_name": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากผู้สงสัยป่วย(ทำ HomeBP)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+    },
+    {
+      "source_table": "s_kpi_ckd_incidence",
+      "report_name": "CKD 1.2  ร้อยละของผู้ป่วย DM, HT เป็นโรคไตเรื้อรังรายใหม่ (ในปีงบประมาณ) (พิจารณาเฉพาะผู้ป่วยที่วันที่ได้รับการคัดกรองเกิดก่อนวันที่ได้รับการวินิจฉัยว่าเป็น CKD) ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_hba1c",
+      "report_name": "CKD 2.5 การชะลอความเสื่อมของไต ผู้ป่วย(เฉพาะที่มีเบาหวานร่วม)ที่มารับบริการโรงพยาบาลได้รับการตรวจ HbA1c และมีค่าผลการตรวจตั้งแต่ 6.5% ถึง 7.5% ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_upcr_r",
+      "report_name": "CKD 2.11 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการประเมิน UPCR และมีผลการประเมิน < 500 mg/g cr",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_screen",
+      "report_name": "ร้อยละของผู้ป่วย DM และ/หรือ HT ที่ได้รับการค้นหาและคัดกรองโรคไตเรื้อรัง",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_incidence1",
+      "report_name": "ร้อยละของผู้ป่วย DM และ/หรือ HT ที่เป็นผู้ป่วยโรคไตเรื้อรังรายใหม่",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_acei_arb",
+      "report_name": "CKD 2.2 การชะลอความเสื่อมของไต ผู้ป่วยที่มารับบริการโรงพยาบาลได้รับ ACEi/ARB",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_upcr",
+      "report_name": "CKD 2.10 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการประเมิน UPCR ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_bp",
+      "report_name": "CKD 2.1 การชะลอความเสื่อมของไต ผู้ป่วยที่มารับบริการ BP < 140/90 mmHg",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_egfr",
+      "report_name": "ร้อยละของผู้ป่วย CKD ที่มีอัตราการลดลงของ eGFR<5 ml/min/1.73m2/yr",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_serum_k",
+      "report_name": "CKD 2.7 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการตรวจ serum K และมีค่าผลการตรวจ < 5.5 mEq/L",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_change_hosp",
+      "report_name": "Stage Change ผู้ป่วยโรคไตเรื้อรัง จำแนกตามโรงพยาบาลที่รักษา (Work Load)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_hb",
+      "report_name": "CKD 2.4 การชะลอความเสื่อมของไต ผู้ป่วยที่มารับบริการโรงพยาบาลได้รับการตรวจและมีระดับ Hb > 10 gm/dl หรือ Hct > 30%",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_statin",
+      "report_name": "CKD 2.6 การชะลอความเสื่อมของไต ผู้ป่วยกลุ่มเสี่ยงต่อโรคหลอดเลือดและหัวใจได้รับยากลุ่ม Statin",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_serum_hco3",
+      "report_name": "CKD 2.8 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการตรวจ serum HCO3 และมีค่าผลตรวจ > 22 mEq/L",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_urine_protein",
+      "report_name": "CKD 2.9 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการตรวจ urine protein ",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_serum_po4",
+      "report_name": "CKD 2.12 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการตรวจ Serum PO4 และมีผลการตรวจ ≤  4.6 mg%",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_kpi_ckd_serum_ipth",
+      "report_name": "CKD 2.13 การชะลอความเสื่อมของไต ผู้ป่วยได้รับการตรวจ Serum iPTH และผลอยู่ในเกณฑ์ที่เหมาะสม(< 500)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_hosp",
+      "report_name": "จำนวนผู้ป่วยโรคไตเรื้อรังที่มารับบริการที่โรงพยาบาล จำแนกตาม Stage (Work Load)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_typearea",
+      "report_name": "จำนวนผู้ป่วยโรคไตเรื้อรังในเขตรับผิดชอบ จำแนกตาม Stage (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_new_ckd5",
+      "report_name": "ร้อยละผู้ป่วยไตเรื้อรัง stage 5 รายใหม่ ที่ลดลงจากปีงบประมาณก่อนหน้า",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_change_hosp",
+      "report_name": "Stage Change ผู้ป่วยโรคไตเรื้อรัง จำแนกตามโรงพยาบาลที่รักษา (Work Load)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_hosp",
+      "report_name": "จำนวนผู้ป่วยโรคไตเรื้อรังที่มารับบริการที่โรงพยาบาล จำแนกตาม Stage (Work Load)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_ckd_stage_typearea",
+      "report_name": "จำนวนผู้ป่วยโรคไตเรื้อรังในเขตรับผิดชอบ จำแนกตาม Stage (Coverage)",
+      "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาไต"
+    },
+    {
+      "source_table": "s_card",
+      "report_name": "ร้อยละความครอบคลุมสิทธิในระบบหลักประกันสุขภาพของประเทศ",
+      "cat_name": "ความครอบคลุมการมีหลักประกันสุขภาพโดยรัฐ"
+    },
+    {
+      "source_table": "s_card",
+      "report_name": "ร้อยละความครอบคลุมสิทธิในระบบหลักประกันสุขภาพของประเทศ",
+      "cat_name": "ความครอบคลุมการมีหลักประกันสุขภาพโดยรัฐ"
+    },
+    {
+      "source_table": "s_child_hct",
+      "report_name": "ร้อยละเด็กอายุครบ 12 เดือนในเขตรับผิดชอบ มีภาวะโลหิตจาง (Coverage)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19-29 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist2559",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 25-59 ปี มีรอบเอวปกติ (เตรียมความพร้อมสู่วัยสูงอายุที่มีสุขภาพดี)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60c",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_child4_hct",
+      "report_name": "ร้อยละเด็กอายุครบ 5 ปีในเขตรับผิดชอบ มีภาวะโลหิตจาง (Coverage)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist80",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 80 ปีขึ้นไป มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist1859",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19 - 59 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_anc_cid_iodine",
+      "report_name": "ความครอบคลุมการได้รับยาเม็ดเสริมไอโอดีน ธาตุเหล็ก และกรดโฟลิก ของหญิงตั้งครรภ์ที่คลอดบุตรแล้วในเขตรับผิดชอบ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_labor_hct",
+      "report_name": "ร้อยละของหญิงที่คลอดบุตรแล้วในเขตรับผิดชอบมีภาวะโลหิตจาง",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist7079",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 70-79 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist6069",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60-69 ปี มีรอบเอวปกติ ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist60",
+      "report_name": "ร้อยละของประชากรผู้สูงอายุ 60 ปีขึ้นไป มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist1859w",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 19 - 59 ปี มีรอบเอวปกติ (Work Load)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_obes35",
+      "report_name": "ความชุกของภาวะอ้วน(BMI ≥ 25 กก/ม2 และหรือภาวะอ้วนลงพุง (รอบเอวเกิน ชาย 90 ซม. หญิง 80 ซม.)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist30",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 30-44 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_waist45",
+      "report_name": "ร้อยละของประชากรวัยทำงานอายุ 45-59 ปี มีรอบเอวปกติ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_labor_anemia",
+      "report_name": "ร้อยละของหญิงคลอดที่มีภาวะโลหิตจางในขณะตั้งครรภ์ในเขตพื้นที่รับผิดชอบ",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_kpi_obes35",
+      "report_name": "ความชุกของภาวะอ้วน(BMI ≥ 25 กก/ม2 และหรือภาวะอ้วนลงพุง (รอบเอวเกิน ชาย 90 ซม. หญิง 80 ซม.)",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_pregnant_anemia_coverage",
+      "report_name": "ร้อยละของหญิงตั้งครรภ์ในเขตรับผิดชอบมีภาวะโลหิตจาง (Coverage) Proxy",
+      "cat_name": "งานโภชนาการ"
+    },
+    {
+      "source_table": "s_alien_fp",
+      "report_name": "ประชากรต่างด้าวรับบริการวางแผนครอบครัว",
+      "cat_name": "ต่างด้าว"
+    },
+    {
+      "source_table": "s_alien_fp",
+      "report_name": "ประชากรต่างด้าวรับบริการวางแผนครอบครัว",
+      "cat_name": "ต่างด้าว"
+    },
+    {
+      "source_table": "s_dental_56",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 0-2 ปี(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_67",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_86",
+      "report_name": "การเคลือบหลุมร่องฟันกรามแท้ ในกลุ่มเด็กอายุ 6-12 ปี (คน/ครั้ง/ซี่)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_14",
+      "report_name": "การเคลือบหลุมร่องฟันแท้ในเด็กอายุ 6 -12 ปี (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_60",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 3-5 ปี(ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_68",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในผู้สูงอายุ (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_59",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 3-5 ปี(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_88",
+      "report_name": "กลุ่มผู้สูงอายุ ได้รับบริการใส่ฟันเทียมถอดได้ทั้งปากหรือเกือบทั้งปาก(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_77",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในกลุ่มก่อนวัยสูงอายุ (คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_87",
+      "report_name": "กลุ่มก่อนวัยสูงอายุ ได้รับบริการใส่ฟันเทียมถอดได้ทั้งปากหรือเกือบทั้งปาก(คน)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_12",
+      "report_name": "การเคลือบหลุมร่องฟันแท้ในเด็กอายุ 6 -12 ปี (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_13",
+      "report_name": "การเคลือบหลุมร่องฟัน (ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_57",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในเด็ก 0-2 ปี(ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_85",
+      "report_name": "เคลือบ/ทา ฟลูออไรด์ในกลุ่มเด็กอายุ 4-12 ปี (คน/ครั้ง)",
+      "cat_name": "ทันตกรรม(บริการ)"
+    },
+    {
+      "source_table": "s_dental_sc2",
+      "report_name": "ร้อยละของนักเรียนชั้น ป.1-ป.6 ได้รับการเคลือบหลุมร่องฟันแท้",
+      "cat_name": "อนามัยโรงเรียน"
+    },
+    {
+      "source_table": "s_dental_sc3",
+      "report_name": "ร้อยละของนักเรียนชั้น อนุบาล-ป.6 ได้รับการเคลือบ ทาฟลูออไรด์",
+      "cat_name": "อนามัยโรงเรียน"
+    },
+    {
+      "source_table": "s_dental_sc1",
+      "report_name": "ร้อยละของนักเรียนชั้น ป. 1 ได้รับการเคลือบหลุมร่องฟันแท้",
+      "cat_name": "อนามัยโรงเรียน"
+    },
+    {
+      "source_table": "s_ttm8",
+      "report_name": "OPD-การบริการแผนไทย นวด อบ ประคบ  ",
+      "cat_name": "แพทย์แผนไทย"
+    },
+    {
+      "source_table": "s_ttm20",
+      "report_name": "IPD-การบริการแผนไทย นวด อบ ประคบ",
+      "cat_name": "แพทย์แผนไทย"
+    },
+    {
+      "source_table": "s_envocc5",
+      "report_name": "อัตราป่วยจากพิษโลหะหนักจากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc19",
+      "report_name": "อัตราป่วยโรคเรื้อรังของทางเดินหายใจส่วนล่าง รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc39",
+      "report_name": "จำนวนผู้ป่วยจากพิษสารตัวทำละลายอินทรีย์จากการทำงาน จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc38",
+      "report_name": "อัตราป่วยจากพิษสารตัวทำละลายอินทรีย์จากการทำงาน  รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc41",
+      "report_name": "อัตราป่วยโรคกระดูกและกล้ามเนื้อจากการทำงาน รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc48",
+      "report_name": "รายงานการตรวจคัดกรองสมรรถภาพทางปอด ในประชากรไทย อายุ 15-65 ปี",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc47",
+      "report_name": "รายงานการตรวจคัดกรองสมรรถภาพทางการมองเห็นในประชากรไทย อายุ 15 - 65 ปี จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc50",
+      "report_name": "รายงานการตรวจเอ็กซเรย์ปอดฟิล์มใหญ่ในวัยทำงาน ในประชากรไทย อายุ 15 - 65 ปี",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc52",
+      "report_name": "รายงานการตรวจคัดกรองเพื่อหาความเสี่ยงจากสารกำจัดศัตรูพืช ในประชากรไทย อายุ 15 ปีขึ้นไป",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc7",
+      "report_name": "อัตราป่วยจากพิษโลหะหนักจากการทำงาน จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc10",
+      "report_name": "จำนวนผู้ป่วยจากพิษสารตะกั่วจากการทำงาน จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc24",
+      "report_name": "อัตราส่วนของผู้บาดเจ็บจากการทำงานต่อจำนวนครั้งของการไปรับบริการ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc2",
+      "report_name": "อัตราส่วนของผู้ป่วยจากพิษสารกำจัดศัตรูพืชต่อจำนวนครั้งของการไปรับบริการ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc8",
+      "report_name": "อัตราป่วยจากพิษสารตะกั่วจากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc22",
+      "report_name": "อัตราป่วยโรคหัวใจขาดเลือด รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc30",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจที่เกิดจากแอสเบสตอส",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc44",
+      "report_name": "อัตราป่วยโรคจากความร้อนจากการทำงาน จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc14",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc54",
+      "report_name": "อัตราป่วยโรคผิวหนังจากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc13",
+      "report_name": "จำนวนผู้ป่วยจากพิษปรอทและสารประกอบจากการทำงาน จำแนกรายอาชีพ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc62",
+      "report_name": "อัตราป่วยโรคเรื้อรังของทางเดินหายใจส่วนล่างที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97 ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc63",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยจากโรคเรื้อรังของทางเดินหายใจส่วนล่าง ที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc64",
+      "report_name": "อัตราป่วยโรคเรื้อรังของทางเดินหายใจส่วนล่างที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97 รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc66",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยโรคหัวใจขาดเลือด ที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97 จำแนกรายเดือน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc68",
+      "report_name": "อัตราป่วยโรคหอบหืดจากการทำงาน ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc27",
+      "report_name": "ร้อยละของผู้บาดเจ็บจากการทำงาน จำแนกตามสิทธิการรักษาพยาบาล",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc9",
+      "report_name": "อัตราป่วยจากพิษสารตะกั่วจากการทำงาน รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc17",
+      "report_name": "อัตราป่วยโรคเรื้อรังของทางเดินหายใจส่วนล่าง",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc40",
+      "report_name": "อัตราป่วยโรคกระดูกและกล้ามเนื้อจากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc16",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจ  รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc70",
+      "report_name": "จำนวนผู้ป่วยโรคหอบหืดจากการทำงาน  จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc67",
+      "report_name": "อัตราป่วยโรคหัวใจขาดเลือดที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97 จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc32",
+      "report_name": "อัตราป่วยโรคมะเร็งเยื่อหุ้มปอดมีโซทิลิโอมา (Mesothelioma)",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc49",
+      "report_name": "รายงานการตรวจคัดกรองสมรรถภาพทางปอด ในประชากรไทยอายุ 15 - 65 ปี จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc34",
+      "report_name": "อัตราป่วยโรคการได้ยินเสื่อมจากเสียง",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc11",
+      "report_name": "อัตราป่วยจากพิษปรอทและสารประกอบจากการทำงาน ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc35",
+      "report_name": "อัตราป่วยโรคการได้ยินเสื่อมจากเสียง รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc65",
+      "report_name": "อัตราป่วยโรคหัวใจขาดเลือดที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc25",
+      "report_name": "อัตราการบาดเจ็บจากการทำงาน จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc18",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยจากโรคเรื้อรังของทางเดินหายใจส่วนล่าง",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc59",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc55",
+      "report_name": "อัตราป่วยโรคผิวหนังจากการทำงาน จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc31",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจที่เกิดจากแอสเบสตอส รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc37",
+      "report_name": "อัตราป่วยจากพิษสารตัวทำละลายอินทรีย์จากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc56",
+      "report_name": "จำนวนผู้ป่วยโรคผิวหนังจากการทำงาน จำแนกอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc61",
+      "report_name": "อัตราป่วยโรคระบบทางเดินหายใจที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97 รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc12",
+      "report_name": "อัตราป่วยจากพิษปรอทและสารประกอบจากการทำงาน รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc69",
+      "report_name": "อัตราป่วยโรคหอบหืดจากการทำงาน จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc57",
+      "report_name": "อัตราป่วยจากพิษโลหะหนักรวมทุกสาเหตุ รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc26",
+      "report_name": "จำนวนผู้บาดเจ็บจากการทำงาน จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc60",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยโรคระบบทางเดินหายใจที่ระบุว่าเกิดจากมลพิษสิ่งแวดล้อม Y97",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc21",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยจากโรคหัวใจขาดเลือด",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc1",
+      "report_name": "อัตราป่วยจากพิษสารกำจัดศัตรูพืช",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc3",
+      "report_name": "อัตราป่วยจากพิษสารกำจัดศัตรูพืช จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc6",
+      "report_name": "อัตราป่วยจากพิษโลหะหนักจากการทำงาน จำแนกรายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc4",
+      "report_name": "จำนวนผู้ป่วยจากพิษสารกำจัดศัตรูพืชจำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc15",
+      "report_name": "จำนวนครั้งการไปรับบริการของผู้ป่วยโรคระบบทางเดินหายใจ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc20",
+      "report_name": "อัตราป่วยโรคหัวใจขาดเลือด (I20-I25)",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc23",
+      "report_name": "อัตราการบาดเจ็บจากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc28",
+      "report_name": "อัตราป่วยโรคปอดฝุ่นหิน (Silicosis)",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc29",
+      "report_name": "อัตราป่วยโรคปอดฝุ่นหิน (Silicosis) รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc33",
+      "report_name": "อัตราป่วยโรคมะเร็งเยื่อหุ้มปอดมีโซทิลิโอมา (Mesothelioma) รายกลุ่มอายุ ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc36",
+      "report_name": "จำนวนผู้ป่วยโรคการได้ยินเสื่อมจากเสียง จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc42",
+      "report_name": "จำนวนผู้ป่วยโรคกระดูกและกล้ามเนื้อจากการทำงาน จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc43",
+      "report_name": "อัตราป่วยโรคจากความร้อน(กลุ่ม Heat stroke)จากการทำงาน",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc45",
+      "report_name": "จำนวนผู้ป่วยโรคจากความร้อนจากการทำงานจำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc46",
+      "report_name": "รายงานการตรวจคัดกรองสมรรถภาพการมองเห็น ในประชากรไทย อายุ 15-65 ปี",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc51",
+      "report_name": "รายงานการตรวจเอ็กซเรย์ปอดฟิล์มใหญ่ในวัยทำงานในประชากรไทย อายุ 15 - 65 ปี จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc53",
+      "report_name": "รายงานการตรวจคัดกรองเพื่อหาความเสี่ยงจากสารกำจัดศัตรูพืช ในประชากรไทย อายุ 15 ปีขึ้นไป จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_envocc58",
+      "report_name": "อัตราป่วยจากพิษสารตะกั่วรวมทุกสาเหตุ รายกลุ่มอายุ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อม"
+    },
+    {
+      "source_table": "s_alien_env1",
+      "report_name": "ประชากรแรงงานต่างด้าวเจ็บป่วยด้วยโรคจากการประกอบอาชีพ (14 กลุ่มโรค)",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อมแรงงานต่างด้าว"
+    },
+    {
+      "source_table": "s_alien_env2",
+      "report_name": "ประชากรแรงงานต่างด้าวเจ็บป่วยด้วยโรคจากการประกอบอาชีพ (14 กลุ่มโรค) จำแนกรายอาชีพ",
+      "cat_name": "โรคจากการประกอบอาชีพและสิ่งแวดล้อมแรงงานต่างด้าว"
+    }
+  ]
+}

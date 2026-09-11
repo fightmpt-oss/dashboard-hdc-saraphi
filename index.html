@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDC สารภี — แดชบอร์ดสุขภาพและยาสมุนไพร อำเภอสารภี (2567-2569)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Prompt & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <i data-lucide="activity" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold text-slate-900 tracking-tight">HDC สารภี</h1>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-300">OpenData MoPH</span>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full border border-blue-200">14 หน่วยบริการ</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">ระบบข้อมูลสุขภาพและยาสมุนไพร อำเภอสารภี จังหวัดเชียงใหม่ ย้อนหลัง 3 ปี (2567-2569)</p>
+        </div>
+      </div>
+
+      <!-- Global Controls / Filters -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        
+        <!-- Year Selector -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-sm">
+          <span class="px-2 text-xs font-semibold text-slate-500 flex items-center gap-1">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i> ปี:
+          </span>
+          <button class="year-btn px-2.5 py-1 rounded-lg text-xs font-medium transition-all" data-year="2569">2569 (ล่าสุด)</button>
+          <button class="year-btn px-2.5 py-1 rounded-lg text-xs font-medium transition-all" data-year="2568">2568</button>
+          <button class="year-btn px-2.5 py-1 rounded-lg text-xs font-medium transition-all" data-year="2567">2567</button>
+          <button class="year-btn active px-2.5 py-1 rounded-lg text-xs font-semibold transition-all bg-emerald-600 text-white shadow-sm" data-year="all">📈 3 ปีรวม</button>
+        </div>
+
+        <!-- Health Unit Selector -->
+        <div class="relative min-w-[220px]">
+          <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="all">🏥 ภาพรวมทั้งอำเภอสารภี (14 หน่วยงาน)</option>
+            <!-- Generated dynamically -->
+          </select>
+        </div>
+
+        <!-- Export CSV Button -->
+        <button id="export-csv-btn" class="inline-flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>ส่งออก CSV</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- MAIN NAVIGATION TABS -->
+    <div class="bg-slate-50 border-t border-slate-200 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 py-1.5">
+        <button class="nav-tab active px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="ttm">
+          <span>🌿 แพทย์แผนไทย & ยาสมุนไพร</span>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">8 ตัว</span>
+        </button>
+        <button class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="pcc">
+          <span>💰 งบ PCC (ผลลัพธ์ปฐมภูมิ)</span>
+          <span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">4 ตัว</span>
+        </button>
+        <button class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="ppb">
+          <span>🎯 งบ PPB (บริการพื้นฐาน)</span>
+          <span class="bg-purple-100 text-purple-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">5 ตัว</span>
+        </button>
+        <button class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="elderly">
+          <span>👵 ผู้สูงอายุ & NCDs</span>
+          <span class="bg-blue-100 text-blue-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">2 ตัว</span>
+        </button>
+        <button class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="mch">
+          <span>👶 อนามัยแม่และเด็ก</span>
+          <span class="bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">3 ตัว</span>
+        </button>
+        <button class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 transition whitespace-nowrap" data-domain="explorer">
+          <span>🔍 OpenData MoPH Explorer</span>
+          <span class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full font-bold">1,028 รายงาน</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- EXECUTIVE KPI OVERVIEW BAR -->
+    <section id="executive-banner" class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-emerald-500">
+      <div class="flex items-center space-x-3.5">
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+          <i data-lucide="shield-check" class="w-7 h-7"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span id="selected-unit-label" class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">ภาพรวมอำเภอสารภี</span>
+            <span id="selected-year-label" class="text-xs text-slate-500 font-medium">ข้อมูลปี 2569</span>
+          </div>
+          <h2 id="view-title" class="text-base sm:text-lg font-bold text-slate-900 mt-0.5">หมวด: แพทย์แผนไทย & ยาสมุนไพร</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+        <div class="bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
+          <div class="text-[11px] text-slate-500 font-medium">ตัวชี้วัดในหมวดนี้</div>
+          <div id="stat-total-indicators" class="text-lg font-bold text-slate-800">8 ตัว</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
+          <div class="text-[11px] text-emerald-600 font-medium">ผ่านเกณฑ์เป้าหมาย</div>
+          <div id="stat-passed-indicators" class="text-lg font-bold text-emerald-600">-</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
+          <div class="text-[11px] text-amber-600 font-medium">ต้องพัฒนา/ติดตาม</div>
+          <div id="stat-failed-indicators" class="text-lg font-bold text-amber-600">-</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
+          <div class="text-[11px] text-blue-600 font-medium">มูลค่ายาสมุนไพรรวม</div>
+          <div id="stat-ttm-total-val" class="text-lg font-bold text-blue-600">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUB-INDICATOR CHIPS SELECTOR -->
+    <section id="indicator-chips-container" class="flex flex-wrap gap-2 pb-1">
+      <!-- Dynamically filled with buttons for each indicator in active domain -->
+    </section>
+
+    <!-- ACTIVE INDICATOR DETAILS CARD & CHARTS -->
+    <section id="active-indicator-section" class="space-y-6">
+      
+      <!-- Indicator Header Card -->
+      <div class="glass-card rounded-2xl p-5 relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span id="ind-code-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">TTM-1</span>
+              <span id="ind-table-badge" class="text-xs text-slate-400 font-mono">table: s_ttm7</span>
+            </div>
+            <h3 id="ind-name-text" class="text-lg font-bold text-slate-900 mt-1">ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)</h3>
+            <p id="ind-desc-text" class="text-xs text-slate-600 mt-0.5">มูลค่าการใช้ยาสมุนไพรเทียบกับมูลค่ายาทั้งหมดของผู้ป่วยนอก (เป้าหมาย สธ. >= 5.0%)</p>
+          </div>
+
+          <div class="flex items-center space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">เกณฑ์เป้าหมาย สธ.</div>
+              <div id="ind-target-text" class="text-sm font-bold text-slate-700">≥ 5.0 %</div>
+            </div>
+            <div class="h-8 w-px bg-slate-300"></div>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">ผลงานจริงล่าสุด (2569)</div>
+              <div id="ind-current-rate" class="text-xl font-extrabold text-emerald-600">5.42 %</div>
+            </div>
+            <div id="ind-status-badge" class="badge-pass px-2.5 py-1 rounded-lg text-xs font-bold">
+              ✓ ผ่านเกณฑ์
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHARTS DUAL GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: 3-Year Trend Comparison Chart (5 cols) -->
+        <div class="glass-card rounded-2xl p-5 lg:col-span-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i>
+              <span>แนวโน้ม 3 ปีย้อนหลัง (2567 - 2569)</span>
+            </h4>
+            <span class="text-[11px] text-slate-400 font-mono">รายปีงบประมาณ</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="trendChart"></canvas>
+          </div>
+          <div id="trend-summary-note" class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span>เปรียบเทียบผลงาน 3 ปีงบประมาณ</span>
+            <span id="trend-growth-badge" class="text-xs font-semibold text-emerald-600">+12.5% เติบโต</span>
+          </div>
+        </div>
+
+        <!-- Right: 14 Units Ranking / Comparison Chart (7 cols) -->
+        <div class="glass-card rounded-2xl p-5 lg:col-span-7 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-600"></i>
+              <span>เปรียบเทียบรายหน่วยบริการ (14 แห่งใน อ.สารภี)</span>
+            </h4>
+            <div class="flex items-center space-x-2 text-[11px]">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> ผ่าน</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-400 inline-block"></span> ไม่ผ่าน</span>
+            </div>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="rankingChart"></canvas>
+          </div>
+          <div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span>เส้นประสีแดงแสดงเกณฑ์เป้าหมายมาตรฐาน</span>
+            <span class="text-[11px] text-slate-400">เรียงตามผลงานสูงสุด</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SPECIAL PANEL FOR TTM TOP HERBS (Shows when ttm_top_herbs is active) -->
+      <div id="top-herbs-panel" class="glass-card rounded-2xl p-5 hidden space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+          <div>
+            <h4 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span class="text-emerald-600">🌿</span>
+              <span>20 อันดับยาสมุนไพรยอดนิยมที่มีการสั่งใช้ในอำเภอสารภี (HDC s_ttm4)</span>
+            </h4>
+            <p class="text-xs text-slate-500">รวบรวมจากรหัสยามาตรฐาน 24 หลัก (DIDSTD) ทั่วทั้ง 14 หน่วยบริการ</p>
+          </div>
+          <div class="text-xs text-slate-500 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+            มูลค่าสั่งใช้สมุนไพรรวม: <strong id="herbs-total-val" class="text-emerald-700 text-sm">0 บาท</strong>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3" id="top-herbs-cards">
+          <!-- Dynamically populated top 4 herbs cards -->
+        </div>
+
+        <div class="h-64 relative mt-4">
+          <canvas id="herbsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- DETAILED DATA TABLE -->
+      <div class="glass-card rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 sm:px-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
+          <div>
+            <h4 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="table-2" class="w-4 h-4 text-slate-600"></i>
+              <span>ตารางข้อมูลรายหน่วยบริการ อำเภอสารภี (14 แห่ง)</span>
+            </h4>
+            <p class="text-xs text-slate-500 mt-0.5">จำแนกตามผลงาน ตัวตั้ง (Numerator) ตัวหาร (Denominator) และร้อยละ</p>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div class="relative">
+              <input type="text" id="table-search" placeholder="ค้นหา รพ.สต. หรือ ตำบล..." class="bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none w-48 sm:w-56">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2"></i>
+            </div>
+            <button id="table-export-btn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-300 transition flex items-center gap-1">
+              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+              <span>Export</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse custom-table">
+            <thead>
+              <tr>
+                <th class="py-2.5 px-4 w-12 text-center">อันดับ</th>
+                <th class="py-2.5 px-4">รหัส</th>
+                <th class="py-2.5 px-4">ชื่อหน่วยบริการ</th>
+                <th class="py-2.5 px-4">ตำบล</th>
+                <th class="py-2.5 px-4 text-right" id="th-num">ผลงาน (ตัวตั้ง)</th>
+                <th class="py-2.5 px-4 text-right" id="th-den">เป้าหมาย (ตัวหาร)</th>
+                <th class="py-2.5 px-4 text-right">ร้อยละ / อัตรา</th>
+                <th class="py-2.5 px-4 text-center">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="unit-table-body" class="text-xs divide-y divide-slate-100">
+              <!-- Dynamically populated -->
+            </tbody>
+            <tfoot id="unit-table-foot" class="bg-slate-50 font-bold text-xs border-t-2 border-slate-300">
+              <!-- Dynamically populated district total -->
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- OPENDATA MOPH EXPLORER VIEW (Visible when Explorer Tab active) -->
+    <section id="explorer-section" class="glass-card rounded-2xl p-6 hidden space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <div class="flex items-center space-x-2">
+          <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">MoPH Open Data Portal</span>
+          <span class="text-xs text-slate-400 font-mono">API: opendata.moph.go.th</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mt-1 flex items-center gap-2">
+          <i data-lucide="database" class="w-5 h-5 text-blue-600"></i>
+          <span>สำรวจแคตตาล็อกรายงาน Open Data กระทรวงสาธารณสุข (1,028 รายงาน)</span>
+        </h3>
+        <p class="text-xs text-slate-500 mt-1">
+          ระบบเปิดเผยข้อมูลสาธารณสุข สำนักงานปลัดกระทรวงสาธารณสุข ครอบคลุม 5 หมวดหมู่หลัก และ 51 หมวดหมู่ย่อย พร้อมตัวอย่าง Code สำหรับนักพัฒนาในการดึงข้อมูลผ่าน REST API
+        </p>
+      </div>
+
+      <!-- Search & Filters for Catalog -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        <div class="sm:col-span-6 relative">
+          <input type="text" id="catalog-search" placeholder="ค้นหาชื่อรายงาน, ชื่อตาราง (เช่น s_ttm, s_dm, วัคซีน)..." class="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+        </div>
+        <div class="sm:col-span-3">
+          <select id="catalog-main-cat" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+            <option value="all">ทุกหมวดหมู่หลัก (5 หมวด)</option>
+            <option value="การเข้าถึงบริการ">1. การเข้าถึงบริการ</option>
+            <option value="ข้อมูลตอบสนอง Service Plan">2. ข้อมูลตอบสนอง Service Plan</option>
+            <option value="ส่งเสริมป้องกัน">3. ส่งเสริมป้องกัน</option>
+            <option value="สถานะสุขภาพ">4. สถานะสุขภาพ</option>
+            <option value="ข้อมูลทั่วไป">5. ข้อมูลทั่วไป</option>
+          </select>
+        </div>
+        <div class="sm:col-span-3">
+          <select id="catalog-sub-cat" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+            <option value="all">ทุกหมวดหมู่ย่อย (51 หมวด)</option>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Catalog Count Summary -->
+      <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+        <span>พบรายงานที่ตรงกับเงื่อนไข: <strong id="catalog-match-count" class="text-slate-800">1,028</strong> รายงาน</span>
+        <span class="text-slate-400">คลิกที่ "ดู API" เพื่อคัดลอกคำสั่งเรียกใช้</span>
+      </div>
+
+      <!-- Catalog Table -->
+      <div class="border border-slate-200 rounded-xl overflow-hidden max-h-[520px] overflow-y-auto">
+        <table class="w-full text-left border-collapse custom-table text-xs">
+          <thead class="sticky top-0 z-10 bg-slate-50">
+            <tr>
+              <th class="py-2.5 px-3 w-10 text-center">#</th>
+              <th class="py-2.5 px-3">ชื่อรายงาน</th>
+              <th class="py-2.5 px-3 w-36">ตารางข้อมูล (Source Table)</th>
+              <th class="py-2.5 px-3 w-40">หมวดหมู่ย่อย</th>
+              <th class="py-2.5 px-3 w-28 text-center">การเข้าชม</th>
+              <th class="py-2.5 px-3 w-24 text-center">การเชื่อมต่อ</th>
+            </tr>
+          </thead>
+          <tbody id="catalog-table-body" class="divide-y divide-slate-100">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL FOR API VIEW -->
+  <div id="api-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 animate-fade-in border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+            <i data-lucide="code-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="text-base font-bold text-slate-900" id="modal-report-name">ตัวอย่างการเรียกใช้ RESTful API</h4>
+            <p class="text-xs text-slate-400" id="modal-table-name">Endpoint: /api/report_data</p>
+          </div>
+        </div>
+        <button id="close-modal-btn" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-600">ท่านสามารถดึงข้อมูลชุดนี้จากกระทรวงสาธารณสุขผ่าน RESTful Web Service ได้โดยตรง:</p>
+        
+        <div class="relative">
+          <pre class="bg-slate-900 text-emerald-400 p-3.5 rounded-xl font-mono text-[11px] overflow-x-auto select-all" id="api-code-snippet"></pre>
+          <button id="copy-code-btn" class="absolute top-2.5 right-2.5 bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-[10px] font-medium transition border border-slate-700 flex items-center gap-1">
+            <i data-lucide="copy" class="w-3 h-3"></i>
+            <span>คัดลอก</span>
+          </button>
+        </div>
+
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-blue-900 text-[11px] space-y-1">
+          <div class="font-bold">💡 คำแนะนำสำหรับอำเภอสารภี:</div>
+          <div>• <strong>province:</strong> "50" (จังหวัดเชียงใหม่)</div>
+          <div>• <strong>areacode:</strong> ขึ้นต้นด้วย "5019" (รหัสอำเภอสารภีทั้ง 14 หน่วยบริการ)</div>
+          <div>• <strong>year:</strong> ระบุปีงบประมาณ พ.ศ. เช่น "2569", "2568", "2567"</div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button id="close-modal-btn-2" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+        <span>HDC Dashboard อำเภอสารภี จังหวัดเชียงใหม่ • บูรณาการข้อมูลระดับปฐมภูมิ 14 หน่วยบริการ</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span>แหล่งข้อมูล: <strong>Open Data by MoPH</strong></span>
+        <span>•</span>
+        <a href="https://opendata.moph.go.th" target="_blank" class="text-emerald-600 hover:underline">opendata.moph.go.th</a>
+        <span>•</span>
+        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono text-[10px]">Vercel / Cloudflare Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

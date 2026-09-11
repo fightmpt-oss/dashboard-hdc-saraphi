@@ -1,0 +1,74 @@
+[
+  {
+    "COLUMN_NAME": "id",
+    "IS_NULLABLE": "NO",
+    "COLUMN_TYPE": "varchar(32)",
+    "COLUMN_COMMENT": "ลำดับรายงาน"
+  },
+  {
+    "COLUMN_NAME": "hospcode",
+    "IS_NULLABLE": "NO",
+    "COLUMN_TYPE": "varchar(5)",
+    "COLUMN_COMMENT": "รหัสหน่วยบริการ"
+  },
+  {
+    "COLUMN_NAME": "areacode",
+    "IS_NULLABLE": "NO",
+    "COLUMN_TYPE": "varchar(8)",
+    "COLUMN_COMMENT": "รหัสพื้นที่ตามกระทรวงมหาดไทย"
+  },
+  {
+    "COLUMN_NAME": "date_com",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "varchar(14)",
+    "COLUMN_COMMENT": "วันที่ประมวลผล"
+  },
+  {
+    "COLUMN_NAME": "b_year",
+    "IS_NULLABLE": "NO",
+    "COLUMN_TYPE": "varchar(4)",
+    "COLUMN_COMMENT": "ข้อมูลตามปี"
+  },
+  {
+    "COLUMN_NAME": "didstd",
+    "IS_NULLABLE": "NO",
+    "COLUMN_TYPE": "varchar(24)",
+    "COLUMN_COMMENT": "รายการยาสมุนไพร"
+  },
+  {
+    "COLUMN_NAME": "vs_all",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "int(11)",
+    "COLUMN_COMMENT": "จำนวนจ่ายรวมทุกสิทธิ(ครั้ง)"
+  },
+  {
+    "COLUMN_NAME": "vs_uc",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "int(11)",
+    "COLUMN_COMMENT": "จำนวนจ่ายรวมสิทธิ UC(ครั้ง)"
+  },
+  {
+    "COLUMN_NAME": "am_all",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "int(11)",
+    "COLUMN_COMMENT": "จำนวนจ่ายรวมทุกสิทธิ(หน่วยนับ)"
+  },
+  {
+    "COLUMN_NAME": "am_uc",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "int(11)",
+    "COLUMN_COMMENT": "จำนวนจ่ายรวมสิทธิ UC(หน่วยนับ)"
+  },
+  {
+    "COLUMN_NAME": "pri_all",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "double",
+    "COLUMN_COMMENT": "มูลค่ารวมทุกสิทธิ์(บาท)"
+  },
+  {
+    "COLUMN_NAME": "pri_uc",
+    "IS_NULLABLE": "YES",
+    "COLUMN_TYPE": "double",
+    "COLUMN_COMMENT": "มูลค่ารวมสิทธิ UC(บาท)"
+  }
+]

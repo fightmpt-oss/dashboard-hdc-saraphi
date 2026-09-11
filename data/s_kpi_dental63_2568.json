@@ -1,0 +1,145 @@
+[
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "99758",
+    "areacode": "50190209",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 259,
+    "result": 59,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06023",
+    "areacode": "50191104",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 205,
+    "result": 73,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06024",
+    "areacode": "50191202",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 180,
+    "result": 29,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06016",
+    "areacode": "50190401",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 252,
+    "result": 46,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "14461",
+    "areacode": "50190702",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 553,
+    "result": 38,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06022",
+    "areacode": "50191002",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 306,
+    "result": 70,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06014",
+    "areacode": "50190104",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 358,
+    "result": 55,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06017",
+    "areacode": "50190509",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 208,
+    "result": 100,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06015",
+    "areacode": "50190308",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 214,
+    "result": 114,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06018",
+    "areacode": "50190604",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 304,
+    "result": 28,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06020",
+    "areacode": "50190804",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 181,
+    "result": 17,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "06021",
+    "areacode": "50190901",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 166,
+    "result": 57,
+    "ip": null
+  },
+  {
+    "id": "be5072b516aa3bc989be9780979314e6",
+    "hospcode": "13994",
+    "areacode": "50190303",
+    "flag_sent": "0",
+    "date_com": "202511152225",
+    "b_year": "2568",
+    "target": 147,
+    "result": 17,
+    "ip": null
+  }
+]

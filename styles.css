@@ -1,0 +1,116 @@
+/* HDC Saraphi Health & Herbal Dashboard Styles */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #059669;
+  --primary-light: #10b981;
+  --primary-dark: #047857;
+  --primary-bg: #ecfdf5;
+  --accent: #3b82f6;
+  --accent-bg: #eff6ff;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --dark: #0f172a;
+  --gray-bg: #f8fafc;
+  --card-bg: #ffffff;
+}
+
+body {
+  font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism & Shadow effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+.kpi-card {
+  transition: all 0.25s ease-in-out;
+}
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.12), 0 8px 10px -6px rgba(5, 150, 105, 0.08);
+}
+
+.badge-pass {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-fail {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-neutral {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Custom Table Styles */
+.custom-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.825rem;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.custom-table td {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.custom-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Tab Active Styles */
+.nav-tab.active {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.sub-tab.active {
+  border-color: #059669;
+  color: #059669;
+  background-color: #ecfdf5;
+  font-weight: 600;
+}
