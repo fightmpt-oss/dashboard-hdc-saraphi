@@ -60,7 +60,27 @@ HERB_NAMES = {
     "420000014769207894511452": "ยาต้มศุขไสยาศน์ (กัญชาแผนไทย)",
     "420000014869150020111452": "น้ำมันกัญชา 500 mg",
     "420000016869220044211135": "ลูกประคบสมุนไพรสด 200g",
-    "400000000120000000400000": "ขมิ้นชันผง"
+    "400000000120000000400000": "ขมิ้นชันผง",
+    "420000002369125020110919": "ยาธาตุบรรจบ (ยาผง/เม็ด)",
+    "420000001580000094782755": "ยาแก้ไอมะขามป้อม",
+    "420000004489220044211119": "ลูกประคบสมุนไพรสด",
+    "410000000499130020382750": "มะขามแขกแคปซูล",
+    "410000000459301440182750": "ครีมไพล",
+    "420000004489220044282750": "ลูกประคบสมุนไพรแห้ง",
+    "420000014759500494782770": "ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)",
+    "420000004489215044211135": "ลูกประคบสมุนไพร 150g",
+    "410000000109150020182748": "ขมิ้นชันแคปซูล 500 mg",
+    "420000004129150020182750": "เพชรสังฆาตแคปซูล",
+    "420000001540000094711170": "ยาประสะมะแว้ง",
+    "420000001550000094710665": "ยาหอมเทพจิตร",
+    "420000002939500494711135": "ยาน้ำธาตุอบเชย",
+    "410000000479135020182755": "ฟ้าทะลายโจรแคปซูล 350 mg",
+    "420000004489220044282770": "ลูกประคบสมุนไพร",
+    "410000000109150020111197": "ขมิ้นชันแคปซูล",
+    "410000000389301840182758": "ครีมพญายอ",
+    "420000001589502094782737": "ยาแก้ไอมะขามป้อม",
+    "410000000450000040111144": "น้ำมันไพล",
+    "420000002930000002311170": "ยาธาตุอบเชย"
 }
 
 def clean_num(v):
@@ -112,9 +132,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('amount_tm') or r.get('total_tm') or r.get('tm_all'))
-            den = clean_num(r.get('amount_op') or r.get('total_op') or r.get('op_all'))
-            if num == 0 and 'amount' in r: num = clean_num(r.get('amount'))
+            num = clean_num(r.get('thai') or 0.0)
+            den = clean_num(r.get('total') or 0.0)
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -150,8 +169,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('ed_pt_all') or r.get('ed_pt') or r.get('vs_ed'))
-            den = clean_num(r.get('pt_all') or r.get('vs_all') or r.get('total_pt'))
+            num = sum(int(clean_num(r.get(f'ed_vs_q{q}') or 0)) for q in range(1, 5))
+            den = sum(int(clean_num(r.get(f'total_vs_q{q}') or 0)) for q in range(1, 5))
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -187,8 +206,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('item_tm') or r.get('num_tm') or r.get('item_tm_all'))
-            den = clean_num(r.get('item_all') or r.get('total_item') or r.get('all_item'))
+            num = int(clean_num(r.get('result') or 0))
+            den = int(clean_num(r.get('target') or 0))
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -224,8 +243,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('pt_tm_all') or r.get('tm_pt') or r.get('pt_tm'))
-            den = clean_num(r.get('pt_all') or r.get('op_pt') or r.get('total_pt'))
+            num = sum(int(clean_num(r.get(f'tm_service_q{q}') or 0)) for q in range(1, 5))
+            den = sum(int(clean_num(r.get(f'op_service_q{q}') or 0)) for q in range(1, 5))
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -261,8 +280,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('vs_all') or r.get('result') or r.get('vs_tm'))
-            den = clean_num(r.get('pt_all') or r.get('target') or r.get('pt_tm'))
+            num = sum(int(clean_num(r.get(f'result2q{q}') or 0)) for q in range(1, 5))
+            den = sum(int(clean_num(r.get(f'result1q{q}') or 0)) for q in range(1, 5))
             rate = round((num / den), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -298,8 +317,8 @@ for y in years:
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = clean_num(r.get('result') or r.get('result_all'))
-            den = clean_num(r.get('target') or r.get('target_all'))
+            num = int(clean_num(r.get('times_year') or 0))
+            den = int(clean_num(r.get('times_year_diag') or 0))
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
             unit_data.append({
@@ -862,8 +881,8 @@ for y in years:
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('anc12')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('anc_all')))
+            unit_agg[hc]["num"] += int(clean_num(r.get('target') or r.get('result') or 0))
+            unit_agg[hc]["den"] += int(clean_num(r.get('total') or r.get('anc_all') or 0))
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
@@ -936,8 +955,10 @@ for y in years:
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('normal')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('total')))
+            num = sum(int(clean_num(r.get(f'result3_q{q}') or 0)) for q in range(1, 5))
+            den = sum(int(clean_num(r.get(f'target1_q{q}') or 0)) for q in range(1, 5))
+            unit_agg[hc]["num"] += num
+            unit_agg[hc]["den"] += den
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
