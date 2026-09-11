@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   let herbsChartInstance = null;
 
   // DOM Elements
-  const unitSelect = document.getElementById('unit-select');
+  const unitSelect = document.getElementById('unit-select') || document.getElementById('filter-unit');
   const yearButtons = document.querySelectorAll('.year-btn');
   const navTabs = document.querySelectorAll('.nav-tab');
-  const chipsContainer = document.getElementById('indicator-chips-container');
+  const chipsContainer = document.getElementById('indicator-chips-container') || document.getElementById('indicator-chips');
   const activeSection = document.getElementById('active-indicator-section');
   const explorerSection = document.getElementById('explorer-section');
   const topHerbsPanel = document.getElementById('top-herbs-panel');
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 1. Populate Unit Select Dropdown
   function initUnitDropdown() {
+    if (!unitSelect) return;
     unitSelect.innerHTML = '<option value="all">🏥 ภาพรวมทั้งอำเภอสารภี (14 หน่วยงาน)</option>';
     const units = masterData.metadata.units;
     Object.keys(units).sort().forEach(code => {
@@ -1127,14 +1128,16 @@ console.log("Saraphi Records:", saraphiData);`;
     link.click();
   }
 
-  exportCsvBtn.addEventListener('click', exportCurrentTableToCsv);
-  tableExportBtn.addEventListener('click', exportCurrentTableToCsv);
+  exportCsvBtn?.addEventListener('click', exportCurrentTableToCsv);
+  tableExportBtn?.addEventListener('click', exportCurrentTableToCsv);
 
   // 14. Event Listeners for Filters
-  unitSelect.addEventListener('change', (e) => {
-    currentUnit = e.target.value;
-    updateDashboardView();
-  });
+  if (unitSelect) {
+    unitSelect.addEventListener('change', (e) => {
+      currentUnit = e.target.value;
+      updateDashboardView();
+    });
+  }
 
   yearButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1165,7 +1168,7 @@ console.log("Saraphi Records:", saraphiData);`;
     });
   });
 
-  tableSearch.addEventListener('input', renderDataTable);
+  tableSearch?.addEventListener('input', renderDataTable);
 
   // Explorer filters
   document.getElementById('catalog-search')?.addEventListener('input', renderExplorerCatalog);
@@ -1173,8 +1176,8 @@ console.log("Saraphi Records:", saraphiData);`;
   document.getElementById('catalog-sub-cat')?.addEventListener('change', renderExplorerCatalog);
 
   // Initial Boot
-  initUnitDropdown();
-  initExplorerFilters();
-  renderIndicatorChips();
-  updateDashboardView();
+  try { initUnitDropdown(); } catch (err) { console.error('initUnitDropdown err:', err); }
+  try { initExplorerFilters(); } catch (err) { console.error('initExplorerFilters err:', err); }
+  try { renderIndicatorChips(); } catch (err) { console.error('renderIndicatorChips err:', err); }
+  try { updateDashboardView(); } catch (err) { console.error('updateDashboardView err:', err); }
 });
