@@ -119,3 +119,57 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   background-color: #ecfdf5;
   font-weight: 600;
 }
+
+/* ==========================================================================
+   Responsive Utilities & Media Queries (Mobile, Tablet, Desktop)
+   ========================================================================== */
+
+/* Prevent horizontal page overflow */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Touch-friendly horizontal scrolling for tabs and tables */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive Chart Box Container */
+.chart-box-responsive {
+  width: 100%;
+  position: relative;
+  height: 390px;
+}
+
+/* Mobile Screens (< 640px) */
+@media (max-width: 639px) {
+  .chart-box-responsive {
+    height: 410px;
+  }
+  .glass-card {
+    border-radius: 16px;
+  }
+}
+
+/* Tablet Screens (640px - 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .chart-box-responsive {
+    height: 415px;
+  }
+  .glass-card {
+    border-radius: 18px;
+  }
+}
+
+/* Desktop & Widescreen (>= 1024px) */
+@media (min-width: 1024px) {
+  .chart-box-responsive {
+    height: 430px;
+  }
+}
