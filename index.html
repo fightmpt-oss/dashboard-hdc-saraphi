@@ -608,6 +608,131 @@
 
       </div>
 
+      <!-- SPECIAL PANEL FOR NHSO SERVICE BREAKDOWN (Shows when nhso_service is active) -->
+      <div id="nhso-service-panel" class="hidden space-y-4">
+
+        <!-- Filter Bar: Service Type Selector & Year Selector -->
+        <div class="glass-card rounded-2xl p-4 bg-white flex flex-col xl:flex-row xl:items-center justify-between gap-4 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="filter" class="w-3.5 h-3.5 text-slate-400"></i> ประเภทบริการ:
+            </span>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold flex-wrap gap-1" id="proc-service-buttons">
+              <button type="button" onclick="window.switchProcedureService('all')" id="btn-proc-all" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">
+                ทั้งหมด (6 บริการ)
+              </button>
+              <button type="button" onclick="window.switchProcedureService('นวด+ประคบ')" id="btn-proc-massage-press" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-spa text-emerald-600 mr-1"></i> นวด+ประคบ
+              </button>
+              <button type="button" onclick="window.switchProcedureService('พอกเข่า')" id="btn-proc-knee" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-bandage text-amber-600 mr-1"></i> พอกเข่า
+              </button>
+              <button type="button" onclick="window.switchProcedureService('นวด')" id="btn-proc-massage" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-hand-holding-heart text-sky-600 mr-1"></i> นวด
+              </button>
+              <button type="button" onclick="window.switchProcedureService('ประคบ')" id="btn-proc-press" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-leaf text-teal-600 mr-1"></i> ประคบ
+              </button>
+              <button type="button" onclick="window.switchProcedureService('การฟื้นฟูมารดาหลังคลอด')" id="btn-proc-postpartum" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-person-breastfeeding text-rose-600 mr-1"></i> ฟื้นฟูมารดาหลังคลอด
+              </button>
+              <button type="button" onclick="window.switchProcedureService('อบสมุนไพร')" id="btn-proc-steam" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-hot-tub-person text-purple-600 mr-1"></i> อบสมุนไพร
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap shrink-0">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ปีงบประมาณ:</span>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+              <button type="button" id="btn-proc-yr-2569" onclick="window.switchProcedureYear('2569')" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white">
+                2569
+              </button>
+              <button type="button" id="btn-proc-yr-2568" onclick="window.switchProcedureYear('2568')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                2568
+              </button>
+              <button type="button" id="btn-proc-yr-2567" onclick="window.switchProcedureYear('2567')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                2567
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 Mini Bento KPI Cards for 6 Services -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="proc-kpi-cards">
+          <!-- Dynamically populated 6 service cards -->
+        </div>
+
+        <!-- Bar Chart Card -->
+        <div class="glass-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                  <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                </span>
+                <span id="proc-chart-title">กราฟแท่งแสดงผลงานบริการหัตถการ (Point / ประมาณการบาท)</span>
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5" id="proc-chart-subtitle">แสดงข้อมูลเปรียบเทียบผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี</p>
+            </div>
+            <span id="proc-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+              จำแนกสัดส่วน 6 บริการ
+            </span>
+          </div>
+
+          <div class="relative w-full overflow-hidden" style="min-height: 440px;">
+            <canvas id="procedure-breakdown-chart" class="w-full"></canvas>
+          </div>
+        </div>
+
+        <!-- Detailed Matrix Table: 14 Units x 6 Services -->
+        <div class="glass-card rounded-2xl overflow-hidden shadow-sm bg-white border border-slate-200">
+          <div class="p-4 sm:px-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/40 via-white to-teal-50/20">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                  <i data-lucide="table" class="w-4 h-4"></i>
+                </span>
+                <span id="proc-table-title">ตารางแจกแจงผลงานหัตถการจำแนก 6 ประเภทบริการ รายหน่วยบริการ (14 แห่ง)</span>
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5">คลิกหรือเลือกประเภทบริการด้านบนเพื่อกรองและจัดอันดับ</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="proc-table-summary-badge" class="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs">
+                รวมทั้งอำเภอ - Point
+              </span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse custom-table" id="proc-matrix-table">
+              <thead>
+                <tr class="bg-slate-50 text-slate-700 font-bold text-xs border-b border-slate-200" id="proc-matrix-thead-tr">
+                  <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold">#</th>
+                  <th class="py-3 px-3 w-20 text-slate-500 font-bold">รหัส</th>
+                  <th class="py-3 px-3 min-w-[200px] text-slate-800 font-bold">หน่วยบริการ</th>
+                  <th class="py-3 px-3 w-28 text-slate-600 font-bold">ตำบล</th>
+                  <th class="py-3 px-3 text-right text-emerald-700 font-extrabold"><i class="fa-solid fa-spa text-emerald-600 mr-1"></i> นวด+ประคบ</th>
+                  <th class="py-3 px-3 text-right text-amber-600 font-extrabold"><i class="fa-solid fa-bandage text-amber-600 mr-1"></i> พอกเข่า</th>
+                  <th class="py-3 px-3 text-right text-sky-600 font-extrabold"><i class="fa-solid fa-hand-holding-heart text-sky-600 mr-1"></i> นวด</th>
+                  <th class="py-3 px-3 text-right text-teal-600 font-extrabold"><i class="fa-solid fa-leaf text-teal-600 mr-1"></i> ประคบ</th>
+                  <th class="py-3 px-3 text-right text-rose-600 font-extrabold"><i class="fa-solid fa-person-breastfeeding text-rose-600 mr-1"></i> ฟื้นฟูมารดาหลังคลอด</th>
+                  <th class="py-3 px-3 text-right text-purple-600 font-extrabold"><i class="fa-solid fa-hot-tub-person text-purple-600 mr-1"></i> อบสมุนไพร</th>
+                  <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60">รวม Point (บาท)</th>
+                </tr>
+              </thead>
+              <tbody id="proc-matrix-tbody" class="text-xs divide-y divide-slate-100">
+                <!-- Dynamically populated rows -->
+              </tbody>
+              <tfoot id="proc-matrix-tfoot" class="bg-emerald-50/80 font-bold text-xs border-t-2 border-emerald-300">
+                <!-- Dynamically populated totals -->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
       <!-- SPECIAL PANEL FOR NHSO ERROR CODES (Shows when nhso_error_code is active) -->
       <div id="nhso-error-panel" class="hidden space-y-4">
         

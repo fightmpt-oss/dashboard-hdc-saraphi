@@ -253,6 +253,16 @@ def reprocess():
         master["multiyear"] = multiyear_processed
         print("Multi-year data integrated successfully!")
 
+    # ----------------------------------------------------
+    # Process Procedure Types (Sheet 3: 6 Services x 3 Years)
+    # ----------------------------------------------------
+    proc_path = os.path.join(BASE_DIR, "nhso_procedure_types.json")
+    if os.path.exists(proc_path):
+        with open(proc_path, "r", encoding="utf-8") as f:
+            proc_data = json.load(f)
+        master["procedure_types"] = proc_data.get("data", {})
+        print("Procedure types data (6 services x 3 years) integrated successfully!")
+
     with open(master_path, "w", encoding="utf-8") as f:
         json.dump(master, f, ensure_ascii=False, indent=2)
 

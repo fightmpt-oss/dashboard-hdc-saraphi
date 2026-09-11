@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const explorerSection = document.getElementById('explorer-section');
   const topHerbsPanel = document.getElementById('top-herbs-panel');
   const nhsoErrorPanel = document.getElementById('nhso-error-panel');
+  const nhsoServicePanel = document.getElementById('nhso-service-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
@@ -54,6 +55,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentErrorActivity = 'ยาสมุนไพร';
   let currentErrorYear = '2569';
+  let currentProcedureService = 'all';
+  let currentProcedureYear = '2569';
+  let procedureChartInstance = null;
 
   // Load Data with Cache-Busting
   let nhsoMasterData = null;
@@ -379,6 +383,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const myS6 = my.sheet6_herb32 || {};
 
     // 2. NHSO Menu 3 (บริการแพทย์แผนไทย หัตถการ Point & บาท)
+    const procData = nhso.procedure_types || {};
     masterData.indicators['nhso_service'] = {
       id: 'nhso_service',
       domain: 'nhso_ttm',
@@ -390,29 +395,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       target: 0,
       num_label: 'Point หัตถการ (Point)',
       den_label: 'เงินชดเชยบาท (บาท)',
+      procedureData: procData,
       years: {
         '2569': {
-          rate: dt.sheet3_service_point || 970970,
-          num: dt.sheet3_service_point || 970970,
-          den: dt.sheet3_service_bath || 970970,
-          pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: u.sheet3_service_point,
-            den: u.sheet3_service_bath,
-            rate: u.sheet3_service_point,
-            pass: u.sheet3_service_point > 0
-          }))
-        },
-        '2568': {
-          rate: myS3['2568']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.91),
-          num: myS3['2568']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.91),
-          den: myS3['2568']?.district_total || Math.round((dt.sheet3_service_bath || 970970) * 0.91),
+          rate: procData['2569']?.districtTotal || dt.sheet3_service_point || 976330,
+          num: procData['2569']?.districtTotal || dt.sheet3_service_point || 976330,
+          den: procData['2569']?.districtTotal || dt.sheet3_service_bath || 976330,
           pass: true,
           units: unitsList.map(u => {
-            const pt = myS3['2568']?.units?.[u.hospcode] || 0;
+            const pt = procData['2569']?.units?.[u.hospcode]?.totalPoint ?? (u.sheet3_service_point || 0);
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
+        },
+        '2568': {
+          rate: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
+          num: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
+          den: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
+          pass: true,
+          units: unitsList.map(u => {
+            const pt = procData['2568']?.units?.[u.hospcode]?.totalPoint ?? (myS3['2568']?.units?.[u.hospcode] || 0);
             return {
               hospcode: u.hospcode,
               name: u.name,
@@ -425,12 +434,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2567': {
-          rate: myS3['2567']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.80),
-          num: myS3['2567']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.80),
-          den: myS3['2567']?.district_total || Math.round((dt.sheet3_service_bath || 970970) * 0.80),
+          rate: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
+          num: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
+          den: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
           pass: true,
           units: unitsList.map(u => {
-            const pt = myS3['2567']?.units?.[u.hospcode] || 0;
+            const pt = procData['2567']?.units?.[u.hospcode]?.totalPoint ?? (myS3['2567']?.units?.[u.hospcode] || 0);
             return {
               hospcode: u.hospcode,
               name: u.name,
@@ -896,6 +905,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ind = masterData && masterData.indicators && masterData.indicators[currentIndicatorId];
     const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
     const isNhsoError = (currentIndicatorId === 'nhso_error_code');
+    const isNhsoService = (currentIndicatorId === 'nhso_service');
     const yData = ind && ind.years && ind.years[yr];
 
     let currentRate = 0;
@@ -940,6 +950,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (elCard2GapBadge) {
         elCard2GapBadge.textContent = `${topCode[0]} (${Number(topCode[1] || 0).toLocaleString()} ครั้ง)`;
         elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+      }
+    } else if (isNhsoService) {
+      const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || {};
+      const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0 };
+      const distSummary = yrData.districtSummary || {};
+      const distTotal = yrData.districtTotal || 0;
+      const actSrv = currentProcedureService || 'all';
+
+      if (elCard2Badge) elCard2Badge.textContent = 'MeData สปสช. เมนู 3';
+      if (actSrv === 'all') {
+        if (elCard2Title) elCard2Title.textContent = `หัตถการรวม 6 บริการ (ปี ${yr})`;
+        if (elCard2Val) elCard2Val.textContent = `${Number(distTotal).toLocaleString()} Point`;
+        if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'บริการอันดับ 1';
+        if (elCard2GapBadge) {
+          elCard2GapBadge.textContent = 'นวด+ประคบ (81.8%)';
+          elCard2GapBadge.className = 'font-bold text-white bg-emerald-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
+        }
+      } else {
+        const srvPt = distSummary[actSrv] || 0;
+        const share = distTotal > 0 ? ((srvPt / distTotal) * 100).toFixed(1) : 0;
+        if (elCard2Title) elCard2Title.textContent = `ผลงาน ${actSrv} (ปี ${yr})`;
+        if (elCard2Val) elCard2Val.textContent = `${Number(srvPt).toLocaleString()} Point`;
+        if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'สัดส่วนของอำเภอ';
+        if (elCard2GapBadge) {
+          elCard2GapBadge.textContent = `${share}% ของหัตถการรวม`;
+          elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+        }
       }
     } else if (isTTM4) {
       const summary = (yData && yData.saraphi_summary) || {};
@@ -1003,6 +1040,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (elCard3Val) elCard3Val.textContent = `${affectedCount} แห่ง`;
       if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'ผลกระทบชดเชย';
       if (elCard3FooterVal) elCard3FooterVal.textContent = 'ไม่ผ่านเกณฑ์การจ่าย';
+    } else if (isNhsoService) {
+      const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || {};
+      const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0, units: {} };
+      const unitsMap = yrData.units || {};
+      const actSrv = currentProcedureService || 'all';
+
+      let activeUnitCount = 0;
+      Object.values(unitsMap).forEach(u => {
+        const pt = actSrv === 'all' ? (u.totalPoint || 0) : ((u.services && u.services[actSrv]) || 0);
+        if (pt > 0) activeUnitCount++;
+      });
+
+      if (elCard3Badge) elCard3Badge.textContent = 'อัตราการให้บริการ';
+      if (elCard3Title) elCard3Title.textContent = 'หน่วยบริการที่มีผลงาน';
+      if (elCard3Val) elCard3Val.textContent = `${activeUnitCount} / 14 แห่ง`;
+      if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'เกณฑ์ชดเชย สปสช.';
+      if (elCard3FooterVal) elCard3FooterVal.textContent = '1 Point = 1 บาท';
     } else if (isTTM4) {
       const summary = (yData && yData.saraphi_summary) || {};
       const priUc = summary.price_uc || 770752;
@@ -1065,6 +1119,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (elCard4Val) elCard4Val.textContent = topUnitName;
       if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'จำนวนข้อผิดพลาด';
       if (elCard4FooterVal) elCard4FooterVal.textContent = `${Number(topUnitErr).toLocaleString()} ครั้ง (${share}%)`;
+    } else if (isNhsoService) {
+      const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || {};
+      const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0, units: {} };
+      const distTotal = yrData.districtTotal || 0;
+      const unitsMap = yrData.units || {};
+      const actSrv = currentProcedureService || 'all';
+
+      let topUnitCode = null;
+      let topPt = 0;
+      Object.entries(unitsMap).forEach(([code, u]) => {
+        const pt = actSrv === 'all' ? (u.totalPoint || 0) : ((u.services && u.services[actSrv]) || 0);
+        if (pt > topPt) {
+          topPt = pt;
+          topUnitCode = code;
+        }
+      });
+      const topName = topUnitCode ? (SARAPHI_UNITS_MAP[topUnitCode]?.name || topUnitCode) : '-';
+      const shareBase = (actSrv === 'all' ? distTotal : (yrData.districtSummary?.[actSrv] || 0));
+      const sharePct = shareBase > 0 ? ((topPt / shareBase) * 100).toFixed(1) : 0;
+
+      if (elCard4Badge) elCard4Badge.textContent = 'ผลงานสูงสุดในพื้นที่';
+      if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการผลงานสูงสุด';
+      if (elCard4Val) elCard4Val.textContent = topName;
+      if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ยอดผลงานสูงสุด';
+      if (elCard4FooterVal) elCard4FooterVal.textContent = `${Number(topPt).toLocaleString()} Point (${sharePct}%)`;
     } else if (isTTM4) {
       if (elCard4Badge) elCard4Badge.textContent = '14 หน่วยบริการ';
       if (elCard4Title) elCard4Title.textContent = 'หน่วยสั่งจ่ายมูลค่าสูงสุด';
@@ -1171,6 +1250,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('ind-desc-text').textContent = ind.desc;
     if (ind.id === 'nhso_error_code') {
       document.getElementById('ind-target-text').textContent = 'เป้าหมาย: 0 ครั้ง (ไม่พบ Error)';
+    } else if (ind.id === 'nhso_service') {
+      document.getElementById('ind-target-text').textContent = 'ชดเชยตามผลงาน: 1 Point = 1 บาท (6 บริการหัตถการ)';
     } else {
       document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
     }
@@ -2668,6 +2749,490 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // --------------------------------------------------------------------------
+  // NHSO Procedure Types Configuration & Handlers (MeData Sheet 3)
+  // --------------------------------------------------------------------------
+  const PROCEDURE_SERVICE_META = {
+    'นวด+ประคบ': {
+      id: 'นวด+ประคบ',
+      name: 'นวด+ประคบ',
+      btnId: 'btn-proc-massage-press',
+      icon: '💆',
+      iconHtml: '<i class="fa-solid fa-spa text-emerald-600 text-lg"></i>',
+      color: '#059669', // Emerald
+      bgColor: 'rgba(5, 150, 105, 0.85)',
+      cardBg: 'from-emerald-500/10 to-emerald-500/5',
+      borderColor: '#059669',
+      badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200'
+    },
+    'พอกเข่า': {
+      id: 'พอกเข่า',
+      name: 'พอกเข่า',
+      btnId: 'btn-proc-knee',
+      icon: '✨',
+      iconHtml: '<i class="fa-solid fa-bandage text-amber-500 text-lg"></i>',
+      color: '#d97706', // Amber
+      bgColor: 'rgba(217, 119, 6, 0.85)',
+      cardBg: 'from-amber-500/10 to-amber-500/5',
+      borderColor: '#d97706',
+      badgeClass: 'bg-amber-100 text-amber-800 border-amber-200'
+    },
+    'นวด': {
+      id: 'นวด',
+      name: 'นวด',
+      btnId: 'btn-proc-massage',
+      icon: '👐',
+      iconHtml: '<i class="fa-solid fa-hand-holding-heart text-sky-500 text-lg"></i>',
+      color: '#0284c7', // Sky
+      bgColor: 'rgba(2, 132, 199, 0.85)',
+      cardBg: 'from-sky-500/10 to-sky-500/5',
+      borderColor: '#0284c7',
+      badgeClass: 'bg-sky-100 text-sky-800 border-sky-200'
+    },
+    'ประคบ': {
+      id: 'ประคบ',
+      name: 'ประคบ',
+      btnId: 'btn-proc-press',
+      icon: '🌿',
+      iconHtml: '<i class="fa-solid fa-leaf text-teal-500 text-lg"></i>',
+      color: '#0d9488', // Teal
+      bgColor: 'rgba(13, 148, 136, 0.85)',
+      cardBg: 'from-teal-500/10 to-teal-500/5',
+      borderColor: '#0d9488',
+      badgeClass: 'bg-teal-100 text-teal-800 border-teal-200'
+    },
+    'การฟื้นฟูมารดาหลังคลอด': {
+      id: 'การฟื้นฟูมารดาหลังคลอด',
+      name: 'ฟื้นฟูมารดาหลังคลอด',
+      btnId: 'btn-proc-postpartum',
+      icon: '🤰',
+      iconHtml: '<i class="fa-solid fa-person-breastfeeding text-rose-500 text-lg"></i>',
+      color: '#e11d48', // Rose
+      bgColor: 'rgba(225, 29, 72, 0.85)',
+      cardBg: 'from-rose-500/10 to-rose-500/5',
+      borderColor: '#e11d48',
+      badgeClass: 'bg-rose-100 text-rose-800 border-rose-200'
+    },
+    'อบสมุนไพร': {
+      id: 'อบสมุนไพร',
+      name: 'อบสมุนไพร',
+      btnId: 'btn-proc-steam',
+      icon: '♨️',
+      iconHtml: '<i class="fa-solid fa-hot-tub-person text-purple-500 text-lg"></i>',
+      color: '#9333ea', // Purple
+      bgColor: 'rgba(147, 51, 234, 0.85)',
+      cardBg: 'from-purple-500/10 to-purple-500/5',
+      borderColor: '#9333ea',
+      badgeClass: 'bg-purple-100 text-purple-800 border-purple-200'
+    }
+  };
+
+  const PROCEDURE_SERVICES_ORDER = [
+    'นวด+ประคบ',
+    'พอกเข่า',
+    'นวด',
+    'ประคบ',
+    'การฟื้นฟูมารดาหลังคลอด',
+    'อบสมุนไพร'
+  ];
+
+  window.switchProcedureService = function(srv) {
+    currentProcedureService = srv;
+    renderNhsoServicePanel();
+    updateExecutiveOverview();
+  };
+
+  window.switchProcedureYear = function(yr) {
+    currentProcedureYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    updateDashboardView();
+  };
+
+  function renderNhsoServicePanel() {
+    if (currentIndicatorId !== 'nhso_service') {
+      if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+      return;
+    }
+    if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
+
+    const yr = currentProcedureYear || currentYear || '2569';
+    const activeService = currentProcedureService || 'all';
+
+    // 1. Update Service Filter Buttons
+    const btnAll = document.getElementById('btn-proc-all');
+    if (btnAll) {
+      if (activeService === 'all') {
+        btnAll.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+      } else {
+        btnAll.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+      }
+    }
+
+    PROCEDURE_SERVICES_ORDER.forEach(srv => {
+      const meta = PROCEDURE_SERVICE_META[srv];
+      const btn = document.getElementById(meta.btnId);
+      if (btn) {
+        if (activeService === srv) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs text-white';
+          btn.style.backgroundColor = meta.color;
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+          btn.style.backgroundColor = '';
+        }
+      }
+    });
+
+    // 2. Update Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-proc-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Extract Data for Year
+    const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || (masterData?.indicators?.['nhso_service']?.procedureData) || {};
+    const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0, units: {} };
+    const distSummary = yrData.districtSummary || {};
+    const distTotal = yrData.districtTotal || 0;
+    const unitsData = yrData.units || {};
+
+    // 4. Render 6 Mini Bento KPI Cards
+    const cardsContainer = document.getElementById('proc-kpi-cards');
+    if (cardsContainer) {
+      cardsContainer.innerHTML = '';
+      PROCEDURE_SERVICES_ORDER.forEach(srv => {
+        const meta = PROCEDURE_SERVICE_META[srv];
+        const srvPt = distSummary[srv] || 0;
+        const sharePct = distTotal > 0 ? ((srvPt / distTotal) * 100).toFixed(1) : '0.0';
+        const isSelected = (activeService === srv);
+
+        // Find top unit for this service
+        let topUnitHosp = null;
+        let topUnitPt = 0;
+        Object.entries(unitsData).forEach(([hosp, u]) => {
+          const pt = (u.services && u.services[srv]) || 0;
+          if (pt > topUnitPt) {
+            topUnitPt = pt;
+            topUnitHosp = hosp;
+          }
+        });
+        const topUnitShort = topUnitHosp ? (SARAPHI_UNITS_MAP[topUnitHosp]?.short || topUnitHosp) : '-';
+
+        const card = document.createElement('div');
+        card.className = `cursor-pointer rounded-2xl p-3 bg-white border transition-all flex flex-col justify-between ${
+          isSelected
+            ? 'ring-2 shadow-md bg-gradient-to-br ' + meta.cardBg
+            : 'border-slate-200 shadow-2xs hover:shadow-xs hover:border-slate-300'
+        }`;
+        if (isSelected) {
+          card.style.borderColor = meta.color;
+          card.style.setProperty('--tw-ring-color', meta.color + '33');
+        }
+        card.onclick = () => window.switchProcedureService(srv === activeService ? 'all' : srv);
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-base sm:text-lg">${meta.iconHtml || meta.icon}</span>
+            <span class="text-[10.5px] font-black px-2 py-0.5 rounded-full ${meta.badgeClass} num-font">${sharePct}%</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-[11.5px] font-bold text-slate-700 truncate" title="${srv}">${meta.name}</div>
+            <div class="text-base sm:text-lg font-black text-slate-900 num-font mt-0.5" style="${isSelected ? `color:${meta.color}` : ''}">
+              ${Number(srvPt).toLocaleString()} <span class="text-[10px] font-normal text-slate-400">Pt</span>
+            </div>
+          </div>
+          <div class="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+            <span class="truncate pr-1">สูงสุด: ${topUnitShort}</span>
+            <span class="font-bold text-slate-700 num-font shrink-0">${Number(topUnitPt).toLocaleString()}</span>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    // 5. Prepare Units Array (All 14 units)
+    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(hospcode => {
+      const uInfo = SARAPHI_UNITS_MAP[hospcode];
+      const uData = unitsData[hospcode] || { services: {}, totalPoint: 0 };
+      return {
+        hospcode: hospcode,
+        name: uInfo.name,
+        short: uInfo.short,
+        subdistrict: uInfo.subdistrict,
+        services: uData.services || {},
+        totalPoint: uData.totalPoint || 0
+      };
+    });
+
+    // 6. Render Chart.js Bar Chart
+    const chartTitle = document.getElementById('proc-chart-title');
+    const chartSubtitle = document.getElementById('proc-chart-subtitle');
+    const chartBadge = document.getElementById('proc-chart-badge');
+    const canvas = document.getElementById('procedure-breakdown-chart');
+
+    if (canvas) {
+      if (procedureChartInstance) {
+        procedureChartInstance.destroy();
+        procedureChartInstance = null;
+      }
+
+      let chartConfig = null;
+      const ctx = canvas.getContext('2d');
+
+      if (activeService === 'all') {
+        // Stacked Horizontal Bar Chart: 14 units sorted by totalPoint descending
+        const sortedUnits = [...unitsList].sort((a, b) => b.totalPoint - a.totalPoint);
+        if (chartTitle) chartTitle.textContent = 'กราฟแท่งแสดงผลงานบริการหัตถการ (Point / ประมาณการบาท)';
+        if (chartSubtitle) chartSubtitle.textContent = `แสดงสัดส่วน 6 หัตถการรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงตามผลงานรวม) ปีงบประมาณ ${yr}`;
+        if (chartBadge) {
+          chartBadge.textContent = `รวมทั้งอำเภอ: ${Number(distTotal).toLocaleString()} Point`;
+          chartBadge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+        }
+
+        const datasets = PROCEDURE_SERVICES_ORDER.map(srv => {
+          const meta = PROCEDURE_SERVICE_META[srv];
+          return {
+            label: `${meta.icon} ${srv}`,
+            data: sortedUnits.map(u => u.services[srv] || 0),
+            backgroundColor: meta.color,
+            borderRadius: 3,
+            borderSkipped: false
+          };
+        });
+
+        chartConfig = {
+          type: 'bar',
+          data: {
+            labels: sortedUnits.map(u => u.short),
+            datasets: datasets
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: true,
+                grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                ticks: {
+                  font: { family: 'Prompt', size: 11 },
+                  callback: val => Number(val).toLocaleString()
+                }
+              },
+              y: {
+                stacked: true,
+                grid: { display: false },
+                ticks: {
+                  font: { family: 'Prompt', size: 11.5, weight: '500' },
+                  color: '#334155'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  font: { family: 'Prompt', size: 11 },
+                  usePointStyle: true,
+                  boxWidth: 8,
+                  padding: 12
+                }
+              },
+              tooltip: {
+                titleFont: { family: 'Prompt', size: 12 },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const uTotal = sortedUnits[ctx.dataIndex]?.totalPoint || 0;
+                    const pct = uTotal > 0 ? ((val / uTotal) * 100).toFixed(1) : 0;
+                    return ` ${ctx.dataset.label}: ${Number(val).toLocaleString()} Point (${pct}% ของหน่วย)`;
+                  },
+                  footer: function(ctxItems) {
+                    const uIndex = ctxItems[0]?.dataIndex;
+                    const u = sortedUnits[uIndex];
+                    return ` รวมของหน่วยนี้: ${Number(u.totalPoint).toLocaleString()} Point`;
+                  }
+                }
+              }
+            }
+          }
+        };
+      } else {
+        // Single Horizontal Bar Chart: 14 units sorted by selected service points descending
+        const meta = PROCEDURE_SERVICE_META[activeService];
+        const srvTotal = distSummary[activeService] || 0;
+        const sortedUnits = [...unitsList].sort((a, b) => (b.services[activeService] || 0) - (a.services[activeService] || 0));
+
+        if (chartTitle) chartTitle.textContent = `กราฟแท่งจัดอันดับผลงาน: ${meta.icon} ${activeService} (Point / บาท)`;
+        if (chartSubtitle) chartSubtitle.textContent = `ผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงจากมากไปน้อย) ปีงบประมาณ ${yr}`;
+        if (chartBadge) {
+          chartBadge.textContent = `${meta.icon} ${activeService}: รวม ${Number(srvTotal).toLocaleString()} Point`;
+          chartBadge.className = `text-xs font-bold ${meta.badgeClass} px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto`;
+        }
+
+        chartConfig = {
+          type: 'bar',
+          data: {
+            labels: sortedUnits.map(u => u.short),
+            datasets: [{
+              label: `${meta.icon} ${activeService} (Point)`,
+              data: sortedUnits.map(u => u.services[activeService] || 0),
+              backgroundColor: meta.color,
+              borderColor: meta.borderColor,
+              borderWidth: 1,
+              borderRadius: 5,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                ticks: {
+                  font: { family: 'Prompt', size: 11 },
+                  callback: val => Number(val).toLocaleString()
+                }
+              },
+              y: {
+                grid: { display: false },
+                ticks: {
+                  font: { family: 'Prompt', size: 11.5, weight: '500' },
+                  color: '#334155'
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                titleFont: { family: 'Prompt', size: 12 },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const pct = srvTotal > 0 ? ((val / srvTotal) * 100).toFixed(1) : 0;
+                    return ` ผลงาน: ${Number(val).toLocaleString()} Point (${pct}% ของอำเภอ)`;
+                  }
+                }
+              }
+            }
+          }
+        };
+      }
+
+      procedureChartInstance = new Chart(ctx, chartConfig);
+    }
+
+    // 7. Render Matrix Table (14 Units x 6 Services)
+    const tbody = document.getElementById('proc-matrix-tbody');
+    const tfoot = document.getElementById('proc-matrix-tfoot');
+    const tableBadge = document.getElementById('proc-table-summary-badge');
+
+    if (tableBadge) {
+      tableBadge.textContent = `รวมทั้งอำเภอ: ${Number(distTotal).toLocaleString()} Point (ประมาณการ ${Number(distTotal).toLocaleString()} บาท)`;
+    }
+
+    // Sort table rows: if activeService is 'all' sort by totalPoint, else sort by that service
+    const sortedTableUnits = [...unitsList].sort((a, b) => {
+      if (activeService === 'all') {
+        return b.totalPoint - a.totalPoint;
+      } else {
+        return (b.services[activeService] || 0) - (a.services[activeService] || 0);
+      }
+    });
+
+    if (tbody) {
+      tbody.innerHTML = '';
+      sortedTableUnits.forEach((u, idx) => {
+        const isSelectedUnit = (currentUnit === u.hospcode);
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-slate-50/80 transition ${
+          isSelectedUnit ? 'bg-emerald-50/70 font-semibold border-l-4 border-emerald-600' : ''
+        }`;
+
+        let servicesCells = '';
+        PROCEDURE_SERVICES_ORDER.forEach(srv => {
+          const pt = u.services[srv] || 0;
+          const isCurrentSrv = (activeService === srv);
+          const meta = PROCEDURE_SERVICE_META[srv];
+          const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}15; font-weight: 700; color: ${meta.color};` : '';
+          servicesCells += `
+            <td class="py-2.5 px-3 text-right num-font ${pt > 0 ? 'text-slate-800' : 'text-slate-300 font-light'}" style="${highlightStyle}">
+              ${pt > 0 ? Number(pt).toLocaleString() : '-'}
+            </td>
+          `;
+        });
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 text-center num-font ${idx < 3 ? 'font-bold text-amber-600' : 'text-slate-400'}">
+            ${idx === 0 ? '🥇 1' : (idx === 1 ? '🥈 2' : (idx === 2 ? '🥉 3' : idx + 1))}
+          </td>
+          <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${u.hospcode}</td>
+          <td class="py-2.5 px-3 font-medium text-slate-900 flex items-center gap-1.5">
+            ${u.hospcode === '11135' ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>' : ''}
+            <span>${u.name}</span>
+          </td>
+          <td class="py-2.5 px-3 text-slate-500">${u.subdistrict}</td>
+          ${servicesCells}
+          <td class="py-2.5 px-4 text-right num-font font-black text-emerald-950 bg-emerald-50/50">
+            ${Number(u.totalPoint).toLocaleString()}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    if (tfoot) {
+      let tfootCells = '';
+      PROCEDURE_SERVICES_ORDER.forEach(srv => {
+        const pt = distSummary[srv] || 0;
+        const isCurrentSrv = (activeService === srv);
+        const meta = PROCEDURE_SERVICE_META[srv];
+        const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}25; color: ${meta.color};` : '';
+        tfootCells += `
+          <td class="py-3 px-3 text-right num-font font-black ${pt > 0 ? 'text-slate-900' : 'text-slate-400'}" style="${highlightStyle}">
+            ${Number(pt).toLocaleString()}
+          </td>
+        `;
+      });
+
+      tfoot.innerHTML = `
+        <tr class="text-xs">
+          <td colspan="4" class="py-3 px-4 text-left font-black text-emerald-900">
+            รวมทั้งอำเภอสารภี (14 หน่วยบริการ)
+          </td>
+          ${tfootCells}
+          <td class="py-3 px-4 text-right num-font font-black text-emerald-900 text-sm bg-emerald-100/70">
+            ${Number(distTotal).toLocaleString()}
+          </td>
+        </tr>
+      `;
+    }
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -2688,6 +3253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
       const isNhsoError = (currentIndicatorId === 'nhso_error_code');
+      const isNhsoService = (currentIndicatorId === 'nhso_service');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
@@ -2695,18 +3261,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
+      } else if (isNhsoService) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
+        renderNhsoServicePanel();
       } else {
         if (standardChartsSection) standardChartsSection.classList.remove('hidden');
         if (standardTableSection) standardTableSection.classList.remove('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -2864,6 +3440,7 @@ console.log("Saraphi Records:", saraphiData);`;
       currentYear = btn.dataset.year;
       if (currentYear !== 'all') {
         currentErrorYear = currentYear;
+        currentProcedureYear = currentYear;
       }
       updateDashboardView();
     });
