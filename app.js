@@ -77,6 +77,182 @@ document.addEventListener('DOMContentLoaded', async () => {
     '99758': { name: 'ศสม.สารภี', short: 'ศสม.สารภี', subdistrict: 'สารภี' }
   };
 
+  // Helper to escape HTML characters
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Master Client-side Herbal Drug Dictionary
+  const HERB_NAMES_MAP = {
+    '410000000100000020110665': 'ขมิ้นชันแคปซูล 500 มก. ตราอภัยภูเบศร',
+    '410000000109150020182737': 'ขมิ้นชัน cap. ตราเคเอ็มพี',
+    '410000000109150020182742': 'ขมิ้นชันแคปซูล 500 mg [14วัน]*',
+    '410000000109150020182748': 'ขมิ้นชันแคปซูล 500 mg',
+    '410000000109150020111197': 'ขมิ้นชันแคปซูล',
+    '400000000120000000400000': 'ขมิ้นชันผง',
+    '410000000190000094510665': 'ยาชงชุมเห็ดเทศ (ซอง)',
+    '410000000239140020182758': 'เถาวัลย์เปรียง cap. ตราอภัยภูเบศร',
+    '410000000239150020182750': 'เถาวัลย์เปรียงแคปซูล 500 mg [14วัน]*',
+    '410000000239150000000000': 'เถาวัลย์เปรียงแคปซูล 500 mg (รหัสมาตรฐานกลาง สธ.)',
+    '410050000000000000000000': 'ยาสมุนไพรกลุ่มบำรุงโลหิต/สธ. (รหัสหมวดหมู่ HDC)',
+    '410040000000000000000000': 'ยาสมุนไพรกลุ่มถ่ายพยาธิ/ขับลม (รหัสหมวดหมู่ HDC)',
+    '420010000000000000000000': 'ยาแผนไทยตำรับกลุ่มปรับธาตุ/บำรุงธาตุ (รหัสหมวดหมู่ HDC)',
+    '4200800000000000000': 'ยาแผนไทยตำรับกลุ่มสตรี/หลังคลอด (รหัสหมวดหมู่ HDC)',
+    '410000000380000041911197': 'กลีเซอรีนเสลดพังพอน ขวด 60 ml',
+    '410000000389301840182758': 'ครีมพญายอ',
+    '410000000389401050382758': 'พญายอครีม หลอด 10 g [7วัน]*',
+    '410000000450000040111144': 'น้ำมันไพล',
+    '410000000459301440182750': 'ครีมไพล',
+    '410000000459601440182737': 'ไพลรีนิกซ์ ครีม 30 g [30วัน]*',
+    '410000000479135020182755': 'ฟ้าทะลายโจรแคปซูล 350 mg',
+    '410000000479150020182750': 'ฟ้าทะลายโจรแคปซูล 500 mg [7วัน]',
+    '410000000499130020382750': 'มะขามแขกแคปซูล',
+    '410000000499140020182750': 'มะขามแขกแคปซูล 400 mg [7วัน]*',
+    '410000000619201034111135': 'ยาชงชาหญ้าดอกขาว (10ถุงชาเล็ก) [14วัน]',
+    '410000000649200234110671': 'ชาชงหญ้าหนวดแมว',
+    '410000000649200234182758': 'ชาชงหญ้าหนวดแมว',
+    '420000001540000094711170': 'ยาประสะมะแว้ง',
+    '420000001550000094710665': 'ยาหอมเทพจิตร',
+    '420000001559402594781053': 'ยาน้ำมะขามป้อม',
+    '420000001580000094782755': 'ยาแก้ไอมะขามป้อม',
+    '420000001589502094782737': 'ยาแก้ไอมะขามป้อม',
+    '420000001930000040611170': 'ยาบัวบก 20g',
+    '420000002169140020182758': 'เพชรสังฆาต cap ตราอภัยภูเบศร',
+    '420000002369125020110919': 'ยาธาตุบรรจบ (ยาผง/เม็ด)',
+    '420000002379150020182742': 'ยาตรีผลาชนิดแคปซูล 500 mg [7วัน]',
+    '420000002930000002311170': 'ยาธาตุอบเชย',
+    '420000002939500494711135': 'ยาน้ำธาตุอบเชย',
+    '420000002939500594711135': 'ยาน้ำธาตุอบเชย 120 ml',
+    '420000003969120020382755': 'ยาประสะมะแว้ง ลูกกลอน',
+    '420000003969120021582750': 'ยาประสะมะแว้ง ตราธงทอง',
+    '420000004119150020182748': 'ยาแคปซูลผสมเพชรสังฆาต 500mg',
+    '420000004129150020182750': 'เพชรสังฆาตแคปซูล',
+    '420000004489215044211135': 'ลูกประคบสมุนไพร 150g',
+    '420000004489220044211119': 'ลูกประคบสมุนไพรสด',
+    '420000004489220044211197': 'ลูกประคบแห้ง 200g จ่ายกลับบ้าน [7วัน]*',
+    '420000004489220044282750': 'ลูกประคบสมุนไพรแห้ง',
+    '420000004489220044282770': 'ลูกประคบสมุนไพร',
+    '420000004919150020182750': 'ยาแคปซูลสหัสธารา 500 mg [7วัน]*',
+    '420000005179201594582742': 'ยาหอมนวโกฐ ชนิดผง 15 g [7วัน]*',
+    '420000005649138020182750': 'รางจืดแคปซูล',
+    '420000006979150020182750': 'ดอกคำฝอย cap. ตราธงทอง',
+    '420000007839140020182758': 'ยาแคปซูลผสมรางจืด อภัยภูเบศร',
+    '420000008179140020182737': 'รางจืดแคปซูล ตราเคเอ็มพี',
+    '420000010169210094111135': 'ยาต้มหลังคลอด ยากระตุ้นน้ำนม (ยาประสะไพล)',
+    '420000010349500794782770': 'ยาน้ำแก้ไอผสมมะขามป้อม 60 ml',
+    '420000011779404094782758': 'ยาน้ำแก้ไอผสมมะขามป้อม 120 ml',
+    '420000014759500494782770': 'ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)',
+    '420000014769207894511452': 'ยาต้มศุขไสยาศน์ (ตำรับกัญชาแผนไทย)',
+    '420000014869150020111452': 'น้ำมันกัญชาแผนไทย 500 mg',
+    '420000016869220044211135': 'ลูกประคบสมุนไพร 200g ห้องนวด',
+    '4125': 'ฟ้าทะลายโจรแคปซูล (รหัสภายใน)',
+    '4128': 'ขมิ้นชันแคปซูล (รหัสภายใน)',
+    '4238': 'ยาประสะมะแว้ง (รหัสภายใน)'
+  };
+
+  const PREFIX_HERB_MAP = {
+    '41000000010': 'ขมิ้นชันแคปซูล 500 mg',
+    '41000000015': 'ยาชงรางจืด',
+    '41000000019': 'ยาชงชุมเห็ดเทศ (ซอง)',
+    '41000000023': 'เถาวัลย์เปรียงแคปซูล',
+    '41000000038': 'พญายอ (ครีม/สารละลาย)',
+    '41000000044': 'บัวบกแคปซูล',
+    '41000000045': 'ไพลครีม/น้ำมันไพล',
+    '41000000047': 'ฟ้าทะลายโจรแคปซูล',
+    '41000000049': 'มะขามแขกแคปซูล',
+    '41000000052': 'หญ้าปักกิ่ง',
+    '41000000057': 'กระเจี๊ยบแดง',
+    '41000000061': 'ยาชงหญ้าดอกขาว',
+    '41000000064': 'ยาชงหญ้าหนวดแมว',
+    '41000000101': 'ขิงแคปซูล',
+    '410000000038': 'พญายอ (ครีม/เสลดพังพอน)',
+    '410000000047': 'ฟ้าทะลายโจรแคปซูล',
+    '410040': 'ยาสมุนไพรกลุ่มถ่ายพยาธิ/ขับลม (รหัสหมวดหมู่ HDC)',
+    '410050': 'ยาสมุนไพรกลุ่มบำรุงโลหิต/สธ. (รหัสหมวดหมู่ HDC)',
+    '42000000154': 'ยาประสะมะแว้ง (ลูกกลอน/ยาอม)',
+    '42000000155': 'ยาหอมเทพจิตร',
+    '42000000158': 'ยาน้ำแก้ไอมะขามป้อม',
+    '42000000160': 'ยาอำมฤควาที',
+    '42000000216': 'ยาเพชรสังฆาตแคปซูล',
+    '42000000217': 'ยาเพชรสังฆาตแคปซูล',
+    '42000000222': 'ยาธาตุอบเชย',
+    '42000000236': 'ยาธาตุบรรจบ (ผง/เม็ด)',
+    '42000000237': 'ยาธาตุบรรจบแคปซูล 500 mg',
+    '42000000254': 'ยาหอมอินทจักร์',
+    '42000000257': 'ยาหอมนวโกฐ',
+    '42000000266': 'ยามหาพิกัดตรีผลา',
+    '42000000267': 'ยามหาพิกัดตรีผลา',
+    '42000000286': 'ยาธาตุบรรจบ',
+    '42000000293': 'ยาน้ำธาตุอบเชย',
+    '42000000300': 'ยาน้ำธาตุอบเชย',
+    '42000000329': 'ยาธาตุบรรจบ',
+    '42000000369': 'ยาหอมนวโกฐ',
+    '42000000395': 'ยาประสะมะแว้ง',
+    '42000000396': 'ยาประสะมะแว้ง',
+    '42000000399': 'ยาประสะมะแว้ง',
+    '42000000409': 'ยาประสะจันทน์แดง',
+    '42000000411': 'ยาเพชรสังฆาตแคปซูล 500 mg',
+    '42000000412': 'ยาเพชรสังฆาตแคปซูล',
+    '42000000448': 'ลูกประคบสมุนไพร',
+    '42000000466': 'ลูกประคบสมุนไพร',
+    '42000000486': 'ยาหอมนวโกฐ',
+    '42000000491': 'ยาตรีผลา/สหัสธาราแคปซูล',
+    '42000000505': 'บัวบกครีม',
+    '42000000514': 'ยาหอมนวโกฐ',
+    '42000000515': 'ยาหอมทิพโอสถ',
+    '42000000516': 'ยาหอมอินทจักร์',
+    '42000000517': 'ยาหอมนวโกฐ ชนิดผง 15 g',
+    '42000000527': 'ยาหอมนวโกฐ',
+    '42000000534': 'ยาหอมอินทจักร์',
+    '42000000549': 'เจลพริก',
+    '42000000554': 'ขมิ้นชันแคปซูล',
+    '42000000618': 'ยาประสะไพล',
+    '42000000697': 'ยาดอกคำฝอยแคปซูล',
+    '42000000757': 'ยาน้ำแก้ไอมะขามป้อม',
+    '42000000783': 'ยารางจืดแคปซูล',
+    '42000000787': 'ยารางจืดแคปซูล',
+    '42000000817': 'ยารางจืดแคปซูล',
+    '42000000974': 'ยาแก้ไอมะขามป้อม',
+    '42000001016': 'ยาประสะไพล (ยาต้มหลังคลอด/กระตุ้นน้ำนม)',
+    '42000001102': 'ยาน้ำแก้ไอมะขามป้อม',
+    '42000001177': 'ยาน้ำแก้ไอผสมมะขามป้อม 120 ml',
+    '42000001475': 'ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)',
+    '42000001476': 'ยาต้มศุขไสยาศน์ (ตำรับกัญชาแผนไทย)',
+    '42000001478': 'ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)',
+    '42000001486': 'น้ำมันกัญชาแผนไทย 500 mg',
+    '42000001505': 'น้ำมันกัญชาแผนไทย',
+    '42000001686': 'ลูกประคบสมุนไพรสด 200g (ห้องนวด)',
+    '42000001688': 'ยาน้ำแก้ไอผสมมะขามป้อม',
+    '420010': 'ยาแผนไทยตำรับกลุ่มปรับธาตุ/บำรุงธาตุ (รหัสหมวดหมู่ HDC)',
+    '420080': 'ยาแผนไทยตำรับกลุ่มสตรี/หลังคลอด (รหัสหมวดหมู่ HDC)'
+  };
+
+  function getCleanHerbName(did, rawName, groupName) {
+    const cleanedDid = String(did || '').trim().replace(/\s+/g, '');
+    if (cleanedDid && HERB_NAMES_MAP[cleanedDid]) {
+      return HERB_NAMES_MAP[cleanedDid];
+    }
+    if (rawName && !rawName.includes('?') && !rawName.startsWith('4') && !rawName.startsWith('รหัสยา') && rawName !== did) {
+      return rawName;
+    }
+    const prefixes = Object.keys(PREFIX_HERB_MAP).sort((a, b) => b.length - a.length);
+    for (const pfx of prefixes) {
+      if (cleanedDid.startsWith(pfx)) {
+        return PREFIX_HERB_MAP[pfx];
+      }
+    }
+    if (groupName && !groupName.includes('?') && !groupName.startsWith('4')) {
+      return groupName;
+    }
+    return cleanedDid ? `ยาสมุนไพร (รหัส ${cleanedDid.substring(0, 12)}...)` : (rawName || '-');
+  }
+
   // 1. Populate Unit Select Dropdown
   function initUnitDropdown() {
     if (!unitSelect) return;
@@ -714,6 +890,159 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Herbal Drug Prescribing Units Modal Handlers
+  window.toggleDrugUnitsModal = function(show) {
+    const modal = document.getElementById('modal-drug-units');
+    if (modal) {
+      modal.style.display = show ? 'flex' : 'none';
+    }
+  };
+
+  // Close modals on ESC or backdrop click
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      window.toggleDrugUnitsModal(false);
+      window.toggleSaraphiModal(false);
+    }
+  });
+
+  const drugUnitsModalBackdrop = document.getElementById('modal-drug-units');
+  if (drugUnitsModalBackdrop) {
+    drugUnitsModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === drugUnitsModalBackdrop) {
+        window.toggleDrugUnitsModal(false);
+      }
+    });
+  }
+
+  window.selectUnitFromModal = function(hcode) {
+    window.toggleDrugUnitsModal(false);
+    currentUnit = hcode;
+    if (unitSelect) unitSelect.value = hcode;
+    updateDashboardView();
+  };
+
+  window.showDrugUnitsModal = function(identifier, drugName, isHdcGroup) {
+    const yr = currentYear === 'all' ? '2569' : currentYear;
+    const yData = masterData?.indicators?.['ttm_top_herbs']?.years?.[yr];
+    if (!yData) return;
+
+    const modal = document.getElementById('modal-drug-units');
+    const mName = document.getElementById('modal-drug-name');
+    const mDid = document.getElementById('modal-drug-did');
+    const mGroup = document.getElementById('modal-drug-group');
+    const mCount = document.getElementById('modal-drug-units-count');
+    const mVisits = document.getElementById('modal-drug-total-visits');
+    const mPrice = document.getElementById('modal-drug-total-price');
+    const mTbody = document.getElementById('modal-drug-units-tbody');
+    if (!modal || !mTbody) return;
+
+    mTbody.innerHTML = '';
+
+    const cleanId = String(identifier || '').trim().replace(/\s+/g, '');
+    const cleanName = drugName || cleanId;
+
+    // Gather units list
+    let unitsList = [];
+    const allUnits = yData.units || [];
+
+    allUnits.forEach(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const uName = meta ? meta.name : (u.name || u.hospcode);
+      const uShort = meta ? meta.short : (u.short_name || uName);
+      const uSub = meta ? meta.subdistrict : (u.subdistrict || '');
+
+      let matchingVs = 0, matchingVsUc = 0, matchingAm = 0, matchingPri = 0, matchingPriUc = 0;
+
+      (u.drug_items || []).forEach(d => {
+        const dDid = String(d.didstd || '').trim().replace(/\s+/g, '');
+        const dGroup = d.hdc_group_name || d.drug_name || '';
+        const dClean = getCleanHerbName(dDid, d.drug_name, dGroup);
+
+        const match = isHdcGroup
+          ? (dGroup === cleanId || dClean === cleanId || d.drug_name === cleanId)
+          : (dDid === cleanId);
+
+        if (match) {
+          matchingVs += Number(d.vs_all || 0);
+          matchingVsUc += Number(d.vs_uc || 0);
+          matchingAm += Number(d.am_all || 0);
+          matchingPri += Number(d.pri_all || 0);
+          matchingPriUc += Number(d.pri_uc || 0);
+        }
+      });
+
+      if (matchingVs > 0 || matchingPri > 0) {
+        unitsList.push({
+          hospcode: u.hospcode,
+          name: uName,
+          short_name: uShort,
+          subdistrict: uSub,
+          vs_all: matchingVs,
+          vs_uc: matchingVsUc,
+          am_all: matchingAm,
+          pri_all: matchingPri,
+          pri_uc: matchingPriUc
+        });
+      }
+    });
+
+    unitsList.sort((a, b) => (b.pri_all - a.pri_all) || (b.vs_all - a.vs_all));
+
+    const totalPri = unitsList.reduce((acc, u) => acc + u.pri_all, 0);
+    const totalVis = unitsList.reduce((acc, u) => acc + u.vs_all, 0);
+    const totalUc = unitsList.reduce((acc, u) => acc + u.vs_uc, 0);
+
+    if (mName) mName.textContent = cleanName;
+    if (mDid) mDid.textContent = isHdcGroup ? 'กลุ่มรายงาน HDC' : `DID: ${cleanId}`;
+    if (mGroup) mGroup.textContent = isHdcGroup ? 'จำแนกตามกลุ่มยา HDC' : 'รหัสยามาตรฐาน สธ. 24 หลัก';
+    if (mCount) mCount.textContent = `${unitsList.length} แห่ง`;
+    if (mVisits) mVisits.textContent = `${totalVis.toLocaleString()} ครั้ง (UC ${totalUc.toLocaleString()})`;
+    if (mPrice) mPrice.textContent = `${totalPri.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ.`;
+
+    if (unitsList.length === 0) {
+      mTbody.innerHTML = `<tr><td colspan="8" style="padding:26px; text-align:center; color:#94a3b8; font-size:13px;">ไม่พบข้อมูลหน่วยบริการที่สั่งจ่ายยานี้ในปีงบประมาณ ${yr}</td></tr>`;
+    } else {
+      unitsList.forEach((u, i) => {
+        const isCurrent = (currentUnit === u.hospcode);
+        const pct = totalPri > 0 ? ((u.pri_all / totalPri) * 100).toFixed(1) : '0.0';
+        const tr = document.createElement('tr');
+        tr.style.cssText = `border-bottom:1px solid #f1f5f9; ${isCurrent ? 'background:#ecfdf5;' : ''} transition:background 0.15s;`;
+        tr.onmouseenter = () => { if (!isCurrent) tr.style.background = '#f8fafc'; };
+        tr.onmouseleave = () => { if (!isCurrent) tr.style.background = (isCurrent ? '#ecfdf5' : 'transparent'); };
+
+        tr.innerHTML = `
+          <td style="padding:10px 10px; text-align:center; font-weight:700; color:${i < 3 ? '#b45309' : '#64748b'};">#${i + 1}</td>
+          <td style="padding:10px 12px;">
+            <div style="font-weight:700; color:${isCurrent ? '#047857' : '#0f172a'}; font-size:13.5px;">
+              ${escapeHtml(u.short_name || u.name)}
+              ${isCurrent ? '<span style="display:inline-block; font-size:10px; background:#16a34a; color:#fff; padding:1px 6px; border-radius:9999px; margin-left:6px;">หน่วยเรา</span>' : ''}
+            </div>
+            <div style="font-size:11px; color:#64748b; margin-top:1px;">รหัส ${u.hospcode} • ต.${escapeHtml(u.subdistrict || '-')} อ.สารภี</div>
+          </td>
+          <td style="padding:10px 10px; text-align:right; font-weight:700; color:#0f172a; font-variant-numeric:tabular-nums; font-size:13px;">${u.vs_all.toLocaleString()}</td>
+          <td style="padding:10px 10px; text-align:right; font-weight:700; color:#047857; font-variant-numeric:tabular-nums; font-size:13px;">${u.vs_uc.toLocaleString()}</td>
+          <td style="padding:10px 10px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; font-size:13px;">${u.am_all.toLocaleString()}</td>
+          <td style="padding:10px 12px; text-align:right; font-weight:800; color:#15803d; font-variant-numeric:tabular-nums; font-size:13.5px;">${u.pri_all.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="padding:10px 10px; text-align:right;">
+            <div style="font-weight:700; color:#0f172a; font-size:12px; font-variant-numeric:tabular-nums;">${pct}%</div>
+            <div style="height:4px; border-radius:2px; background:#e2e8f0; overflow:hidden; margin-top:2px;">
+              <div style="height:100%; width:${Math.min(pct, 100)}%; background:#10b981;"></div>
+            </div>
+          </td>
+          <td style="padding:10px 10px; text-align:center;">
+            <button type="button" style="border:none; background:#ecfdf5; color:#047857; font-weight:700; font-size:11px; padding:4px 9px; border-radius:6px; cursor:pointer; border:1px solid #a7f3d0; transition:all 0.15s;" onmouseenter="this.style.background='#d1fae5'" onmouseleave="this.style.background='#ecfdf5'" onclick="event.stopPropagation(); window.selectUnitFromModal('${u.hospcode}')">
+              ดู รพ.สต. 👉
+            </button>
+          </td>
+        `;
+        mTbody.appendChild(tr);
+      });
+    }
+
+    window.toggleDrugUnitsModal(true);
+  };
+
   function renderTTM4Table() {
     const tu = window.currentTTM4TargetUnit;
     if (!tu) return;
@@ -732,6 +1061,70 @@ document.addEventListener('DOMContentLoaded', async () => {
       ttm4Summary.textContent = `${list.length} รายการ | รวม ${Number(tu.total_num || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บาท`;
     }
 
+    // Build dynamic unit maps from yData for fallback
+    const yr = currentYear === 'all' ? '2569' : currentYear;
+    const yData = masterData?.indicators?.['ttm_top_herbs']?.years?.[yr] || {};
+    const allUnits = yData.units || [];
+
+    const didToUnitsMap = {};
+    const groupToUnitsMap = {};
+
+    allUnits.forEach(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const uName = meta ? meta.name : (u.name || u.hospcode);
+      const uShort = meta ? meta.short : (u.short_name || uName);
+      const uSub = meta ? meta.subdistrict : (u.subdistrict || '');
+
+      (u.drug_items || []).forEach(d => {
+        const dDid = String(d.didstd || '').trim().replace(/\s+/g, '');
+        const dGroup = d.hdc_group_name || d.drug_name || '';
+        const dClean = getCleanHerbName(dDid, d.drug_name, dGroup);
+        const entry = {
+          hospcode: u.hospcode,
+          name: uName,
+          short_name: uShort,
+          subdistrict: uSub,
+          vs_all: Number(d.vs_all || 0),
+          vs_uc: Number(d.vs_uc || 0),
+          am_all: Number(d.am_all || 0),
+          pri_all: Number(d.pri_all || 0),
+          pri_uc: Number(d.pri_uc || 0)
+        };
+
+        if (dDid) {
+          if (!didToUnitsMap[dDid]) didToUnitsMap[dDid] = [];
+          didToUnitsMap[dDid].push(entry);
+        }
+
+        if (dGroup) {
+          if (!groupToUnitsMap[dGroup]) groupToUnitsMap[dGroup] = [];
+          const existing = groupToUnitsMap[dGroup].find(x => x.hospcode === u.hospcode);
+          if (existing) {
+            existing.vs_all += entry.vs_all;
+            existing.vs_uc += entry.vs_uc;
+            existing.am_all += entry.am_all;
+            existing.pri_all += entry.pri_all;
+            existing.pri_uc += entry.pri_uc;
+          } else {
+            groupToUnitsMap[dGroup].push({ ...entry });
+          }
+        }
+        if (dClean && dClean !== dGroup) {
+          if (!groupToUnitsMap[dClean]) groupToUnitsMap[dClean] = [];
+          const existing2 = groupToUnitsMap[dClean].find(x => x.hospcode === u.hospcode);
+          if (existing2) {
+            existing2.vs_all += entry.vs_all;
+            existing2.vs_uc += entry.vs_uc;
+            existing2.am_all += entry.am_all;
+            existing2.pri_all += entry.pri_all;
+            existing2.pri_uc += entry.pri_uc;
+          } else {
+            groupToUnitsMap[dClean].push({ ...entry });
+          }
+        }
+      });
+    });
+
     let sumVsAll = 0, sumVsUc = 0, sumAmAll = 0, sumPriAll = 0;
 
     list.forEach((item, idx) => {
@@ -745,21 +1138,77 @@ document.addEventListener('DOMContentLoaded', async () => {
       sumAmAll += amAll;
       sumPriAll += priAll;
 
+      const rawDid = String(item.didstd || '').trim().replace(/\s+/g, '');
+      const rawName = item.drug_name || '';
+      const groupName = item.hdc_group_name || rawName;
+      const cleanName = getCleanHerbName(rawDid, rawName, groupName);
+
+      // Resolve prescribing units list
+      let prescribingUnits = (item.units && item.units.length > 0)
+        ? [...item.units]
+        : (isHdc ? (groupToUnitsMap[cleanName] || groupToUnitsMap[rawName] || []) : (didToUnitsMap[rawDid] || []));
+
+      // Sort prescribing units by price descending
+      prescribingUnits.sort((a, b) => (b.pri_all - a.pri_all) || (b.vs_all - a.vs_all));
+
+      // Tooltip construction for mouse hover
+      let tooltipText = '';
+      if (prescribingUnits.length === 1) {
+        const pu = prescribingUnits[0];
+        tooltipText = `🏥 สั่งจ่ายโดย: ${pu.short_name || pu.name} (${Number(pu.vs_all).toLocaleString()} ครั้ง, ${Number(pu.pri_all).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บ.)`;
+      } else if (prescribingUnits.length > 1) {
+        const topList = prescribingUnits.slice(0, 5).map(pu => `• ${pu.short_name || pu.name}: ${Number(pu.vs_all).toLocaleString()} ครั้ง (${Number(pu.pri_all).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บ.)`).join('\n');
+        tooltipText = `🏥 สั่งจ่ายโดย ${prescribingUnits.length} หน่วยบริการใน อ.สารภี:\n${topList}${prescribingUnits.length > 5 ? `\n... และอีก ${prescribingUnits.length - 5} แห่ง` : ''}\n👉 คลิกเพื่อดูรายละเอียดทั้งหมด`;
+      } else {
+        tooltipText = `🏥 ข้อมูลการสั่งใช้ยาในอำเภอสารภี`;
+      }
+
+      // Unit badge HTML
+      let badgeHtml = '';
+      if (prescribingUnits.length === 1) {
+        const pu = prescribingUnits[0];
+        badgeHtml = `
+          <button type="button" class="herb-unit-badge" title="${escapeHtml(tooltipText)}" onclick="event.stopPropagation(); window.showDrugUnitsModal('${isHdc ? escapeHtml(cleanName) : rawDid}', '${escapeHtml(cleanName)}', ${isHdc});">
+            <i class="fa-solid fa-hospital" style="color:#059669; font-size:10.5px;"></i>
+            <span>${escapeHtml(pu.short_name || pu.name)} (${Number(pu.vs_all).toLocaleString()} ครั้ง)</span>
+          </button>
+        `;
+      } else if (prescribingUnits.length > 1) {
+        badgeHtml = `
+          <button type="button" class="herb-unit-badge" style="background:#f0fdf4; border-color:#86efac; color:#166534;" title="${escapeHtml(tooltipText)}" onclick="event.stopPropagation(); window.showDrugUnitsModal('${isHdc ? escapeHtml(cleanName) : rawDid}', '${escapeHtml(cleanName)}', ${isHdc});">
+            <i class="fa-solid fa-hospital" style="color:#16a34a; font-size:10.5px;"></i>
+            <span>สั่งใช้ ${prescribingUnits.length} หน่วยบริการ (คลิกดู)</span>
+          </button>
+        `;
+      } else {
+        badgeHtml = `<span class="herb-unit-badge" style="background:#f8fafc; border-color:#e2e8f0; color:#64748b;">🏥 อ.สารภี</span>`;
+      }
+
       const tr = document.createElement('tr');
-      tr.style.cssText = idx % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;';
+      tr.style.cssText = `${idx % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;'}; transition:background 0.15s; cursor:pointer;`;
       tr.onmouseenter = () => tr.style.background = '#f0fdf4';
       tr.onmouseleave = () => tr.style.background = (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
+      tr.onclick = () => window.showDrugUnitsModal(isHdc ? cleanName : rawDid, cleanName, isHdc);
 
-      const didTd = isHdc ? '' : `<td style="padding:8px 8px; text-align:center; font-family:'Noto Sans Thai', sans-serif; font-variant-numeric:tabular-nums; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:145px; min-width:145px; white-space:nowrap;">${item.didstd || '-'}</td>`;
+      const didTd = isHdc ? '' : `
+        <td style="padding:10px 10px; text-align:center; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:180px; min-width:170px;" title="${escapeHtml(tooltipText)}">
+          <span class="herb-did-badge" onclick="event.stopPropagation(); window.showDrugUnitsModal('${rawDid}', '${escapeHtml(cleanName)}', false);">${rawDid || '-'}</span>
+        </td>
+      `;
 
       tr.innerHTML = `
-        <td style="padding:8px 8px; text-align:center; color:#64748b; font-weight:700; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:42px; min-width:42px;">${idx + 1}</td>
-        <td style="padding:8px 12px; font-weight:600; color:#1e293b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; white-space:nowrap; min-width:240px;">${item.drug_name || '-'}</td>
+        <td style="padding:10px 8px; text-align:center; color:#64748b; font-weight:700; font-size:13px; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:48px; min-width:48px;">${idx + 1}</td>
+        <td style="padding:10px 14px; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; min-width:260px;" title="${escapeHtml(tooltipText)}">
+          <div style="font-weight:700; color:#0f172a; font-size:14px; line-height:1.45; margin-bottom:4px;">${cleanName}</div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            ${badgeHtml}
+          </div>
+        </td>
         ${didTd}
-        <td style="padding:8px 8px; text-align:right; font-weight:600; color:#0f172a; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:80px; min-width:80px; white-space:nowrap;">${vsAll.toLocaleString()}</td>
-        <td style="padding:8px 8px; text-align:right; font-weight:700; color:#047857; background:rgba(16,185,129,0.06); font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:75px; min-width:75px; white-space:nowrap;">${vsUc.toLocaleString()}</td>
-        <td style="padding:8px 8px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:85px; min-width:85px; white-space:nowrap;">${amAll.toLocaleString()}</td>
-        <td style="padding:8px 10px; text-align:right; font-weight:700; color:#15803d; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; width:95px; min-width:95px; white-space:nowrap;">${priAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="padding:10px 12px; text-align:right; font-weight:700; color:#0f172a; font-size:13.5px; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:95px; min-width:90px; white-space:nowrap;">${vsAll.toLocaleString()}</td>
+        <td style="padding:10px 12px; text-align:right; font-weight:700; color:#047857; background:rgba(16,185,129,0.07); font-size:13.5px; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:90px; min-width:85px; white-space:nowrap;">${vsUc.toLocaleString()}</td>
+        <td style="padding:10px 12px; text-align:right; color:#475569; font-size:13.5px; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:95px; min-width:90px; white-space:nowrap;">${amAll.toLocaleString()}</td>
+        <td style="padding:10px 14px; text-align:right; font-weight:800; color:#15803d; font-size:14px; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; width:120px; min-width:110px; white-space:nowrap;">${priAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       `;
       ttm4Tbody.appendChild(tr);
     });
@@ -767,15 +1216,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Summary Total Row at bottom
     const totalTr = document.createElement('tr');
     totalTr.style.cssText = 'background:#f0fdf4; font-weight:700; border-top:2px solid #059669; border-bottom:2px solid #059669;';
-    const totalDidTd = isHdc ? '' : `<td style="padding:9px 8px; text-align:center; color:#047857; font-size:11px; width:145px; min-width:145px; white-space:nowrap;">-</td>`;
+    const totalDidTd = isHdc ? '' : `<td style="padding:11px 10px; text-align:center; color:#047857; font-size:12px; width:180px; min-width:170px;">-</td>`;
     totalTr.innerHTML = `
-      <td style="padding:9px 8px; text-align:center; color:#047857; width:42px; min-width:42px;">รวม</td>
-      <td style="padding:9px 12px; color:#14532d; white-space:nowrap; min-width:240px;">รวมทั้งสิ้น (${list.length} รายการ)</td>
+      <td style="padding:11px 8px; text-align:center; color:#047857; font-size:13.5px; width:48px; min-width:48px;">รวม</td>
+      <td style="padding:11px 14px; color:#14532d; font-size:14px; font-weight:800; min-width:260px;">รวมทั้งสิ้น (${list.length} รายการ)</td>
       ${totalDidTd}
-      <td style="padding:9px 8px; text-align:right; color:#0f172a; font-variant-numeric:tabular-nums; width:80px; min-width:80px; white-space:nowrap;">${sumVsAll.toLocaleString()}</td>
-      <td style="padding:9px 8px; text-align:right; color:#047857; background:rgba(16,185,129,0.12); font-variant-numeric:tabular-nums; width:75px; min-width:75px; white-space:nowrap;">${sumVsUc.toLocaleString()}</td>
-      <td style="padding:9px 8px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; width:85px; min-width:85px; white-space:nowrap;">${sumAmAll.toLocaleString()}</td>
-      <td style="padding:9px 10px; text-align:right; color:#15803d; font-size:13px; font-variant-numeric:tabular-nums; width:95px; min-width:95px; white-space:nowrap;">${sumPriAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      <td style="padding:11px 12px; text-align:right; color:#0f172a; font-size:14px; font-variant-numeric:tabular-nums; width:95px; min-width:90px; white-space:nowrap;">${sumVsAll.toLocaleString()}</td>
+      <td style="padding:11px 12px; text-align:right; color:#047857; background:rgba(16,185,129,0.14); font-size:14px; font-variant-numeric:tabular-nums; width:90px; min-width:85px; white-space:nowrap;">${sumVsUc.toLocaleString()}</td>
+      <td style="padding:11px 12px; text-align:right; color:#475569; font-size:14px; font-variant-numeric:tabular-nums; width:95px; min-width:90px; white-space:nowrap;">${sumAmAll.toLocaleString()}</td>
+      <td style="padding:11px 14px; text-align:right; color:#15803d; font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; width:120px; min-width:110px; white-space:nowrap;">${sumPriAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
     `;
     ttm4Tbody.appendChild(totalTr);
   }

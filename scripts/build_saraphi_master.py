@@ -42,24 +42,24 @@ HERB_NAMES = {
     "420000011779404094782758": "ยาน้ำแก้ไอผสมมะขามป้อม 120 ml",
     "420000001559402594781053": "ยาน้ำมะขามป้อม",
     "420000001930000040611170": "ยาบัวบก 20g",
-    "420000002169140020182758": "เพชรสังฆาตแคปซูล",
+    "420000002169140020182758": "เพชรสังฆาตแคปซูล ตราอภัยภูเบศร",
     "420000002379150020182742": "ยาธาตุบรรจบแคปซูล 500 mg",
     "420000002939500594711135": "ยาน้ำธาตุอบเชย 120 ml",
     "420000004119150020182748": "เพชรสังฆาตแคปซูล 500 mg",
     "420000003969120020382755": "ยาประสะมะแว้ง ลูกกลอน",
-    "420000003969120021582750": "ยาประสะมะแว้ง",
-    "420000004489220044211197": "ลูกประคบสมุนไพร 200g",
-    "420000004919150020182750": "ยาตรีผลาแคปซูล 500 mg",
-    "420000005179201594582742": "ยาหอมนวโกฐ 15 g",
+    "420000003969120021582750": "ยาประสะมะแว้ง ตราธงทอง",
+    "420000004489220044211197": "ลูกประคบสมุนไพรแห้ง 200g (จ่ายกลับบ้าน)",
+    "420000004919150020182750": "ยาแคปซูลสหัสธารา 500 mg",
+    "420000005179201594582742": "ยาหอมนวโกฐ ชนิดผง 15 g",
     "420000005649138020182750": "รางจืดแคปซูล",
-    "420000006979150020182750": "ดอกคำฝอยแคปซูล",
-    "420000007839140020182758": "รางจืดแคปซูล",
-    "420000008179140020182737": "รางจืดแคปซูล",
-    "420000010169210094111135": "ยาประสะไพล",
+    "420000006979150020182750": "ดอกคำฝอยแคปซูล ตราธงทอง",
+    "420000007839140020182758": "รางจืดแคปซูล อภัยภูเบศร",
+    "420000008179140020182737": "รางจืดแคปซูล ตราเคเอ็มพี",
+    "420000010169210094111135": "ยาประสะไพล (ยาต้มหลังคลอด/กระตุ้นน้ำนม)",
     "420000010349500794782770": "ยาน้ำแก้ไอผสมมะขามป้อม 60 ml",
-    "420000014769207894511452": "ยาต้มศุขไสยาศน์ (กัญชาแผนไทย)",
-    "420000014869150020111452": "น้ำมันกัญชา 500 mg",
-    "420000016869220044211135": "ลูกประคบสมุนไพรสด 200g",
+    "420000014769207894511452": "ยาต้มศุขไสยาศน์ (ตำรับกัญชาแผนไทย)",
+    "420000014869150020111452": "น้ำมันกัญชาแผนไทย 500 mg",
+    "420000016869220044211135": "ลูกประคบสมุนไพรสด 200g (ห้องนวด)",
     "400000000120000000400000": "ขมิ้นชันผง",
     "420000002369125020110919": "ยาธาตุบรรจบ (ยาผง/เม็ด)",
     "420000001580000094782755": "ยาแก้ไอมะขามป้อม",
@@ -80,7 +80,105 @@ HERB_NAMES = {
     "410000000389301840182758": "ครีมพญายอ",
     "420000001589502094782737": "ยาแก้ไอมะขามป้อม",
     "410000000450000040111144": "น้ำมันไพล",
-    "420000002930000002311170": "ยาธาตุอบเชย"
+    "420000002930000002311170": "ยาธาตุอบเชย",
+    "410000000100000020110665": "ขมิ้นชันแคปซูล 500 มก. ตราอภัยภูเบศร",
+    "410000000109150020182737": "ขมิ้นชัน cap. ตราเคเอ็มพี",
+    "410000000109150020182742": "ขมิ้นชันแคปซูล 500 mg [14วัน]*",
+    "410000000190000094510665": "ยาชงชุมเห็ดเทศ (ซอง)",
+    "410000000239140020182758": "เถาวัลย์เปรียง cap. ตราอภัยภูเบศร",
+    "410000000239150020182750": "เถาวัลย์เปรียงแคปซูล 500 mg [14วัน]*",
+    "410000000239150000000000": "เถาวัลย์เปรียงแคปซูล 500 mg (รหัสมาตรฐานกลาง สธ.)",
+    "410050000000000000000000": "ยาสมุนไพรกลุ่มบำรุงโลหิต/สธ. (รหัสหมวดหมู่ HDC)",
+    "410040000000000000000000": "ยาสมุนไพรกลุ่มถ่ายพยาธิ/ขับลม (รหัสหมวดหมู่ HDC)",
+    "420010000000000000000000": "ยาแผนไทยตำรับกลุ่มปรับธาตุ/บำรุงธาตุ (รหัสหมวดหมู่ HDC)",
+    "4200800000000000000": "ยาแผนไทยตำรับกลุ่มสตรี/หลังคลอด (รหัสหมวดหมู่ HDC)",
+    "410000000380000041911197": "กลีเซอรีนเสลดพังพอน ขวด 60 ml",
+    "410000000389401050382758": "พญายอครีม หลอด 10 g [7วัน]*",
+    "410000000459601440182737": "ไพลรีนิกซ์ ครีม 30 g [30วัน]*",
+    "410000000479150020182750": "ฟ้าทะลายโจรแคปซูล 500 mg [7วัน]",
+    "410000000499140020182750": "มะขามแขกแคปซูล 400 mg [7วัน]*",
+    "410000000619201034111135": "ยาชงชาหญ้าดอกขาว (10ถุงชาเล็ก) [14วัน]",
+    "4125": "ฟ้าทะลายโจรแคปซูล (รหัสภายใน)",
+    "4128": "ขมิ้นชันแคปซูล (รหัสภายใน)",
+    "4238": "ยาประสะมะแว้ง (รหัสภายใน)"
+}
+
+# Prefix-based nomenclature resolution for Ministry of Public Health DID standards
+PREFIX_HERB_MAP = {
+    "41000000010": "ขมิ้นชันแคปซูล 500 mg",
+    "41000000015": "ยาชงรางจืด",
+    "41000000019": "ยาชงชุมเห็ดเทศ (ซอง)",
+    "41000000023": "เถาวัลย์เปรียงแคปซูล",
+    "41000000038": "พญายอ (ครีม/สารละลาย)",
+    "41000000044": "บัวบกแคปซูล",
+    "41000000045": "ไพลครีม/น้ำมันไพล",
+    "41000000047": "ฟ้าทะลายโจรแคปซูล",
+    "41000000049": "มะขามแขกแคปซูล",
+    "41000000052": "หญ้าปักกิ่ง",
+    "41000000057": "กระเจี๊ยบแดง",
+    "41000000061": "ยาชงหญ้าดอกขาว",
+    "41000000064": "ยาชงหญ้าหนวดแมว",
+    "41000000101": "ขิงแคปซูล",
+    "410000000038": "พญายอ (ครีม/เสลดพังพอน)",
+    "410000000047": "ฟ้าทะลายโจรแคปซูล",
+    "410040": "ยาสมุนไพรกลุ่มถ่ายพยาธิ/ขับลม (รหัสหมวดหมู่ HDC)",
+    "410050": "ยาสมุนไพรกลุ่มบำรุงโลหิต/สธ. (รหัสหมวดหมู่ HDC)",
+    "42000000154": "ยาประสะมะแว้ง (ลูกกลอน/ยาอม)",
+    "42000000155": "ยาหอมเทพจิตร",
+    "42000000158": "ยาน้ำแก้ไอมะขามป้อม",
+    "42000000160": "ยาอำมฤควาที",
+    "42000000216": "ยาเพชรสังฆาตแคปซูล",
+    "42000000217": "ยาเพชรสังฆาตแคปซูล",
+    "42000000222": "ยาธาตุอบเชย",
+    "42000000236": "ยาธาตุบรรจบ (ผง/เม็ด)",
+    "42000000237": "ยาธาตุบรรจบแคปซูล 500 mg",
+    "42000000254": "ยาหอมอินทจักร์",
+    "42000000257": "ยาหอมนวโกฐ",
+    "42000000266": "ยามหาพิกัดตรีผลา",
+    "42000000267": "ยามหาพิกัดตรีผลา",
+    "42000000286": "ยาธาตุบรรจบ",
+    "42000000293": "ยาน้ำธาตุอบเชย",
+    "42000000300": "ยาน้ำธาตุอบเชย",
+    "42000000329": "ยาธาตุบรรจบ",
+    "42000000369": "ยาหอมนวโกฐ",
+    "42000000395": "ยาประสะมะแว้ง",
+    "42000000396": "ยาประสะมะแว้ง",
+    "42000000399": "ยาประสะมะแว้ง",
+    "42000000409": "ยาประสะจันทน์แดง",
+    "42000000411": "ยาเพชรสังฆาตแคปซูล 500 mg",
+    "42000000412": "ยาเพชรสังฆาตแคปซูล",
+    "42000000448": "ลูกประคบสมุนไพร",
+    "42000000466": "ลูกประคบสมุนไพร",
+    "42000000486": "ยาหอมนวโกฐ",
+    "42000000491": "ยาตรีผลา/สหัสธาราแคปซูล",
+    "42000000505": "บัวบกครีม",
+    "42000000514": "ยาหอมนวโกฐ",
+    "42000000515": "ยาหอมทิพโอสถ",
+    "42000000516": "ยาหอมอินทจักร์",
+    "42000000517": "ยาหอมนวโกฐ ชนิดผง 15 g",
+    "42000000527": "ยาหอมนวโกฐ",
+    "42000000534": "ยาหอมอินทจักร์",
+    "42000000549": "เจลพริก",
+    "42000000554": "ขมิ้นชันแคปซูล",
+    "42000000618": "ยาประสะไพล",
+    "42000000697": "ยาดอกคำฝอยแคปซูล",
+    "42000000757": "ยาน้ำแก้ไอมะขามป้อม",
+    "42000000783": "ยารางจืดแคปซูล",
+    "42000000787": "ยารางจืดแคปซูล",
+    "42000000817": "ยารางจืดแคปซูล",
+    "42000000974": "ยาแก้ไอมะขามป้อม",
+    "42000001016": "ยาประสะไพล (ยาต้มหลังคลอด/กระตุ้นน้ำนม)",
+    "42000001102": "ยาน้ำแก้ไอมะขามป้อม",
+    "42000001177": "ยาน้ำแก้ไอผสมมะขามป้อม 120 ml",
+    "42000001475": "ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)",
+    "42000001476": "ยาต้มศุขไสยาศน์ (ตำรับกัญชาแผนไทย)",
+    "42000001478": "ยาศุขไสยาศน์ (ตำรับกัญชาแผนไทย)",
+    "42000001486": "น้ำมันกัญชาแผนไทย 500 mg",
+    "42000001505": "น้ำมันกัญชาแผนไทย",
+    "42000001686": "ลูกประคบสมุนไพรสด 200g (ห้องนวด)",
+    "42000001688": "ยาน้ำแก้ไอผสมมะขามป้อม",
+    "420010": "ยาแผนไทยตำรับกลุ่มปรับธาตุ/บำรุงธาตุ (รหัสหมวดหมู่ HDC)",
+    "420080": "ยาแผนไทยตำรับกลุ่มสตรี/หลังคลอด (รหัสหมวดหมู่ HDC)"
 }
 
 # HDC Standard Report 1.4 Group Names
@@ -108,6 +206,11 @@ TTM4_HDC_GROUPS = {
     "410000000450000040111144": "ไพล, น้ำมัน",
     "410000000239150020182750": "เถาวัลย์เปรียง, ยาแคปซูล",
     "410000000239140020182758": "เถาวัลย์เปรียง, ยาแคปซูล",
+    "410000000239150000000000": "เถาวัลย์เปรียง, ยาแคปซูล",
+    "410050000000000000000000": "ยาสมุนไพรกลุ่มบำรุงโลหิต",
+    "410040000000000000000000": "ยาสมุนไพรกลุ่มขับลมและระบาย",
+    "420010000000000000000000": "ยาแผนไทยตำรับกลุ่มปรับธาตุ",
+    "4200800000000000000": "ยาแผนไทยตำรับกลุ่มสตรีและหลังคลอด",
     "410000000389300550282750": "พญายอ, สารละลายสำหรับป้ายปาก",
     "410000000389401050382758": "พญายอ, สารละลายสำหรับป้ายปาก",
     "410000000380000041911197": "พญายอ, ยาน้ำ",
@@ -143,16 +246,37 @@ TTM4_HDC_GROUPS = {
     "420000001930000040611170": "บัวบก, ครีม"
 }
 
-cdrug_path = os.path.join(data_dir, "jhcis_cdrug_map.json")
-if os.path.exists(cdrug_path):
+# Also load from drug_names_map.json
+drug_names_map_path = os.path.join(data_dir, "drug_names_map.json")
+if os.path.exists(drug_names_map_path):
     try:
-        with open(cdrug_path, "r", encoding="utf-8") as f:
-            cdrug_loaded = json.load(f)
-            for k, v in cdrug_loaded.items():
-                if k not in HERB_NAMES:
+        with open(drug_names_map_path, "r", encoding="utf-8") as f:
+            dmap = json.load(f)
+            for k, v in dmap.items():
+                if v and "?" not in v:
                     HERB_NAMES[k] = v
     except:
         pass
+
+def resolve_clean_herb_name(did, raw_name, group_name=""):
+    cleaned_did = str(did or "").strip().replace(" ", "")
+    # 1. Exact match from HERB_NAMES
+    if cleaned_did in HERB_NAMES and HERB_NAMES[cleaned_did] and "?" not in HERB_NAMES[cleaned_did]:
+        return HERB_NAMES[cleaned_did]
+    # 2. Raw name if valid and clean
+    if raw_name and "?" not in raw_name and not raw_name.startswith("4") and not raw_name.startswith("รหัสยา") and raw_name != did:
+        return raw_name
+    # 3. Match from prefix map (longest prefix first)
+    for pfx in sorted(PREFIX_HERB_MAP.keys(), key=len, reverse=True):
+        if cleaned_did.startswith(pfx):
+            return PREFIX_HERB_MAP[pfx]
+    # 4. Group name if valid
+    if group_name and "?" not in group_name and not group_name.startswith("4"):
+        return group_name
+    # 5. Exact match from HDC groups
+    if cleaned_did in TTM4_HDC_GROUPS:
+        return TTM4_HDC_GROUPS[cleaned_did]
+    return f"ยาสมุนไพร (รหัส {cleaned_did[:12]}...)"
 
 def clean_num(v):
     if v is None: return 0.0
@@ -550,12 +674,11 @@ for y in years:
         raw_items = cu.get("drug_items", [])
         drug_items = []
         for it in raw_items:
-            did = str(it.get("didstd", "")).strip()
-            dname = it.get("drug_name")
-            if not dname or dname == did or dname.startswith("4"):
-                dname = HERB_NAMES.get(did, f"รหัสยา {did[:12]}...")
+            did = str(it.get("didstd", "")).strip().replace(" ", "")
+            raw_dname = str(it.get("drug_name") or "").strip()
+            gname = TTM4_HDC_GROUPS.get(did, "")
+            dname = resolve_clean_herb_name(did, raw_dname, gname)
             
-            gname = TTM4_HDC_GROUPS.get(did)
             if not gname:
                 for gk, gv in TTM4_HDC_GROUPS.items():
                     base_g = gv.split(",")[0].strip()
@@ -571,6 +694,18 @@ for y in years:
             pa = float(it.get("pri_all") or it.get("price") or it.get("cost") or 0)
             pu = float(it.get("pri_uc") or 0)
 
+            unit_entry = {
+                "hospcode": hcode,
+                "name": info["name"],
+                "short_name": info.get("short_name", info["name"]),
+                "subdistrict": info.get("subdistrict", ""),
+                "vs_all": va,
+                "vs_uc": vu,
+                "am_all": aa,
+                "pri_all": round(pa, 2),
+                "pri_uc": round(pu, 2)
+            }
+
             drug_items.append({
                 "didstd": did,
                 "drug_name": dname,
@@ -579,7 +714,8 @@ for y in years:
                 "vs_uc": vu,
                 "am_all": aa,
                 "pri_all": round(pa, 2),
-                "pri_uc": round(pu, 2)
+                "pri_uc": round(pu, 2),
+                "units": [unit_entry]
             })
 
         drug_items.sort(key=lambda x: (x["vs_all"], x["pri_all"]), reverse=True)
@@ -717,13 +853,32 @@ for y in years:
                     "didstd": did,
                     "drug_name": it["drug_name"],
                     "hdc_group_name": it["hdc_group_name"],
-                    "vs_all": 0, "vs_uc": 0, "am_all": 0.0, "pri_all": 0.0, "pri_uc": 0.0
+                    "vs_all": 0, "vs_uc": 0, "am_all": 0.0, "pri_all": 0.0, "pri_uc": 0.0,
+                    "units": []
                 }
             dist_drug_map[did]["vs_all"] += it["vs_all"]
             dist_drug_map[did]["vs_uc"] += it["vs_uc"]
             dist_drug_map[did]["am_all"] += it["am_all"]
             dist_drug_map[did]["pri_all"] += it["pri_all"]
             dist_drug_map[did]["pri_uc"] += it["pri_uc"]
+            dist_drug_map[did]["units"].append({
+                "hospcode": u["hospcode"],
+                "name": u["name"],
+                "short_name": u["short_name"],
+                "subdistrict": u.get("subdistrict", ""),
+                "vs_all": it["vs_all"],
+                "vs_uc": it["vs_uc"],
+                "am_all": it["am_all"],
+                "pri_all": it["pri_all"],
+                "pri_uc": it["pri_uc"]
+            })
+
+    # Sort units inside each drug item by pri_all descending
+    for did, item in dist_drug_map.items():
+        item["units"].sort(key=lambda x: (x["pri_all"], x["vs_all"]), reverse=True)
+        item["pri_all"] = round(item["pri_all"], 2)
+        item["pri_uc"] = round(item["pri_uc"], 2)
+        item["am_all"] = round(item["am_all"], 2)
 
     dist_drug_items = sorted(dist_drug_map.values(), key=lambda x: (x["pri_all"], x["vs_all"]), reverse=True)
 
@@ -733,7 +888,8 @@ for y in years:
         if gname not in dist_hdc_map:
             dist_hdc_map[gname] = {
                 "drug_name": gname,
-                "vs_all": 0, "vs_uc": 0, "am_all": 0.0, "pri_all": 0.0, "pri_uc": 0.0, "items_count": 0, "didstd_list": []
+                "vs_all": 0, "vs_uc": 0, "am_all": 0.0, "pri_all": 0.0, "pri_uc": 0.0, "items_count": 0, "didstd_list": [],
+                "units_map": {}
             }
         dist_hdc_map[gname]["vs_all"] += it["vs_all"]
         dist_hdc_map[gname]["vs_uc"] += it["vs_uc"]
@@ -743,7 +899,42 @@ for y in years:
         dist_hdc_map[gname]["items_count"] += 1
         dist_hdc_map[gname]["didstd_list"].append(it["didstd"])
 
-    dist_hdc_grouped = sorted(dist_hdc_map.values(), key=lambda x: (x["vs_all"], x["pri_all"]), reverse=True)
+        for u_entry in it.get("units", []):
+            hc = u_entry["hospcode"]
+            if hc not in dist_hdc_map[gname]["units_map"]:
+                dist_hdc_map[gname]["units_map"][hc] = {
+                    "hospcode": hc,
+                    "name": u_entry["name"],
+                    "short_name": u_entry["short_name"],
+                    "subdistrict": u_entry.get("subdistrict", ""),
+                    "vs_all": 0, "vs_uc": 0, "am_all": 0.0, "pri_all": 0.0, "pri_uc": 0.0
+                }
+            dist_hdc_map[gname]["units_map"][hc]["vs_all"] += u_entry["vs_all"]
+            dist_hdc_map[gname]["units_map"][hc]["vs_uc"] += u_entry["vs_uc"]
+            dist_hdc_map[gname]["units_map"][hc]["am_all"] += u_entry["am_all"]
+            dist_hdc_map[gname]["units_map"][hc]["pri_all"] += u_entry["pri_all"]
+            dist_hdc_map[gname]["units_map"][hc]["pri_uc"] += u_entry["pri_uc"]
+
+    dist_hdc_grouped = []
+    for gname, gdata in dist_hdc_map.items():
+        g_units = sorted(gdata["units_map"].values(), key=lambda x: (x["pri_all"], x["vs_all"]), reverse=True)
+        for gu in g_units:
+            gu["pri_all"] = round(gu["pri_all"], 2)
+            gu["pri_uc"] = round(gu["pri_uc"], 2)
+            gu["am_all"] = round(gu["am_all"], 2)
+        dist_hdc_grouped.append({
+            "drug_name": gname,
+            "vs_all": gdata["vs_all"],
+            "vs_uc": gdata["vs_uc"],
+            "am_all": round(gdata["am_all"], 2),
+            "pri_all": round(gdata["pri_all"], 2),
+            "pri_uc": round(gdata["pri_uc"], 2),
+            "items_count": gdata["items_count"],
+            "didstd_list": gdata["didstd_list"],
+            "units": g_units
+        })
+
+    dist_hdc_grouped.sort(key=lambda x: (x["vs_all"], x["pri_all"]), reverse=True)
 
     cm_summary = cache_d.get("chiangmai_summary") or DEFAULT_CM_SUMMARY.get(y, {})
 
