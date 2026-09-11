@@ -40,7 +40,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="styles.css?v=2.5">
+  <link rel="stylesheet" href="styles.css?v=2.6">
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
 
@@ -202,7 +202,7 @@
             </h4>
             <span class="text-[11px] text-slate-400 font-mono">รายปีงบประมาณ</span>
           </div>
-          <div class="h-64 relative">
+          <div class="relative" style="height: 420px;">
             <canvas id="trendChart"></canvas>
           </div>
           <div id="trend-summary-note" class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -223,7 +223,7 @@
               <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-400 inline-block"></span> ไม่ผ่าน</span>
             </div>
           </div>
-          <div class="h-64 relative">
+          <div class="relative" style="height: 420px;">
             <canvas id="rankingChart"></canvas>
           </div>
           <div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -373,17 +373,25 @@
               <span id="moph-ttm4-drug-summary" style="font-size:12px; font-weight:700; color:#047857; background:#dcfce7; padding:4px 10px; border-radius:6px;">- รายการ | - บาท</span>
             </div>
           </div>
-          <div style="max-height:420px; overflow-y:auto;">
-            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+          <div style="max-height:450px; overflow-x:auto; overflow-y:auto;" class="no-scrollbar">
+            <table style="width:100%; min-width:760px; border-collapse:collapse; font-size:12px;">
               <thead>
                 <tr style="background:#065f46; color:#ffffff !important; position:sticky; top:0; z-index:2; font-weight:700;">
-                  <th style="padding:10px 10px; text-align:center; width:40px; color:#ffffff !important; border-right:1px solid #047857;">#</th>
-                  <th style="padding:10px 14px; text-align:left; color:#ffffff !important; border-right:1px solid #047857;">ชื่อยาสมุนไพร</th>
-                  <th id="th-ttm4-didstd" style="padding:10px 10px; text-align:center; color:#ffffff !important; border-right:1px solid #047857; display:none;">รหัส DIDSTD (24 หลัก)</th>
-                  <th style="padding:10px 14px; text-align:right; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap;">จำนวนจ่ายรวมทุกสิทธิ (ครั้ง)</th>
-                  <th style="padding:10px 14px; text-align:right; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap; background:#047857;">จำนวนจ่ายรวมสิทธิ UC (ครั้ง)</th>
-                  <th style="padding:10px 14px; text-align:right; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap;">จำนวนที่จ่ายรวมทุกสิทธิ (หน่วยนับ)</th>
-                  <th style="padding:10px 14px; text-align:right; color:#ffffff !important; white-space:nowrap;">มูลค่ารวมทุกสิทธิ (บาท)</th>
+                  <th style="padding:9px 8px; text-align:center; width:42px; min-width:42px; color:#ffffff !important; border-right:1px solid #047857;">#</th>
+                  <th style="padding:9px 12px; text-align:left; color:#ffffff !important; border-right:1px solid #047857; min-width:240px; white-space:nowrap;">ชื่อยาสมุนไพร</th>
+                  <th id="th-ttm4-didstd" style="padding:9px 8px; text-align:center; width:145px; min-width:145px; color:#ffffff !important; border-right:1px solid #047857; font-family:monospace; font-size:11px; white-space:nowrap; display:none;">รหัส DIDSTD (24 หลัก)</th>
+                  <th style="padding:7px 8px; text-align:right; width:80px; min-width:80px; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap; line-height:1.2; font-size:11.5px;">
+                    สั่งจ่ายรวม<br><span style="font-size:10px; font-weight:400; opacity:0.85;">(ครั้ง)</span>
+                  </th>
+                  <th style="padding:7px 8px; text-align:right; width:75px; min-width:75px; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap; background:#047857; line-height:1.2; font-size:11.5px;">
+                    สิทธิ UC<br><span style="font-size:10px; font-weight:400; opacity:0.85;">(ครั้ง)</span>
+                  </th>
+                  <th style="padding:7px 8px; text-align:right; width:85px; min-width:85px; color:#ffffff !important; border-right:1px solid #047857; white-space:nowrap; line-height:1.2; font-size:11.5px;">
+                    จำนวนจ่าย<br><span style="font-size:10px; font-weight:400; opacity:0.85;">(หน่วยนับ)</span>
+                  </th>
+                  <th style="padding:7px 10px; text-align:right; width:95px; min-width:95px; color:#ffffff !important; white-space:nowrap; line-height:1.2; font-size:11.5px;">
+                    มูลค่ารวม<br><span style="font-size:10px; font-weight:400; opacity:0.85;">(บาท)</span>
+                  </th>
                 </tr>
               </thead>
               <tbody id="moph-ttm4-drugs-tbody">
@@ -612,6 +620,6 @@
   </footer>
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=2.5"></script>
+  <script src="app.js?v=2.6"></script>
 </body>
 </html>

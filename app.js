@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             data: rates,
             backgroundColor: bgColors,
             borderRadius: 6,
-            barThickness: 12
+            barThickness: 14
           }
         ]
       },
@@ -350,6 +350,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 15,
+            top: 5,
+            bottom: 5
+          }
+        },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -364,11 +372,18 @@ document.addEventListener('DOMContentLoaded', async () => {
           x: {
             beginAtZero: true,
             grid: { color: '#f1f5f9' },
-            ticks: { font: { family: 'Prompt', size: 10 } }
+            ticks: { font: { family: "'Prompt', 'Sarabun', sans-serif", size: 10.5 } }
           },
           y: {
             grid: { display: false },
-            ticks: { font: { family: 'Prompt', size: 10 } }
+            afterFit: function(axis) {
+              axis.width = 175; // Guaranteed full width for Thai health unit names
+            },
+            ticks: {
+              autoSkip: false,
+              font: { family: "'Prompt', 'Sarabun', sans-serif", size: 11, weight: '500' },
+              color: '#1e293b'
+            }
           }
         }
       }
@@ -651,16 +666,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       tr.onmouseenter = () => tr.style.background = '#f0fdf4';
       tr.onmouseleave = () => tr.style.background = (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
 
-      const didTd = isHdc ? '' : `<td style="padding:8px 10px; text-align:center; font-family:monospace; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${item.didstd || '-'}</td>`;
+      const didTd = isHdc ? '' : `<td style="padding:8px 8px; text-align:center; font-family:monospace; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:145px; min-width:145px; white-space:nowrap;">${item.didstd || '-'}</td>`;
 
       tr.innerHTML = `
-        <td style="padding:8px 10px; text-align:center; color:#64748b; font-weight:700; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${idx + 1}</td>
-        <td style="padding:8px 12px; font-weight:600; color:#1e293b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${item.drug_name || '-'}</td>
+        <td style="padding:8px 8px; text-align:center; color:#64748b; font-weight:700; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:42px; min-width:42px;">${idx + 1}</td>
+        <td style="padding:8px 12px; font-weight:600; color:#1e293b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; white-space:nowrap; min-width:240px;">${item.drug_name || '-'}</td>
         ${didTd}
-        <td style="padding:8px 12px; text-align:right; font-weight:600; color:#0f172a; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${vsAll.toLocaleString()}</td>
-        <td style="padding:8px 12px; text-align:right; font-weight:700; color:#047857; background:rgba(16,185,129,0.06); font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${vsUc.toLocaleString()}</td>
-        <td style="padding:8px 12px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${amAll.toLocaleString()}</td>
-        <td style="padding:8px 12px; text-align:right; font-weight:700; color:#15803d; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0;">${priAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="padding:8px 8px; text-align:right; font-weight:600; color:#0f172a; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:80px; min-width:80px; white-space:nowrap;">${vsAll.toLocaleString()}</td>
+        <td style="padding:8px 8px; text-align:right; font-weight:700; color:#047857; background:rgba(16,185,129,0.06); font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:75px; min-width:75px; white-space:nowrap;">${vsUc.toLocaleString()}</td>
+        <td style="padding:8px 8px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:85px; min-width:85px; white-space:nowrap;">${amAll.toLocaleString()}</td>
+        <td style="padding:8px 10px; text-align:right; font-weight:700; color:#15803d; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; width:95px; min-width:95px; white-space:nowrap;">${priAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       `;
       ttm4Tbody.appendChild(tr);
     });
@@ -668,15 +683,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Summary Total Row at bottom
     const totalTr = document.createElement('tr');
     totalTr.style.cssText = 'background:#f0fdf4; font-weight:700; border-top:2px solid #059669; border-bottom:2px solid #059669;';
-    const totalDidTd = isHdc ? '' : `<td style="padding:9px 10px; text-align:center; color:#047857; font-size:11px;">-</td>`;
+    const totalDidTd = isHdc ? '' : `<td style="padding:9px 8px; text-align:center; color:#047857; font-size:11px; width:145px; min-width:145px; white-space:nowrap;">-</td>`;
     totalTr.innerHTML = `
-      <td style="padding:9px 10px; text-align:center; color:#047857;">รวม</td>
-      <td style="padding:9px 12px; color:#14532d;">รวมทั้งสิ้น (${list.length} รายการ)</td>
+      <td style="padding:9px 8px; text-align:center; color:#047857; width:42px; min-width:42px;">รวม</td>
+      <td style="padding:9px 12px; color:#14532d; white-space:nowrap; min-width:240px;">รวมทั้งสิ้น (${list.length} รายการ)</td>
       ${totalDidTd}
-      <td style="padding:9px 12px; text-align:right; color:#0f172a; font-variant-numeric:tabular-nums;">${sumVsAll.toLocaleString()}</td>
-      <td style="padding:9px 12px; text-align:right; color:#047857; background:rgba(16,185,129,0.12); font-variant-numeric:tabular-nums;">${sumVsUc.toLocaleString()}</td>
-      <td style="padding:9px 12px; text-align:right; color:#475569; font-variant-numeric:tabular-nums;">${sumAmAll.toLocaleString()}</td>
-      <td style="padding:9px 12px; text-align:right; color:#15803d; font-size:13px; font-variant-numeric:tabular-nums;">${sumPriAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      <td style="padding:9px 8px; text-align:right; color:#0f172a; font-variant-numeric:tabular-nums; width:80px; min-width:80px; white-space:nowrap;">${sumVsAll.toLocaleString()}</td>
+      <td style="padding:9px 8px; text-align:right; color:#047857; background:rgba(16,185,129,0.12); font-variant-numeric:tabular-nums; width:75px; min-width:75px; white-space:nowrap;">${sumVsUc.toLocaleString()}</td>
+      <td style="padding:9px 8px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; width:85px; min-width:85px; white-space:nowrap;">${sumAmAll.toLocaleString()}</td>
+      <td style="padding:9px 10px; text-align:right; color:#15803d; font-size:13px; font-variant-numeric:tabular-nums; width:95px; min-width:95px; white-space:nowrap;">${sumPriAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
     `;
     ttm4Tbody.appendChild(totalTr);
   }
@@ -805,6 +820,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 12,
+            right: 12,
+            top: 10,
+            bottom: 5
+          }
+        },
         interaction: {
           mode: 'index',
           intersect: false
