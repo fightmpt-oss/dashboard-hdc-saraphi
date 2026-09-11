@@ -53,16 +53,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // Master Map of 14 Health Units in Saraphi District (Guaranteed Clean Thai Names)
+  const SARAPHI_UNITS_MAP = {
+    '06014': { name: 'รพ.สต.บ้านยางเนิ้ง', short: 'บ้านยางเนิ้ง', subdistrict: 'ยางเนิ้ง' },
+    '06015': { name: 'รพ.สต.บ้านพญาชมภู', short: 'บ้านพญาชมภู', subdistrict: 'ชมภู' },
+    '06016': { name: 'รพ.สต.บ้านศรีสองเมือง', short: 'บ้านศรีสองเมือง', subdistrict: 'ไชยสถาน' },
+    '06017': { name: 'รพ.สต.บ้านหัวดง', short: 'บ้านหัวดง', subdistrict: 'ขัวมุง' },
+    '06018': { name: 'รพ.สต.บ้านหนองแฝก', short: 'บ้านหนองแฝก', subdistrict: 'หนองแฝก' },
+    '06020': { name: 'รพ.สต.บ้านแคว (ท่ากว้าง)', short: 'บ้านแคว (ท่ากว้าง)', subdistrict: 'ท่ากว้าง' },
+    '06021': { name: 'รพ.สต.บ้านสันต้นกอก', short: 'บ้านสันต้นกอก', subdistrict: 'ดอนแก้ว' },
+    '06022': { name: 'รพ.สต.บ้านบวกครกเหนือ', short: 'บ้านบวกครกเหนือ', subdistrict: 'ท่าวังตาล' },
+    '06023': { name: 'รพ.สต.บ้านป่าเส้า', short: 'บ้านป่าเส้า', subdistrict: 'สันทราย' },
+    '06024': { name: 'รพ.สต.บ้านศรีคำชมภู', short: 'บ้านศรีคำชมภู', subdistrict: 'ป่าบง' },
+    '11135': { name: 'รพ.สารภี', short: 'รพ.สารภี', subdistrict: 'สารภี' },
+    '13994': { name: 'รพ.สต.บ้านท่าต้นกวาว', short: 'บ้านท่าต้นกวาว', subdistrict: 'ชมภู' },
+    '14461': { name: 'รพ.สต.บ้านหนองผึ้ง', short: 'บ้านหนองผึ้ง', subdistrict: 'หนองผึ้ง' },
+    '99758': { name: 'ศสม.สารภี', short: 'ศสม.สารภี', subdistrict: 'สารภี' }
+  };
+
   // 1. Populate Unit Select Dropdown
   function initUnitDropdown() {
     if (!unitSelect) return;
     unitSelect.innerHTML = '<option value="all">🏥 ภาพรวมทั้งอำเภอสารภี (14 หน่วยงาน)</option>';
-    const units = masterData.metadata.units;
+    const units = (masterData && masterData.metadata && masterData.metadata.units) || SARAPHI_UNITS_MAP;
     Object.keys(units).sort().forEach(code => {
-      const u = units[code];
+      const meta = SARAPHI_UNITS_MAP[code];
+      const uName = meta ? meta.name : (units[code]?.name || code);
+      const uSub = meta ? meta.subdistrict : (units[code]?.subdistrict || '');
       const opt = document.createElement('option');
       opt.value = code;
-      opt.textContent = `${code}: ${u.name} (ต.${u.subdistrict})`;
+      opt.textContent = `${code}: ${uName} (ต.${uSub})`;
       unitSelect.appendChild(opt);
     });
   }
@@ -127,25 +147,66 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    document.getElementById('stat-total-indicators').textContent = `${indicators.length} ตัว`;
-    document.getElementById('stat-passed-indicators').textContent = `${passedCount} ตัว`;
-    document.getElementById('stat-failed-indicators').textContent = `${failedCount} ตัว`;
+    const totalInds = indicators.length;
+    const passRate = totalInds > 0 ? Math.round((passedCount / totalInds) * 100) : 0;
+
+    const elTotal = document.getElementById('stat-total-indicators');
+    if (elTotal) elTotal.textContent = `${totalInds} ตัว`;
+
+    const elPassed = document.getElementById('stat-passed-indicators');
+    if (elPassed) elPassed.textContent = `${passedCount} / ${totalInds}`;
+
+    const elPassRateBadge = document.getElementById('stat-pass-rate-badge');
+    if (elPassRateBadge) {
+      elPassRateBadge.textContent = `${passRate}% ผ่านเกณฑ์`;
+      elPassRateBadge.className = passRate >= 60
+        ? 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200'
+        : 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200';
+    }
+
+    const elFailed = document.getElementById('stat-failed-indicators');
+    if (elFailed) elFailed.textContent = `${failedCount} ตัว`;
 
     // Total TTM Value stat
     const ttmVal = masterData.indicators['ttm_val'];
-    if (ttmVal && ttmVal.years[yr]) {
-      const num = currentUnit === 'all'
-        ? ttmVal.years[yr].num
-        : (ttmVal.years[yr].units.find(u => u.hospcode === currentUnit)?.num || 0);
-      document.getElementById('stat-ttm-total-val').textContent = `${Number(num).toLocaleString()} ฿`;
+    const elTtmVal = document.getElementById('stat-ttm-total-val');
+    if (ttmVal && ttmVal.years[yr] && elTtmVal) {
+      const rate = currentUnit === 'all'
+        ? ttmVal.years[yr].rate
+        : (ttmVal.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
+      elTtmVal.textContent = `${Number(rate).toFixed(2)} %`;
+    }
+
+    // NCD Control stat (HT control)
+    const ncdInd = masterData.indicators['pcc_ht_control'];
+    const elNcd = document.getElementById('stat-ncd-rate');
+    if (ncdInd && ncdInd.years[yr] && elNcd) {
+      const rate = currentUnit === 'all'
+        ? ncdInd.years[yr].rate
+        : (ncdInd.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
+      elNcd.textContent = `${Number(rate).toFixed(1)} %`;
+    }
+
+    // Screening Coverage stat (DSPM child development)
+    const screenInd = masterData.indicators['ppb_child_develop'];
+    const elScreen = document.getElementById('stat-screen-rate');
+    if (screenInd && screenInd.years[yr] && elScreen) {
+      const rate = currentUnit === 'all'
+        ? screenInd.years[yr].rate
+        : (screenInd.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
+      elScreen.textContent = `${Number(rate).toFixed(1)} %`;
     }
 
     // Selected Unit & Year Label
+    const metaUnit = SARAPHI_UNITS_MAP[currentUnit];
     const unitName = currentUnit === 'all'
       ? 'ภาพรวมอำเภอสารภี (14 แห่ง)'
-      : masterData.metadata.units[currentUnit]?.name || currentUnit;
-    document.getElementById('selected-unit-label').textContent = unitName;
-    document.getElementById('selected-year-label').textContent = currentYear === 'all' ? 'แนวโน้ม 3 ปี (2567-2569)' : `ข้อมูลปี พ.ศ. ${currentYear}`;
+      : (metaUnit ? metaUnit.name : (masterData.metadata.units[currentUnit]?.name || currentUnit));
+    const elUnitLabel = document.getElementById('selected-unit-label');
+    if (elUnitLabel) elUnitLabel.textContent = unitName;
+
+    const elYearLabel = document.getElementById('selected-year-label');
+    if (elYearLabel) elYearLabel.textContent = currentYear === 'all' ? 'แนวโน้ม 3 ปี (2567-2569)' : `ข้อมูลปี พ.ศ. ${currentYear}`;
 
     const domainTitles = {
       ttm: 'หมวด: 🌿 แพทย์แผนไทย & ยาสมุนไพร',
@@ -154,7 +215,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       elderly: 'หมวด: 👵 ผู้สูงอายุ & NCDs',
       mch: 'หมวด: 👶 อนามัยแม่และเด็ก'
     };
-    document.getElementById('view-title').textContent = domainTitles[currentDomain] || 'แดชบอร์ดสุขภาพ';
+    const elViewTitle = document.getElementById('view-title');
+    if (elViewTitle) elViewTitle.textContent = domainTitles[currentDomain] || 'แดชบอร์ดสุขภาพ';
   }
 
   // 5. Update Active Indicator Card Header
@@ -319,13 +381,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yData = ind.years[yr];
     if (!yData || !yData.units) return;
 
+    const isMobile = window.innerWidth < 640;
     const sortedUnits = [...yData.units].sort((a, b) => b.rate - a.rate);
-    const labels = sortedUnits.map(u => u.name.replace('โรงพยาบาลส่งเสริมสุขภาพตำบล', 'รพ.สต.').replace('โรงพยาบาล', 'รพ.'));
+    const labels = sortedUnits.map(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const baseName = meta ? meta.name : (u.name || u.hospcode);
+      return baseName.replace('โรงพยาบาลส่งเสริมสุขภาพตำบล', 'รพ.สต.').replace('โรงพยาบาล', 'รพ.');
+    });
     const rates = sortedUnits.map(u => u.rate);
     const bgColors = sortedUnits.map(u => {
-      if (ind.target === 0) return '#3b82f6';
+      if (ind.target === 0) return '#6366f1';
       if (u.hospcode === currentUnit) return '#f59e0b'; // Highlight selected unit
-      return u.pass ? '#10b981' : '#f87171';
+      return u.pass ? '#10b981' : '#f43f5e';
     });
 
     if (rankingChartInstance) {
@@ -342,7 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             data: rates,
             backgroundColor: bgColors,
             borderRadius: 6,
-            barThickness: 14
+            barThickness: isMobile ? 12 : 14
           }
         ]
       },
@@ -352,15 +419,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         maintainAspectRatio: false,
         layout: {
           padding: {
-            left: 10,
-            right: 15,
-            top: 5,
-            bottom: 5
+            left: 2,
+            right: 14,
+            top: 6,
+            bottom: 6
           }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.94)',
+            titleFont: { family: "'Prompt', 'Sarabun', sans-serif", size: 12, weight: '600' },
+            bodyFont: { family: "'Prompt', 'Sarabun', sans-serif", size: 11 },
+            padding: 10,
+            cornerRadius: 8,
             callbacks: {
               label: function (context) {
                 return ` ผลงาน: ${context.raw} ${ind.unit}`;
@@ -372,17 +444,23 @@ document.addEventListener('DOMContentLoaded', async () => {
           x: {
             beginAtZero: true,
             grid: { color: '#f1f5f9' },
-            ticks: { font: { family: "'Prompt', 'Sarabun', sans-serif", size: 10.5 } }
+            ticks: {
+              font: { family: "'Prompt', 'Sarabun', sans-serif", size: isMobile ? 9.5 : 10.5 },
+              color: '#64748b'
+            }
           },
           y: {
             grid: { display: false },
-            afterFit: function(axis) {
-              axis.width = 175; // Guaranteed full width for Thai health unit names
-            },
             ticks: {
               autoSkip: false,
-              font: { family: "'Prompt', 'Sarabun', sans-serif", size: 11, weight: '500' },
-              color: '#1e293b'
+              crossAlign: 'near', // ALIGN TEXT FLUSH TO THE LEFT!
+              font: {
+                family: "'Prompt', 'Sarabun', sans-serif",
+                size: isMobile ? 10 : 11,
+                weight: '500'
+              },
+              color: '#1e293b',
+              padding: 4
             }
           }
         }
@@ -956,11 +1034,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? '<span class="badge-pass px-2 py-0.5 rounded text-[10px] font-bold">ผ่าน</span>'
         : '<span class="badge-fail px-2 py-0.5 rounded text-[10px] font-bold">ไม่ผ่าน</span>';
 
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const displayName = meta ? meta.name : (u.name || u.hospcode);
+      const displaySub = meta ? meta.subdistrict : (u.subdistrict || '');
+
       tr.innerHTML = `
         <td class="py-2.5 px-4 text-center text-slate-400 font-mono">${idx + 1}</td>
         <td class="py-2.5 px-4 font-mono font-medium text-slate-600">${u.hospcode}</td>
-        <td class="py-2.5 px-4 font-medium text-slate-900">${u.name}</td>
-        <td class="py-2.5 px-4 text-slate-500">ต.${u.subdistrict}</td>
+        <td class="py-2.5 px-4 font-medium text-slate-900">${displayName}</td>
+        <td class="py-2.5 px-4 text-slate-500">ต.${displaySub}</td>
         <td class="py-2.5 px-4 text-right font-mono">${Number(u.num).toLocaleString()}</td>
         <td class="py-2.5 px-4 text-right font-mono text-slate-500">${Number(u.den).toLocaleString()}</td>
         <td class="py-2.5 px-4 text-right font-mono font-bold ${u.pass ? 'text-emerald-600' : 'text-slate-800'}">${Number(u.rate).toLocaleString()} ${ind.unit}</td>
