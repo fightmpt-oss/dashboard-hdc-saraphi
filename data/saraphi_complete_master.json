@@ -6687,110 +6687,137 @@
     },
     "ppb_child_develop": {
       "code": "PPB-1",
-      "name": "เด็ก 0-5 ปี ได้รับบริการตรวจพัฒนาการ (Workload)",
-      "table": "s_child0_5_pshyche_develop_workload",
+      "name": "เด็ก 0-5 ปี คัดกรองพัฒนาการตามช่วงอายุ (DSPM/SpecialPP)",
+      "table": "s_childdev_specialpp",
       "domain": "ppb",
       "domain_label": "🎯 งบ PPB (5 ตัวชี้วัด)",
-      "desc": "จำนวนเด็กอายุ 0-5 ปี ที่ได้รับบริการตรวจประเมินพัฒนาการ (DSPM)",
+      "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการด้วยเครื่องมือ DSPM ตามเกณฑ์ specialpp",
       "target": 85.0,
       "unit": "%",
-      "num_label": "ตรวจพัฒนาการ (คน)",
-      "den_label": "เด็กปฐมวัย 0-5 ปี (คน)",
+      "num_label": "ได้รับการคัดกรอง (คน)",
+      "den_label": "เด็กตามช่วงอายุ (คน)",
       "years": {
         "2567": {
-          "num": 0,
-          "den": 0,
-          "rate": 0.0,
+          "num": 834,
+          "den": 1038,
+          "rate": 80.35,
           "pass": false,
           "units": [
             {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 117,
+              "den": 119,
+              "rate": 98.32,
+              "pass": true
             },
             {
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 53,
+              "den": 56,
+              "rate": 94.64,
+              "pass": true
             },
             {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 117,
+              "den": 124,
+              "rate": 94.35,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 68,
+              "den": 74,
+              "rate": 91.89,
+              "pass": true
             },
             {
               "hospcode": "06020",
               "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
               "subdistrict": "ท่ากว้าง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 67,
+              "den": 74,
+              "rate": 90.54,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 98,
+              "den": 111,
+              "rate": 88.29,
+              "pass": true
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 54,
+              "den": 62,
+              "rate": 87.1,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 59,
+              "den": 73,
+              "rate": 80.82,
               "pass": false
             },
             {
               "hospcode": "06022",
               "name": "รพ.สต.บ้านบวกครกเหนือ",
               "subdistrict": "ท่าวังตาล",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 63,
+              "den": 89,
+              "rate": 70.79,
+              "pass": false
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 58,
+              "den": 83,
+              "rate": 69.88,
+              "pass": false
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 31,
+              "den": 54,
+              "rate": 57.41,
               "pass": false
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าเส้า",
               "subdistrict": "สันทราย",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 29,
+              "den": 59,
+              "rate": 49.15,
               "pass": false
             },
             {
-              "hospcode": "06024",
-              "name": "รพ.สต.บ้านศรีคำชมภู",
-              "subdistrict": "ป่าบง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 20,
+              "den": 59,
+              "rate": 33.9,
               "pass": false
             },
             {
@@ -6798,165 +6825,138 @@
               "name": "โรงพยาบาลสารภี",
               "subdistrict": "สารภี",
               "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 0,
-              "den": 0,
+              "den": 1,
               "rate": 0.0,
               "pass": false
             }
           ]
         },
         "2568": {
-          "num": 0,
-          "den": 0,
-          "rate": 0.0,
+          "num": 732,
+          "den": 985,
+          "rate": 74.31,
           "pass": false,
           "units": [
             {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 63,
+              "den": 63,
+              "rate": 100.0,
+              "pass": true
             },
             {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 70,
+              "den": 70,
+              "rate": 100.0,
+              "pass": true
             },
             {
               "hospcode": "06017",
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06020",
-              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
-              "subdistrict": "ท่ากว้าง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 61,
+              "den": 64,
+              "rate": 95.31,
+              "pass": true
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 64,
+              "den": 73,
+              "rate": 87.67,
+              "pass": true
             },
             {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 38,
+              "den": 44,
+              "rate": 86.36,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 77,
+              "den": 90,
+              "rate": 85.56,
+              "pass": true
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 70,
+              "den": 82,
+              "rate": 85.37,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 79,
+              "den": 96,
+              "rate": 82.29,
               "pass": false
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าเส้า",
               "subdistrict": "สันทราย",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06024",
-              "name": "รพ.สต.บ้านศรีคำชมภู",
-              "subdistrict": "ป่าบง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "11135",
-              "name": "โรงพยาบาลสารภี",
-              "subdistrict": "สารภี",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 37,
+              "den": 46,
+              "rate": 80.43,
               "pass": false
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 80,
+              "den": 138,
+              "rate": 57.97,
               "pass": false
             },
             {
               "hospcode": "99758",
               "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 27,
+              "den": 47,
+              "rate": 57.45,
+              "pass": false
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 32,
+              "den": 79,
+              "rate": 40.51,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 34,
+              "den": 93,
+              "rate": 36.56,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
               "subdistrict": "สารภี",
               "num": 0,
               "den": 0,
@@ -6966,131 +6966,131 @@
           ]
         },
         "2569": {
-          "num": 0,
-          "den": 0,
-          "rate": 0.0,
+          "num": 658,
+          "den": 870,
+          "rate": 75.63,
           "pass": false,
           "units": [
             {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 45,
+              "den": 46,
+              "rate": 97.83,
+              "pass": true
             },
             {
               "hospcode": "06017",
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 58,
+              "den": 63,
+              "rate": 92.06,
+              "pass": true
             },
             {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06020",
-              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
-              "subdistrict": "ท่ากว้าง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าเส้า",
-              "subdistrict": "สันทราย",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 58,
+              "den": 64,
+              "rate": 90.62,
+              "pass": true
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
-              "pass": false
+              "num": 62,
+              "den": 71,
+              "rate": 87.32,
+              "pass": true
             },
             {
-              "hospcode": "11135",
-              "name": "โรงพยาบาลสารภี",
-              "subdistrict": "สารภี",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 52,
+              "den": 60,
+              "rate": 86.67,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 60,
+              "den": 73,
+              "rate": 82.19,
               "pass": false
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 38,
+              "den": 48,
+              "rate": 79.17,
+              "pass": false
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 80,
+              "den": 104,
+              "rate": 76.92,
+              "pass": false
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 46,
+              "den": 63,
+              "rate": 73.02,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 23,
+              "den": 32,
+              "rate": 71.88,
               "pass": false
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 0,
-              "den": 0,
-              "rate": 0.0,
+              "num": 97,
+              "den": 162,
+              "rate": 59.88,
               "pass": false
             },
             {
               "hospcode": "99758",
               "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 13,
+              "den": 23,
+              "rate": 56.52,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 26,
+              "den": 61,
+              "rate": 42.62,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
               "subdistrict": "สารภี",
               "num": 0,
               "den": 0,
@@ -10840,6 +10840,838 @@
               "den": 0,
               "rate": 0.0,
               "pass": false
+            }
+          ]
+        }
+      }
+    },
+    "mch_childdev": {
+      "code": "MCH-4",
+      "name": "การคัดกรองพัฒนาการเด็กปฐมวัยตามช่วงอายุ (DSPM)",
+      "table": "s_childdev_specialpp",
+      "domain": "mch",
+      "domain_label": "👶 อนามัยแม่และเด็ก",
+      "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการ (เกณฑ์ สธ. ≥ 85.0%)",
+      "target": 85.0,
+      "unit": "%",
+      "num_label": "ได้รับการคัดกรอง (คน)",
+      "den_label": "เด็กตามช่วงอายุ (คน)",
+      "years": {
+        "2567": {
+          "num": 834,
+          "den": 1038,
+          "rate": 80.35,
+          "pass": false,
+          "units": [
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 117,
+              "den": 119,
+              "rate": 98.32,
+              "pass": true
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 53,
+              "den": 56,
+              "rate": 94.64,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 117,
+              "den": 124,
+              "rate": 94.35,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 68,
+              "den": 74,
+              "rate": 91.89,
+              "pass": true
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 67,
+              "den": 74,
+              "rate": 90.54,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 98,
+              "den": 111,
+              "rate": 88.29,
+              "pass": true
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 54,
+              "den": 62,
+              "rate": 87.1,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 59,
+              "den": 73,
+              "rate": 80.82,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 63,
+              "den": 89,
+              "rate": 70.79,
+              "pass": false
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 58,
+              "den": 83,
+              "rate": 69.88,
+              "pass": false
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 31,
+              "den": 54,
+              "rate": 57.41,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 29,
+              "den": 59,
+              "rate": 49.15,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 20,
+              "den": 59,
+              "rate": 33.9,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 1,
+              "rate": 0.0,
+              "pass": false
+            }
+          ]
+        },
+        "2568": {
+          "num": 732,
+          "den": 985,
+          "rate": 74.31,
+          "pass": false,
+          "units": [
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 63,
+              "den": 63,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 70,
+              "den": 70,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 61,
+              "den": 64,
+              "rate": 95.31,
+              "pass": true
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 64,
+              "den": 73,
+              "rate": 87.67,
+              "pass": true
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 38,
+              "den": 44,
+              "rate": 86.36,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 77,
+              "den": 90,
+              "rate": 85.56,
+              "pass": true
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 70,
+              "den": 82,
+              "rate": 85.37,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 79,
+              "den": 96,
+              "rate": 82.29,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 37,
+              "den": 46,
+              "rate": 80.43,
+              "pass": false
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 80,
+              "den": 138,
+              "rate": 57.97,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 27,
+              "den": 47,
+              "rate": 57.45,
+              "pass": false
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 32,
+              "den": 79,
+              "rate": 40.51,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 34,
+              "den": 93,
+              "rate": 36.56,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 0,
+              "rate": 0.0,
+              "pass": false
+            }
+          ]
+        },
+        "2569": {
+          "num": 658,
+          "den": 870,
+          "rate": 75.63,
+          "pass": false,
+          "units": [
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 45,
+              "den": 46,
+              "rate": 97.83,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 58,
+              "den": 63,
+              "rate": 92.06,
+              "pass": true
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 58,
+              "den": 64,
+              "rate": 90.62,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 62,
+              "den": 71,
+              "rate": 87.32,
+              "pass": true
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 52,
+              "den": 60,
+              "rate": 86.67,
+              "pass": true
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 60,
+              "den": 73,
+              "rate": 82.19,
+              "pass": false
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 38,
+              "den": 48,
+              "rate": 79.17,
+              "pass": false
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 80,
+              "den": 104,
+              "rate": 76.92,
+              "pass": false
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 46,
+              "den": 63,
+              "rate": 73.02,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 23,
+              "den": 32,
+              "rate": 71.88,
+              "pass": false
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 97,
+              "den": 162,
+              "rate": 59.88,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 13,
+              "den": 23,
+              "rate": 56.52,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 26,
+              "den": 61,
+              "rate": 42.62,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 0,
+              "rate": 0.0,
+              "pass": false
+            }
+          ]
+        }
+      }
+    },
+    "mch_childdev_follow": {
+      "code": "MCH-5",
+      "name": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+      "table": "s_childdev_specialpp48",
+      "domain": "mch",
+      "domain_label": "👶 อนามัยแม่และเด็ก",
+      "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 เดือน ที่พบพัฒนาการสงสัยล่าช้าได้รับการติดตามและกระตุ้นพัฒนาการ (เกณฑ์ สธ. ≥ 85.0%)",
+      "target": 85.0,
+      "unit": "%",
+      "num_label": "ได้รับการติดตามประเมินซ้ำ (คน)",
+      "den_label": "เด็กที่สงสัยล่าช้า (คน)",
+      "years": {
+        "2567": {
+          "num": 71,
+          "den": 97,
+          "rate": 73.2,
+          "pass": false,
+          "units": [
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 10,
+              "den": 10,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 5,
+              "den": 5,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 3,
+              "den": 3,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 3,
+              "den": 3,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 10,
+              "den": 10,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 16,
+              "den": 17,
+              "rate": 94.12,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 7,
+              "den": 8,
+              "rate": 87.5,
+              "pass": true
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 6,
+              "den": 7,
+              "rate": 85.71,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 3,
+              "den": 5,
+              "rate": 60.0,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 3,
+              "den": 6,
+              "rate": 50.0,
+              "pass": false
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 2,
+              "den": 6,
+              "rate": 33.33,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 2,
+              "den": 7,
+              "rate": 28.57,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 1,
+              "den": 10,
+              "rate": 10.0,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 0,
+              "rate": 0.0,
+              "pass": true
+            }
+          ]
+        },
+        "2568": {
+          "num": 88,
+          "den": 99,
+          "rate": 88.89,
+          "pass": true,
+          "units": [
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 8,
+              "den": 8,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 8,
+              "den": 8,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 18,
+              "den": 18,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 3,
+              "den": 3,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 7,
+              "den": 7,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 5,
+              "den": 5,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 8,
+              "den": 8,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 2,
+              "den": 2,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 14,
+              "den": 16,
+              "rate": 87.5,
+              "pass": true
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 4,
+              "den": 5,
+              "rate": 80.0,
+              "pass": false
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 7,
+              "den": 9,
+              "rate": 77.78,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 2,
+              "den": 3,
+              "rate": 66.67,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 2,
+              "den": 7,
+              "rate": 28.57,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 0,
+              "rate": 0.0,
+              "pass": true
+            }
+          ]
+        },
+        "2569": {
+          "num": 61,
+          "den": 90,
+          "rate": 67.78,
+          "pass": false,
+          "units": [
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 6,
+              "den": 6,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 6,
+              "den": 6,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 6,
+              "den": 6,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 4,
+              "den": 4,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 7,
+              "den": 7,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 8,
+              "den": 8,
+              "rate": 100.0,
+              "pass": true
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 10,
+              "den": 11,
+              "rate": 90.91,
+              "pass": true
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 5,
+              "den": 7,
+              "rate": 71.43,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าเส้า",
+              "subdistrict": "สันทราย",
+              "num": 3,
+              "den": 5,
+              "rate": 60.0,
+              "pass": false
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 3,
+              "den": 5,
+              "rate": 60.0,
+              "pass": false
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 1,
+              "den": 4,
+              "rate": 25.0,
+              "pass": false
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 1,
+              "den": 6,
+              "rate": 16.67,
+              "pass": false
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 1,
+              "den": 15,
+              "rate": 6.67,
+              "pass": false
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 0,
+              "den": 0,
+              "rate": 0.0,
+              "pass": true
             }
           ]
         }

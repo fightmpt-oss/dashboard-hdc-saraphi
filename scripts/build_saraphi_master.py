@@ -567,28 +567,34 @@ for y in years:
 # ----------------------------------------------------
 # 3. งบ PPB (5 Indicators)
 # ----------------------------------------------------
-# 3.1 ตรวจพัฒนาการเด็ก 0-5 ปี
+# 3.1 ตรวจพัฒนาการเด็ก 0-5 ปี (s_childdev_specialpp)
 master["indicators"]["ppb_child_develop"] = {
     "code": "PPB-1",
-    "name": "เด็ก 0-5 ปี ได้รับบริการตรวจพัฒนาการ (Workload)",
-    "table": "s_child0_5_pshyche_develop_workload",
+    "name": "เด็ก 0-5 ปี คัดกรองพัฒนาการตามช่วงอายุ (DSPM/SpecialPP)",
+    "table": "s_childdev_specialpp",
     "domain": "ppb",
     "domain_label": "🎯 งบ PPB (5 ตัวชี้วัด)",
-    "desc": "จำนวนเด็กอายุ 0-5 ปี ที่ได้รับบริการตรวจประเมินพัฒนาการ (DSPM)",
+    "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการด้วยเครื่องมือ DSPM ตามเกณฑ์ specialpp",
     "target": 85.0,
     "unit": "%",
-    "num_label": "ตรวจพัฒนาการ (คน)",
-    "den_label": "เด็กปฐมวัย 0-5 ปี (คน)",
+    "num_label": "ได้รับการคัดกรอง (คน)",
+    "den_label": "เด็กตามช่วงอายุ (คน)",
     "years": {}
 }
 for y in years:
-    rows = load_json(f"s_child0_5_pshyche_develop_workload_{y}.json")
+    rows = load_json(f"s_childdev_specialpp_{y}.json")
     unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
+        if hc == '11999': hc = '11135'
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('screen') or r.get('result_all')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('pop') or r.get('target_all')))
+            n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            if d == 0:
+                n = int(clean_num(r.get('result') or r.get('screen') or 0))
+                d = int(clean_num(r.get('target') or r.get('pop') or 0))
+            unit_agg[hc]["num"] += n
+            unit_agg[hc]["den"] += d
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
@@ -596,7 +602,7 @@ for y in years:
         tot_num += d["num"]; tot_den += d["den"]
         unit_data.append({
             "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0 or d["num"] > 0
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0
         })
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
@@ -945,6 +951,92 @@ for y in years:
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["mch_child_nutrition"]["years"][y] = {
         "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 70.0, "units": unit_data
+    }
+
+# 5.4 คัดกรองพัฒนาการเด็กปฐมวัยตามช่วงอายุ (s_childdev_specialpp)
+master["indicators"]["mch_childdev"] = {
+    "code": "MCH-4",
+    "name": "การคัดกรองพัฒนาการเด็กปฐมวัยตามช่วงอายุ (DSPM)",
+    "table": "s_childdev_specialpp",
+    "domain": "mch",
+    "domain_label": "👶 อนามัยแม่และเด็ก",
+    "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการ (เกณฑ์ สธ. ≥ 85.0%)",
+    "target": 85.0,
+    "unit": "%",
+    "num_label": "ได้รับการคัดกรอง (คน)",
+    "den_label": "เด็กตามช่วงอายุ (คน)",
+    "years": {}
+}
+for y in years:
+    rows = load_json(f"s_childdev_specialpp_{y}.json")
+    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    for r in rows:
+        hc = r.get('hospcode')
+        if hc == '11999': hc = '11135'
+        if hc in unit_agg:
+            n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            if d == 0:
+                n = int(clean_num(r.get('result') or r.get('screen') or 0))
+                d = int(clean_num(r.get('target') or r.get('pop') or 0))
+            unit_agg[hc]["num"] += n
+            unit_agg[hc]["den"] += d
+    unit_data = []
+    tot_num = 0; tot_den = 0
+    for hc, d in unit_agg.items():
+        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        tot_num += d["num"]; tot_den += d["den"]
+        unit_data.append({
+            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0
+        })
+    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+    master["indicators"]["mch_childdev"]["years"][y] = {
+        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 85.0, "units": unit_data
+    }
+
+# 5.5 เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (s_childdev_specialpp48)
+master["indicators"]["mch_childdev_follow"] = {
+    "code": "MCH-5",
+    "name": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+    "table": "s_childdev_specialpp48",
+    "domain": "mch",
+    "domain_label": "👶 อนามัยแม่และเด็ก",
+    "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 เดือน ที่พบพัฒนาการสงสัยล่าช้าได้รับการติดตามและกระตุ้นพัฒนาการ (เกณฑ์ สธ. ≥ 85.0%)",
+    "target": 85.0,
+    "unit": "%",
+    "num_label": "ได้รับการติดตามประเมินซ้ำ (คน)",
+    "den_label": "เด็กที่สงสัยล่าช้า (คน)",
+    "years": {}
+}
+for y in years:
+    rows = load_json(f"s_childdev_specialpp48_{y}.json")
+    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    for r in rows:
+        hc = r.get('hospcode')
+        if hc == '11999': hc = '11135'
+        if hc in unit_agg:
+            n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
+            if d == 0:
+                n = int(clean_num(r.get('result') or r.get('follow') or 0))
+                d = int(clean_num(r.get('target') or 0))
+            unit_agg[hc]["num"] += n
+            unit_agg[hc]["den"] += d
+    unit_data = []
+    tot_num = 0; tot_den = 0
+    for hc, d in unit_agg.items():
+        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        tot_num += d["num"]; tot_den += d["den"]
+        unit_data.append({
+            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0 or (d["den"] == 0 and d["num"] == 0)
+        })
+    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+    master["indicators"]["mch_childdev_follow"]["years"][y] = {
+        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 85.0, "units": unit_data
     }
 
 # Save Complete Master Data
