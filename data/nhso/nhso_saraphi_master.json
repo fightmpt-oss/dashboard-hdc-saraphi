@@ -1,0 +1,583 @@
+{
+  "timestamp": "2026-09-12T00:13:22.580011",
+  "district": "สารภี",
+  "province": "เชียงใหม่",
+  "zone": "เขต 1 เชียงใหม่",
+  "sheets": {
+    "sheet3_service": {
+      "unitPoints": [
+        {
+          "unit": "รพ.สต.บ้านหัวดง",
+          "point": 250
+        },
+        {
+          "unit": "รพ.สต.บ้านพญาชมพู",
+          "point": 7600
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีคำชมภู",
+          "point": 25350
+        },
+        {
+          "unit": "รพ.สต.บ้านบวกครกเหนือ",
+          "point": 33400
+        },
+        {
+          "unit": "รพ.สต.บ้านแคว",
+          "point": 52050
+        },
+        {
+          "unit": "รพ.สต.บ้านยางเนิ้ง",
+          "point": 64250
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีสองเมือง ตำบลไชยสถาน",
+          "point": 66350
+        },
+        {
+          "unit": "รพ.สต.บ้านหนองแฝก",
+          "point": 140820
+        },
+        {
+          "unit": "รพ.สารภี",
+          "point": 586260
+        }
+      ],
+      "unitBaths": [
+        {
+          "unit": "รพ.สต.บ้านหัวดง",
+          "bath": 250
+        },
+        {
+          "unit": "รพ.สต.บ้านพญาชมพู",
+          "bath": 7600
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีคำชมภู",
+          "bath": 25350
+        },
+        {
+          "unit": "รพ.สต.บ้านบวกครกเหนือ",
+          "bath": 33400
+        },
+        {
+          "unit": "รพ.สต.บ้านแคว",
+          "bath": 52050
+        },
+        {
+          "unit": "รพ.สต.บ้านยางเนิ้ง",
+          "bath": 64250
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีสองเมือง ตำบลไชยสถาน",
+          "bath": 66350
+        },
+        {
+          "unit": "รพ.สต.บ้านหนองแฝก",
+          "bath": 140820
+        },
+        {
+          "unit": "รพ.สารภี",
+          "bath": 586260
+        }
+      ],
+      "servicePoints": [
+        {
+          "service": "อบสมุนไพร",
+          "point": 6480
+        },
+        {
+          "service": "การฟื้นฟูมารดาหลังคลอด",
+          "point": 10000
+        },
+        {
+          "service": "ประคบ",
+          "point": 17850
+        },
+        {
+          "service": "นวด",
+          "point": 55000
+        },
+        {
+          "service": "พอกเข่า",
+          "point": 88500
+        },
+        {
+          "service": "นวด+ประคบ",
+          "point": 798500
+        }
+      ],
+      "serviceBaths": [
+        {
+          "service": "อบสมุนไพร",
+          "bath": 6480
+        },
+        {
+          "service": "การฟื้นฟูมารดาหลังคลอด",
+          "bath": 10000
+        },
+        {
+          "service": "ประคบ",
+          "bath": 17850
+        },
+        {
+          "service": "นวด",
+          "bath": 55000
+        },
+        {
+          "service": "พอกเข่า",
+          "bath": 88500
+        },
+        {
+          "service": "นวด+ประคบ",
+          "bath": 798500
+        }
+      ]
+    },
+    "sheet4_herb55": {
+      "unitPoints": [
+        {
+          "unit": "รพ.สต.บ้านบวกครกเหนือ",
+          "point": 42
+        },
+        {
+          "unit": "รพ.สต.บ้านหัวดง",
+          "point": 84
+        },
+        {
+          "unit": "รพ.สต.บ้านป่าสา",
+          "point": 84
+        },
+        {
+          "unit": "รพ.สต.บ้านสันต้นกอก",
+          "point": 168
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีคำชมภู",
+          "point": 252
+        },
+        {
+          "unit": "รพ.สต.บ้านแคว",
+          "point": 336
+        },
+        {
+          "unit": "รพ.สต.บ้านหนองแฝก",
+          "point": 1358
+        }
+      ],
+      "unitBaths": [],
+      "herbPoints": [
+        {
+          "herb": "ยาหอมทิพโอสถ",
+          "point": 980
+        },
+        {
+          "herb": "ยาหญ้าหนวดแมว",
+          "point": 1344
+        }
+      ],
+      "herbBaths": []
+    },
+    "sheet5_herb9": {
+      "unitCounts": [
+        {
+          "unit": "รพ.สต.บ้านหนองแฝก",
+          "count": 6
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีคำชมภู",
+          "count": 12
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีสองเมือง ตำบลไชยสถาน",
+          "count": 15
+        },
+        {
+          "unit": "รพ.สารภี",
+          "count": 15
+        },
+        {
+          "unit": "รพ.สต.บ้านแคว",
+          "count": 23
+        },
+        {
+          "unit": "รพ.สต.บ้านบวกครกเหนือ",
+          "count": 27
+        }
+      ],
+      "unitBaths": [],
+      "itemCounts": [
+        {
+          "item": "HERB9",
+          "count": 27
+        },
+        {
+          "item": "HERB8",
+          "count": 32
+        },
+        {
+          "item": "HERB7",
+          "count": 241
+        },
+        {
+          "item": "HERB6",
+          "count": 98
+        },
+        {
+          "item": "HERB5",
+          "count": 519
+        },
+        {
+          "item": "HERB4",
+          "count": 863
+        },
+        {
+          "item": "HERB3",
+          "count": 92
+        },
+        {
+          "item": "HERB2",
+          "count": 254
+        },
+        {
+          "item": "HERB1",
+          "count": 213
+        }
+      ],
+      "itemBaths": []
+    },
+    "sheet6_herb32": {
+      "unitCounts": [
+        {
+          "unit": "รพ.สต.บ้านพญาชมพู",
+          "count": 45
+        },
+        {
+          "unit": "รพ.สต.บ้านยางเนิ้ง",
+          "count": 76
+        },
+        {
+          "unit": "รพ.สต.บ้านหนองผึ้ง",
+          "count": 110
+        },
+        {
+          "unit": "รพ.สต.บ้านท่าต้นกวาว",
+          "count": 112
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีคำชมภู",
+          "count": 128
+        },
+        {
+          "unit": "รพ.สต.บ้านหัวดง",
+          "count": 151
+        },
+        {
+          "unit": "รพ.สต.บ้านสันต้นกอก",
+          "count": 296
+        },
+        {
+          "unit": "รพ.สต.บ้านป่าสา",
+          "count": 306
+        },
+        {
+          "unit": "รพ.สต.บ้านบวกครกเหนือ",
+          "count": 329
+        },
+        {
+          "unit": "รพ.สต.บ้านศรีสองเมือง ตำบลไชยสถาน",
+          "count": 499
+        },
+        {
+          "unit": "รพ.สต.บ้านแคว",
+          "count": 631
+        },
+        {
+          "unit": "รพ.สต.บ้านหนองแฝก",
+          "count": 691
+        },
+        {
+          "unit": "รพ.สารภี",
+          "count": 1003
+        }
+      ],
+      "unitBaths": [],
+      "herbCounts": [
+        {
+          "herb": "ยาหอมนวโกฐ",
+          "count": 9
+        },
+        {
+          "herb": "ยาพญายอ",
+          "count": 32
+        },
+        {
+          "herb": "ยาผสมเพชรสังฆาตสูตรที่ ๑ และ ๒",
+          "count": 62
+        },
+        {
+          "herb": "ยาสหัศธารา",
+          "count": 63
+        },
+        {
+          "herb": "ยาหอมเทพจิตร",
+          "count": 108
+        },
+        {
+          "herb": "ยาธาตุอบเชย",
+          "count": 108
+        },
+        {
+          "herb": "เถาวัลย์เปรียง",
+          "count": 230
+        },
+        {
+          "herb": "ยามะขามแขก",
+          "count": 243
+        },
+        {
+          "herb": "ยาประคบสมุนไพรสด,ยาประคบสมุนไพรแห้ง",
+          "count": 294
+        },
+        {
+          "herb": "ยาฟ้าทะลายโจร(ผงจากส่วนเหนือดิน)",
+          "count": 378
+        },
+        {
+          "herb": "ยาประสะมะแว้ง",
+          "count": 420
+        },
+        {
+          "herb": "ยาขมิ้นชัน",
+          "count": 620
+        },
+        {
+          "herb": "ยาแก้ไอผสมมะขามป้อมสูตรตำรับที่ ๑ และ ๒",
+          "count": 894
+        },
+        {
+          "herb": "ยาไพล",
+          "count": 916
+        }
+      ],
+      "herbBaths": []
+    }
+  },
+  "validation": {
+    "status": "PASS",
+    "errors": [],
+    "totalUnitsCount": 13
+  },
+  "aggregated": {
+    "district_total": {
+      "sheet3_service_point": 976330,
+      "sheet3_service_bath": 976330,
+      "sheet4_herb55_point": 2324,
+      "sheet4_herb55_bath": 2324,
+      "sheet5_herb9_count": 98,
+      "sheet5_herb9_bath": 5880,
+      "sheet6_herb32_count": 4377,
+      "sheet6_herb32_bath": 240735,
+      "total_bath": 1225269,
+      "total_point": 978654
+    },
+    "units": {
+      "06014": {
+        "hospcode": "06014",
+        "name": "รพ.สต.บ้านยางเนิ้ง",
+        "sheet3_service_point": 64250,
+        "sheet3_service_bath": 64250,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 76,
+        "sheet6_herb32_bath": 4180,
+        "total_bath": 68430,
+        "total_point": 64250
+      },
+      "06015": {
+        "hospcode": "06015",
+        "name": "รพ.สต.บ้านพญาชมภู",
+        "sheet3_service_point": 7600,
+        "sheet3_service_bath": 7600,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 45,
+        "sheet6_herb32_bath": 2475,
+        "total_bath": 10075,
+        "total_point": 7600
+      },
+      "06016": {
+        "hospcode": "06016",
+        "name": "รพ.สต.บ้านศรีสองเมือง",
+        "sheet3_service_point": 66350,
+        "sheet3_service_bath": 66350,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 15,
+        "sheet5_herb9_bath": 900,
+        "sheet6_herb32_count": 499,
+        "sheet6_herb32_bath": 27445,
+        "total_bath": 94695,
+        "total_point": 66350
+      },
+      "06017": {
+        "hospcode": "06017",
+        "name": "รพ.สต.บ้านหัวดง",
+        "sheet3_service_point": 250,
+        "sheet3_service_bath": 250,
+        "sheet4_herb55_point": 84,
+        "sheet4_herb55_bath": 84,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 151,
+        "sheet6_herb32_bath": 8305,
+        "total_bath": 8639,
+        "total_point": 334
+      },
+      "06018": {
+        "hospcode": "06018",
+        "name": "รพ.สต.บ้านหนองแฝก",
+        "sheet3_service_point": 140820,
+        "sheet3_service_bath": 140820,
+        "sheet4_herb55_point": 1358,
+        "sheet4_herb55_bath": 1358,
+        "sheet5_herb9_count": 6,
+        "sheet5_herb9_bath": 360,
+        "sheet6_herb32_count": 691,
+        "sheet6_herb32_bath": 38005,
+        "total_bath": 180543,
+        "total_point": 142178
+      },
+      "06020": {
+        "hospcode": "06020",
+        "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+        "sheet3_service_point": 52050,
+        "sheet3_service_bath": 52050,
+        "sheet4_herb55_point": 336,
+        "sheet4_herb55_bath": 336,
+        "sheet5_herb9_count": 23,
+        "sheet5_herb9_bath": 1380,
+        "sheet6_herb32_count": 631,
+        "sheet6_herb32_bath": 34705,
+        "total_bath": 88471,
+        "total_point": 52386
+      },
+      "06021": {
+        "hospcode": "06021",
+        "name": "รพ.สต.บ้านสันต้นกอก",
+        "sheet3_service_point": 0,
+        "sheet3_service_bath": 0,
+        "sheet4_herb55_point": 168,
+        "sheet4_herb55_bath": 168,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 296,
+        "sheet6_herb32_bath": 16280,
+        "total_bath": 16448,
+        "total_point": 168
+      },
+      "06022": {
+        "hospcode": "06022",
+        "name": "รพ.สต.บ้านบวกครกเหนือ",
+        "sheet3_service_point": 33400,
+        "sheet3_service_bath": 33400,
+        "sheet4_herb55_point": 42,
+        "sheet4_herb55_bath": 42,
+        "sheet5_herb9_count": 27,
+        "sheet5_herb9_bath": 1620,
+        "sheet6_herb32_count": 329,
+        "sheet6_herb32_bath": 18095,
+        "total_bath": 53157,
+        "total_point": 33442
+      },
+      "06023": {
+        "hospcode": "06023",
+        "name": "รพ.สต.บ้านป่าเส้า",
+        "sheet3_service_point": 0,
+        "sheet3_service_bath": 0,
+        "sheet4_herb55_point": 84,
+        "sheet4_herb55_bath": 84,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 306,
+        "sheet6_herb32_bath": 16830,
+        "total_bath": 16914,
+        "total_point": 84
+      },
+      "06024": {
+        "hospcode": "06024",
+        "name": "รพ.สต.บ้านศรีคำชมภู",
+        "sheet3_service_point": 25350,
+        "sheet3_service_bath": 25350,
+        "sheet4_herb55_point": 252,
+        "sheet4_herb55_bath": 252,
+        "sheet5_herb9_count": 12,
+        "sheet5_herb9_bath": 720,
+        "sheet6_herb32_count": 128,
+        "sheet6_herb32_bath": 7040,
+        "total_bath": 33362,
+        "total_point": 25602
+      },
+      "11135": {
+        "hospcode": "11135",
+        "name": "รพ.สารภี",
+        "sheet3_service_point": 586260,
+        "sheet3_service_bath": 586260,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 15,
+        "sheet5_herb9_bath": 900,
+        "sheet6_herb32_count": 1003,
+        "sheet6_herb32_bath": 55165,
+        "total_bath": 642325,
+        "total_point": 586260
+      },
+      "13994": {
+        "hospcode": "13994",
+        "name": "รพ.สต.บ้านท่าต้นกวาว",
+        "sheet3_service_point": 0,
+        "sheet3_service_bath": 0,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 112,
+        "sheet6_herb32_bath": 6160,
+        "total_bath": 6160,
+        "total_point": 0
+      },
+      "14461": {
+        "hospcode": "14461",
+        "name": "รพ.สต.บ้านหนองผึ้ง",
+        "sheet3_service_point": 0,
+        "sheet3_service_bath": 0,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 110,
+        "sheet6_herb32_bath": 6050,
+        "total_bath": 6050,
+        "total_point": 0
+      },
+      "99758": {
+        "hospcode": "99758",
+        "name": "ศสม.สารภี",
+        "sheet3_service_point": 0,
+        "sheet3_service_bath": 0,
+        "sheet4_herb55_point": 0,
+        "sheet4_herb55_bath": 0,
+        "sheet5_herb9_count": 0,
+        "sheet5_herb9_bath": 0,
+        "sheet6_herb32_count": 0,
+        "sheet6_herb32_bath": 0,
+        "total_bath": 0,
+        "total_point": 0
+      }
+    }
+  }
+}

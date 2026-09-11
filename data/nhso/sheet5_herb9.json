@@ -1,0 +1,68 @@
+{
+  "unitCounts": [
+    {
+      "unit": "รพ.สต.บ้านหนองแฝก",
+      "count": 6
+    },
+    {
+      "unit": "รพ.สต.บ้านศรีคำชมภู",
+      "count": 12
+    },
+    {
+      "unit": "รพ.สต.บ้านศรีสองเมือง ตำบลไชยสถาน",
+      "count": 15
+    },
+    {
+      "unit": "รพ.สารภี",
+      "count": 15
+    },
+    {
+      "unit": "รพ.สต.บ้านแคว",
+      "count": 23
+    },
+    {
+      "unit": "รพ.สต.บ้านบวกครกเหนือ",
+      "count": 27
+    }
+  ],
+  "unitBaths": [],
+  "itemCounts": [
+    {
+      "item": "HERB9",
+      "count": 27
+    },
+    {
+      "item": "HERB8",
+      "count": 32
+    },
+    {
+      "item": "HERB7",
+      "count": 241
+    },
+    {
+      "item": "HERB6",
+      "count": 98
+    },
+    {
+      "item": "HERB5",
+      "count": 519
+    },
+    {
+      "item": "HERB4",
+      "count": 863
+    },
+    {
+      "item": "HERB3",
+      "count": 92
+    },
+    {
+      "item": "HERB2",
+      "count": 254
+    },
+    {
+      "item": "HERB1",
+      "count": 213
+    }
+  ],
+  "itemBaths": []
+}

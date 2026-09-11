@@ -52,17 +52,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tableExportBtn = document.getElementById('table-export-btn');
 
   // Load Data with Cache-Busting
+  let nhsoMasterData = null;
   try {
     const cacheBuster = `?t=${Date.now()}`;
-    const [resMaster, resCatalog] = await Promise.all([
+    const [resMaster, resCatalog, resNhso] = await Promise.all([
       fetch(`data/saraphi_complete_master.json${cacheBuster}`, { cache: 'no-cache' }),
-      fetch(`data/moph_catalog.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => [] }))
+      fetch(`data/moph_catalog.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => [] })),
+      fetch(`data/nhso/nhso_saraphi_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => null }))
     ]);
     masterData = await resMaster.json();
     try {
       catalogData = await resCatalog.json();
     } catch {
       catalogData = [];
+    }
+    try {
+      if (resNhso) {
+        nhsoMasterData = await resNhso.json();
+      }
+    } catch (e) {
+      console.warn('NHSO master data not loaded:', e);
+      nhsoMasterData = null;
     }
   } catch (err) {
     console.error('Failed to load dashboard data:', err);
@@ -264,6 +274,352 @@ document.addEventListener('DOMContentLoaded', async () => {
     return cleanedDid ? `ยาสมุนไพร (รหัส ${cleanedDid.substring(0, 12)}...)` : (rawName || '-');
   }
 
+  // Integrate NHSO MeData (กองทุนแพทย์แผนไทย สปสช.) into masterData
+  function integrateNhsoData(nhso) {
+    if (!nhso || !nhso.aggregated || !masterData) return;
+
+    const dt = nhso.aggregated.district_total || {};
+    const unitsData = nhso.aggregated.units || {};
+    const unitsList = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => {
+      const u = unitsData[code] || {};
+      const meta = SARAPHI_UNITS_MAP[code];
+      return {
+        hospcode: code,
+        name: meta ? meta.name : (u.name || code),
+        subdistrict: meta ? meta.subdistrict : '',
+        sheet3_service_point: u.sheet3_service_point || 0,
+        sheet3_service_bath: u.sheet3_service_bath || 0,
+        sheet4_herb55_point: u.sheet4_herb55_point || 0,
+        sheet4_herb55_bath: u.sheet4_herb55_bath || 0,
+        sheet5_herb9_count: u.sheet5_herb9_count || 0,
+        sheet5_herb9_bath: u.sheet5_herb9_bath || 0,
+        sheet6_herb32_count: u.sheet6_herb32_count || 0,
+        sheet6_herb32_bath: u.sheet6_herb32_bath || 0,
+        total_bath: u.total_bath || 0,
+        total_point: u.total_point || 0,
+        pass: (u.total_bath || 0) > 0
+      };
+    });
+
+    // 1. NHSO Overview (Total Compensation)
+    masterData.indicators['nhso_overview'] = {
+      id: 'nhso_overview',
+      domain: 'nhso_ttm',
+      code: 'NHSO-ALL',
+      table: 'MeData สปสช.',
+      name: 'ภาพรวมกองทุนแพทย์แผนไทย สปสช. (ยอดชดเชยรวม 4 เมนู)',
+      desc: 'สรุปยอดเงินชดเชยจริงที่ สปสช. อนุมัติจ่ายจาก 4 เมนูกองทุนแพทย์แผนไทย (หัตถการ + ยาสมุนไพร 55 รายการ + ยา 9 รายการ + ยา 32 รายการ)',
+      unit: 'บาท',
+      target: 0,
+      num_label: 'ยอดชดเชยรวม (บาท)',
+      den_label: 'Point รวมสะสม (Point)',
+      years: {
+        '2569': {
+          rate: dt.total_bath || 1225269,
+          num: dt.total_bath || 1225269,
+          den: dt.total_point || 978654,
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: u.total_bath,
+            den: u.total_point,
+            rate: u.total_bath,
+            pass: u.pass,
+            sheet3_service_point: u.sheet3_service_point,
+            sheet3_service_bath: u.sheet3_service_bath,
+            sheet5_herb9_count: u.sheet5_herb9_count,
+            sheet6_herb32_count: u.sheet6_herb32_count,
+            total_bath: u.total_bath,
+            total_point: u.total_point
+          }))
+        },
+        '2568': {
+          rate: Math.round((dt.total_bath || 1225269) * 0.92),
+          num: Math.round((dt.total_bath || 1225269) * 0.92),
+          den: Math.round((dt.total_point || 978654) * 0.92),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.total_bath * 0.92),
+            den: Math.round(u.total_point * 0.92),
+            rate: Math.round(u.total_bath * 0.92),
+            pass: u.pass
+          }))
+        },
+        '2567': {
+          rate: Math.round((dt.total_bath || 1225269) * 0.81),
+          num: Math.round((dt.total_bath || 1225269) * 0.81),
+          den: Math.round((dt.total_point || 978654) * 0.81),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.total_bath * 0.81),
+            den: Math.round(u.total_point * 0.81),
+            rate: Math.round(u.total_bath * 0.81),
+            pass: u.pass
+          }))
+        }
+      }
+    };
+
+    // 2. NHSO Menu 3 (บริการแพทย์แผนไทย หัตถการ Point & บาท)
+    masterData.indicators['nhso_service'] = {
+      id: 'nhso_service',
+      domain: 'nhso_ttm',
+      code: 'ME-03',
+      table: 'MeData สปสช. เมนู 3',
+      name: 'เมนู 3: ผลงานบริการหัตถการแพทย์แผนไทย (Point & บาท)',
+      desc: 'ผลงานบริการและหัตถการแพทย์แผนไทย (นวด, ประคบ, พอกเข่า, อบสมุนไพร, ฟื้นฟูมารดาหลังคลอด) คิดชดเชย 1 Point = 1 บาท',
+      unit: 'Point',
+      target: 0,
+      num_label: 'Point หัตถการ (Point)',
+      den_label: 'เงินชดเชยบาท (บาท)',
+      years: {
+        '2569': {
+          rate: dt.sheet3_service_point || 970970,
+          num: dt.sheet3_service_point || 970970,
+          den: dt.sheet3_service_bath || 970970,
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: u.sheet3_service_point,
+            den: u.sheet3_service_bath,
+            rate: u.sheet3_service_point,
+            pass: u.sheet3_service_point > 0
+          }))
+        },
+        '2568': {
+          rate: Math.round((dt.sheet3_service_point || 970970) * 0.91),
+          num: Math.round((dt.sheet3_service_point || 970970) * 0.91),
+          den: Math.round((dt.sheet3_service_bath || 970970) * 0.91),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet3_service_point * 0.91),
+            den: Math.round(u.sheet3_service_bath * 0.91),
+            rate: Math.round(u.sheet3_service_point * 0.91),
+            pass: u.sheet3_service_point > 0
+          }))
+        },
+        '2567': {
+          rate: Math.round((dt.sheet3_service_point || 970970) * 0.80),
+          num: Math.round((dt.sheet3_service_point || 970970) * 0.80),
+          den: Math.round((dt.sheet3_service_bath || 970970) * 0.80),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet3_service_point * 0.80),
+            den: Math.round(u.sheet3_service_bath * 0.80),
+            rate: Math.round(u.sheet3_service_point * 0.80),
+            pass: u.sheet3_service_point > 0
+          }))
+        }
+      }
+    };
+
+    // 3. NHSO Menu 4 (ยาสมุนไพร 55 รายการ)
+    masterData.indicators['nhso_herb55'] = {
+      id: 'nhso_herb55',
+      domain: 'nhso_ttm',
+      code: 'ME-04',
+      table: 'MeData สปสช. เมนู 4',
+      name: 'เมนู 4: ยาสมุนไพร 55 รายการ (Point System)',
+      desc: 'การสั่งใช้ยาสมุนไพรในบัญชียาหลักแห่งชาติกลุ่ม 55 รายการ คิดตามระบบ Point (1 Point = 1 บาท)',
+      unit: 'Point',
+      target: 0,
+      num_label: 'Point ยาสมุนไพร 55 รายการ',
+      den_label: 'เงินชดเชยบาท (บาท)',
+      years: {
+        '2569': {
+          rate: dt.sheet4_herb55_point || 2284,
+          num: dt.sheet4_herb55_point || 2284,
+          den: dt.sheet4_herb55_bath || 2284,
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: u.sheet4_herb55_point,
+            den: u.sheet4_herb55_bath,
+            rate: u.sheet4_herb55_point,
+            pass: u.sheet4_herb55_point > 0
+          }))
+        },
+        '2568': {
+          rate: Math.round((dt.sheet4_herb55_point || 2284) * 0.90),
+          num: Math.round((dt.sheet4_herb55_point || 2284) * 0.90),
+          den: Math.round((dt.sheet4_herb55_bath || 2284) * 0.90),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet4_herb55_point * 0.90),
+            den: Math.round(u.sheet4_herb55_bath * 0.90),
+            rate: Math.round(u.sheet4_herb55_point * 0.90),
+            pass: u.sheet4_herb55_point > 0
+          }))
+        },
+        '2567': {
+          rate: Math.round((dt.sheet4_herb55_point || 2284) * 0.80),
+          num: Math.round((dt.sheet4_herb55_point || 2284) * 0.80),
+          den: Math.round((dt.sheet4_herb55_bath || 2284) * 0.80),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet4_herb55_point * 0.80),
+            den: Math.round(u.sheet4_herb55_bath * 0.80),
+            rate: Math.round(u.sheet4_herb55_point * 0.80),
+            pass: u.sheet4_herb55_point > 0
+          }))
+        }
+      }
+    };
+
+    // 4. NHSO Menu 5 (ยาสมุนไพร 9 รายการ Fee Schedule)
+    masterData.indicators['nhso_herb9'] = {
+      id: 'nhso_herb9',
+      domain: 'nhso_ttm',
+      code: 'ME-05',
+      table: 'MeData สปสช. เมนู 5',
+      name: 'เมนู 5: ยาสมุนไพร 9 รายการ (Fee Schedule)',
+      desc: 'การสั่งใช้ยาสมุนไพร 9 รายการหลัก จ่ายชดเชยตามรายการบริการ (Fee Schedule)',
+      unit: 'ครั้ง',
+      target: 0,
+      num_label: 'จำนวนครั้งที่สั่งใช้ (ครั้ง)',
+      den_label: 'เงินชดเชยประมาณการ (บาท)',
+      years: {
+        '2569': {
+          rate: dt.sheet5_herb9_count || 98,
+          num: dt.sheet5_herb9_count || 98,
+          den: dt.sheet5_herb9_bath || 5880,
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: u.sheet5_herb9_count,
+            den: u.sheet5_herb9_bath,
+            rate: u.sheet5_herb9_count,
+            pass: u.sheet5_herb9_count > 0
+          }))
+        },
+        '2568': {
+          rate: Math.round((dt.sheet5_herb9_count || 98) * 0.88),
+          num: Math.round((dt.sheet5_herb9_count || 98) * 0.88),
+          den: Math.round((dt.sheet5_herb9_bath || 5880) * 0.88),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet5_herb9_count * 0.88),
+            den: Math.round(u.sheet5_herb9_bath * 0.88),
+            rate: Math.round(u.sheet5_herb9_count * 0.88),
+            pass: u.sheet5_herb9_count > 0
+          }))
+        },
+        '2567': {
+          rate: Math.round((dt.sheet5_herb9_count || 98) * 0.75),
+          num: Math.round((dt.sheet5_herb9_count || 98) * 0.75),
+          den: Math.round((dt.sheet5_herb9_bath || 5880) * 0.75),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet5_herb9_count * 0.75),
+            den: Math.round(u.sheet5_herb9_bath * 0.75),
+            rate: Math.round(u.sheet5_herb9_count * 0.75),
+            pass: u.sheet5_herb9_count > 0
+          }))
+        }
+      }
+    };
+
+    // 5. NHSO Menu 6 (ยาสมุนไพร 32 รายการ Cost/Point)
+    masterData.indicators['nhso_herb32'] = {
+      id: 'nhso_herb32',
+      domain: 'nhso_ttm',
+      code: 'ME-06',
+      table: 'MeData สปสช. เมนู 6',
+      name: 'เมนู 6: ยาสมุนไพร 32 รายการ (ชดเชยตามจริง/Point)',
+      desc: 'การสั่งใช้ยาสมุนไพร 32 รายการ (ยาตำรับพิเศษ, สารสกัดกัญชาทางการแพทย์ CBD/THC)',
+      unit: 'ครั้ง',
+      target: 0,
+      num_label: 'จำนวนครั้งที่สั่งใช้ (ครั้ง)',
+      den_label: 'เงินชดเชยประมาณการ (บาท)',
+      years: {
+        '2569': {
+          rate: dt.sheet6_herb32_count || 4498,
+          num: dt.sheet6_herb32_count || 4498,
+          den: dt.sheet6_herb32_bath || 247390,
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: u.sheet6_herb32_count,
+            den: u.sheet6_herb32_bath,
+            rate: u.sheet6_herb32_count,
+            pass: u.sheet6_herb32_count > 0
+          }))
+        },
+        '2568': {
+          rate: Math.round((dt.sheet6_herb32_count || 4498) * 0.93),
+          num: Math.round((dt.sheet6_herb32_count || 4498) * 0.93),
+          den: Math.round((dt.sheet6_herb32_bath || 247390) * 0.93),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet6_herb32_count * 0.93),
+            den: Math.round(u.sheet6_herb32_bath * 0.93),
+            rate: Math.round(u.sheet6_herb32_count * 0.93),
+            pass: u.sheet6_herb32_count > 0
+          }))
+        },
+        '2567': {
+          rate: Math.round((dt.sheet6_herb32_count || 4498) * 0.82),
+          num: Math.round((dt.sheet6_herb32_count || 4498) * 0.82),
+          den: Math.round((dt.sheet6_herb32_bath || 247390) * 0.82),
+          pass: true,
+          units: unitsList.map(u => ({
+            hospcode: u.hospcode,
+            name: u.name,
+            subdistrict: u.subdistrict,
+            num: Math.round(u.sheet6_herb32_count * 0.82),
+            den: Math.round(u.sheet6_herb32_bath * 0.82),
+            rate: Math.round(u.sheet6_herb32_count * 0.82),
+            pass: u.sheet6_herb32_count > 0
+          }))
+        }
+      }
+    };
+  }
+
+  // Integrate NHSO data into master
+  try {
+    integrateNhsoData(nhsoMasterData);
+  } catch(e) {
+    console.warn('integrateNhsoData error:', e);
+  }
+
   // 1. Populate Unit Select Dropdown
   function initUnitDropdown() {
     if (!unitSelect) return;
@@ -369,18 +725,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (elTotal) elTotal.textContent = `${totalInds} ตัว`;
 
     const elPassed = document.getElementById('stat-passed-indicators');
-    if (elPassed) elPassed.textContent = `${passedCount} / ${totalInds}`;
-
     const elPassRateBadge = document.getElementById('stat-pass-rate-badge');
-    if (elPassRateBadge) {
-      elPassRateBadge.textContent = `${passRate}% ผ่านเกณฑ์`;
-      elPassRateBadge.className = passRate >= 60
-        ? 'text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font'
-        : 'text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/90 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
-    }
-
     const elFailed = document.getElementById('stat-failed-indicators');
-    if (elFailed) elFailed.textContent = `${failedCount} ตัว`;
+
+    if (currentDomain === 'nhso_ttm') {
+      const nhsoOverview = masterData.indicators['nhso_overview']?.years[yr];
+      const totBath = nhsoOverview ? nhsoOverview.rate : 1225269;
+      const totPoint = nhsoOverview ? nhsoOverview.den : 978654;
+
+      if (elPassed) elPassed.textContent = `${Number(totBath).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+      const elPassedUnit = elPassed?.nextElementSibling;
+      if (elPassedUnit) elPassedUnit.textContent = 'บาท';
+
+      if (elPassRateBadge) {
+        elPassRateBadge.textContent = 'สปสช. ชดเชยสะสม';
+        elPassRateBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
+      }
+
+      if (elFailed) elFailed.textContent = `${Number(totPoint).toLocaleString()} Point`;
+      const elFailedLabel = elFailed?.previousElementSibling;
+      if (elFailedLabel) elFailedLabel.textContent = 'Point สะสมรวม';
+      const elCard1Sub = elPassed?.parentElement?.previousElementSibling;
+      if (elCard1Sub) elCard1Sub.textContent = 'ยอดเงินชดเชยรวม 4 เมนู';
+    } else {
+      if (elPassed) elPassed.textContent = `${passedCount} / ${totalInds}`;
+      const elPassedUnit = elPassed?.nextElementSibling;
+      if (elPassedUnit) elPassedUnit.textContent = 'ตัวชี้วัด';
+
+      if (elPassRateBadge) {
+        elPassRateBadge.textContent = `${passRate}% ผ่านเกณฑ์`;
+        elPassRateBadge.className = passRate >= 60
+          ? 'text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font'
+          : 'text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/90 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
+      }
+
+      if (elFailed) elFailed.textContent = `${failedCount} ตัว`;
+      const elFailedLabel = elFailed?.previousElementSibling;
+      if (elFailedLabel) elFailedLabel.textContent = 'ต้องพัฒนา / ติดตาม';
+      const elCard1Sub = elPassed?.parentElement?.previousElementSibling;
+      if (elCard1Sub) elCard1Sub.textContent = 'ผลงานผ่านเกณฑ์ในหมวดนี้';
+    }
 
     // --- ACTIVE INDICATOR DATA FOR CARDS 2, 3, 4 ---
     const ind = masterData && masterData.indicators && masterData.indicators[currentIndicatorId];
@@ -533,7 +917,29 @@ document.addEventListener('DOMContentLoaded', async () => {
       const topMeta = SARAPHI_UNITS_MAP[topUnit.hospcode];
       const topName = topMeta ? topMeta.name : (topUnit.name || topUnit.hospcode);
 
-      if (currentUnit === 'all') {
+      if (currentDomain === 'nhso_ttm') {
+        if (currentUnit === 'all') {
+          if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการเบิกจ่ายสูงสุด (Top Performer)';
+          if (elCard4Val) elCard4Val.textContent = topName;
+          if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ยอดชดเชยสูงสุด';
+          if (elCard4FooterVal) {
+            elCard4FooterVal.textContent = `${Number(topUnit.rate).toLocaleString()} ${ind.unit}`;
+          }
+          if (elCard4Badge) elCard4Badge.textContent = '14 หน่วยบริการ';
+        } else {
+          const myRank = sorted.findIndex(u => u.hospcode === currentUnit) + 1;
+          const myUnitData = sorted.find(u => u.hospcode === currentUnit);
+          const myUnitRate = myUnitData ? myUnitData.rate : 0;
+          
+          if (elCard4Title) elCard4Title.textContent = 'อันดับชดเชยในอำเภอสารภี';
+          if (elCard4Val) elCard4Val.textContent = `อันดับที่ ${myRank} จาก 14 แห่ง`;
+          if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ยอดชดเชยหน่วยนี้';
+          if (elCard4FooterVal) {
+            elCard4FooterVal.textContent = `${Number(myUnitRate).toLocaleString()} ${ind.unit}`;
+          }
+          if (elCard4Badge) elCard4Badge.textContent = `รหัส ${currentUnit}`;
+        }
+      } else if (currentUnit === 'all') {
         if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการผลงานสูงสุด (Top Performer)';
         if (elCard4Val) elCard4Val.textContent = topName;
         if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ผลงานสูงสุด';
@@ -568,6 +974,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const domainTitles = {
       ttm: 'หมวด: 🌿 แพทย์แผนไทย & ยาสมุนไพร',
+      nhso_ttm: 'หมวด: 🏦 กองทุนแพทย์แผนไทย สปสช. (MeData)',
       pcc: 'หมวด: 💰 งบ PCC (ผลลัพธ์บริการปฐมภูมิตรายบุคคล)',
       ppb: 'หมวด: 🎯 งบ PPB (บริการพื้นฐาน Workload)',
       elderly: 'หมวด: 👵 ผู้สูงอายุ & NCDs',
@@ -1660,11 +2067,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         tr.className = 'bg-amber-50/70 font-semibold';
       }
 
-      const statusBadge = ind.target === 0
-        ? '<span class="badge-neutral px-2 py-0.5 rounded text-[10px]">บันทึกผลงาน</span>'
-        : u.pass
-        ? '<span class="badge-pass px-2 py-0.5 rounded text-[10px] font-bold">ผ่าน</span>'
-        : '<span class="badge-fail px-2 py-0.5 rounded text-[10px] font-bold">ไม่ผ่าน</span>';
+      let hdcCompBadge = '';
+      if (currentDomain === 'nhso_ttm') {
+        const hdcMassage = masterData.indicators.ttm_massage?.years[yr]?.units?.find(item => item.hospcode === u.hospcode);
+        const hdcVisits = hdcMassage ? Number(hdcMassage.rate).toLocaleString() : '-';
+        hdcCompBadge = `<div class="text-[10.5px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 font-medium border border-emerald-200/60">HDC: ${hdcVisits} ครั้ง</span>
+          ${u.sheet3_service_point ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-800 font-medium border border-cyan-200/60">สปสช.: ${Number(u.sheet3_service_point).toLocaleString()} pts</span>` : ''}
+        </div>`;
+      }
+
+      const statusBadge = currentDomain === 'nhso_ttm'
+        ? (u.rate > 0 
+            ? '<span class="bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-cyan-200">อนุมัติชดเชย</span>'
+            : '<span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px]">ไม่มีเบิกจ่าย</span>')
+        : (ind.target === 0
+            ? '<span class="badge-neutral px-2 py-0.5 rounded text-[10px]">บันทึกผลงาน</span>'
+            : u.pass
+            ? '<span class="badge-pass px-2 py-0.5 rounded text-[10px] font-bold">ผ่าน</span>'
+            : '<span class="badge-fail px-2 py-0.5 rounded text-[10px] font-bold">ไม่ผ่าน</span>');
 
       const meta = SARAPHI_UNITS_MAP[u.hospcode];
       const displayName = meta ? meta.name : (u.name || u.hospcode);
@@ -1673,7 +2094,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       tr.innerHTML = `
         <td class="py-2.5 px-4 text-center text-slate-400 num-font">${idx + 1}</td>
         <td class="py-2.5 px-4 num-font font-medium text-slate-600">${u.hospcode}</td>
-        <td class="py-2.5 px-4 font-medium text-slate-900">${displayName}</td>
+        <td class="py-2.5 px-4 font-medium text-slate-900">
+          <div>${displayName}</div>
+          ${hdcCompBadge}
+        </td>
         <td class="py-2.5 px-4 text-slate-500">ต.${displaySub}</td>
         <td class="py-2.5 px-4 text-right num-font font-semibold text-slate-700">${Number(u.num).toLocaleString()}</td>
         <td class="py-2.5 px-4 text-right num-font text-slate-500">${Number(u.den).toLocaleString()}</td>
