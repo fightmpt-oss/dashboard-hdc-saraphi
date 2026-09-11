@@ -184,7 +184,7 @@ years = ["2567", "2568", "2569"]
 # ----------------------------------------------------
 # 1.1 s_ttm7
 master["indicators"]["ttm_val"] = {
-    "code": "TTM-1",
+    "code": "",
     "name": "ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)",
     "table": "s_ttm7",
     "domain": "ttm",
@@ -221,7 +221,7 @@ for y in years:
 
 # 1.2 s_ttm10
 master["indicators"]["ttm_ed"] = {
-    "code": "TTM-2",
+    "code": "",
     "name": "การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ED)",
     "table": "s_ttm10",
     "domain": "ttm",
@@ -258,7 +258,7 @@ for y in years:
 
 # 1.3 s_ttm32
 master["indicators"]["ttm_rx"] = {
-    "code": "TTM-3",
+    "code": "",
     "name": "สัดส่วนการสั่งใช้ยาสมุนไพรเทียบกับสั่งยาทั้งหมด (Prescription)",
     "table": "s_ttm32",
     "domain": "ttm",
@@ -295,7 +295,7 @@ for y in years:
 
 # 1.4 s_ttm34
 master["indicators"]["ttm_service"] = {
-    "code": "TTM-4",
+    "code": "",
     "name": "ร้อยละผู้ป่วยนอกได้รับบริการแพทย์แผนไทย (OPD Coverage)",
     "table": "s_ttm34",
     "domain": "ttm",
@@ -332,7 +332,7 @@ for y in years:
 
 # 1.5 s_ttm2
 master["indicators"]["ttm_cases"] = {
-    "code": "TTM-5",
+    "code": "",
     "name": "OPD ปริมาณการจ่ายยาสมุนไพร (จำนวนครั้ง/คน)",
     "table": "s_ttm2",
     "domain": "ttm",
@@ -369,7 +369,7 @@ for y in years:
 
 # 1.6 s_common_diseases_thai_drug
 master["indicators"]["ttm_common_dis"] = {
-    "code": "TTM-6",
+    "code": "",
     "name": "การใช้ยาสมุนไพรในกลุ่มโรคพบบ่อย (Common Diseases)",
     "table": "s_common_diseases_thai_drug",
     "domain": "ttm",
@@ -406,7 +406,7 @@ for y in years:
 
 # 1.7 s_ttm3
 master["indicators"]["ttm_age_sex"] = {
-    "code": "TTM-7",
+    "code": "",
     "name": "การจ่ายยาสมุนไพรตามอายุและเพศ",
     "table": "s_ttm3",
     "domain": "ttm",
@@ -443,7 +443,7 @@ for y in years:
 
 # 1.8 s_ttm8
 master["indicators"]["ttm_massage"] = {
-    "code": "TTM-8",
+    "code": "",
     "name": "บริการหัตถการแพทย์แผนไทย นวด อบ ประคบ (ครั้ง)",
     "table": "s_ttm8",
     "domain": "ttm",
@@ -482,7 +482,7 @@ for y in years:
 
 # 1.9 s_ttm4 (Top Herbs - Full Takwang Benchmark & District Structure)
 master["indicators"]["ttm_top_herbs"] = {
-    "code": "TTM-9",
+    "code": "",
     "name": "OPD-อันดับการใช้ยาสมุนไพรและมูลค่ายา (DIDSTD)",
     "table": "s_ttm4",
     "domain": "ttm",

@@ -91,8 +91,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           ? 'active bg-emerald-600 text-white border-emerald-600 shadow-sm font-semibold'
           : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
       }`;
+      const codeSpan = ind.code ? `<span class="font-bold text-[10px] opacity-80">${ind.code}</span>` : '';
       btn.innerHTML = `
-        <span class="font-bold text-[10px] opacity-80">${ind.code}</span>
+        ${codeSpan}
         <span>${ind.name}</span>
       `;
       btn.addEventListener('click', () => {
@@ -160,7 +161,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ind = masterData.indicators[currentIndicatorId];
     if (!ind) return;
 
-    document.getElementById('ind-code-badge').textContent = ind.code;
+    const codeBadge = document.getElementById('ind-code-badge');
+    if (codeBadge) {
+      if (ind.code) {
+        codeBadge.textContent = ind.code;
+        codeBadge.style.display = 'inline-block';
+      } else {
+        codeBadge.style.display = 'none';
+      }
+    }
     document.getElementById('ind-table-badge').textContent = `HDC: ${ind.table}`;
     document.getElementById('ind-name-text').textContent = ind.name;
     document.getElementById('ind-desc-text').textContent = ind.desc;
