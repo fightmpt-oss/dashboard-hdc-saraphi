@@ -8,16 +8,23 @@ echo กำลังเริ่มต้นดึงข้อมูลจาก
 echo กรุณารอสักครู่ (ใช้เวลาประมาณ 1-2 นาที)...
 echo.
 
+echo [1/4] กำลังดึงข้อมูลการชดเชยงบประมาณ (Sheets 3, 4, 5, 6)...
 python scripts\extract_nhso_medata.py
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo [เกิดข้อผิดพลาด] ไม่สามารถดึงข้อมูลจาก MeData ได้ กรุณาตรวจสอบอินเทอร์เน็ต
-    pause
-    exit /b 1
+    echo [คำเตือน] ไม่สามารถดึงข้อมูลชุดหลักได้
 )
 
 echo.
-echo ประมวลผลและเชื่อมโยงข้อมูล 14 รพ.สต. ...
+echo [2/4] กำลังดึงข้อมูล Error Code การส่งข้อมูล (Menu 9 ปี 2567-2569)...
+python scripts\extract_nhso_error_codes.py
+
+echo.
+echo [3/4] กำลังดึงข้อมูลย้อนหลัง 3 ปี (Multi-Year 2567-2569)...
+python scripts\extract_nhso_multiyear.py
+
+echo.
+echo [4/4] กำลังประมวลผลเชื่อมโยงข้อมูล 14 รพ.สต. ในอำเภอสารภี...
 python scripts\reprocess_nhso_master.py
 
 echo.

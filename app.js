@@ -45,11 +45,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const activeSection = document.getElementById('active-indicator-section');
   const explorerSection = document.getElementById('explorer-section');
   const topHerbsPanel = document.getElementById('top-herbs-panel');
+  const nhsoErrorPanel = document.getElementById('nhso-error-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
+
+  let currentErrorActivity = 'ยาสมุนไพร';
+  let currentErrorYear = '2569';
 
   // Load Data with Cache-Busting
   let nhsoMasterData = null;
@@ -368,6 +372,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     };
 
+    const my = nhso.multiyear || {};
+    const myS3 = my.sheet3_service || {};
+    const myS4 = my.sheet4_herb55 || {};
+    const myS5 = my.sheet5_herb9 || {};
+    const myS6 = my.sheet6_herb32 || {};
+
     // 2. NHSO Menu 3 (บริการแพทย์แผนไทย หัตถการ Point & บาท)
     masterData.indicators['nhso_service'] = {
       id: 'nhso_service',
@@ -397,34 +407,40 @@ document.addEventListener('DOMContentLoaded', async () => {
           }))
         },
         '2568': {
-          rate: Math.round((dt.sheet3_service_point || 970970) * 0.91),
-          num: Math.round((dt.sheet3_service_point || 970970) * 0.91),
-          den: Math.round((dt.sheet3_service_bath || 970970) * 0.91),
+          rate: myS3['2568']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.91),
+          num: myS3['2568']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.91),
+          den: myS3['2568']?.district_total || Math.round((dt.sheet3_service_bath || 970970) * 0.91),
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet3_service_point * 0.91),
-            den: Math.round(u.sheet3_service_bath * 0.91),
-            rate: Math.round(u.sheet3_service_point * 0.91),
-            pass: u.sheet3_service_point > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS3['2568']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         },
         '2567': {
-          rate: Math.round((dt.sheet3_service_point || 970970) * 0.80),
-          num: Math.round((dt.sheet3_service_point || 970970) * 0.80),
-          den: Math.round((dt.sheet3_service_bath || 970970) * 0.80),
+          rate: myS3['2567']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.80),
+          num: myS3['2567']?.district_total || Math.round((dt.sheet3_service_point || 970970) * 0.80),
+          den: myS3['2567']?.district_total || Math.round((dt.sheet3_service_bath || 970970) * 0.80),
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet3_service_point * 0.80),
-            den: Math.round(u.sheet3_service_bath * 0.80),
-            rate: Math.round(u.sheet3_service_point * 0.80),
-            pass: u.sheet3_service_point > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS3['2567']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         }
       }
     };
@@ -458,33 +474,36 @@ document.addEventListener('DOMContentLoaded', async () => {
           }))
         },
         '2568': {
-          rate: Math.round((dt.sheet4_herb55_point || 2284) * 0.90),
-          num: Math.round((dt.sheet4_herb55_point || 2284) * 0.90),
-          den: Math.round((dt.sheet4_herb55_bath || 2284) * 0.90),
+          rate: myS4['2568']?.district_total || 252,
+          num: myS4['2568']?.district_total || 252,
+          den: myS4['2568']?.district_total || 252,
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet4_herb55_point * 0.90),
-            den: Math.round(u.sheet4_herb55_bath * 0.90),
-            rate: Math.round(u.sheet4_herb55_point * 0.90),
-            pass: u.sheet4_herb55_point > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS4['2568']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         },
         '2567': {
-          rate: Math.round((dt.sheet4_herb55_point || 2284) * 0.80),
-          num: Math.round((dt.sheet4_herb55_point || 2284) * 0.80),
-          den: Math.round((dt.sheet4_herb55_bath || 2284) * 0.80),
+          rate: 0,
+          num: 0,
+          den: 0,
           pass: true,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.sheet4_herb55_point * 0.80),
-            den: Math.round(u.sheet4_herb55_bath * 0.80),
-            rate: Math.round(u.sheet4_herb55_point * 0.80),
-            pass: u.sheet4_herb55_point > 0
+            num: 0,
+            den: 0,
+            rate: 0,
+            pass: false
           }))
         }
       }
@@ -519,34 +538,40 @@ document.addEventListener('DOMContentLoaded', async () => {
           }))
         },
         '2568': {
-          rate: Math.round((dt.sheet5_herb9_count || 98) * 0.88),
-          num: Math.round((dt.sheet5_herb9_count || 98) * 0.88),
-          den: Math.round((dt.sheet5_herb9_bath || 5880) * 0.88),
+          rate: myS5['2568']?.district_total || 1181,
+          num: myS5['2568']?.district_total || 1181,
+          den: (myS5['2568']?.district_total || 1181) * 60,
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet5_herb9_count * 0.88),
-            den: Math.round(u.sheet5_herb9_bath * 0.88),
-            rate: Math.round(u.sheet5_herb9_count * 0.88),
-            pass: u.sheet5_herb9_count > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS5['2568']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt * 60,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         },
         '2567': {
-          rate: Math.round((dt.sheet5_herb9_count || 98) * 0.75),
-          num: Math.round((dt.sheet5_herb9_count || 98) * 0.75),
-          den: Math.round((dt.sheet5_herb9_bath || 5880) * 0.75),
+          rate: myS5['2567']?.district_total || 577,
+          num: myS5['2567']?.district_total || 577,
+          den: (myS5['2567']?.district_total || 577) * 60,
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet5_herb9_count * 0.75),
-            den: Math.round(u.sheet5_herb9_bath * 0.75),
-            rate: Math.round(u.sheet5_herb9_count * 0.75),
-            pass: u.sheet5_herb9_count > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS5['2567']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt * 60,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         }
       }
     };
@@ -580,34 +605,114 @@ document.addEventListener('DOMContentLoaded', async () => {
           }))
         },
         '2568': {
-          rate: Math.round((dt.sheet6_herb32_count || 4498) * 0.93),
-          num: Math.round((dt.sheet6_herb32_count || 4498) * 0.93),
-          den: Math.round((dt.sheet6_herb32_bath || 247390) * 0.93),
+          rate: myS6['2568']?.district_total || 1840,
+          num: myS6['2568']?.district_total || 1840,
+          den: (myS6['2568']?.district_total || 1840) * 55,
           pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: Math.round(u.sheet6_herb32_count * 0.93),
-            den: Math.round(u.sheet6_herb32_bath * 0.93),
-            rate: Math.round(u.sheet6_herb32_count * 0.93),
-            pass: u.sheet6_herb32_count > 0
-          }))
+          units: unitsList.map(u => {
+            const pt = myS6['2568']?.units?.[u.hospcode] || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt * 55,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         },
         '2567': {
-          rate: Math.round((dt.sheet6_herb32_count || 4498) * 0.82),
-          num: Math.round((dt.sheet6_herb32_count || 4498) * 0.82),
-          den: Math.round((dt.sheet6_herb32_bath || 247390) * 0.82),
+          rate: 0,
+          num: 0,
+          den: 0,
           pass: true,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.sheet6_herb32_count * 0.82),
-            den: Math.round(u.sheet6_herb32_bath * 0.82),
-            rate: Math.round(u.sheet6_herb32_count * 0.82),
-            pass: u.sheet6_herb32_count > 0
+            num: 0,
+            den: 0,
+            rate: 0,
+            pass: false
           }))
+        }
+      }
+    };
+
+    // 6. NHSO Menu 9: Error Codes (2567-2569)
+    const errData = nhso.error_codes || {};
+    const errSummary = errData.summary || {};
+
+    masterData.indicators['nhso_error_code'] = {
+      id: 'nhso_error_code',
+      domain: 'nhso_ttm',
+      code: 'ME-09',
+      table: 'MeData สปสช. เมนู 9',
+      name: 'เมนู 9: Error Code การส่งข้อมูลเบิกชดเชย (ยาสมุนไพร & หัตถการ 3 ปี)',
+      desc: 'รายงานข้อผิดพลาด (Error Code) ที่ทำให้ไม่ผ่านการเบิกชดเชยกองทุนแพทย์แผนไทย แยกรายหน่วยบริการและรหัส Error (2567 - 2569)',
+      unit: 'ครั้ง',
+      target: 0,
+      num_label: 'จำนวน Error ที่พบ (ครั้ง)',
+      den_label: 'หน่วยบริการที่พบ',
+      errorData: errData,
+      years: {
+        '2569': {
+          rate: (errSummary['ยาสมุนไพร']?.['2569']?.totalErrors || 5529) + (errSummary['หัตถการ']?.['2569']?.totalErrors || 8480),
+          num: (errSummary['ยาสมุนไพร']?.['2569']?.totalErrors || 5529) + (errSummary['หัตถการ']?.['2569']?.totalErrors || 8480),
+          den: 14,
+          pass: true,
+          units: unitsList.map(u => {
+            const hErr = errSummary['ยาสมุนไพร']?.['2569']?.units?.[u.hospcode]?.totalErrors || 0;
+            const pErr = errSummary['หัตถการ']?.['2569']?.units?.[u.hospcode]?.totalErrors || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: hErr + pErr,
+              den: 1,
+              rate: hErr + pErr,
+              pass: (hErr + pErr) === 0
+            };
+          })
+        },
+        '2568': {
+          rate: (errSummary['ยาสมุนไพร']?.['2568']?.totalErrors || 9755) + (errSummary['หัตถการ']?.['2568']?.totalErrors || 26413),
+          num: (errSummary['ยาสมุนไพร']?.['2568']?.totalErrors || 9755) + (errSummary['หัตถการ']?.['2568']?.totalErrors || 26413),
+          den: 14,
+          pass: true,
+          units: unitsList.map(u => {
+            const hErr = errSummary['ยาสมุนไพร']?.['2568']?.units?.[u.hospcode]?.totalErrors || 0;
+            const pErr = errSummary['หัตถการ']?.['2568']?.units?.[u.hospcode]?.totalErrors || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: hErr + pErr,
+              den: 1,
+              rate: hErr + pErr,
+              pass: (hErr + pErr) === 0
+            };
+          })
+        },
+        '2567': {
+          rate: (errSummary['ยาสมุนไพร']?.['2567']?.totalErrors || 5000) + (errSummary['หัตถการ']?.['2567']?.totalErrors || 18897),
+          num: (errSummary['ยาสมุนไพร']?.['2567']?.totalErrors || 5000) + (errSummary['หัตถการ']?.['2567']?.totalErrors || 18897),
+          den: 14,
+          pass: true,
+          units: unitsList.map(u => {
+            const hErr = errSummary['ยาสมุนไพร']?.['2567']?.units?.[u.hospcode]?.totalErrors || 0;
+            const pErr = errSummary['หัตถการ']?.['2567']?.units?.[u.hospcode]?.totalErrors || 0;
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: hErr + pErr,
+              den: 1,
+              rate: hErr + pErr,
+              pass: (hErr + pErr) === 0
+            };
+          })
         }
       }
     };
@@ -728,7 +833,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elPassRateBadge = document.getElementById('stat-pass-rate-badge');
     const elFailed = document.getElementById('stat-failed-indicators');
 
-    if (currentDomain === 'nhso_ttm') {
+    if (currentIndicatorId === 'nhso_error_code') {
+      const errData = (masterData.indicators['nhso_error_code']?.errorData) || (nhsoMasterData?.error_codes) || {};
+      const errSummary = errData.summary || {};
+      const herbTot = errSummary['ยาสมุนไพร']?.[yr]?.totalErrors || 0;
+      const procTot = errSummary['หัตถการ']?.[yr]?.totalErrors || 0;
+      const grandTot = herbTot + procTot;
+
+      if (elPassed) elPassed.textContent = `${Number(grandTot).toLocaleString()}`;
+      const elPassedUnit = elPassed?.nextElementSibling;
+      if (elPassedUnit) elPassedUnit.textContent = 'ครั้ง';
+
+      if (elPassRateBadge) {
+        elPassRateBadge.textContent = `Error รวมปี ${yr}`;
+        elPassRateBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
+      }
+
+      if (elFailed) elFailed.textContent = `สมุนไพร ${Number(herbTot).toLocaleString()} | หัตถการ ${Number(procTot).toLocaleString()}`;
+      const elFailedLabel = elFailed?.previousElementSibling;
+      if (elFailedLabel) elFailedLabel.textContent = 'จำแนก 2 กิจกรรม';
+      const elCard1Sub = elPassed?.parentElement?.previousElementSibling;
+      if (elCard1Sub) elCard1Sub.textContent = 'ยอดรวมข้อผิดพลาดส่งเบิก';
+    } else if (currentDomain === 'nhso_ttm') {
       const nhsoOverview = masterData.indicators['nhso_overview']?.years[yr];
       const totBath = nhsoOverview ? nhsoOverview.rate : 1225269;
       const totPoint = nhsoOverview ? nhsoOverview.den : 978654;
@@ -769,6 +895,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- ACTIVE INDICATOR DATA FOR CARDS 2, 3, 4 ---
     const ind = masterData && masterData.indicators && masterData.indicators[currentIndicatorId];
     const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
+    const isNhsoError = (currentIndicatorId === 'nhso_error_code');
     const yData = ind && ind.years && ind.years[yr];
 
     let currentRate = 0;
@@ -800,7 +927,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elCard2FooterLabel = document.getElementById('stat-card2-footer-label');
     const elCard2GapBadge = document.getElementById('stat-card2-gap-badge');
 
-    if (isTTM4) {
+    if (isNhsoError) {
+      const errData = (ind && ind.errorData) || (nhsoMasterData?.error_codes) || {};
+      const act = currentErrorActivity || 'ยาสมุนไพร';
+      const actData = (errData.summary?.[act]?.[yr]) || { totalErrors: 0, districtErrors: {}, units: {} };
+      const sortedCodes = Object.entries(actData.districtErrors || {}).sort((a, b) => b[1] - a[1]);
+      const topCode = sortedCodes[0] || ['-', 0];
+      if (elCard2Badge) elCard2Badge.textContent = 'MeData สปสช. เมนู 9';
+      if (elCard2Title) elCard2Title.textContent = `Error ${act} (ปี ${yr})`;
+      if (elCard2Val) elCard2Val.textContent = `${Number(actData.totalErrors || 0).toLocaleString()} ครั้ง`;
+      if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'รหัส Error สูงสุด';
+      if (elCard2GapBadge) {
+        elCard2GapBadge.textContent = `${topCode[0]} (${Number(topCode[1] || 0).toLocaleString()} ครั้ง)`;
+        elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+      }
+    } else if (isTTM4) {
       const summary = (yData && yData.saraphi_summary) || {};
       const totalCost = summary.price_all || 934735.29;
       const totalVisits = summary.visits_all || 16190;
@@ -852,7 +993,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elCard3FooterLabel = document.getElementById('stat-card3-footer-label');
     const elCard3FooterVal = document.getElementById('stat-card3-footer-val');
 
-    if (isTTM4) {
+    if (isNhsoError) {
+      const errData = (ind && ind.errorData) || (nhsoMasterData?.error_codes) || {};
+      const act = currentErrorActivity || 'ยาสมุนไพร';
+      const actData = (errData.summary?.[act]?.[yr]) || { totalErrors: 0, districtErrors: {}, units: {} };
+      const affectedCount = Object.values(actData.units || {}).filter(u => (u.totalErrors || 0) > 0).length;
+      if (elCard3Badge) elCard3Badge.textContent = '14 หน่วยบริการ';
+      if (elCard3Title) elCard3Title.textContent = 'รพ.สต. ที่มี Error การส่ง';
+      if (elCard3Val) elCard3Val.textContent = `${affectedCount} แห่ง`;
+      if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'ผลกระทบชดเชย';
+      if (elCard3FooterVal) elCard3FooterVal.textContent = 'ไม่ผ่านเกณฑ์การจ่าย';
+    } else if (isTTM4) {
       const summary = (yData && yData.saraphi_summary) || {};
       const priUc = summary.price_uc || 770752;
       const vsUc = summary.visits_uc || 12467;
@@ -899,7 +1050,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elCard4FooterLabel = document.getElementById('stat-card4-footer-label');
     const elCard4FooterVal = document.getElementById('stat-card4-footer-val');
 
-    if (isTTM4) {
+    if (isNhsoError) {
+      const errData = (ind && ind.errorData) || (nhsoMasterData?.error_codes) || {};
+      const act = currentErrorActivity || 'ยาสมุนไพร';
+      const actData = (errData.summary?.[act]?.[yr]) || { totalErrors: 0, districtErrors: {}, units: {} };
+      const sortedUnits = Object.entries(actData.units || {}).sort((a, b) => (b[1].totalErrors || 0) - (a[1].totalErrors || 0));
+      const topUnit = sortedUnits[0];
+      const topUnitCode = topUnit ? topUnit[0] : null;
+      const topUnitName = topUnitCode ? (SARAPHI_UNITS_MAP[topUnitCode]?.name || topUnit[1].name || topUnitCode) : '-';
+      const topUnitErr = topUnit ? (topUnit[1].totalErrors || 0) : 0;
+      const share = actData.totalErrors > 0 ? Math.round((topUnitErr / actData.totalErrors) * 100) : 0;
+      if (elCard4Badge) elCard4Badge.textContent = 'พบสูงสุดในพื้นที่';
+      if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการที่พบ Error มากสุด';
+      if (elCard4Val) elCard4Val.textContent = topUnitName;
+      if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'จำนวนข้อผิดพลาด';
+      if (elCard4FooterVal) elCard4FooterVal.textContent = `${Number(topUnitErr).toLocaleString()} ครั้ง (${share}%)`;
+    } else if (isTTM4) {
       if (elCard4Badge) elCard4Badge.textContent = '14 หน่วยบริการ';
       if (elCard4Title) elCard4Title.textContent = 'หน่วยสั่งจ่ายมูลค่าสูงสุด';
       if (elCard4Val) elCard4Val.textContent = 'โรงพยาบาลสารภี';
@@ -999,10 +1165,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         codeBadge.style.display = 'none';
       }
     }
-    document.getElementById('ind-table-badge').textContent = `HDC: ${ind.table}`;
+    const tablePrefix = (ind.domain === 'nhso_ttm' || (ind.table && ind.table.startsWith('MeData'))) ? '' : 'HDC: ';
+    document.getElementById('ind-table-badge').textContent = `${tablePrefix}${ind.table}`;
     document.getElementById('ind-name-text').textContent = ind.name;
     document.getElementById('ind-desc-text').textContent = ind.desc;
-    document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
+    if (ind.id === 'nhso_error_code') {
+      document.getElementById('ind-target-text').textContent = 'เป้าหมาย: 0 ครั้ง (ไม่พบ Error)';
+    } else {
+      document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
+    }
 
     const yr = currentYear === 'all' ? '2569' : currentYear;
     const yData = ind.years[yr];
@@ -2127,6 +2298,376 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   }
 
+  // Error Action Guide & Metadata
+  const ERROR_ACTION_GUIDE = {
+    'TT017': {
+      title: 'ยาสมุนไพรไม่อยู่ในบัญชียาหลักแห่งชาติ',
+      advice: 'ตรวจสอบรหัสยา 24 หลัก (DIDSTD) ในระบบ HIS/JHCIS ต้องผูกตรงกับรหัสมาตรฐานยาพัฒนาจากสมุนไพรในบัญชียาหลักแห่งชาติ',
+      icon: 'pill'
+    },
+    'TT031': {
+      title: 'รายการยาสมุนไพร 9 รายการที่ต้องเบิกกับ e-Claim',
+      advice: 'รายการ Fee Schedule 9 รายการ (เช่น ฟ้าทะลายโจร ขมิ้นชัน ฯลฯ) ต้องส่งเบิกผ่านโปรแกรม e-Claim ของ สปสช. แทนช่องทางปกติ',
+      icon: 'file-spreadsheet'
+    },
+    'TT305': {
+      title: 'ไม่พบการยืนยันตัวตนปิดสิทธิ์ (Authen สิ้นสุดบริการ)',
+      advice: 'ให้ผู้รับบริการทำการ Authen ยืนยันตัวตนปิดสิทธิ์เมื่อสิ้นสุดการรับบริการ ผ่านบัตรประชาชน (Smart Card) หรือ QR Code สปสช.',
+      icon: 'shield-alert'
+    },
+    'TT022': {
+      title: 'รหัสหัตถการไม่อยู่ในคู่มือแนวทาง สปสช.',
+      advice: 'ตรวจสอบรหัสหัตถการแพทย์แผนไทย (ICD-10-TM) ในระบบ ให้ตรงตามคู่มือแนวทางการขอรับค่าใช้จ่ายบริการแพทย์แผนไทยของ สปสช.',
+      icon: 'stethoscope'
+    },
+    'TT021': {
+      title: 'รหัสหัตถการฟื้นฟูมารดาหลังคลอดไม่ครบ 5 รหัส',
+      advice: 'การให้บริการฟื้นฟูมารดาหลังคลอด ต้องบันทึกหัตถการครบทั้ง 5 รายการตามเกณฑ์แพ็กเกจที่ สปสช. กำหนดจึงจะผ่านชดเชย',
+      icon: 'heart-pulse'
+    },
+    'TT015': {
+      title: 'ซ้ำซ้อนกับที่เคยส่งเบิกในกิจกรรมเดียวกัน',
+      advice: 'ตรวจสอบว่ามีการบันทึกหรือส่งเบิกซ้ำซ้อนในวันและกิจกรรมบริการเดียวกันหรือไม่ หากส่งซ้ำให้ยกเลิกรายการที่ซ้ำ',
+      icon: 'copy'
+    },
+    'TT006': {
+      title: 'ไม่ระบุรหัสวินิจฉัยโรค (ICD-10)',
+      advice: 'ตรวจสอบการลงรหัสการวินิจฉัยโรคหลัก (Principle Diagnosis) ในโปรแกรมก่อนบันทึกส่งข้อมูลออก',
+      icon: 'file-text'
+    },
+    'TT019': {
+      title: 'เคยส่งข้อมูลยาสมุนไพรมาแล้วในวันเดียวกัน',
+      advice: 'ตรวจสอบการสั่งจ่ายยาซ้ำในวันบริการเดียวกัน รวบรวมรายการยาให้อยู่ใน Visit เดียวกัน',
+      icon: 'calendar'
+    },
+    'TT020': {
+      title: 'ผู้รับบริการไม่ใช่สัญชาติไทยหรือไม่พบในทะเบียนราษฎร์',
+      advice: 'ตรวจสอบเลขบัตรประจำตัวประชาชน 13 หลัก สิทธิการรักษา และสถานะในทะเบียนราษฎร์ของผู้รับบริการ',
+      icon: 'user-x'
+    },
+    'TT025': {
+      title: 'ไม่พบวันคลอดในฐานทะเบียนราษฎร์ สปสช.',
+      advice: 'ตรวจสอบวันคลอดของมารดา หรือตรวจสอบการขึ้นทะเบียนคลอดในระบบของกระทรวงสาธารณสุขและ สปสช.',
+      icon: 'baby'
+    },
+    'TT001': {
+      title: 'วันที่ส่งข้อมูลน้อยกว่าวันที่รับบริการ',
+      advice: 'ตรวจสอบวัน-เวลาของเครื่องคอมพิวเตอร์และวันที่บันทึกบริการใน HIS ให้ถูกต้อง',
+      icon: 'clock'
+    },
+    'TT032': {
+      title: 'หน่วยบริการไม่อยู่ในระบบหลักประกันสุขภาพแห่งชาติ',
+      advice: 'ตรวจสอบรหัสหน่วยบริการ 5 หลักของหน่วยงาน และสถานะสัญญาบริการกับ สปสช.',
+      icon: 'building'
+    },
+    'TT033': {
+      title: 'ไม่พบข้อมูลการยืนยันและพิสูจน์ตัวตน',
+      advice: 'ต้องทำการพิสูจน์ตัวตน (Authentication) ผู้รับบริการก่อนเริ่มให้บริการทุกครั้ง',
+      icon: 'check-circle'
+    }
+  };
+
+  // Switch Activity in NHSO Error Panel
+  window.switchErrorActivity = function(act) {
+    currentErrorActivity = act;
+    updateDashboardView();
+  };
+
+  // Switch Year in NHSO Error Panel
+  window.switchErrorYear = function(yr) {
+    currentErrorYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    updateDashboardView();
+  };
+
+  // Render NHSO Error Panel
+  function renderNhsoErrorPanel() {
+    if (currentIndicatorId !== 'nhso_error_code') {
+      if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+      return;
+    }
+    if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
+
+    const ind = masterData?.indicators?.['nhso_error_code'];
+    const errData = (ind && ind.errorData) || (nhsoMasterData && nhsoMasterData.error_codes) || {};
+    const catalog = errData.catalog || {};
+    const summary = errData.summary || {};
+
+    const act = currentErrorActivity || 'ยาสมุนไพร';
+    const yr = currentErrorYear || '2569';
+
+    // 1. Toggle Button UI
+    const btnHerb = document.getElementById('btn-err-act-herb');
+    const btnProc = document.getElementById('btn-err-act-proc');
+    if (btnHerb && btnProc) {
+      if (act === 'ยาสมุนไพร') {
+        btnHerb.className = 'px-3.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        btnProc.className = 'px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+      } else {
+        btnProc.className = 'px-3.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white';
+        btnHerb.className = 'px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+      }
+    }
+
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-err-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    const actData = (summary[act] && summary[act][yr]) || { totalErrors: 0, districtErrors: {}, units: {} };
+    const totalDistrictErrors = actData.totalErrors || 0;
+    const districtErrors = actData.districtErrors || {};
+    const unitsMap = actData.units || {};
+
+    // 2. Update Bento KPI Cards
+    // Card 1: Total Error Count
+    const elTotal = document.getElementById('err-stat-total');
+    const elActLabel = document.getElementById('err-stat-activity-label');
+    if (elTotal) elTotal.textContent = Number(totalDistrictErrors).toLocaleString();
+    if (elActLabel) elActLabel.textContent = `${act} ปี ${yr}`;
+
+    // Card 2: Top Error Code
+    const sortedDistrictErrors = Object.entries(districtErrors).sort((a, b) => b[1] - a[1]);
+    const topError = sortedDistrictErrors[0] || ['-', 0];
+    const topCode = topError[0];
+    const topCount = topError[1];
+    const topDesc = catalog[topCode] || '-';
+
+    const elTopCode = document.getElementById('err-stat-top-code');
+    const elTopDesc = document.getElementById('err-stat-top-desc');
+    const elTopCount = document.getElementById('err-stat-top-count');
+    if (elTopCode) elTopCode.textContent = topCode;
+    if (elTopDesc) {
+      elTopDesc.textContent = topDesc;
+      elTopDesc.title = topDesc;
+    }
+    if (elTopCount) elTopCount.textContent = `${Number(topCount).toLocaleString()} ครั้ง`;
+
+    // Card 3: Units Affected
+    const unitKeys = Object.keys(SARAPHI_UNITS_MAP).sort();
+    const affectedUnits = unitKeys.filter(code => (unitsMap[code]?.totalErrors || 0) > 0);
+    const elAffected = document.getElementById('err-stat-affected-units');
+    const elStatusNote = document.getElementById('err-stat-status-note');
+    if (elAffected) elAffected.textContent = affectedUnits.length;
+    if (elStatusNote) {
+      elStatusNote.textContent = affectedUnits.length > 0
+        ? `พบ Error ใน ${affectedUnits.length} รพ.สต.`
+        : 'ไม่พบ Error ในปีนี้';
+    }
+
+    // Card 4: Top Unit with Errors (or selected unit)
+    const sortedUnits = unitKeys
+      .map(code => ({
+        code,
+        name: SARAPHI_UNITS_MAP[code]?.name || unitsMap[code]?.name || code,
+        totalErrors: unitsMap[code]?.totalErrors || 0,
+        errors: unitsMap[code]?.errors || {}
+      }))
+      .sort((a, b) => b.totalErrors - a.totalErrors);
+
+    let displayTopUnit = sortedUnits[0];
+    if (currentUnit !== 'all') {
+      const selected = sortedUnits.find(u => u.code === currentUnit);
+      if (selected) displayTopUnit = selected;
+    }
+
+    const elTopUnitName = document.getElementById('err-stat-topunit-name');
+    const elTopUnitCount = document.getElementById('err-stat-topunit-count');
+    const elTopUnitShare = document.getElementById('err-stat-topunit-share');
+
+    if (displayTopUnit) {
+      const share = totalDistrictErrors > 0
+        ? ((displayTopUnit.totalErrors / totalDistrictErrors) * 100).toFixed(1)
+        : '0.0';
+      if (elTopUnitName) {
+        elTopUnitName.textContent = displayTopUnit.name;
+        elTopUnitName.title = `${displayTopUnit.code}: ${displayTopUnit.name}`;
+      }
+      if (elTopUnitCount) elTopUnitCount.textContent = `${Number(displayTopUnit.totalErrors).toLocaleString()} ครั้ง`;
+      if (elTopUnitShare) elTopUnitShare.textContent = `${share} %`;
+    }
+
+    // 3. Matrix Table
+    const tableTitle = document.getElementById('err-table-title');
+    if (tableTitle) {
+      tableTitle.textContent = `ตารางแจกแจง Error Code ${act} รายหน่วยบริการ (ปีงบประมาณ ${yr})`;
+    }
+    const tableSummaryBadge = document.getElementById('err-table-summary-badge');
+    if (tableSummaryBadge) {
+      tableSummaryBadge.textContent = `${sortedDistrictErrors.length} รหัส Error | รวมทั้งอำเภอ ${Number(totalDistrictErrors).toLocaleString()} ครั้ง`;
+    }
+
+    const theadTr = document.getElementById('err-matrix-thead-tr');
+    const tbody = document.getElementById('err-matrix-tbody');
+    const tfoot = document.getElementById('err-matrix-tfoot');
+
+    if (!theadTr || !tbody || !tfoot) return;
+
+    // Build Header
+    let theadHtml = `
+      <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold">#</th>
+      <th class="py-3 px-3 w-20 text-slate-500 font-bold">รหัส</th>
+      <th class="py-3 px-3 min-w-[200px] text-slate-800 font-bold">หน่วยบริการ</th>
+      <th class="py-3 px-3 w-28 text-slate-600 font-bold">ตำบล</th>
+    `;
+
+    const activeErrorCodes = sortedDistrictErrors.map(e => e[0]);
+    activeErrorCodes.forEach(code => {
+      const desc = catalog[code] || '';
+      theadHtml += `
+        <th class="py-3 px-3 text-right text-slate-700 font-bold cursor-help group" title="${code}: ${desc}">
+          <div class="flex flex-col items-end">
+            <span class="text-rose-700 font-extrabold flex items-center gap-1">
+              ${code}
+              <i data-lucide="info" class="w-3 h-3 text-rose-400 group-hover:text-rose-600 inline"></i>
+            </span>
+            <span class="text-[10px] text-slate-400 font-normal truncate max-w-[100px] block" title="${desc}">${desc}</span>
+          </div>
+        </th>
+      `;
+    });
+
+    theadHtml += `
+      <th class="py-3 px-4 text-right text-rose-900 font-extrabold bg-rose-50/50">รวม Error (ครั้ง)</th>
+    `;
+    theadTr.innerHTML = theadHtml;
+
+    // Build Body Rows
+    tbody.innerHTML = '';
+    sortedUnits.forEach((u, idx) => {
+      const isSelected = (currentUnit === u.code);
+      const rowBg = isSelected ? 'bg-indigo-50/80 ring-2 ring-indigo-500/50' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40');
+      const sub = SARAPHI_UNITS_MAP[u.code]?.subdistrict || '-';
+
+      let rowHtml = `
+        <tr class="${rowBg} hover:bg-rose-50/40 transition">
+          <td class="py-2.5 px-3 text-center num-font text-slate-400 font-semibold">${idx + 1}</td>
+          <td class="py-2.5 px-3 num-font text-slate-500 font-medium">${u.code}</td>
+          <td class="py-2.5 px-3 font-semibold text-slate-800">
+            ${u.name}
+            ${isSelected ? '<span class="ml-1.5 text-[10px] bg-indigo-600 text-white px-1.5 py-0.5 rounded font-bold">เลือกอยู่</span>' : ''}
+          </td>
+          <td class="py-2.5 px-3 text-slate-500">ต.${sub}</td>
+      `;
+
+      activeErrorCodes.forEach(code => {
+        const count = u.errors[code] || 0;
+        if (count > 0) {
+          rowHtml += `
+            <td class="py-2.5 px-3 text-right num-font">
+              <span class="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200/60 shadow-2xs">
+                ${Number(count).toLocaleString()}
+              </span>
+            </td>
+          `;
+        } else {
+          rowHtml += `<td class="py-2.5 px-3 text-right text-slate-300 num-font">-</td>`;
+        }
+      });
+
+      rowHtml += `
+        <td class="py-2.5 px-4 text-right num-font font-black ${u.totalErrors > 0 ? 'text-rose-700 bg-rose-50/60' : 'text-slate-400'}">
+          ${Number(u.totalErrors).toLocaleString()}
+        </td>
+      </tr>
+      `;
+
+      tbody.insertAdjacentHTML('beforeend', rowHtml);
+    });
+
+    // Build Footer Total Row
+    let tfootHtml = `
+      <tr class="bg-rose-50/80 border-t-2 border-rose-200 text-rose-950 font-bold">
+        <td colspan="4" class="py-3 px-4 text-slate-900 font-black">
+          🏥 รวมทั้งอำเภอสารภี (${sortedUnits.length} หน่วยบริการ)
+        </td>
+    `;
+
+    activeErrorCodes.forEach(code => {
+      const codeTotal = districtErrors[code] || 0;
+      tfootHtml += `
+        <td class="py-3 px-3 text-right num-font font-black text-rose-800 text-sm">
+          ${Number(codeTotal).toLocaleString()}
+        </td>
+      `;
+    });
+
+    tfootHtml += `
+      <td class="py-3 px-4 text-right num-font font-black text-rose-900 text-base bg-rose-100/80">
+        ${Number(totalDistrictErrors).toLocaleString()}
+      </td>
+    </tr>
+    `;
+    tfoot.innerHTML = tfootHtml;
+
+    // 4. Catalog & Action Guide Cards
+    const catalogGrid = document.getElementById('err-catalog-grid');
+    if (catalogGrid) {
+      catalogGrid.innerHTML = '';
+      if (activeErrorCodes.length === 0) {
+        catalogGrid.innerHTML = '<div class="col-span-3 text-center py-6 text-slate-400">ไม่พบรหัส Error ในหมวดหมู่นี้สำหรับปีที่เลือก</div>';
+      } else {
+        activeErrorCodes.forEach(code => {
+          const desc = catalog[code] || '-';
+          const count = districtErrors[code] || 0;
+          const share = totalDistrictErrors > 0 ? ((count / totalDistrictErrors) * 100).toFixed(1) : 0;
+          const guide = ERROR_ACTION_GUIDE[code] || {
+            title: desc,
+            advice: 'ตรวจสอบความถูกต้องของข้อมูลตามคู่มือและระเบียบการเบิกจ่ายของ สปสช.',
+            icon: 'alert-circle'
+          };
+
+          const cardHtml = `
+            <div class="rounded-xl border border-slate-200 bg-white p-4 hover:shadow-md transition space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 font-black text-xs num-font border border-rose-200">
+                    ${code}
+                  </span>
+                  <span class="text-xs font-bold text-slate-800 line-clamp-1">${guide.title}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-[11px] num-font shrink-0">
+                  พบ ${Number(count).toLocaleString()} (${share}%)
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-600 line-clamp-2">
+                <strong>คำอธิบาย สปสช.:</strong> ${desc}
+              </p>
+              <div class="pt-2 border-t border-slate-100 flex items-start gap-2 bg-emerald-50/60 p-2.5 rounded-lg border-l-4 border-emerald-500 text-emerald-900">
+                <i data-lucide="${guide.icon || 'check-circle'}" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <div class="text-[11px]">
+                  <span class="font-bold text-emerald-800">แนวทางแก้ไข:</span> ${guide.advice}
+                </div>
+              </div>
+            </div>
+          `;
+          catalogGrid.insertAdjacentHTML('beforeend', cardHtml);
+        });
+      }
+    }
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -2146,17 +2687,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       updateIndicatorHeader();
 
       const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
+      const isNhsoError = (currentIndicatorId === 'nhso_error_code');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
       if (isTTM4) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         renderTopHerbsPanel();
+      } else if (isNhsoError) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
+        renderNhsoErrorPanel();
       } else {
         if (standardChartsSection) standardChartsSection.classList.remove('hidden');
         if (standardTableSection) standardTableSection.classList.remove('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -2312,6 +2862,9 @@ console.log("Saraphi Records:", saraphiData);`;
       btn.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
       btn.classList.remove('text-slate-600');
       currentYear = btn.dataset.year;
+      if (currentYear !== 'all') {
+        currentErrorYear = currentYear;
+      }
       updateDashboardView();
     });
   });

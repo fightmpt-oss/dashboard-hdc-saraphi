@@ -111,6 +111,15 @@ code.font-mono {
 .bento-card-amber:hover {
   box-shadow: 0 16px 32px -4px rgba(217, 119, 6, 0.4);
 }
+.bento-card-rose {
+  background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.3), 0 8px 10px -6px rgba(225, 29, 72, 0.15);
+}
+.bento-card-rose:hover {
+  box-shadow: 0 16px 32px -4px rgba(225, 29, 72, 0.4);
+}
 
 .shadow-xs {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
