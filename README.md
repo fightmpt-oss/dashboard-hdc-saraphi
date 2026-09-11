@@ -2,6 +2,11 @@
 
 ระบบสารสนเทศเปรียบเทียบข้อมูลสุขภาพและยาสมุนไพร อำเภอสารภี จังหวัดเชียงใหม่ ย้อนหลัง 3 ปีงบประมาณ (2567, 2568, 2569) ครอบคลุม 14 หน่วยบริการปฐมภูมิและทุติยภูมิ จากฐานข้อมูล **Open Data กระทรวงสาธารณสุข (MoPH)**
 
+### 🌐 Live Links
+- 🌍 **เว็บไซต์ออนไลน์ (Live on GitHub Pages)**: [https://fightmpt-oss.github.io/dashboard-hdc-saraphi/](https://fightmpt-oss.github.io/dashboard-hdc-saraphi/)
+- 💻 **GitHub Repository**: [https://github.com/fightmpt-oss/dashboard-hdc-saraphi](https://github.com/fightmpt-oss/dashboard-hdc-saraphi)
+- 🚀 **1-Click Deploy to Vercel**: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Ffightmpt-oss%2Fdashboard-hdc-saraphi)
+
 ---
 
 ## 🌟 จุดเด่นของระบบ (Key Highlights)
