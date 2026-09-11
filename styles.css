@@ -1,5 +1,5 @@
 /* HDC Saraphi Health & Herbal Dashboard Styles */
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
 
 :root {
   --primary: #059669;
@@ -16,7 +16,7 @@
 }
 
 body {
-  font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: #f1f5f9;
   color: #1e293b;
   -webkit-font-smoothing: antialiased;

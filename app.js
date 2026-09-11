@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.lucide.createIcons();
   }
 
+  // Set global Chart.js font to Noto Sans Thai
+  if (window.Chart) {
+    Chart.defaults.font.family = "'Noto Sans Thai', sans-serif";
+  }
+
   // App State
   let masterData = null;
   let catalogData = [];
