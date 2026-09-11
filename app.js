@@ -29,8 +29,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   // DOM Elements
   const unitSelect = document.getElementById('unit-select') || document.getElementById('filter-unit');
   const yearButtons = document.querySelectorAll('.year-btn');
-  const navTabs = document.querySelectorAll('.nav-tab');
-  const chipsContainer = document.getElementById('indicator-chips-container') || document.getElementById('indicator-chips');
+  const indicatorDropdownBar = document.getElementById('indicator-dropdown-bar');
+  const executiveBanner = document.getElementById('executive-banner');
+  const indicatorSelect = document.getElementById('indicator-select');
+  const btnPrevInd = document.getElementById('btn-prev-ind');
+  const btnNextInd = document.getElementById('btn-next-ind');
+  const indCountBadge = document.getElementById('ind-count-badge');
+  const sidebarNav = document.getElementById('sidebar-nav');
+  const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+  const sidebarPinBtn = document.getElementById('sidebar-pin-btn');
+  const btnMobileMenu = document.getElementById('btn-mobile-menu');
+  const sidebarItems = document.querySelectorAll('.sidebar-item');
+  let isSidebarPinned = false;
+
   const activeSection = document.getElementById('active-indicator-section');
   const explorerSection = document.getElementById('explorer-section');
   const topHerbsPanel = document.getElementById('top-herbs-panel');
@@ -281,48 +292,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     return inds;
   }
 
-  // 3. Render Sub-Indicator Chips
-  function renderIndicatorChips() {
-    chipsContainer.innerHTML = '';
+  // 3. Populate Indicator Dropdown Selector
+  function populateIndicatorDropdown() {
+    if (!indicatorSelect) return;
     const indicators = getIndicatorsByDomain(currentDomain);
-    if (!indicators.length) return;
+    if (!indicators.length) {
+      indicatorSelect.innerHTML = '<option value="">ไม่มีตัวชี้วัดในหมวดนี้</option>';
+      if (indCountBadge) indCountBadge.textContent = '0 ตัวชี้วัด';
+      if (btnPrevInd) btnPrevInd.disabled = true;
+      if (btnNextInd) btnNextInd.disabled = true;
+      return;
+    }
 
-    indicators.forEach(ind => {
-      const btn = document.createElement('button');
-      btn.className = `sub-tab px-3 py-1.5 rounded-xl text-xs transition border flex items-center space-x-1.5 ${
-        ind.id === currentIndicatorId
-          ? 'active bg-emerald-600 text-white border-emerald-600 shadow-sm font-semibold'
-          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-      }`;
-      const codeSpan = ind.code ? `<span class="font-bold text-[10px] opacity-80">${ind.code}</span>` : '';
-      btn.innerHTML = `
-        ${codeSpan}
-        <span>${ind.name}</span>
-      `;
-      btn.addEventListener('click', () => {
-        currentIndicatorId = ind.id;
-        renderIndicatorChips();
-        updateDashboardView();
-      });
-      chipsContainer.appendChild(btn);
+    // Ensure currentIndicatorId belongs to this domain
+    const exists = indicators.some(i => i.id === currentIndicatorId);
+    if (!exists) {
+      currentIndicatorId = indicators[0].id;
+    }
+
+    indicatorSelect.innerHTML = '';
+    indicators.forEach((ind, idx) => {
+      const opt = document.createElement('option');
+      opt.value = ind.id;
+      const codeTag = ind.code ? `[${ind.code}] ` : (ind.table ? `[${ind.table}] ` : '');
+      const targetStr = ind.target > 0 ? ` (เกณฑ์ ≥ ${ind.target} ${ind.unit})` : ' (ตามผลงานสะสม)';
+      opt.textContent = `${idx + 1}. ${codeTag}${ind.name}${targetStr}`;
+      indicatorSelect.appendChild(opt);
     });
+
+    indicatorSelect.value = currentIndicatorId;
+    updateIndicatorNavButtons();
   }
 
-  // 4. Update Header Summary & KPI Cards
+  function updateIndicatorNavButtons() {
+    const indicators = getIndicatorsByDomain(currentDomain);
+    const currentIndex = indicators.findIndex(i => i.id === currentIndicatorId);
+    const total = indicators.length;
+
+    if (indCountBadge) {
+      indCountBadge.textContent = currentIndex >= 0 ? `${currentIndex + 1} จาก ${total} ตัวชี้วัด` : `${total} ตัวชี้วัด`;
+    }
+    if (btnPrevInd) {
+      btnPrevInd.disabled = (currentIndex <= 0);
+    }
+    if (btnNextInd) {
+      btnNextInd.disabled = (currentIndex < 0 || currentIndex >= total - 1);
+    }
+  }
+
+  // 4. Update Header Summary & 4 Bento KPI Cards (Dynamic to Selected Indicator)
   function updateExecutiveOverview() {
     const indicators = getIndicatorsByDomain(currentDomain);
     const yr = currentYear === 'all' ? '2569' : currentYear;
 
+    // --- CARD 1: Pass Rate in Current Category (Emerald Gradient - Retained) ---
     let passedCount = 0;
     let failedCount = 0;
 
     indicators.forEach(ind => {
-      const yData = ind.years[yr];
+      const yData = ind.years && ind.years[yr];
       if (!yData) return;
       if (currentUnit === 'all') {
         if (yData.pass) passedCount++; else failedCount++;
       } else {
-        const uItem = yData.units.find(u => u.hospcode === currentUnit);
+        const uItem = yData.units && yData.units.find(u => u.hospcode === currentUnit);
         if (uItem) {
           if (uItem.pass) passedCount++; else failedCount++;
         }
@@ -349,34 +382,177 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elFailed = document.getElementById('stat-failed-indicators');
     if (elFailed) elFailed.textContent = `${failedCount} ตัว`;
 
-    // Total TTM Value stat
-    const ttmVal = masterData.indicators['ttm_val'];
-    const elTtmVal = document.getElementById('stat-ttm-total-val');
-    if (ttmVal && ttmVal.years[yr] && elTtmVal) {
-      const rate = currentUnit === 'all'
-        ? ttmVal.years[yr].rate
-        : (ttmVal.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
-      elTtmVal.textContent = `${Number(rate).toFixed(2)} %`;
+    // --- ACTIVE INDICATOR DATA FOR CARDS 2, 3, 4 ---
+    const ind = masterData && masterData.indicators && masterData.indicators[currentIndicatorId];
+    const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
+    const yData = ind && ind.years && ind.years[yr];
+
+    let currentRate = 0;
+    let currentPass = false;
+    let currentNum = 0;
+    let currentDen = 0;
+
+    if (yData) {
+      if (currentUnit === 'all') {
+        currentRate = yData.rate || 0;
+        currentPass = !!yData.pass;
+        currentNum = yData.num || (yData.units ? yData.units.reduce((s, u) => s + (u.num || 0), 0) : 0);
+        currentDen = yData.den || (yData.units ? yData.units.reduce((s, u) => s + (u.den || 0), 0) : 0);
+      } else {
+        const u = yData.units && yData.units.find(item => item.hospcode === currentUnit);
+        if (u) {
+          currentRate = u.rate || 0;
+          currentPass = !!u.pass;
+          currentNum = u.num || 0;
+          currentDen = u.den || 0;
+        }
+      }
     }
 
-    // NCD Control stat (HT control)
-    const ncdInd = masterData.indicators['pcc_ht_control'];
-    const elNcd = document.getElementById('stat-ncd-rate');
-    if (ncdInd && ncdInd.years[yr] && elNcd) {
-      const rate = currentUnit === 'all'
-        ? ncdInd.years[yr].rate
-        : (ncdInd.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
-      elNcd.textContent = `${Number(rate).toFixed(1)} %`;
+    // --- CARD 2: Selected Indicator Rate & Target Gap (Indigo Gradient) ---
+    const elCard2Badge = document.getElementById('stat-card2-badge');
+    const elCard2Title = document.getElementById('stat-card2-title');
+    const elCard2Val = document.getElementById('stat-card2-val');
+    const elCard2FooterLabel = document.getElementById('stat-card2-footer-label');
+    const elCard2GapBadge = document.getElementById('stat-card2-gap-badge');
+
+    if (isTTM4) {
+      const summary = (yData && yData.saraphi_summary) || {};
+      const totalCost = summary.price_all || 934735.29;
+      const totalVisits = summary.visits_all || 16190;
+      if (elCard2Badge) elCard2Badge.textContent = '95 รายการยา (DIDSTD)';
+      if (elCard2Title) elCard2Title.textContent = 'มูลค่าการใช้ยาสมุนไพรรวม';
+      if (elCard2Val) elCard2Val.textContent = `${Number(totalCost).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} บาท`;
+      if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'รวมการสั่งจ่าย';
+      if (elCard2GapBadge) {
+        elCard2GapBadge.textContent = `${Number(totalVisits).toLocaleString()} ครั้ง`;
+        elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+      }
+    } else if (ind) {
+      const targetVal = ind.target || 0;
+      if (elCard2Badge) {
+        elCard2Badge.textContent = targetVal > 0 ? `เกณฑ์ ≥ ${targetVal} ${ind.unit}` : 'ผลงานสะสม / Workload';
+      }
+      if (elCard2Title) elCard2Title.textContent = `อัตราผลงาน (${ind.unit})`;
+      if (elCard2Val) elCard2Val.textContent = `${Number(currentRate).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${ind.unit}`;
+      
+      if (targetVal > 0) {
+        if (currentPass) {
+          const gap = (currentRate - targetVal).toFixed(1);
+          if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'สถานะผลงาน';
+          if (elCard2GapBadge) {
+            elCard2GapBadge.textContent = `✓ สูงกว่าเป้า +${gap} ${ind.unit}`;
+            elCard2GapBadge.className = 'font-bold text-white bg-emerald-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
+          }
+        } else {
+          const gap = (targetVal - currentRate).toFixed(1);
+          if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ส่วนต่างเป้าหมาย';
+          if (elCard2GapBadge) {
+            elCard2GapBadge.textContent = `✕ ขาดอีก ${gap} ${ind.unit}`;
+            elCard2GapBadge.className = 'font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
+          }
+        }
+      } else {
+        if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ประเภทข้อมูล';
+        if (elCard2GapBadge) {
+          elCard2GapBadge.textContent = `ผลงานสะสมปี ${yr}`;
+          elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+        }
+      }
     }
 
-    // Screening Coverage stat (DSPM child development)
-    const screenInd = masterData.indicators['ppb_child_develop'];
-    const elScreen = document.getElementById('stat-screen-rate');
-    if (screenInd && screenInd.years[yr] && elScreen) {
-      const rate = currentUnit === 'all'
-        ? screenInd.years[yr].rate
-        : (screenInd.years[yr].units.find(u => u.hospcode === currentUnit)?.rate || 0);
-      elScreen.textContent = `${Number(rate).toFixed(1)} %`;
+    // --- CARD 3: Target Population & Actual Numerator/Denominator A/B (Sky Gradient) ---
+    const elCard3Badge = document.getElementById('stat-card3-badge');
+    const elCard3Title = document.getElementById('stat-card3-title');
+    const elCard3Val = document.getElementById('stat-card3-val');
+    const elCard3FooterLabel = document.getElementById('stat-card3-footer-label');
+    const elCard3FooterVal = document.getElementById('stat-card3-footer-val');
+
+    if (isTTM4) {
+      const summary = (yData && yData.saraphi_summary) || {};
+      const priUc = summary.price_uc || 770752;
+      const vsUc = summary.visits_uc || 12467;
+      const vsAll = summary.visits_all || 16190;
+      const ucShare = vsAll > 0 ? Math.round((vsUc / vsAll) * 100) : 0;
+      if (elCard3Badge) elCard3Badge.textContent = 'สิทธิ UC บัตรทอง';
+      if (elCard3Title) elCard3Title.textContent = 'มูลค่าสั่งจ่ายสิทธิ UC';
+      if (elCard3Val) elCard3Val.textContent = `${Number(priUc).toLocaleString(undefined, { maximumFractionDigits: 0 })} บาท`;
+      if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'สัดส่วนสั่งจ่าย UC';
+      if (elCard3FooterVal) elCard3FooterVal.textContent = `${Number(vsUc).toLocaleString()} ครั้ง (${ucShare}%)`;
+    } else if (ind) {
+      const isBaht = (ind.num_label && ind.num_label.includes('บาท')) || (ind.unit === 'บาท') || (ind.id === 'ttm_val');
+      const unitLabel = isBaht ? 'บาท' : (ind.unit === 'ครั้ง' ? 'ครั้ง' : 'คน');
+      if (currentDen > 0) {
+        const percentCoverage = ((currentNum / currentDen) * 100).toFixed(1);
+        if (elCard3Badge) elCard3Badge.textContent = isBaht ? `สัดส่วน ${percentCoverage}%` : `ความครอบคลุม ${percentCoverage}%`;
+        if (elCard3Title) elCard3Title.textContent = isBaht ? 'มูลค่าการใช้ยาจริง (A)' : 'ผลงานคนจริงที่ได้รับบริการ (A)';
+        if (elCard3Val) elCard3Val.textContent = isBaht
+          ? `${Number(currentNum).toLocaleString(undefined, { maximumFractionDigits: 0 })} บาท`
+          : `${Number(currentNum).toLocaleString()} ${unitLabel}`;
+        if (elCard3FooterLabel) elCard3FooterLabel.textContent = isBaht ? 'จากมูลค่ายาทั้งหมด (B)' : 'จากประชากรเป้าหมาย (B)';
+        if (elCard3FooterVal) elCard3FooterVal.textContent = isBaht
+          ? `${Number(currentDen).toLocaleString(undefined, { maximumFractionDigits: 0 })} บาท`
+          : `${Number(currentDen).toLocaleString()} ${unitLabel}`;
+      } else if (currentNum > 0) {
+        if (elCard3Badge) elCard3Badge.textContent = 'ปริมาณงาน (Workload)';
+        if (elCard3Title) elCard3Title.textContent = 'จำนวนครั้ง/ผลงานสะสม (A)';
+        if (elCard3Val) elCard3Val.textContent = `${Number(currentNum).toLocaleString()} ครั้ง`;
+        if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'ฐานข้อมูล HDC';
+        if (elCard3FooterVal) elCard3FooterVal.textContent = `ปีงบประมาณ ${yr}`;
+      } else {
+        if (elCard3Badge) elCard3Badge.textContent = 'ระดับพื้นที่';
+        if (elCard3Title) elCard3Title.textContent = 'ผลงานเป้าหมาย';
+        if (elCard3Val) elCard3Val.textContent = `${Number(currentRate).toLocaleString()} ${ind.unit}`;
+        if (elCard3FooterLabel) elCard3FooterLabel.textContent = 'สถานพยาบาล';
+        if (elCard3FooterVal) elCard3FooterVal.textContent = '14 หน่วยบริการ';
+      }
+    }
+
+    // --- CARD 4: Top Performer & Unit Pass Ratio (Amber Gradient) ---
+    const elCard4Badge = document.getElementById('stat-card4-badge');
+    const elCard4Title = document.getElementById('stat-card4-title');
+    const elCard4Val = document.getElementById('stat-card4-val');
+    const elCard4FooterLabel = document.getElementById('stat-card4-footer-label');
+    const elCard4FooterVal = document.getElementById('stat-card4-footer-val');
+
+    if (isTTM4) {
+      if (elCard4Badge) elCard4Badge.textContent = '14 หน่วยบริการ';
+      if (elCard4Title) elCard4Title.textContent = 'หน่วยสั่งจ่ายมูลค่าสูงสุด';
+      if (elCard4Val) elCard4Val.textContent = 'โรงพยาบาลสารภี';
+      if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'มูลค่าสั่งจ่าย';
+      if (elCard4FooterVal) elCard4FooterVal.textContent = '461,894 บาท (49.4%)';
+    } else if (ind && yData && yData.units && yData.units.length > 0) {
+      const unitsList = yData.units;
+      const passedUnits = unitsList.filter(u => u.pass).length;
+      if (elCard4Badge) {
+        elCard4Badge.textContent = ind.target > 0 ? `ผ่านเกณฑ์ ${passedUnits} / 14 แห่ง` : '14 หน่วยบริการ';
+      }
+
+      const sorted = [...unitsList].sort((a, b) => (b.rate || 0) - (a.rate || 0));
+      const topUnit = sorted[0];
+      const topMeta = SARAPHI_UNITS_MAP[topUnit.hospcode];
+      const topName = topMeta ? topMeta.name : (topUnit.name || topUnit.hospcode);
+
+      if (currentUnit === 'all') {
+        if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการผลงานสูงสุด (Top Performer)';
+        if (elCard4Val) elCard4Val.textContent = topName;
+        if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ผลงานสูงสุด';
+        if (elCard4FooterVal) {
+          elCard4FooterVal.textContent = `${Number(topUnit.rate).toLocaleString()} ${ind.unit} (${topUnit.pass ? '✓ ผ่านเกณฑ์' : 'ยังไม่ผ่าน'})`;
+        }
+      } else {
+        const myRank = sorted.findIndex(u => u.hospcode === currentUnit) + 1;
+        const myUnitData = sorted.find(u => u.hospcode === currentUnit);
+        const myUnitRate = myUnitData ? myUnitData.rate : 0;
+        const myUnitPass = myUnitData ? myUnitData.pass : false;
+        
+        if (elCard4Title) elCard4Title.textContent = 'อันดับในอำเภอสารภี (Ranking)';
+        if (elCard4Val) elCard4Val.textContent = `อันดับที่ ${myRank} จาก 14 แห่ง`;
+        if (elCard4FooterLabel) elCard4FooterLabel.textContent = 'ผลงานของหน่วยนี้';
+        if (elCard4FooterVal) {
+          elCard4FooterVal.textContent = `${Number(myUnitRate).toLocaleString()} ${ind.unit} (${myUnitPass ? '✓ ผ่านเกณฑ์' : 'ต่ำกว่าเกณฑ์'})`;
+        }
+      }
     }
 
     // Selected Unit & Year Label
@@ -395,7 +571,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       pcc: 'หมวด: 💰 งบ PCC (ผลลัพธ์บริการปฐมภูมิตรายบุคคล)',
       ppb: 'หมวด: 🎯 งบ PPB (บริการพื้นฐาน Workload)',
       elderly: 'หมวด: 👵 ผู้สูงอายุ & NCDs',
-      mch: 'หมวด: 👶 อนามัยแม่และเด็ก'
+      mch: 'หมวด: 👶 อนามัยแม่และเด็ก',
+      explorer: 'หมวด: 🌐 OpenData MoPH (51 หมวด)'
     };
     const elViewTitle = document.getElementById('view-title');
     if (elViewTitle) elViewTitle.textContent = domainTitles[currentDomain] || 'แดชบอร์ดสุขภาพ';
@@ -1529,15 +1706,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
-      activeSection.classList.add('hidden');
-      chipsContainer.classList.add('hidden');
-      explorerSection.classList.remove('hidden');
+      if (activeSection) activeSection.classList.add('hidden');
+      if (indicatorDropdownBar) indicatorDropdownBar.classList.add('hidden');
+      if (executiveBanner) executiveBanner.classList.add('hidden');
+      if (explorerSection) explorerSection.classList.remove('hidden');
       renderExplorerCatalog();
     } else {
-      explorerSection.classList.add('hidden');
-      chipsContainer.classList.remove('hidden');
-      activeSection.classList.remove('hidden');
+      if (explorerSection) explorerSection.classList.add('hidden');
+      if (indicatorDropdownBar) indicatorDropdownBar.classList.remove('hidden');
+      if (executiveBanner) executiveBanner.classList.remove('hidden');
+      if (activeSection) activeSection.classList.remove('hidden');
 
+      populateIndicatorDropdown();
       updateExecutiveOverview();
       updateIndicatorHeader();
 
@@ -1712,21 +1892,112 @@ console.log("Saraphi Records:", saraphiData);`;
     });
   });
 
-  navTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      navTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentDomain = tab.dataset.domain;
+  // Sidebar Navigation Listeners
+  sidebarItems.forEach(item => {
+    item.addEventListener('click', () => {
+      sidebarItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      currentDomain = item.dataset.domain;
+
+      // Close mobile drawer if open
+      if (sidebarNav) sidebarNav.classList.remove('mobile-open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
 
       // Select default indicator for this domain
       const inds = getIndicatorsByDomain(currentDomain);
       if (inds.length > 0) {
         currentIndicatorId = inds[0].id;
       }
-      renderIndicatorChips();
+      populateIndicatorDropdown();
       updateDashboardView();
     });
   });
+
+  // Desktop Sidebar Auto-expand on Hover & Pin Toggle
+  if (sidebarNav) {
+    sidebarNav.addEventListener('mouseenter', () => {
+      if (!isSidebarPinned && window.innerWidth >= 1024) {
+        sidebarNav.classList.remove('sidebar-collapsed');
+        sidebarNav.classList.add('sidebar-expanded');
+      }
+    });
+
+    sidebarNav.addEventListener('mouseleave', () => {
+      if (!isSidebarPinned && window.innerWidth >= 1024) {
+        sidebarNav.classList.remove('sidebar-expanded');
+        sidebarNav.classList.add('sidebar-collapsed');
+      }
+    });
+  }
+
+  if (sidebarPinBtn) {
+    sidebarPinBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isSidebarPinned = !isSidebarPinned;
+      const pinIcon = document.getElementById('pin-icon');
+      if (isSidebarPinned) {
+        sidebarNav.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+        sidebarNav.classList.add('sidebar-pinned');
+        sidebarPinBtn.classList.add('text-emerald-600', 'bg-emerald-50');
+        if (pinIcon) pinIcon.setAttribute('data-lucide', 'panel-left-open');
+      } else {
+        sidebarNav.classList.remove('sidebar-pinned', 'sidebar-expanded');
+        sidebarNav.classList.add('sidebar-collapsed');
+        sidebarPinBtn.classList.remove('text-emerald-600', 'bg-emerald-50');
+        if (pinIcon) pinIcon.setAttribute('data-lucide', 'panel-left-close');
+      }
+      if (window.lucide) window.lucide.createIcons();
+    });
+  }
+
+  // Mobile Drawer Menu
+  if (btnMobileMenu && sidebarNav && sidebarBackdrop) {
+    btnMobileMenu.addEventListener('click', () => {
+      sidebarNav.classList.add('mobile-open');
+      sidebarBackdrop.classList.add('active');
+    });
+
+    sidebarBackdrop.addEventListener('click', () => {
+      sidebarNav.classList.remove('mobile-open');
+      sidebarBackdrop.classList.remove('active');
+    });
+  }
+
+  // Indicator Dropdown Change
+  if (indicatorSelect) {
+    indicatorSelect.addEventListener('change', (e) => {
+      currentIndicatorId = e.target.value;
+      updateIndicatorNavButtons();
+      updateDashboardView();
+    });
+  }
+
+  // Indicator Prev / Next Buttons
+  if (btnPrevInd) {
+    btnPrevInd.addEventListener('click', () => {
+      const indicators = getIndicatorsByDomain(currentDomain);
+      const currentIndex = indicators.findIndex(i => i.id === currentIndicatorId);
+      if (currentIndex > 0) {
+        currentIndicatorId = indicators[currentIndex - 1].id;
+        if (indicatorSelect) indicatorSelect.value = currentIndicatorId;
+        updateIndicatorNavButtons();
+        updateDashboardView();
+      }
+    });
+  }
+
+  if (btnNextInd) {
+    btnNextInd.addEventListener('click', () => {
+      const indicators = getIndicatorsByDomain(currentDomain);
+      const currentIndex = indicators.findIndex(i => i.id === currentIndicatorId);
+      if (currentIndex >= 0 && currentIndex < indicators.length - 1) {
+        currentIndicatorId = indicators[currentIndex + 1].id;
+        if (indicatorSelect) indicatorSelect.value = currentIndicatorId;
+        updateIndicatorNavButtons();
+        updateDashboardView();
+      }
+    });
+  }
 
   tableSearch?.addEventListener('input', renderDataTable);
 
@@ -1738,6 +2009,6 @@ console.log("Saraphi Records:", saraphiData);`;
   // Initial Boot
   try { initUnitDropdown(); } catch (err) { console.error('initUnitDropdown err:', err); }
   try { initExplorerFilters(); } catch (err) { console.error('initExplorerFilters err:', err); }
-  try { renderIndicatorChips(); } catch (err) { console.error('renderIndicatorChips err:', err); }
+  try { populateIndicatorDropdown(); } catch (err) { console.error('populateIndicatorDropdown err:', err); }
   try { updateDashboardView(); } catch (err) { console.error('updateDashboardView err:', err); }
 });

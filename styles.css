@@ -298,3 +298,173 @@ html, body {
   background: #94a3b8;
 }
 
+/* ==========================================================================
+   Sidebar Navigation (Collapsible Mini-rail & Mobile Drawer)
+   ========================================================================== */
+
+#sidebar-nav {
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
+  will-change: width, transform;
+}
+
+/* Desktop Collapsed Mini-rail */
+@media (min-width: 1024px) {
+  #sidebar-nav.sidebar-collapsed {
+    width: 72px;
+  }
+  #sidebar-nav.sidebar-collapsed .sidebar-text,
+  #sidebar-nav.sidebar-collapsed .sidebar-badge,
+  #sidebar-nav.sidebar-collapsed .sidebar-header-text,
+  #sidebar-nav.sidebar-collapsed .sidebar-pin-label {
+    opacity: 0;
+    pointer-events: none;
+    max-width: 0;
+    display: none;
+    overflow: hidden;
+  }
+  #sidebar-nav.sidebar-collapsed .sidebar-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #sidebar-nav.sidebar-collapsed .sidebar-item-icon {
+    margin-right: 0 !important;
+  }
+
+  /* Desktop Expanded State (Hover or Pinned) */
+  #sidebar-nav.sidebar-expanded,
+  #sidebar-nav.sidebar-pinned {
+    width: 275px;
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+  }
+  #sidebar-nav.sidebar-expanded .sidebar-text,
+  #sidebar-nav.sidebar-pinned .sidebar-text,
+  #sidebar-nav.sidebar-expanded .sidebar-badge,
+  #sidebar-nav.sidebar-pinned .sidebar-badge,
+  #sidebar-nav.sidebar-expanded .sidebar-header-text,
+  #sidebar-nav.sidebar-pinned .sidebar-header-text,
+  #sidebar-nav.sidebar-expanded .sidebar-pin-label,
+  #sidebar-nav.sidebar-pinned .sidebar-pin-label {
+    opacity: 1;
+    pointer-events: auto;
+    max-width: 200px;
+    display: block;
+    transition: opacity 0.2s ease 0.05s;
+  }
+}
+
+/* Mobile & Tablet Drawer (< 1024px) */
+@media (max-width: 1023px) {
+  #sidebar-nav {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 285px !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    transform: translateX(-100%);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  #sidebar-nav.mobile-open {
+    transform: translateX(0);
+  }
+  #sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  #sidebar-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .desktop-only-pin {
+    display: none !important;
+  }
+}
+
+/* Sidebar Item Styling */
+.sidebar-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.sidebar-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+.sidebar-item.active {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #047857;
+  border-color: #a7f3d0;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
+}
+.sidebar-item.active .sidebar-item-icon {
+  color: #059669;
+  transform: scale(1.08);
+}
+
+/* Top Indicator Selector Bar */
+#indicator-dropdown-bar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#indicator-dropdown-bar:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 20px -3px rgba(15, 23, 42, 0.07);
+}
+
+#indicator-select {
+  font-family: 'Noto Sans Thai', 'Prompt', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#indicator-select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+/* Dynamic Gap & Metric Badges */
+.metric-gap-badge-pass {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+.metric-gap-badge-fail {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: rgba(239, 68, 68, 0.85);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+

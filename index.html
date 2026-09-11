@@ -40,7 +40,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="styles.css?v=3.0">
+  <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
@@ -50,6 +50,11 @@
       
       <!-- Brand & District Identity -->
       <div class="flex items-center space-x-3">
+        <!-- Mobile Sidebar Hamburger Toggle -->
+        <button id="btn-mobile-menu" type="button" class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition mr-0.5 border border-slate-200 shadow-xs" aria-label="Toggle Sidebar Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 shrink-0">
           <i data-lucide="activity" class="w-5 h-5 sm:w-6 sm:h-6"></i>
         </div>
@@ -90,145 +95,250 @@
       </div>
 
     </div>
-
-    <!-- MAIN DOMAIN NAVIGATION TABS -->
-    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 border-t border-slate-100 flex overflow-x-auto no-scrollbar space-x-1.5 sm:space-x-2 py-2">
-      <button class="nav-tab active px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="ttm">
-        <span>🌿 แพทย์แผนไทย & ยาสมุนไพร</span>
-      </button>
-      <button class="nav-tab px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="pcc">
-        <span>💰 งบ PCC (ปฐมภูมิ)</span>
-      </button>
-      <button class="nav-tab px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="ppb">
-        <span>🎯 งบ PPB (บริการพื้นฐาน)</span>
-      </button>
-      <button class="nav-tab px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="elderly">
-        <span>👵 ผู้สูงอายุ & NCDs</span>
-      </button>
-      <button class="nav-tab px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="mch">
-        <span>👶 อนามัยแม่และเด็ก</span>
-      </button>
-      <button class="nav-tab px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition whitespace-nowrap ml-auto" data-domain="explorer">
-        <i data-lucide="database" class="w-3.5 h-3.5 text-emerald-600"></i>
-        <span>OpenData MoPH (51 หมวด)</span>
-      </button>
-    </div>
   </header>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 flex-1 space-y-6">
+  <!-- APP BODY CONTAINER: SIDEBAR + MAIN CONTENT -->
+  <div class="flex flex-1 relative w-full overflow-x-hidden min-h-[calc(100vh-65px)]">
 
-    <!-- EXECUTIVE KPI OVERVIEW (4 Modern Bento Metric Cards) -->
-    <section id="executive-banner" class="space-y-3">
-      <!-- Title Bar -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <h2 id="view-title" class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">หมวด: 🌿 แพทย์แผนไทย & ยาสมุนไพร</h2>
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div id="sidebar-backdrop"></div>
+
+    <!-- COLLAPSIBLE SIDEBAR NAVIGATION -->
+    <aside id="sidebar-nav" class="sidebar-collapsed bg-white border-r border-slate-200/90 shrink-0 sticky top-[65px] h-[calc(100vh-65px)] flex flex-col justify-between z-30 select-none overflow-y-auto custom-scrollbar">
+      <div class="p-3 space-y-3">
+        <!-- Sidebar Header / Pin Toggle -->
+        <div class="flex items-center justify-between px-2 pt-1 pb-1">
+          <div class="sidebar-header-text flex items-center space-x-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">หมวดหมู่ตัวชี้วัด</span>
+          </div>
+          <button id="sidebar-pin-btn" type="button" class="desktop-only-pin p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition" title="ตรึง / ปลดล็อกแถบเมนู (Lock Sidebar)">
+            <i id="pin-icon" data-lucide="panel-left-close" class="w-4 h-4"></i>
+          </button>
         </div>
-        <div class="flex items-center gap-2 text-xs">
-          <span id="selected-unit-label" class="font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-xs">ภาพรวมอำเภอสารภี (14 แห่ง)</span>
-          <span id="selected-year-label" class="text-slate-500 font-medium bg-white px-2.5 py-1 rounded-lg border border-slate-200">ข้อมูลปี 2569</span>
-        </div>
+
+        <!-- Domain Navigation Items -->
+        <nav class="space-y-1.5" id="sidebar-items-list">
+          <button type="button" class="sidebar-item active w-full" data-domain="ttm" title="🌿 แพทย์แผนไทย & ยาสมุนไพร">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-emerald-600 bg-emerald-50 shrink-0 mr-3 transition">
+              <i data-lucide="leaf" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">แพทย์แผนไทย & สมุนไพร</div>
+              <div class="text-[11px] text-slate-400 font-medium">9 ตัวชี้วัด • บริการ & ยาสมุนไพร</div>
+            </div>
+            <span class="sidebar-badge bg-emerald-100 text-emerald-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">9</span>
+          </button>
+
+          <button type="button" class="sidebar-item w-full" data-domain="pcc" title="💰 งบ PCC (ปฐมภูมิ)">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-indigo-600 bg-indigo-50 shrink-0 mr-3 transition">
+              <i data-lucide="coins" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">งบ PCC (ปฐมภูมิ)</div>
+              <div class="text-[11px] text-slate-400 font-medium">4 ตัวชี้วัด • DM / HT Control</div>
+            </div>
+            <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">4</span>
+          </button>
+
+          <button type="button" class="sidebar-item w-full" data-domain="ppb" title="🎯 งบ PPB (บริการพื้นฐาน)">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-amber-600 bg-amber-50 shrink-0 mr-3 transition">
+              <i data-lucide="crosshair" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">งบ PPB (บริการพื้นฐาน)</div>
+              <div class="text-[11px] text-slate-400 font-medium">5 ตัวชี้วัด • เคลือบฟัน/คัดกรอง</div>
+            </div>
+            <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">5</span>
+          </button>
+
+          <button type="button" class="sidebar-item w-full" data-domain="elderly" title="👵 ผู้สูงอายุ & NCDs">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-purple-600 bg-purple-50 shrink-0 mr-3 transition">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">ผู้สูงอายุ & NCDs</div>
+              <div class="text-[11px] text-slate-400 font-medium">2 ตัวชี้วัด • คัดกรอง 9 ด้าน/ADL</div>
+            </div>
+            <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">2</span>
+          </button>
+
+          <button type="button" class="sidebar-item w-full" data-domain="mch" title="👶 อนามัยแม่และเด็ก">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-rose-600 bg-rose-50 shrink-0 mr-3 transition">
+              <i data-lucide="baby" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">อนามัยแม่และเด็ก</div>
+              <div class="text-[11px] text-slate-400 font-medium">1 ตัวชี้วัด • ฝากครรภ์ ANC</div>
+            </div>
+            <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">1</span>
+          </button>
+
+          <div class="pt-2 border-t border-slate-100">
+            <button type="button" class="sidebar-item w-full" data-domain="explorer" title="OpenData MoPH (51 หมวด)">
+              <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-teal-600 bg-teal-50 shrink-0 mr-3 transition">
+                <i data-lucide="database" class="w-5 h-5"></i>
+              </div>
+              <div class="sidebar-text text-left flex-1 min-w-0">
+                <div class="font-bold text-slate-800 text-[13.5px] truncate">OpenData MoPH</div>
+                <div class="text-[11px] text-slate-400 font-medium">คลังข้อมูล 51 หมวด HDC</div>
+              </div>
+              <span class="sidebar-badge bg-teal-100 text-teal-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">51</span>
+            </button>
+          </div>
+        </nav>
       </div>
 
-      <!-- 4 Modern Metric Cards (Executive Bento Gradient Style) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1: Pass Rate (Emerald Gradient) -->
-        <div class="bento-metric-card bento-card-emerald p-4 sm:p-5 flex flex-col justify-between group">
-          <div class="flex items-center justify-between">
-            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
-              <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <span id="stat-pass-rate-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
-              - ผ่านเกณฑ์
-            </span>
-          </div>
-          <div class="mt-4">
-            <div class="text-xs text-emerald-100 font-medium">ผลงานผ่านเกณฑ์ในหมวดนี้</div>
-            <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-passed-indicators" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- / -</span>
-              <span class="text-xs text-emerald-200 font-semibold">ตัวชี้วัด</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-emerald-100">
-            <span>ต้องพัฒนา / ติดตาม</span>
-            <span id="stat-failed-indicators" class="font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs">- ตัว</span>
-          </div>
-        </div>
-
-        <!-- Card 2: Herbal Usage Rate / Value (Indigo Gradient) -->
-        <div class="bento-metric-card bento-card-indigo p-4 sm:p-5 flex flex-col justify-between group">
-          <div class="flex items-center justify-between">
-            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
-              <i data-lucide="sparkles" class="w-6 h-6"></i>
-            </div>
-            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
-              เกณฑ์ ≥ 5.0%
-            </span>
-          </div>
-          <div class="mt-4">
-            <div class="text-xs text-indigo-100 font-medium">มูลค่าการใช้ยาสมุนไพร (OPD)</div>
-            <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-ttm-total-val" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-indigo-100">
-            <span>สัดส่วนมูลค่ายาสมุนไพร</span>
-            <span class="font-semibold text-white/95">เทียบยาทั้งหมด</span>
-          </div>
-        </div>
-
-        <!-- Card 3: Chronic Care (Sky Gradient) -->
-        <div class="bento-metric-card bento-card-sky p-4 sm:p-5 flex flex-col justify-between group">
-          <div class="flex items-center justify-between">
-            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
-              <i data-lucide="activity" class="w-6 h-6"></i>
-            </div>
-            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
-              เกณฑ์ ≥ 50%
-            </span>
-          </div>
-          <div class="mt-4">
-            <div class="text-xs text-sky-100 font-medium">คุมความดันโลหิตสูง (HT Control)</div>
-            <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-ncd-rate" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-sky-100">
-            <span>ความดัน &lt; 140/90 mmHg</span>
-            <span class="font-semibold text-white/95">ผลงาน อ.สารภี</span>
-          </div>
-        </div>
-
-        <!-- Card 4: Primary Care Coverage (Amber Gradient) -->
-        <div class="bento-metric-card bento-card-amber p-4 sm:p-5 flex flex-col justify-between group">
-          <div class="flex items-center justify-between">
-            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
-              <i data-lucide="users" class="w-6 h-6"></i>
-            </div>
-            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
-              เกณฑ์ ≥ 85%
-            </span>
-          </div>
-          <div class="mt-4">
-            <div class="text-xs text-amber-100 font-medium">คัดกรองพัฒนาการเด็ก (DSPM)</div>
-            <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-screen-rate" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-amber-100">
-            <span>เด็ก 0-5 ปี ในพื้นที่</span>
-            <span class="font-semibold text-white/95">คัดกรองสมวัย</span>
-          </div>
+      <!-- Sidebar Bottom Footer Info -->
+      <div class="p-3 border-t border-slate-100/80">
+        <div class="sidebar-pin-label text-[11px] text-slate-400 text-center font-medium">
+          ระบบ HDC สารภี v4.0
         </div>
       </div>
-    </section>
+    </aside>
 
-    <!-- SUB-INDICATOR CHIPS SELECTOR -->
-    <section id="indicator-chips-container" class="flex overflow-x-auto no-scrollbar gap-2 pb-2">
-      <!-- Dynamically filled with buttons for each indicator in active domain -->
-    </section>
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="w-full min-w-0 flex-1 px-4 sm:px-6 lg:px-8 xl:px-10 py-5 sm:py-6 space-y-5 sm:space-y-6">
+
+      <!-- TOP INDICATOR DROPDOWN SELECTOR BAR -->
+      <section id="indicator-dropdown-bar" class="p-3.5 sm:p-4 bg-white border border-slate-200/90 rounded-2xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center space-x-3 flex-1 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-700 shrink-0 shadow-xs">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between pb-1">
+              <label for="indicator-select" class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <span>เลือกตัวชี้วัด (Indicator):</span>
+                <span id="ind-count-badge" class="bg-emerald-100 text-emerald-800 text-[10.5px] font-bold px-2 py-0.2 rounded-full num-font">1 จาก 9 ตัวชี้วัด</span>
+              </label>
+            </div>
+            <div class="relative">
+              <select id="indicator-select" class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-xl px-3.5 py-2 pr-9 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition shadow-xs truncate">
+                <!-- Dynamically generated via JS based on active domain -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Prev / Next Indicator Buttons -->
+        <div class="flex items-center space-x-2 shrink-0 self-end md:self-center">
+          <button id="btn-prev-ind" type="button" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition disabled:opacity-40 disabled:cursor-not-allowed shadow-xs" title="ตัวชี้วัดก่อนหน้า">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">ก่อนหน้า</span>
+          </button>
+          <button id="btn-next-ind" type="button" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition disabled:opacity-40 disabled:cursor-not-allowed shadow-xs" title="ตัวชี้วัดถัดไป">
+            <span class="hidden sm:inline">ถัดไป</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- EXECUTIVE KPI OVERVIEW (4 Modern Bento Metric Cards) -->
+      <section id="executive-banner" class="space-y-3">
+        <!-- Title Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h2 id="view-title" class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">หมวด: 🌿 แพทย์แผนไทย & ยาสมุนไพร</h2>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span id="selected-unit-label" class="font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-xs">ภาพรวมอำเภอสารภี (14 แห่ง)</span>
+            <span id="selected-year-label" class="text-slate-500 font-medium bg-white px-2.5 py-1 rounded-lg border border-slate-200">ข้อมูลปี 2569</span>
+          </div>
+        </div>
+
+        <!-- 4 Modern Metric Cards (Executive Bento Gradient Style) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Pass Rate (Emerald Gradient) - Retained as category overview -->
+          <div class="bento-metric-card bento-card-emerald p-4 sm:p-5 flex flex-col justify-between group">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+              </div>
+              <span id="stat-pass-rate-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
+                - ผ่านเกณฑ์
+              </span>
+            </div>
+            <div class="mt-4">
+              <div class="text-xs text-emerald-100 font-medium">ผลงานผ่านเกณฑ์ในหมวดนี้</div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span id="stat-passed-indicators" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- / -</span>
+                <span class="text-xs text-emerald-200 font-semibold">ตัวชี้วัด</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-emerald-100">
+              <span>ต้องพัฒนา / ติดตาม</span>
+              <span id="stat-failed-indicators" class="font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs">- ตัว</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Selected Indicator Rate & Target Gap (Indigo Gradient) - Dynamic -->
+          <div class="bento-metric-card bento-card-indigo p-4 sm:p-5 flex flex-col justify-between group">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+                <i data-lucide="target" class="w-6 h-6"></i>
+              </div>
+              <span id="stat-card2-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
+                เกณฑ์ ≥ 80.0%
+              </span>
+            </div>
+            <div class="mt-4">
+              <div id="stat-card2-title" class="text-xs text-indigo-100 font-medium">อัตราผลงานตัวชี้วัดนี้</div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span id="stat-card2-val" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-indigo-100">
+              <span id="stat-card2-footer-label">ส่วนต่างเป้าหมาย</span>
+              <span id="stat-card2-gap-badge" class="font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs">-</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Target Population & Numerator/Denominator (Sky Gradient) - Dynamic -->
+          <div class="bento-metric-card bento-card-sky p-4 sm:p-5 flex flex-col justify-between group">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+                <i data-lucide="users" class="w-6 h-6"></i>
+              </div>
+              <span id="stat-card3-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
+                ผลงานจริง (A)
+              </span>
+            </div>
+            <div class="mt-4">
+              <div id="stat-card3-title" class="text-xs text-sky-100 font-medium">ผลงานเทียบประชากรเป้าหมาย</div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span id="stat-card3-val" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- คน</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-sky-100">
+              <span id="stat-card3-footer-label">เป้าหมาย (B)</span>
+              <span id="stat-card3-footer-val" class="font-bold text-white num-font">- คน</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Top Performer & Unit Pass Ratio (Amber Gradient) - Dynamic -->
+          <div class="bento-metric-card bento-card-amber p-4 sm:p-5 flex flex-col justify-between group">
+            <div class="flex items-center justify-between">
+              <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+                <i data-lucide="award" class="w-6 h-6"></i>
+              </div>
+              <span id="stat-card4-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
+                ผ่านเกณฑ์ - / 14 แห่ง
+              </span>
+            </div>
+            <div class="mt-4">
+              <div id="stat-card4-title" class="text-xs text-amber-100 font-medium">หน่วยบริการผลงานสูงสุด (Top Performer)</div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span id="stat-card4-val" class="text-xl sm:text-2xl font-black text-white tracking-tight truncate">-</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-amber-100">
+              <span id="stat-card4-footer-label">ผลงานสูงสุด</span>
+              <span id="stat-card4-footer-val" class="font-bold text-white num-font">-</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
     <!-- ACTIVE INDICATOR DETAILS CARD & CHARTS -->
     <section id="active-indicator-section" class="space-y-6">
@@ -604,6 +714,7 @@
     </section>
 
   </main>
+  </div> <!-- End App Body Container: Sidebar + Main -->
 
   <!-- MODAL FOR API VIEW -->
   <div id="api-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -776,6 +887,6 @@
   </footer>
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=3.1"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>
