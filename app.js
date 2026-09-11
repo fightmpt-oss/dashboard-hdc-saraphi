@@ -365,95 +365,519 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 8. Render Special Panel for Top Herbs (s_ttm4)
+  // 8. Render Special Panel for Top Herbs (s_ttm4 - Takwang Layout)
+  let mophTtm4TrendChart = null;
+  window.ttm4CurrentView = 'hdc';
+
+  window.toggleSaraphiModal = function(show) {
+    const modal = document.getElementById('modal-saraphi-leaderboard');
+    if (modal) {
+      modal.style.display = show ? 'flex' : 'none';
+    }
+  };
+
+  window.switchTTM4View = function(mode) {
+    window.ttm4CurrentView = mode;
+    const btnHdc = document.getElementById('btn-ttm4-view-hdc');
+    const btnDid = document.getElementById('btn-ttm4-view-didstd');
+    const thDid = document.getElementById('th-ttm4-didstd');
+    
+    if (mode === 'hdc') {
+      if (btnHdc) { btnHdc.style.background = '#059669'; btnHdc.style.color = '#ffffff'; }
+      if (btnDid) { btnDid.style.background = 'transparent'; btnDid.style.color = '#475569'; }
+      if (thDid) thDid.style.display = 'none';
+    } else {
+      if (btnDid) { btnDid.style.background = '#059669'; btnDid.style.color = '#ffffff'; }
+      if (btnHdc) { btnHdc.style.background = 'transparent'; btnHdc.style.color = '#475569'; }
+      if (thDid) thDid.style.display = 'table-cell';
+    }
+    renderTTM4Table();
+  };
+
   function renderTopHerbsPanel() {
     if (currentIndicatorId !== 'ttm_top_herbs') {
-      topHerbsPanel.classList.add('hidden');
+      if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
       return;
     }
 
-    topHerbsPanel.classList.remove('hidden');
+    if (topHerbsPanel) topHerbsPanel.classList.remove('hidden');
     const ind = masterData.indicators['ttm_top_herbs'];
     const yr = currentYear === 'all' ? '2569' : currentYear;
     const yData = ind.years[yr];
     if (!yData) return;
 
-    document.getElementById('herbs-total-val').textContent = `${Number(yData.num).toLocaleString()} บาท (${yData.den.toLocaleString()} ครั้ง)`;
+    const sp = yData.saraphi_summary || {};
+    const cm = yData.chiangmai_summary || { total_units: 318, total_num: 33008872.65, total_den: 584595, rate: 33008872.65 };
+    const units = yData.units || [];
 
-    // Render Top 4 Herb Highlight Cards
-    const cardsContainer = document.getElementById('top-herbs-cards');
-    cardsContainer.innerHTML = '';
-    const top4 = yData.top_herbs.slice(0, 4);
+    // Target unit identification
+    let tu = null;
+    let isDistrict = (currentUnit === 'all');
 
-    top4.forEach((h, idx) => {
-      const colors = [
-        'border-amber-400 bg-amber-50/50 text-amber-700',
-        'border-emerald-400 bg-emerald-50/50 text-emerald-700',
-        'border-blue-400 bg-blue-50/50 text-blue-700',
-        'border-purple-400 bg-purple-50/50 text-purple-700'
-      ];
-      const card = document.createElement('div');
-      card.className = `p-3.5 rounded-xl border ${colors[idx % 4]} shadow-sm flex flex-col justify-between`;
-      card.innerHTML = `
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold uppercase tracking-wider bg-white/80 px-2 py-0.5 rounded-md">อันดับ ${idx + 1}</span>
-          <span class="text-xs font-semibold">${Number(h.visits).toLocaleString()} ครั้ง</span>
-        </div>
-        <div class="my-2">
-          <h5 class="text-xs font-bold truncate" title="${h.name}">${h.name}</h5>
-          <div class="text-[10px] text-slate-500 font-mono mt-0.5">DID: ${h.didstd.substring(0, 14)}...</div>
-        </div>
-        <div class="text-right">
-          <span class="text-sm font-extrabold">${Number(h.val).toLocaleString()}</span>
-          <span class="text-[11px] font-normal"> บาท</span>
-        </div>
-      `;
-      cardsContainer.appendChild(card);
-    });
-
-    // Render Top 10 Herbs Bar Chart
-    const ctx = document.getElementById('herbsChart').getContext('2d');
-    const top10 = yData.top_herbs.slice(0, 10);
-    const labels = top10.map(h => h.name.length > 22 ? h.name.substring(0, 20) + '...' : h.name);
-    const vals = top10.map(h => h.val);
-
-    if (herbsChartInstance) {
-      herbsChartInstance.destroy();
+    if (!isDistrict) {
+      tu = units.find(u => u.hospcode === currentUnit);
+    }
+    if (!tu) {
+      // If 'all' or unit not found, default to district aggregate
+      isDistrict = true;
+      tu = {
+        hospcode: 'all',
+        name: 'ภาพรวมอำเภอสารภี (14 หน่วยบริการ)',
+        short_name: 'ภาพรวม อ.สารภี (14 แห่ง)',
+        official_name: 'อำเภอสารภี จังหวัดเชียงใหม่ (14 หน่วยบริการ)',
+        total_num: yData.num,
+        total_den: yData.den,
+        rate: yData.rate,
+        rank: 1,
+        item_count: (yData.drug_items || []).length,
+        drug_items: yData.drug_items || [],
+        hdc_grouped_drugs: yData.hdc_grouped_drugs || [],
+        quarters: yData.quarters || {},
+        history_3years: yData.history_3years || []
+      };
     }
 
-    herbsChartInstance = new Chart(ctx, {
+    const unitName = tu.short_name || tu.name || 'รพ.สต.';
+
+    // 1. KPI Cards
+    const takwangTitleEl = document.getElementById('moph-takwang-card-title');
+    const takwangRateEl = document.getElementById('moph-takwang-rate');
+    const takwangCountsEl = document.getElementById('moph-takwang-counts');
+    const statusBadgeEl = document.getElementById('moph-status-badge');
+
+    if (takwangTitleEl) takwangTitleEl.textContent = isDistrict ? 'ภาพรวม อ.สารภี (14 แห่ง)' : `${unitName} (ผลงานจริง)`;
+    if (takwangRateEl) takwangRateEl.textContent = `${Number(tu.total_num || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ.`;
+    if (takwangCountsEl) {
+      takwangCountsEl.textContent = `มูลค่าใช้ยาสมุนไพร ${Number(tu.total_num || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / จำนวนครั้งสั่งจ่าย ${Number(tu.total_den || 0).toLocaleString()} บาท`;
+    }
+    if (statusBadgeEl) {
+      statusBadgeEl.textContent = isDistrict ? `สั่งใช้ ${(tu.drug_items || []).length} รายการ (ทั้งอำเภอ)` : `สั่งใช้ ${tu.item_count || (tu.drug_items || []).length} รายการ`;
+    }
+
+    // 2. Saraphi Rank
+    const saraphiRankEl = document.getElementById('moph-saraphi-rank');
+    const saraphiTotalUnitsEl = document.getElementById('moph-saraphi-total-units');
+    const rankHighlightEl = document.getElementById('moph-rank-highlight');
+
+    if (saraphiRankEl) saraphiRankEl.textContent = isDistrict ? '# 1' : `# ${tu.rank || '-'}`;
+    if (saraphiTotalUnitsEl) saraphiTotalUnitsEl.textContent = isDistrict ? 'ภาพรวม 14 หน่วยบริการ' : `จาก ${sp.total_units || 14} หน่วยบริการ`;
+    if (rankHighlightEl) {
+      if (isDistrict) {
+        rankHighlightEl.textContent = '🏥 ภาพรวมผลงาน 14 หน่วยบริการใน อ.สารภี';
+        rankHighlightEl.style.color = '#2563eb';
+      } else {
+        const rank = tu.rank || 99;
+        if (rank <= 3) {
+          rankHighlightEl.textContent = '🥇 ระดับท็อป 3 ของอำเภอสารภี';
+          rankHighlightEl.style.color = '#d97706';
+        } else if (rank <= 6) {
+          rankHighlightEl.textContent = '⭐ กลุ่มผลงานระดับต้นของอำเภอ';
+          rankHighlightEl.style.color = '#059669';
+        } else {
+          rankHighlightEl.textContent = 'กลุ่มผลงานระดับกลางของอำเภอ';
+          rankHighlightEl.style.color = '#475569';
+        }
+      }
+    }
+
+    // 3. Saraphi Average / Total
+    const saraphiRateEl = document.getElementById('moph-saraphi-rate');
+    const saraphiCountsEl = document.getElementById('moph-saraphi-counts');
+    const saraphiTitleEl = document.getElementById('moph-saraphi-card-title');
+    if (saraphiTitleEl) saraphiTitleEl.textContent = isDistrict ? 'ยอดรวม อ.สารภี (14 แห่ง)' : 'ค่าเฉลี่ย อ.สารภี (14 แห่ง)';
+    if (saraphiRateEl) saraphiRateEl.textContent = `${Number(sp.total_num || yData.num || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ.`;
+    if (saraphiCountsEl) {
+      saraphiCountsEl.textContent = `มูลค่าใช้ยาสมุนไพร ${Number(sp.total_num || yData.num || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / จำนวนครั้งสั่งจ่าย ${Number(sp.total_den || yData.den || 0).toLocaleString()} บาท`;
+    }
+
+    // 4. Chiang Mai Province
+    const cmRateEl = document.getElementById('moph-cm-rate');
+    const cmUnitsEl = document.getElementById('moph-cm-units');
+    const cmCountsEl = document.getElementById('moph-cm-counts');
+    if (cmRateEl) cmRateEl.textContent = `${Number(cm.total_num || 33008872.65).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ.`;
+    if (cmUnitsEl) cmUnitsEl.textContent = `(~${cm.total_units || 318} แห่ง)`;
+    if (cmCountsEl) {
+      cmCountsEl.textContent = `มูลค่าใช้ยาสมุนไพร ${Number(cm.total_num || 33008872.65).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / จำนวนครั้งสั่งจ่าย ${Number(cm.total_den || 584595).toLocaleString()} บาท`;
+    }
+
+    // 5. Quarterly Breakdown Cards
+    const qTitleEl = document.getElementById('moph-target-quarter-title');
+    if (qTitleEl) qTitleEl.textContent = `ความก้าวหน้ารายไตรมาส (${unitName})`;
+
+    const qContainer = document.getElementById('moph-quarter-cards');
+    if (qContainer) {
+      qContainer.innerHTML = '';
+      const quarters = tu.quarters || {};
+      const qLabels = { q1: 'Q1 (ต.ค.-ธ.ค.)', q2: 'Q2 (ม.ค.-มี.ค.)', q3: 'Q3 (เม.ย.-มิ.ย.)', q4: 'Q4 (ก.ค.-ก.ย.)' };
+      for (let q = 1; q <= 4; q++) {
+        const qKey = `q${q}`;
+        const qItem = quarters[qKey] || { num: 0, den: 0, rate: 0 };
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:10px 8px; text-align:center; box-shadow:0 1px 2px rgba(0,0,0,0.02);';
+        card.innerHTML = `
+          <div style="font-size:11px; font-weight:600; color:#64748b; margin-bottom:2px;">${qLabels[qKey]}</div>
+          <div style="font-size:16px; font-weight:800; color:${qItem.rate >= 5.0 ? '#15803d' : '#334155'};">${qItem.rate}%</div>
+          <div style="font-size:10px; color:#64748b; margin-top:2px;">${Number(qItem.num).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} / ${Number(qItem.den).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บ.</div>
+          <div style="margin-top:5px; height:4px; border-radius:2px; background:#e2e8f0; overflow:hidden;">
+            <div style="height:100%; width:${Math.min(qItem.rate * 10, 100)}%; background:${qItem.rate >= 5.0 ? '#10b981' : '#f59e0b'};"></div>
+          </div>
+        `;
+        qContainer.appendChild(card);
+      }
+    }
+
+    // 6. Saraphi Leaderboard Top 5 Preview
+    const previewContainer = document.getElementById('moph-saraphi-top3-preview');
+    if (previewContainer) {
+      previewContainer.innerHTML = '';
+      const top5 = units.slice(0, 5);
+      top5.forEach((u, i) => {
+        const isMine = (!isDistrict && u.hospcode === currentUnit);
+        const row = document.createElement('div');
+        row.style.cssText = `display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-radius:8px; background:${isMine ? '#dcfce7' : 'transparent'}; font-weight:${isMine ? '700' : '500'}; color:${isMine ? '#15803d' : '#334155'}; cursor:pointer; transition:background 0.2s;`;
+        row.onmouseenter = () => { if (!isMine) row.style.background = '#f1f5f9'; };
+        row.onmouseleave = () => { if (!isMine) row.style.background = 'transparent'; };
+        row.onclick = () => {
+          currentUnit = u.hospcode;
+          if (unitSelect) unitSelect.value = u.hospcode;
+          updateDashboardView();
+        };
+
+        row.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; width:20px; height:20px; border-radius:50%; background:${i === 0 ? '#fef08a' : (i === 1 ? '#e2e8f0' : (i === 2 ? '#ffedd5' : '#f1f5f9'))}; color:#1e293b; font-size:11px; font-weight:700; text-align:center; line-height:20px;">${i+1}</span>
+            <span>${u.short_name || u.name} ${isMine ? '🌟 (เรา)' : ''}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; color:#64748b;">${Number(u.num).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บาท</span>
+            <span style="font-weight:700; color:#15803d; min-width:60px; text-align:right;">${Number(u.rate).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บ.</span>
+          </div>
+        `;
+        previewContainer.appendChild(row);
+      });
+    }
+
+    // 7. Full Saraphi Leaderboard Modal Table
+    const modalTbody = document.getElementById('saraphi-leaderboard-tbody');
+    if (modalTbody) {
+      modalTbody.innerHTML = '';
+      units.forEach((u, idx) => {
+        const isMine = (!isDistrict && u.hospcode === currentUnit);
+        const tr = document.createElement('tr');
+        tr.style.cssText = `border-bottom:1px solid #f1f5f9; cursor:pointer; ${isMine ? 'background:#f0fdf4; font-weight:700;' : ''}`;
+        tr.onclick = () => {
+          currentUnit = u.hospcode;
+          if (unitSelect) unitSelect.value = u.hospcode;
+          toggleSaraphiModal(false);
+          updateDashboardView();
+        };
+        tr.innerHTML = `
+          <td style="padding:8px 10px; text-align:center; color:${idx < 3 ? '#b45309' : '#64748b'}; font-weight:700;">#${u.rank || idx + 1}</td>
+          <td style="padding:8px 10px; color:${isMine ? '#15803d' : '#0f172a'};">
+            ${u.short_name || u.name}
+            ${isMine ? '<span style="display:inline-block; font-size:10px; background:#16a34a; color:#fff; padding:1px 6px; border-radius:9999px; margin-left:6px;">รพ.สต.ของเรา</span>' : ''}
+          </td>
+          <td style="padding:8px 10px; text-align:right; font-variant-numeric:tabular-nums;">${Number(u.num).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+          <td style="padding:8px 10px; text-align:right; font-variant-numeric:tabular-nums;">${Number(u.den).toLocaleString()}</td>
+          <td style="padding:8px 10px; text-align:right; font-weight:700; color:#15803d; font-variant-numeric:tabular-nums;">${Number(u.rate).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บ.</td>
+        `;
+        modalTbody.appendChild(tr);
+      });
+    }
+
+    // 8. 3-Year Trend Comparison
+    const trendTitleEl = document.getElementById('moph-target-trend-title');
+    if (trendTitleEl) trendTitleEl.textContent = `แนวโน้มการสั่งใช้ยาสมุนไพร 3 ปีงบประมาณ (2567 - 2569) ${unitName}`;
+
+    window.currentTTM4TargetUnit = tu;
+    renderTTM4TrendChart(tu.history_3years || []);
+
+    // 9. Herbal Drugs Breakdown Table
+    const drugTitleEl = document.getElementById('moph-target-drug-title');
+    if (drugTitleEl) drugTitleEl.textContent = `อันดับการใช้ยาสมุนไพรใน ${unitName} ตามฐานรายงาน HDC`;
+
+    renderTTM4Table();
+
+    // 10. Last updated footer
+    const lastUpdatedEl = document.getElementById('moph-last-updated');
+    if (lastUpdatedEl) {
+      lastUpdatedEl.textContent = tu.date_com ? `${tu.date_com.substring(6,8)}/${tu.date_com.substring(4,6)}/${tu.date_com.substring(0,4)}` : 'ข้อมูล HDC สธ. ล่าสุด';
+    }
+  }
+
+  function renderTTM4Table() {
+    const tu = window.currentTTM4TargetUnit;
+    if (!tu) return;
+
+    const ttm4Tbody = document.getElementById('moph-ttm4-drugs-tbody');
+    const ttm4Summary = document.getElementById('moph-ttm4-drug-summary');
+    if (!ttm4Tbody) return;
+
+    ttm4Tbody.innerHTML = '';
+    const isHdc = (window.ttm4CurrentView !== 'didstd');
+    const list = (isHdc && tu.hdc_grouped_drugs && tu.hdc_grouped_drugs.length > 0)
+      ? tu.hdc_grouped_drugs
+      : (tu.drug_items || []);
+
+    if (ttm4Summary) {
+      ttm4Summary.textContent = `${list.length} รายการ | รวม ${Number(tu.total_num || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บาท`;
+    }
+
+    let sumVsAll = 0, sumVsUc = 0, sumAmAll = 0, sumPriAll = 0;
+
+    list.forEach((item, idx) => {
+      const vsAll = Number(item.vs_all || 0);
+      const vsUc = Number(item.vs_uc || 0);
+      const amAll = Number(item.am_all || 0);
+      const priAll = Number(item.pri_all || 0);
+
+      sumVsAll += vsAll;
+      sumVsUc += vsUc;
+      sumAmAll += amAll;
+      sumPriAll += priAll;
+
+      const tr = document.createElement('tr');
+      tr.style.cssText = idx % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;';
+      tr.onmouseenter = () => tr.style.background = '#f0fdf4';
+      tr.onmouseleave = () => tr.style.background = (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
+
+      const didTd = isHdc ? '' : `<td style="padding:8px 10px; text-align:center; font-family:monospace; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${item.didstd || '-'}</td>`;
+
+      tr.innerHTML = `
+        <td style="padding:8px 10px; text-align:center; color:#64748b; font-weight:700; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${idx + 1}</td>
+        <td style="padding:8px 12px; font-weight:600; color:#1e293b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${item.drug_name || '-'}</td>
+        ${didTd}
+        <td style="padding:8px 12px; text-align:right; font-weight:600; color:#0f172a; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${vsAll.toLocaleString()}</td>
+        <td style="padding:8px 12px; text-align:right; font-weight:700; color:#047857; background:rgba(16,185,129,0.06); font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${vsUc.toLocaleString()}</td>
+        <td style="padding:8px 12px; text-align:right; color:#475569; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9;">${amAll.toLocaleString()}</td>
+        <td style="padding:8px 12px; text-align:right; font-weight:700; color:#15803d; font-variant-numeric:tabular-nums; border-bottom:1px solid #e2e8f0;">${priAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      `;
+      ttm4Tbody.appendChild(tr);
+    });
+
+    // Summary Total Row at bottom
+    const totalTr = document.createElement('tr');
+    totalTr.style.cssText = 'background:#f0fdf4; font-weight:700; border-top:2px solid #059669; border-bottom:2px solid #059669;';
+    const totalDidTd = isHdc ? '' : `<td style="padding:9px 10px; text-align:center; color:#047857; font-size:11px;">-</td>`;
+    totalTr.innerHTML = `
+      <td style="padding:9px 10px; text-align:center; color:#047857;">รวม</td>
+      <td style="padding:9px 12px; color:#14532d;">รวมทั้งสิ้น (${list.length} รายการ)</td>
+      ${totalDidTd}
+      <td style="padding:9px 12px; text-align:right; color:#0f172a; font-variant-numeric:tabular-nums;">${sumVsAll.toLocaleString()}</td>
+      <td style="padding:9px 12px; text-align:right; color:#047857; background:rgba(16,185,129,0.12); font-variant-numeric:tabular-nums;">${sumVsUc.toLocaleString()}</td>
+      <td style="padding:9px 12px; text-align:right; color:#475569; font-variant-numeric:tabular-nums;">${sumAmAll.toLocaleString()}</td>
+      <td style="padding:9px 12px; text-align:right; color:#15803d; font-size:13px; font-variant-numeric:tabular-nums;">${sumPriAll.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+    `;
+    ttm4Tbody.appendChild(totalTr);
+  }
+
+  function renderTTM4TrendChart(history) {
+    const canvas = document.getElementById('moph-ttm4-trend-chart');
+    const badgesContainer = document.getElementById('moph-ttm4-trend-badges');
+    if (!canvas) return;
+
+    // Badges
+    if (badgesContainer && history.length > 0) {
+      badgesContainer.innerHTML = history.map(h => {
+        const totalPri = Number(h.total_pri || 0);
+        const priUc = Number(h.pri_uc || 0);
+        const vsAll = Number(h.vs_all || 0);
+        const vsUc = Number(h.vs_uc || 0);
+        const ucPct = vsAll > 0 ? ((vsUc / vsAll) * 100).toFixed(1) : 0;
+        return `
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:6px 12px; display:inline-flex; align-items:center; gap:10px; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+            <div style="font-weight:700; color:#0f172a; background:#f1f5f9; padding:3px 8px; border-radius:7px; font-size:11.5px; border:1px solid #e2e8f0;">ปี ${h.year}</div>
+            <div>
+              <div style="font-size:12px; font-weight:700; color:#1e40af; display:flex; align-items:center; gap:6px;">
+                ${totalPri.toLocaleString(undefined, {maximumFractionDigits:0})} บ.
+                <span style="font-size:10.5px; font-weight:600; color:#0284c7; background:#e0f2fe; padding:1px 6px; border-radius:4px;">UC ${priUc.toLocaleString(undefined, {maximumFractionDigits:0})} บ.</span>
+              </div>
+              <div style="font-size:10.5px; color:#64748b; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#94a3b8;"></span> รวม ${vsAll.toLocaleString()} ครั้ง
+                <span style="color:#cbd5e1;">•</span>
+                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#2563eb;"></span> UC <strong style="color:#0f172a;">${vsUc.toLocaleString()}</strong> (${ucPct}%)
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (mophTtm4TrendChart) mophTtm4TrendChart.destroy();
+
+    const labels = history.map(h => `ปีงบประมาณ ${h.year}`);
+    const vsAllData = history.map(h => Number(h.vs_all || 0));
+    const vsUcData = history.map(h => Number(h.vs_uc || 0));
+    const priData = history.map(h => Number(h.total_pri || 0));
+    const priUcData = history.map(h => Number(h.pri_uc || 0));
+
+    // Capsule Bar Gradients (Silver & Cobalt Sapphire)
+    const gradSilver = ctx.createLinearGradient(0, 0, 0, 240);
+    gradSilver.addColorStop(0, '#cbd5e1');
+    gradSilver.addColorStop(0.5, '#e2e8f0');
+    gradSilver.addColorStop(1, '#f8fafc');
+
+    const gradBlue = ctx.createLinearGradient(0, 0, 0, 240);
+    gradBlue.addColorStop(0, '#1d4ed8');
+    gradBlue.addColorStop(0.4, '#2563eb');
+    gradBlue.addColorStop(1, '#60a5fa');
+
+    mophTtm4TrendChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [
           {
-            label: 'มูลค่าการใช้ยา (บาท)',
-            data: vals,
-            backgroundColor: '#10b981',
-            borderRadius: 6
+            type: 'bar',
+            label: 'สั่งจ่ายรวมทุกสิทธิ (ครั้ง)',
+            data: vsAllData,
+            backgroundColor: gradSilver,
+            borderColor: '#94a3b8',
+            borderWidth: 1.2,
+            borderRadius: { topLeft: 10, topRight: 10, bottomLeft: 0, bottomRight: 0 },
+            barThickness: 22,
+            categoryPercentage: 0.45,
+            barPercentage: 0.85,
+            yAxisID: 'yVisits',
+            order: 2,
+            pointStyle: 'rectRounded'
+          },
+          {
+            type: 'bar',
+            label: 'สั่งจ่ายเฉพาะสิทธิ UC (ครั้ง)',
+            data: vsUcData,
+            backgroundColor: gradBlue,
+            borderColor: '#1d4ed8',
+            borderWidth: 1.2,
+            borderRadius: { topLeft: 10, topRight: 10, bottomLeft: 0, bottomRight: 0 },
+            barThickness: 22,
+            categoryPercentage: 0.45,
+            barPercentage: 0.85,
+            yAxisID: 'yVisits',
+            order: 2,
+            pointStyle: 'rectRounded'
+          },
+          {
+            type: 'line',
+            label: 'มูลค่ารวมทุกสิทธิ (บาท)',
+            data: priData,
+            borderColor: '#1e40af',
+            borderWidth: 3,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#1e40af',
+            pointBorderWidth: 3,
+            pointRadius: 5.5,
+            pointHoverRadius: 8,
+            tension: 0.4,
+            yAxisID: 'yCost',
+            order: 1,
+            pointStyle: 'circle'
+          },
+          {
+            type: 'line',
+            label: 'มูลค่าเฉพาะสิทธิ UC (บาท)',
+            data: priUcData,
+            borderColor: '#06b6d4',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#06b6d4',
+            pointBorderWidth: 2.5,
+            pointRadius: 4.5,
+            pointHoverRadius: 7,
+            tension: 0.4,
+            yAxisID: 'yCost',
+            order: 1,
+            pointStyle: 'circle'
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
         plugins: {
-          legend: { display: false },
+          legend: {
+            position: 'top',
+            align: 'center',
+            labels: {
+              usePointStyle: true,
+              boxWidth: 12,
+              boxHeight: 8,
+              padding: 16,
+              font: { size: 12, family: "'Prompt', sans-serif", weight: '600' },
+              color: '#334155'
+            }
+          },
           tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.94)',
+            titleColor: '#f8fafc',
+            bodyColor: '#e2e8f0',
+            titleFont: { size: 12.5, family: "'Prompt', sans-serif", weight: '700' },
+            bodyFont: { size: 11.5, family: "'Prompt', sans-serif" },
+            padding: 12,
+            cornerRadius: 10,
+            boxPadding: 6,
+            usePointStyle: true,
             callbacks: {
-              label: function (ctx) {
-                return ` มูลค่า: ${Number(ctx.raw).toLocaleString()} บาท`;
+              label: function(context) {
+                let label = context.dataset.label || '';
+                let val = context.parsed.y;
+                if (label.includes('บาท')) {
+                  return ` ${label}: ${Number(val).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} บาท`;
+                }
+                return ` ${label}: ${Number(val).toLocaleString()} ครั้ง`;
               }
             }
           }
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { font: { family: 'Prompt', size: 10 } }
-          },
           x: {
-            ticks: { font: { family: 'Prompt', size: 10 } }
+            grid: { display: false },
+            ticks: {
+              color: '#1e293b',
+              font: { size: 11.5, family: "'Prompt', sans-serif", weight: '600' }
+            }
+          },
+          yVisits: {
+            type: 'linear',
+            position: 'left',
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'จำนวนสั่งจ่าย (ครั้ง)',
+              color: '#64748b',
+              font: { size: 11, family: "'Prompt', sans-serif", weight: '600' }
+            },
+            grid: {
+              color: 'rgba(226, 232, 240, 0.7)',
+              borderDash: [4, 4]
+            },
+            ticks: {
+              color: '#64748b',
+              font: { size: 10.5, family: "'Prompt', sans-serif" },
+              callback: function(v) { return Number(v).toLocaleString() + ' ครั้ง'; }
+            }
+          },
+          yCost: {
+            type: 'linear',
+            position: 'right',
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'มูลค่าการใช้ยา (บาท)',
+              color: '#1e40af',
+              font: { size: 11, family: "'Prompt', sans-serif", weight: '600' }
+            },
+            grid: { display: false },
+            ticks: {
+              color: '#1e40af',
+              font: { size: 10.5, family: "'Prompt', sans-serif" },
+              callback: function(v) { return Number(v).toLocaleString() + ' บ.'; }
+            }
           }
         }
       }
@@ -546,10 +970,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       updateExecutiveOverview();
       updateIndicatorHeader();
-      renderTrendChart();
-      renderRankingChart();
-      renderTopHerbsPanel();
-      renderDataTable();
+
+      const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
+      const standardChartsSection = document.getElementById('standard-charts-section');
+      const standardTableSection = document.getElementById('standard-table-section');
+
+      if (isTTM4) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        renderTopHerbsPanel();
+      } else {
+        if (standardChartsSection) standardChartsSection.classList.remove('hidden');
+        if (standardTableSection) standardTableSection.classList.remove('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        renderTrendChart();
+        renderRankingChart();
+        renderDataTable();
+      }
     }
   }
 
