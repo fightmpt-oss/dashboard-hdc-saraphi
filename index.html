@@ -42,81 +42,26 @@
 
   <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col lg:flex-row">
 
-  <!-- TOP HEADER -->
-  <header class="bg-white border-b border-slate-200/90 sticky top-0 z-40 shadow-xs">
-    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-      
-      <!-- Brand & District Identity -->
-      <div class="flex items-center space-x-3">
-        <!-- Mobile Sidebar Hamburger Toggle -->
-        <button id="btn-mobile-menu" type="button" class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition mr-0.5 border border-slate-200 shadow-xs" aria-label="Toggle Sidebar Menu">
-          <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
+  <!-- Mobile Drawer Backdrop Overlay -->
+  <div id="sidebar-backdrop"></div>
 
-        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 shrink-0">
-          <i data-lucide="activity" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+  <!-- COLLAPSIBLE SIDEBAR NAVIGATION (Starts at top-0, spans full viewport height) -->
+  <aside id="sidebar-nav" class="sidebar-collapsed bg-white border-r border-slate-200/90 shrink-0 sticky top-0 h-screen flex flex-col justify-between z-30 select-none overflow-y-auto custom-scrollbar">
+    <div class="space-y-1">
+      <!-- Sidebar Header / Pin Toggle (Height aligns with header: h-16) -->
+      <div class="h-16 flex items-center justify-between px-3 border-b border-slate-100/90 shrink-0 sidebar-top-row">
+        <div class="sidebar-header-text flex items-center space-x-2 overflow-hidden">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">หมวดหมู่ตัวชี้วัด</span>
         </div>
-        <div class="min-w-0">
-          <div class="flex items-center space-x-2">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 leading-tight truncate">HDC สารภี</h1>
-            <span class="bg-emerald-100 text-emerald-800 text-[10.5px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 shrink-0">
-              จ.เชียงใหม่
-            </span>
-          </div>
-          <p class="text-[11px] sm:text-xs text-slate-500 truncate">ระบบติดตามตัวชี้วัดสุขภาพ & การใช้ยาสมุนไพร 14 รพ.สต.</p>
-        </div>
-      </div>
-
-      <!-- Global Filter Bar: Year & Service Unit -->
-      <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full md:w-auto">
-        <!-- Year Selector -->
-        <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-medium w-full sm:w-auto justify-between sm:justify-start">
-          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs font-medium text-center" data-year="all">3 ปีย้อนหลัง</button>
-          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2567">2567</button>
-          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2568">2568</button>
-          <button type="button" class="year-btn active flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[10.5px] sm:text-xs font-bold num-font text-center" data-year="2569">2569</button>
-        </div>
-
-        <!-- Unit Dropdown -->
-        <div class="relative w-full sm:w-[220px] md:w-[250px] shrink-0">
-          <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 pr-8 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 truncate">
-            <option value="all">🏥 ภาพรวมอำเภอสารภี (14 แห่ง)</option>
-            <!-- Generated via JS -->
-          </select>
-        </div>
-
-        <!-- Export CSV Button -->
-        <button id="export-csv-btn" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium shadow-xs flex items-center justify-center space-x-1.5 transition w-full sm:w-auto shrink-0">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
-          <span>ส่งออก CSV</span>
+        <button id="sidebar-pin-btn" type="button" class="desktop-only-pin p-2 rounded-xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition" title="ตรึง / ปลดล็อกแถบเมนู (Lock Sidebar)">
+          <i id="pin-icon" data-lucide="panel-left-close" class="w-4 h-4"></i>
         </button>
       </div>
 
-    </div>
-  </header>
-
-  <!-- APP BODY CONTAINER: SIDEBAR + MAIN CONTENT -->
-  <div class="flex flex-1 relative w-full overflow-x-hidden min-h-[calc(100vh-65px)]">
-
-    <!-- Mobile Drawer Backdrop Overlay -->
-    <div id="sidebar-backdrop"></div>
-
-    <!-- COLLAPSIBLE SIDEBAR NAVIGATION -->
-    <aside id="sidebar-nav" class="sidebar-collapsed bg-white border-r border-slate-200/90 shrink-0 sticky top-[65px] h-[calc(100vh-65px)] flex flex-col justify-between z-30 select-none overflow-y-auto custom-scrollbar">
-      <div class="p-3 space-y-3">
-        <!-- Sidebar Header / Pin Toggle -->
-        <div class="flex items-center justify-between px-2 pt-1 pb-1">
-          <div class="sidebar-header-text flex items-center space-x-2">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">หมวดหมู่ตัวชี้วัด</span>
-          </div>
-          <button id="sidebar-pin-btn" type="button" class="desktop-only-pin p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition" title="ตรึง / ปลดล็อกแถบเมนู (Lock Sidebar)">
-            <i id="pin-icon" data-lucide="panel-left-close" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Domain Navigation Items -->
+      <!-- Domain Navigation Items -->
+      <div class="p-2.5">
         <nav class="space-y-1.5" id="sidebar-items-list">
           <button type="button" class="sidebar-item active w-full" data-domain="ttm" title="🌿 แพทย์แผนไทย & ยาสมุนไพร">
             <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-emerald-600 bg-emerald-50 shrink-0 mr-3 transition">
@@ -198,14 +143,71 @@
           </div>
         </nav>
       </div>
+    </div>
 
-      <!-- Sidebar Bottom Footer Info -->
-      <div class="p-3 border-t border-slate-100/80">
-        <div class="sidebar-pin-label text-[11px] text-slate-400 text-center font-medium">
-          ระบบ HDC สารภี v4.0
-        </div>
+    <!-- Sidebar Bottom Footer Info -->
+    <div class="p-3 border-t border-slate-100/80">
+      <div class="sidebar-pin-label text-[11px] text-slate-400 text-center font-medium">
+        ระบบ HDC สารภี v4.0
       </div>
-    </aside>
+    </div>
+  </aside>
+
+  <!-- MAIN APP WRAPPER: TOP HEADER + DASHBOARD CONTENT + FOOTER -->
+  <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white border-b border-slate-200/90 sticky top-0 z-20 shadow-xs">
+      <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
+        
+        <!-- Brand & District Identity -->
+        <div class="flex items-center space-x-3">
+          <!-- Mobile Sidebar Hamburger Toggle -->
+          <button id="btn-mobile-menu" type="button" class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition mr-0.5 border border-slate-200 shadow-xs" aria-label="Toggle Sidebar Menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 shrink-0">
+            <i data-lucide="activity" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center space-x-2">
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 leading-tight truncate">HDC สารภี</h1>
+              <span class="bg-emerald-100 text-emerald-800 text-[10.5px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 shrink-0">
+                จ.เชียงใหม่
+              </span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-500 truncate">ระบบติดตามตัวชี้วัดสุขภาพ & การใช้ยาสมุนไพร 14 รพ.สต.</p>
+          </div>
+        </div>
+
+        <!-- Global Filter Bar: Year & Service Unit -->
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full md:w-auto">
+          <!-- Year Selector -->
+          <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-medium w-full sm:w-auto justify-between sm:justify-start">
+            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs font-medium text-center" data-year="all">3 ปีย้อนหลัง</button>
+            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2567">2567</button>
+            <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2568">2568</button>
+            <button type="button" class="year-btn active flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[10.5px] sm:text-xs font-bold num-font text-center" data-year="2569">2569</button>
+          </div>
+
+          <!-- Unit Dropdown -->
+          <div class="relative w-full sm:w-[220px] md:w-[250px] shrink-0">
+            <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 pr-8 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 truncate">
+              <option value="all">🏥 ภาพรวมอำเภอสารภี (14 แห่ง)</option>
+              <!-- Generated via JS -->
+            </select>
+          </div>
+
+          <!-- Export CSV Button -->
+          <button id="export-csv-btn" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium shadow-xs flex items-center justify-center space-x-1.5 transition w-full sm:w-auto shrink-0">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
+            <span>ส่งออก CSV</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
 
     <!-- MAIN DASHBOARD CONTENT -->
     <main class="w-full min-w-0 flex-1 px-4 sm:px-6 lg:px-8 xl:px-10 py-5 sm:py-6 space-y-5 sm:space-y-6">
@@ -1030,7 +1032,24 @@
     </section>
 
   </main>
-  </div> <!-- End App Body Container: Sidebar + Main -->
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500">
+    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+        <span>HDC Dashboard อำเภอสารภี จังหวัดเชียงใหม่ • บูรณาการข้อมูลระดับปฐมภูมิ 14 หน่วยบริการ</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span>แหล่งข้อมูล: <strong>Open Data by MoPH</strong></span>
+        <span>•</span>
+        <a href="https://opendata.moph.go.th" target="_blank" class="text-emerald-600 hover:underline">opendata.moph.go.th</a>
+        <span>•</span>
+        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded num-font text-[10px]">Vercel / Cloudflare Ready</span>
+      </div>
+    </div>
+  </footer>
+  </div> <!-- End Main App Wrapper: Header + Main + Footer -->
 
   <!-- MODAL FOR API VIEW -->
   <div id="api-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -1185,22 +1204,6 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500">
-    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center space-x-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-        <span>HDC Dashboard อำเภอสารภี จังหวัดเชียงใหม่ • บูรณาการข้อมูลระดับปฐมภูมิ 14 หน่วยบริการ</span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <span>แหล่งข้อมูล: <strong>Open Data by MoPH</strong></span>
-        <span>•</span>
-        <a href="https://opendata.moph.go.th" target="_blank" class="text-emerald-600 hover:underline">opendata.moph.go.th</a>
-        <span>•</span>
-        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded num-font text-[10px]">Vercel / Cloudflare Ready</span>
-      </div>
-    </div>
-  </footer>
 
   <!-- Main JavaScript Logic -->
   <script src="app.js?v=4.0"></script>

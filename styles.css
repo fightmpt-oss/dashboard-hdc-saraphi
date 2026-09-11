@@ -339,6 +339,11 @@ html, body {
   #sidebar-nav.sidebar-collapsed .sidebar-item-icon {
     margin-right: 0 !important;
   }
+  #sidebar-nav.sidebar-collapsed .sidebar-top-row {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   /* Desktop Expanded State (Hover or Pinned) */
   #sidebar-nav.sidebar-expanded,
