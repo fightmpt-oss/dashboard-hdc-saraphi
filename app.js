@@ -4,14 +4,15 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Set global Chart.js font to Noto Sans Thai
+  if (window.Chart) {
+    Chart.defaults.font.family = "'Noto Sans Thai', 'Prompt', -apple-system, sans-serif";
+    Chart.defaults.color = '#475569';
+  }
+
   // Initialize Lucide Icons
   if (window.lucide) {
     window.lucide.createIcons();
-  }
-
-  // Set global Chart.js font to Noto Sans Thai
-  if (window.Chart) {
-    Chart.defaults.font.family = "'Noto Sans Thai', sans-serif";
   }
 
   // App State
@@ -165,8 +166,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (elPassRateBadge) {
       elPassRateBadge.textContent = `${passRate}% ผ่านเกณฑ์`;
       elPassRateBadge.className = passRate >= 60
-        ? 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200'
-        : 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200';
+        ? 'text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font'
+        : 'text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/90 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
     }
 
     const elFailed = document.getElementById('stat-failed-indicators');
@@ -266,16 +267,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     rateEl.textContent = `${Number(rate).toLocaleString()} ${ind.unit}`;
     if (ind.target === 0) {
-      badgeEl.className = 'badge-neutral px-2.5 py-1 rounded-lg text-xs font-bold';
+      badgeEl.className = 'badge-neutral px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
       badgeEl.textContent = 'ผลงานสะสม';
     } else if (isPass) {
-      badgeEl.className = 'badge-pass px-2.5 py-1 rounded-lg text-xs font-bold';
+      badgeEl.className = 'badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
       badgeEl.textContent = '✓ ผ่านเกณฑ์';
-      rateEl.className = 'text-xl font-extrabold text-emerald-600';
+      rateEl.className = 'text-2xl font-black text-emerald-600 num-font';
     } else {
-      badgeEl.className = 'badge-fail px-2.5 py-1 rounded-lg text-xs font-bold';
+      badgeEl.className = 'badge-fail px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
       badgeEl.textContent = '✕ ต่ำกว่าเกณฑ์';
-      rateEl.className = 'text-xl font-extrabold text-rose-600';
+      rateEl.className = 'text-2xl font-black text-rose-600 num-font';
     }
   }
 
@@ -351,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         plugins: {
           legend: {
             position: 'top',
-            labels: { font: { family: 'Prompt', size: 11 }, boxWidth: 12 }
+            labels: { font: { family: "'Noto Sans Thai', 'Prompt', sans-serif", size: 11 }, boxWidth: 12 }
           },
           tooltip: {
             callbacks: {
@@ -365,11 +366,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           y: {
             beginAtZero: true,
             grid: { color: '#f1f5f9' },
-            ticks: { font: { family: 'Prompt', size: 10 } }
+            ticks: { font: { family: "'Noto Sans Thai', 'Prompt', sans-serif", size: 10 } }
           },
           x: {
             grid: { display: false },
-            ticks: { font: { family: 'Prompt', size: 11 } }
+            ticks: { font: { family: "'Noto Sans Thai', 'Prompt', sans-serif", size: 11 } }
           }
         }
       }
@@ -434,8 +435,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           legend: { display: false },
           tooltip: {
             backgroundColor: 'rgba(15, 23, 42, 0.94)',
-            titleFont: { family: "'Prompt', 'Sarabun', sans-serif", size: 12, weight: '600' },
-            bodyFont: { family: "'Prompt', 'Sarabun', sans-serif", size: 11 },
+            titleFont: { family: "'Noto Sans Thai', 'Prompt', 'Sarabun', sans-serif", size: 12, weight: '600' },
+            bodyFont: { family: "'Noto Sans Thai', 'Prompt', 'Sarabun', sans-serif", size: 11 },
             padding: 10,
             cornerRadius: 8,
             callbacks: {
@@ -450,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             beginAtZero: true,
             grid: { color: '#f1f5f9' },
             ticks: {
-              font: { family: "'Prompt', 'Sarabun', sans-serif", size: isMobile ? 9.5 : 10.5 },
+              font: { family: "'Noto Sans Thai', 'Prompt', 'Sarabun', sans-serif", size: isMobile ? 9.5 : 10.5 },
               color: '#64748b'
             }
           },
@@ -460,7 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               autoSkip: false,
               crossAlign: 'near', // ALIGN TEXT FLUSH TO THE LEFT!
               font: {
-                family: "'Prompt', 'Sarabun', sans-serif",
+                family: "'Noto Sans Thai', 'Prompt', 'Sarabun', sans-serif",
                 size: isMobile ? 10 : 11,
                 weight: '500'
               },
@@ -749,7 +750,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tr.onmouseenter = () => tr.style.background = '#f0fdf4';
       tr.onmouseleave = () => tr.style.background = (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
 
-      const didTd = isHdc ? '' : `<td style="padding:8px 8px; text-align:center; font-family:monospace; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:145px; min-width:145px; white-space:nowrap;">${item.didstd || '-'}</td>`;
+      const didTd = isHdc ? '' : `<td style="padding:8px 8px; text-align:center; font-family:'Noto Sans Thai', sans-serif; font-variant-numeric:tabular-nums; font-size:11px; color:#64748b; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:145px; min-width:145px; white-space:nowrap;">${item.didstd || '-'}</td>`;
 
       tr.innerHTML = `
         <td style="padding:8px 8px; text-align:center; color:#64748b; font-weight:700; border-bottom:1px solid #e2e8f0; border-right:1px solid #f1f5f9; width:42px; min-width:42px;">${idx + 1}</td>
@@ -924,7 +925,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               boxWidth: 12,
               boxHeight: 8,
               padding: 16,
-              font: { size: 12, family: "'Prompt', sans-serif", weight: '600' },
+              font: { size: 12, family: "'Noto Sans Thai', 'Prompt', sans-serif", weight: '600' },
               color: '#334155'
             }
           },
@@ -932,8 +933,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             backgroundColor: 'rgba(15, 23, 42, 0.94)',
             titleColor: '#f8fafc',
             bodyColor: '#e2e8f0',
-            titleFont: { size: 12.5, family: "'Prompt', sans-serif", weight: '700' },
-            bodyFont: { size: 11.5, family: "'Prompt', sans-serif" },
+            titleFont: { size: 12.5, family: "'Noto Sans Thai', 'Prompt', sans-serif", weight: '700' },
+            bodyFont: { size: 11.5, family: "'Noto Sans Thai', 'Prompt', sans-serif" },
             padding: 12,
             cornerRadius: 10,
             boxPadding: 6,
@@ -955,7 +956,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             grid: { display: false },
             ticks: {
               color: '#1e293b',
-              font: { size: 11.5, family: "'Prompt', sans-serif", weight: '600' }
+              font: { size: 11.5, family: "'Noto Sans Thai', 'Prompt', sans-serif", weight: '600' }
             }
           },
           yVisits: {
@@ -966,7 +967,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               display: true,
               text: 'จำนวนสั่งจ่าย (ครั้ง)',
               color: '#64748b',
-              font: { size: 11, family: "'Prompt', sans-serif", weight: '600' }
+              font: { size: 11, family: "'Noto Sans Thai', 'Prompt', sans-serif", weight: '600' }
             },
             grid: {
               color: 'rgba(226, 232, 240, 0.7)',
@@ -974,7 +975,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             ticks: {
               color: '#64748b',
-              font: { size: 10.5, family: "'Prompt', sans-serif" },
+              font: { size: 10.5, family: "'Noto Sans Thai', 'Prompt', sans-serif" },
               callback: function(v) { return Number(v).toLocaleString() + ' ครั้ง'; }
             }
           },
@@ -986,12 +987,12 @@ document.addEventListener('DOMContentLoaded', async () => {
               display: true,
               text: 'มูลค่าการใช้ยา (บาท)',
               color: '#1e40af',
-              font: { size: 11, family: "'Prompt', sans-serif", weight: '600' }
+              font: { size: 11, family: "'Noto Sans Thai', 'Prompt', sans-serif", weight: '600' }
             },
             grid: { display: false },
             ticks: {
               color: '#1e40af',
-              font: { size: 10.5, family: "'Prompt', sans-serif" },
+              font: { size: 10.5, family: "'Noto Sans Thai', 'Prompt', sans-serif" },
               callback: function(v) { return Number(v).toLocaleString() + ' บ.'; }
             }
           }
@@ -1044,13 +1045,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const displaySub = meta ? meta.subdistrict : (u.subdistrict || '');
 
       tr.innerHTML = `
-        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">${idx + 1}</td>
-        <td class="py-2.5 px-4 font-mono font-medium text-slate-600">${u.hospcode}</td>
+        <td class="py-2.5 px-4 text-center text-slate-400 num-font">${idx + 1}</td>
+        <td class="py-2.5 px-4 num-font font-medium text-slate-600">${u.hospcode}</td>
         <td class="py-2.5 px-4 font-medium text-slate-900">${displayName}</td>
         <td class="py-2.5 px-4 text-slate-500">ต.${displaySub}</td>
-        <td class="py-2.5 px-4 text-right font-mono">${Number(u.num).toLocaleString()}</td>
-        <td class="py-2.5 px-4 text-right font-mono text-slate-500">${Number(u.den).toLocaleString()}</td>
-        <td class="py-2.5 px-4 text-right font-mono font-bold ${u.pass ? 'text-emerald-600' : 'text-slate-800'}">${Number(u.rate).toLocaleString()} ${ind.unit}</td>
+        <td class="py-2.5 px-4 text-right num-font font-semibold text-slate-700">${Number(u.num).toLocaleString()}</td>
+        <td class="py-2.5 px-4 text-right num-font text-slate-500">${Number(u.den).toLocaleString()}</td>
+        <td class="py-2.5 px-4 text-right num-font font-bold ${u.pass ? 'text-emerald-600' : 'text-slate-800'}">${Number(u.rate).toLocaleString()} ${ind.unit}</td>
         <td class="py-2.5 px-4 text-center">${statusBadge}</td>
       `;
       tableBody.appendChild(tr);
@@ -1068,9 +1069,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td colspan="4" class="py-3 px-4 text-slate-800 font-bold">
           🏥 ภาพรวมอำเภอสารภีทั้งหมด (${filteredUnits.length} หน่วยบริการ)
         </td>
-        <td class="py-3 px-4 text-right font-mono font-bold text-slate-900">${Number(yData.num).toLocaleString()}</td>
-        <td class="py-3 px-4 text-right font-mono font-bold text-slate-600">${Number(yData.den).toLocaleString()}</td>
-        <td class="py-3 px-4 text-right font-mono font-extrabold text-emerald-700">${Number(yData.rate).toLocaleString()} ${ind.unit}</td>
+        <td class="py-3 px-4 text-right num-font font-bold text-slate-900">${Number(yData.num).toLocaleString()}</td>
+        <td class="py-3 px-4 text-right num-font font-bold text-slate-600">${Number(yData.den).toLocaleString()}</td>
+        <td class="py-3 px-4 text-right num-font font-extrabold text-emerald-700">${Number(yData.rate).toLocaleString()} ${ind.unit}</td>
         <td class="py-3 px-4 text-center">${distStatusBadge}</td>
       </tr>
     `;
@@ -1147,11 +1148,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     filtered.slice(0, 100).forEach((r, idx) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="py-2.5 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
+        <td class="py-2.5 px-3 text-center text-slate-400 num-font">${idx + 1}</td>
         <td class="py-2.5 px-3 font-medium text-slate-900">${r.report_name || '-'}</td>
-        <td class="py-2.5 px-3 font-mono text-emerald-700 bg-emerald-50/50 px-2 rounded">${r.source_table || '-'}</td>
+        <td class="py-2.5 px-3 num-font text-emerald-700 bg-emerald-50/50 px-2 rounded">${r.source_table || '-'}</td>
         <td class="py-2.5 px-3 text-slate-500">${r.cat_name || '-'}</td>
-        <td class="py-2.5 px-3 text-center font-mono text-slate-400">${(r.view_count || 0).toLocaleString()}</td>
+        <td class="py-2.5 px-3 text-center num-font text-slate-400">${(r.view_count || 0).toLocaleString()}</td>
         <td class="py-2.5 px-3 text-center">
           <button class="view-api-btn bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 px-2 py-1 rounded text-[11px] font-medium transition" data-table="${r.source_table}" data-name="${r.report_name}">
             API Code

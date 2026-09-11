@@ -1,5 +1,5 @@
 /* HDC Saraphi Health & Herbal Dashboard Styles */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
 
 :root {
   --primary: #059669;
@@ -16,10 +16,25 @@
 }
 
 body {
-  font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #f1f5f9;
+  font-family: 'Noto Sans Thai', 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f8fafc;
   color: #1e293b;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Force tabular numbers in Noto Sans Thai for all numeric, table, and data cells */
+.num-font,
+.font-numeric,
+.font-mono,
+td.font-mono,
+th.font-mono,
+span.font-mono,
+div.font-mono,
+pre.font-mono,
+code.font-mono {
+  font-family: 'Noto Sans Thai', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 /* Custom Scrollbar */
@@ -42,12 +57,59 @@ body {
 .glass-card {
   background: #ffffff;
   border-radius: 20px;
-  border: 1px solid rgba(226, 232, 240, 0.85);
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-card:hover {
-  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+}
+
+/* Executive Bento Gradient Metric Cards */
+.bento-metric-card {
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.bento-metric-card:hover {
+  transform: translateY(-4px);
+}
+.bento-card-emerald {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.3), 0 8px 10px -6px rgba(5, 150, 105, 0.15);
+}
+.bento-card-emerald:hover {
+  box-shadow: 0 16px 32px -4px rgba(5, 150, 105, 0.4);
+}
+.bento-card-indigo {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3), 0 8px 10px -6px rgba(79, 70, 229, 0.15);
+}
+.bento-card-indigo:hover {
+  box-shadow: 0 16px 32px -4px rgba(79, 70, 229, 0.4);
+}
+.bento-card-sky {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3), 0 8px 10px -6px rgba(2, 132, 199, 0.15);
+}
+.bento-card-sky:hover {
+  box-shadow: 0 16px 32px -4px rgba(2, 132, 199, 0.4);
+}
+.bento-card-amber {
+  background: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.3), 0 8px 10px -6px rgba(217, 119, 6, 0.15);
+}
+.bento-card-amber:hover {
+  box-shadow: 0 16px 32px -4px rgba(217, 119, 6, 0.4);
 }
 
 .shadow-xs {

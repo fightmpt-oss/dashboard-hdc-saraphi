@@ -11,9 +11,6 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['"Noto Sans Thai"', 'sans-serif'],
-          },
           colors: {
             brand: {
               50: '#ecfdf5',
@@ -29,10 +26,10 @@
     }
   </script>
 
-  <!-- Google Fonts: Noto Sans Thai -->
+  <!-- Google Fonts: Noto Sans Thai, Prompt & Sarabun -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -43,23 +40,23 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="styles.css?v=2.9">
+  <link rel="stylesheet" href="styles.css?v=3.0">
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
   <!-- TOP HEADER -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
+  <header class="bg-white border-b border-slate-200/90 sticky top-0 z-40 shadow-xs">
+    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
       
       <!-- Brand & District Identity -->
       <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 shrink-0">
           <i data-lucide="activity" class="w-5 h-5 sm:w-6 sm:h-6"></i>
         </div>
         <div class="min-w-0">
           <div class="flex items-center space-x-2">
             <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 leading-tight truncate">HDC สารภี</h1>
-            <span class="bg-emerald-100 text-emerald-800 text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+            <span class="bg-emerald-100 text-emerald-800 text-[10.5px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 shrink-0">
               จ.เชียงใหม่
             </span>
           </div>
@@ -71,14 +68,14 @@
       <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full md:w-auto">
         <!-- Year Selector -->
         <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-medium w-full sm:w-auto justify-between sm:justify-start">
-          <button type="button" class="year-btn px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[11px] sm:text-xs" data-year="all">3 ปีย้อนหลัง</button>
-          <button type="button" class="year-btn px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[11px] sm:text-xs" data-year="2567">2567</button>
-          <button type="button" class="year-btn px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[11px] sm:text-xs" data-year="2568">2568</button>
-          <button type="button" class="year-btn active px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[11px] sm:text-xs font-bold" data-year="2569">2569</button>
+          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs font-medium text-center" data-year="all">3 ปีย้อนหลัง</button>
+          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2567">2567</button>
+          <button type="button" class="year-btn flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition text-[10.5px] sm:text-xs num-font font-medium text-center" data-year="2568">2568</button>
+          <button type="button" class="year-btn active flex-1 sm:flex-initial px-2 sm:px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition text-[10.5px] sm:text-xs font-bold num-font text-center" data-year="2569">2569</button>
         </div>
 
         <!-- Unit Dropdown -->
-        <div class="relative w-full sm:w-[220px] md:w-[240px] shrink-0">
+        <div class="relative w-full sm:w-[220px] md:w-[250px] shrink-0">
           <select id="unit-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 pr-8 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 truncate">
             <option value="all">🏥 ภาพรวมอำเภอสารภี (14 แห่ง)</option>
             <!-- Generated via JS -->
@@ -95,7 +92,7 @@
     </div>
 
     <!-- MAIN DOMAIN NAVIGATION TABS -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 border-t border-slate-100 flex overflow-x-auto no-scrollbar space-x-1.5 sm:space-x-2 py-2">
+    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 border-t border-slate-100 flex overflow-x-auto no-scrollbar space-x-1.5 sm:space-x-2 py-2">
       <button class="nav-tab active px-3 sm:px-3.5 py-1.5 rounded-xl text-[11.5px] sm:text-xs font-medium flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap" data-domain="ttm">
         <span>🌿 แพทย์แผนไทย & ยาสมุนไพร</span>
       </button>
@@ -119,7 +116,7 @@
   </header>
 
   <!-- MAIN DASHBOARD CONTENT -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+  <main class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 flex-1 space-y-6">
 
     <!-- EXECUTIVE KPI OVERVIEW (4 Modern Bento Metric Cards) -->
     <section id="executive-banner" class="space-y-3">
@@ -135,101 +132,101 @@
         </div>
       </div>
 
-      <!-- 4 Modern Metric Cards -->
+      <!-- 4 Modern Metric Cards (Executive Bento Gradient Style) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1: Pass Rate -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+        <!-- Card 1: Pass Rate (Emerald Gradient) -->
+        <div class="bento-metric-card bento-card-emerald p-4 sm:p-5 flex flex-col justify-between group">
           <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/80">
-              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
             </div>
-            <span id="stat-pass-rate-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span id="stat-pass-rate-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
               - ผ่านเกณฑ์
             </span>
           </div>
-          <div class="mt-3">
-            <div class="text-xs text-slate-500 font-medium">ผลงานผ่านเกณฑ์ในหมวดนี้</div>
+          <div class="mt-4">
+            <div class="text-xs text-emerald-100 font-medium">ผลงานผ่านเกณฑ์ในหมวดนี้</div>
             <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-passed-indicators" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">- / -</span>
-              <span class="text-xs text-slate-400 font-semibold">ตัวชี้วัด</span>
+              <span id="stat-passed-indicators" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- / -</span>
+              <span class="text-xs text-emerald-200 font-semibold">ตัวชี้วัด</span>
             </div>
           </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-emerald-100">
             <span>ต้องพัฒนา / ติดตาม</span>
-            <span id="stat-failed-indicators" class="font-bold text-rose-600">- ตัว</span>
+            <span id="stat-failed-indicators" class="font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs">- ตัว</span>
           </div>
         </div>
 
-        <!-- Card 2: Herbal Usage Rate / Value -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+        <!-- Card 2: Herbal Usage Rate / Value (Indigo Gradient) -->
+        <div class="bento-metric-card bento-card-indigo p-4 sm:p-5 flex flex-col justify-between group">
           <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/80">
-              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+              <i data-lucide="sparkles" class="w-6 h-6"></i>
             </div>
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
               เกณฑ์ ≥ 5.0%
             </span>
           </div>
-          <div class="mt-3">
-            <div class="text-xs text-slate-500 font-medium">มูลค่าการใช้ยาสมุนไพร (OPD)</div>
+          <div class="mt-4">
+            <div class="text-xs text-indigo-100 font-medium">มูลค่าการใช้ยาสมุนไพร (OPD)</div>
             <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-ttm-total-val" class="text-2xl sm:text-3xl font-black text-indigo-600 tracking-tight">- %</span>
+              <span id="stat-ttm-total-val" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
             </div>
           </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-indigo-100">
             <span>สัดส่วนมูลค่ายาสมุนไพร</span>
-            <span class="font-semibold text-emerald-600">เทียบยาทั้งหมด</span>
+            <span class="font-semibold text-white/95">เทียบยาทั้งหมด</span>
           </div>
         </div>
 
-        <!-- Card 3: Chronic Care (NCDs Control) -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+        <!-- Card 3: Chronic Care (Sky Gradient) -->
+        <div class="bento-metric-card bento-card-sky p-4 sm:p-5 flex flex-col justify-between group">
           <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100/80">
-              <i data-lucide="activity" class="w-5 h-5"></i>
+            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+              <i data-lucide="activity" class="w-6 h-6"></i>
             </div>
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
               เกณฑ์ ≥ 50%
             </span>
           </div>
-          <div class="mt-3">
-            <div class="text-xs text-slate-500 font-medium">คุมความดันโลหิตสูง (HT Control)</div>
+          <div class="mt-4">
+            <div class="text-xs text-sky-100 font-medium">คุมความดันโลหิตสูง (HT Control)</div>
             <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-ncd-rate" class="text-2xl sm:text-3xl font-black text-sky-600 tracking-tight">- %</span>
+              <span id="stat-ncd-rate" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
             </div>
           </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-sky-100">
             <span>ความดัน &lt; 140/90 mmHg</span>
-            <span class="font-semibold text-slate-600">ผลงาน อ.สารภี</span>
+            <span class="font-semibold text-white/95">ผลงาน อ.สารภี</span>
           </div>
         </div>
 
-        <!-- Card 4: Primary Care Coverage -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+        <!-- Card 4: Primary Care Coverage (Amber Gradient) -->
+        <div class="bento-metric-card bento-card-amber p-4 sm:p-5 flex flex-col justify-between group">
           <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100/80">
-              <i data-lucide="users" class="w-5 h-5"></i>
+            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/25 shadow-inner">
+              <i data-lucide="users" class="w-6 h-6"></i>
             </div>
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font">
               เกณฑ์ ≥ 85%
             </span>
           </div>
-          <div class="mt-3">
-            <div class="text-xs text-slate-500 font-medium">คัดกรองพัฒนาการเด็ก (DSPM)</div>
+          <div class="mt-4">
+            <div class="text-xs text-amber-100 font-medium">คัดกรองพัฒนาการเด็ก (DSPM)</div>
             <div class="flex items-baseline gap-2 mt-1">
-              <span id="stat-screen-rate" class="text-2xl sm:text-3xl font-black text-amber-600 tracking-tight">- %</span>
+              <span id="stat-screen-rate" class="text-3xl sm:text-4xl font-black text-white tracking-tight num-font">- %</span>
             </div>
           </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+          <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-amber-100">
             <span>เด็ก 0-5 ปี ในพื้นที่</span>
-            <span class="font-semibold text-emerald-600">คัดกรองสมวัย</span>
+            <span class="font-semibold text-white/95">คัดกรองสมวัย</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- SUB-INDICATOR CHIPS SELECTOR -->
-    <section id="indicator-chips-container" class="flex flex-wrap gap-2 pb-1">
+    <section id="indicator-chips-container" class="flex overflow-x-auto no-scrollbar gap-2 pb-2">
       <!-- Dynamically filled with buttons for each indicator in active domain -->
     </section>
 
@@ -237,28 +234,28 @@
     <section id="active-indicator-section" class="space-y-6">
       
       <!-- Indicator Header Card -->
-      <div class="glass-card rounded-2xl p-5 relative overflow-hidden">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 relative overflow-hidden bg-gradient-to-r from-white via-white to-emerald-50/40">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div class="flex items-center space-x-2">
-              <span id="ind-code-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded" style="display:none;"></span>
-              <span id="ind-table-badge" class="text-xs text-slate-400 font-mono">table: s_ttm7</span>
+              <span id="ind-code-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded num-font" style="display:none;"></span>
+              <span id="ind-table-badge" class="text-xs text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-md num-font">table: s_ttm7</span>
             </div>
-            <h3 id="ind-name-text" class="text-lg font-bold text-slate-900 mt-1">ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)</h3>
-            <p id="ind-desc-text" class="text-xs text-slate-600 mt-0.5">มูลค่าการใช้ยาสมุนไพรเทียบกับมูลค่ายาทั้งหมดของผู้ป่วยนอก (เป้าหมาย สธ. >= 5.0%)</p>
+            <h3 id="ind-name-text" class="text-lg sm:text-xl font-bold text-slate-900 mt-1.5">ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)</h3>
+            <p id="ind-desc-text" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">มูลค่าการใช้ยาสมุนไพรเทียบกับมูลค่ายาทั้งหมดของผู้ป่วยนอก (เป้าหมาย สธ. >= 5.0%)</p>
           </div>
 
-          <div class="flex items-center space-x-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-start gap-3.5 bg-slate-50/90 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 shadow-xs">
             <div>
-              <div class="text-[10px] uppercase font-bold text-slate-400">เกณฑ์เป้าหมาย สธ.</div>
-              <div id="ind-target-text" class="text-sm font-bold text-slate-700">≥ 5.0 %</div>
+              <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">เกณฑ์เป้าหมาย สธ.</div>
+              <div id="ind-target-text" class="text-sm font-bold text-slate-700 num-font">≥ 5.0 %</div>
             </div>
-            <div class="h-8 w-px bg-slate-300"></div>
+            <div class="hidden sm:block h-9 w-px bg-slate-200"></div>
             <div>
-              <div class="text-[10px] uppercase font-bold text-slate-400">ผลงานจริงล่าสุด (2569)</div>
-              <div id="ind-current-rate" class="text-xl font-extrabold text-emerald-600">5.42 %</div>
+              <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">ผลงานจริงล่าสุด (2569)</div>
+              <div id="ind-current-rate" class="text-xl sm:text-2xl font-black text-emerald-600 num-font">5.42 %</div>
             </div>
-            <div id="ind-status-badge" class="badge-pass px-2.5 py-1 rounded-lg text-xs font-bold">
+            <div id="ind-status-badge" class="badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs">
               ✓ ผ่านเกณฑ์
             </div>
           </div>
@@ -275,14 +272,14 @@
               <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i>
               <span>แนวโน้ม 3 ปีย้อนหลัง (2567 - 2569)</span>
             </h4>
-            <span class="text-[10px] sm:text-[11px] text-slate-400 font-mono">รายปีงบประมาณ</span>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 font-medium num-font">รายปีงบประมาณ</span>
           </div>
           <div class="chart-box-responsive">
             <canvas id="trendChart"></canvas>
           </div>
           <div id="trend-summary-note" class="text-[11px] sm:text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
             <span>เปรียบเทียบผลงาน 3 ปีงบประมาณ</span>
-            <span id="trend-growth-badge" class="text-xs font-semibold text-emerald-600">+12.5% เติบโต</span>
+            <span id="trend-growth-badge" class="text-xs font-bold text-emerald-600 num-font">+12.5% เติบโต</span>
           </div>
         </div>
 
@@ -322,7 +319,7 @@
               <span id="moph-status-badge" style="font-size:10.5px; padding:2px 8px; border-radius:9999px; background:#0284c7; color:#ffffff; font-weight:700;">สั่งใช้ 14 รายการ</span>
             </div>
             <div style="display:flex; align-items:baseline; gap:8px;">
-              <span id="moph-takwang-rate" style="font-size:28px; font-weight:800; color:#14532d; line-height:1.1;">-</span>
+              <span id="moph-takwang-rate" class="num-font" style="font-size:28px; font-weight:800; color:#14532d; line-height:1.1;">-</span>
               <span id="moph-target-label" style="font-size:11.5px; font-weight:600; color:#166534;">ข้อมูล HDC สธ.</span>
             </div>
             <div id="moph-takwang-counts" style="font-size:11.5px; color:#15803d; margin-top:6px; font-weight:500;">
@@ -336,8 +333,8 @@
               อันดับใน อ.สารภี
             </div>
             <div style="display:flex; align-items:baseline; gap:6px;">
-              <span id="moph-saraphi-rank" style="font-size:28px; font-weight:800; color:#0f172a; line-height:1.1;"># -</span>
-              <span id="moph-saraphi-total-units" style="font-size:12px; font-weight:600; color:#64748b;">จาก 14 หน่วยบริการ</span>
+              <span id="moph-saraphi-rank" class="num-font" style="font-size:28px; font-weight:800; color:#0f172a; line-height:1.1;"># -</span>
+              <span id="moph-saraphi-total-units" class="num-font" style="font-size:12px; font-weight:600; color:#64748b;">จาก 14 หน่วยบริการ</span>
             </div>
             <div style="font-size:11.5px; color:#059669; margin-top:6px; font-weight:600;" id="moph-rank-highlight">
               กลุ่มผลงานระดับต้นของอำเภอ
@@ -350,7 +347,7 @@
               ค่าเฉลี่ย อ.สารภี (14 แห่ง)
             </div>
             <div style="display:flex; align-items:baseline; gap:6px;">
-              <span id="moph-saraphi-rate" style="font-size:28px; font-weight:800; color:#3b82f6; line-height:1.1;">-</span>
+              <span id="moph-saraphi-rate" class="num-font" style="font-size:28px; font-weight:800; color:#3b82f6; line-height:1.1;">-</span>
             </div>
             <div id="moph-saraphi-counts" style="font-size:11.5px; color:#64748b; margin-top:6px;">
               -
@@ -363,8 +360,8 @@
               ภาพรวม จ.เชียงใหม่
             </div>
             <div style="display:flex; align-items:baseline; gap:6px;">
-              <span id="moph-cm-rate" style="font-size:28px; font-weight:800; color:#6366f1; line-height:1.1;">-</span>
-              <span id="moph-cm-units" style="font-size:11.5px; font-weight:600; color:#64748b;">(~220+ แห่ง)</span>
+              <span id="moph-cm-rate" class="num-font" style="font-size:28px; font-weight:800; color:#6366f1; line-height:1.1;">-</span>
+              <span id="moph-cm-units" class="num-font" style="font-size:11.5px; font-weight:600; color:#64748b;">(~220+ แห่ง)</span>
             </div>
             <div id="moph-cm-counts" style="font-size:11.5px; color:#64748b; margin-top:6px;">
               -
@@ -539,7 +536,7 @@
       <div class="border-b border-slate-200 pb-4">
         <div class="flex items-center space-x-2">
           <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">MoPH Open Data Portal</span>
-          <span class="text-xs text-slate-400 font-mono">API: opendata.moph.go.th</span>
+          <span class="text-xs text-slate-400 num-font">API: opendata.moph.go.th</span>
         </div>
         <h3 class="text-lg font-bold text-slate-900 mt-1 flex items-center gap-2">
           <i data-lucide="database" class="w-5 h-5 text-blue-600"></i>
@@ -680,7 +677,7 @@
 
   <!-- FOOTER -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="w-full max-w-[1720px] 2xl:max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
         <span>HDC Dashboard อำเภอสารภี จังหวัดเชียงใหม่ • บูรณาการข้อมูลระดับปฐมภูมิ 14 หน่วยบริการ</span>
@@ -690,12 +687,12 @@
         <span>•</span>
         <a href="https://opendata.moph.go.th" target="_blank" class="text-emerald-600 hover:underline">opendata.moph.go.th</a>
         <span>•</span>
-        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono text-[10px]">Vercel / Cloudflare Ready</span>
+        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded num-font text-[10px]">Vercel / Cloudflare Ready</span>
       </div>
     </div>
   </footer>
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=2.9"></script>
+  <script src="app.js?v=3.0"></script>
 </body>
 </html>
