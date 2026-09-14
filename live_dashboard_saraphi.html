@@ -1616,16 +1616,41 @@
 
       try {
         const ts = new Date().getTime();
-        const [hdcRes, nhsoRes] = await Promise.allSettled([
-          fetch(`/data/saraphi_complete_master.json?_t=${ts}`),
-          fetch(`/data/nhso/nhso_saraphi_master.json?_t=${ts}`)
-        ]);
+        let hdcData = null;
+        let nhsoData = null;
+        let sourceName = 'Local';
 
-        if (hdcRes.status === 'fulfilled' && hdcRes.value.ok && 
-            nhsoRes.status === 'fulfilled' && nhsoRes.value.ok) {
-          const freshHdc = await hdcRes.value.json();
-          const freshNhso = await nhsoRes.value.json();
-          liveStatus.textContent = 'Live Connected (HTTP API)';
+        // 1. First priority: Check Local Server (Port 8095)
+        try {
+          const [lHdc, lNhso] = await Promise.all([
+            fetch(`/data/saraphi_complete_master.json?_t=${ts}`).then(r => r.ok ? r.json() : null),
+            fetch(`/data/nhso/nhso_saraphi_master.json?_t=${ts}`).then(r => r.ok ? r.json() : null)
+          ]);
+          if (lHdc && lNhso) {
+            hdcData = lHdc;
+            nhsoData = lNhso;
+            sourceName = 'Local (8095)';
+          }
+        } catch (e) {}
+
+        // 2. Second priority: Fallback to Cloud Vercel (https://dashboard-hdc-saraphi.vercel.app)
+        if (!hdcData || !nhsoData) {
+          try {
+            const vercelBase = 'https://dashboard-hdc-saraphi.vercel.app';
+            const [vHdc, vNhso] = await Promise.all([
+              fetch(`${vercelBase}/data/saraphi_complete_master.json?_t=${ts}`).then(r => r.ok ? r.json() : null),
+              fetch(`${vercelBase}/data/nhso/nhso_saraphi_master.json?_t=${ts}`).then(r => r.ok ? r.json() : null)
+            ]);
+            if (vHdc && vNhso) {
+              hdcData = vHdc;
+              nhsoData = vNhso;
+              sourceName = 'Cloud (Vercel)';
+            }
+          } catch (e) {}
+        }
+
+        if (hdcData && nhsoData) {
+          liveStatus.textContent = `Live Connected (${sourceName})`;
         } else {
           liveStatus.textContent = 'Live Sync Active (High-Fidelity Store)';
         }
