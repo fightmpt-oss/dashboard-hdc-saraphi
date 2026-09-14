@@ -1567,6 +1567,295 @@
 
       </div>
 
+      <!-- SPECIAL PANEL FOR TTM MASSAGE & PROCEDURES (Shows when ttm_massage / s_ttm8 is active) -->
+      <div id="ttm-massage-panel" class="hidden space-y-4">
+
+        <!-- Filter Bar: View Mode, Chart Tabs, Year Selector & Search -->
+        <div class="glass-card rounded-2xl p-4 bg-white flex flex-col xl:flex-row xl:items-center justify-between gap-4 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-slate-400"></i> มุมมองตาราง:
+            </span>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold flex-wrap gap-1" id="ttm-massage-view-buttons">
+              <button type="button" onclick="window.switchTtmMassageView('hdc_full')" id="btn-ttm-massage-view-hdc_full" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">
+                <i class="fa-solid fa-table-cells mr-1"></i> ตารางเปรียบเทียบมาตรฐาน HDC (1:1)
+              </button>
+              <button type="button" onclick="window.switchTtmMassageView('total_only')" id="btn-ttm-massage-view-total_only" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                <i class="fa-solid fa-table-columns mr-1"></i> รวมในและนอกสถานบริการ (10 คอลัมน์)
+              </button>
+              <button type="button" onclick="window.switchTtmMassageView('compare_in_out')" id="btn-ttm-massage-view-compare_in_out" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                <i class="fa-solid fa-code-compare mr-1"></i> เปรียบเทียบใน vs นอกสถานบริการ
+              </button>
+              <button type="button" onclick="window.switchTtmMassageView('quarter')" id="btn-ttm-massage-view-quarter" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                <i class="fa-solid fa-calendar-days mr-1"></i> ตารางรายไตรมาส (Q1 - Q4)
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 flex-wrap">
+            <!-- Chart Tabs Selector -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">โหมดแผนภูมิ:</span>
+              <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold" id="ttm-massage-chart-tab-buttons">
+                <button type="button" onclick="window.switchTtmMassageChartTab('all_3')" id="btn-ttm-massage-chart-all_3" class="px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs">
+                  <i class="fa-solid fa-chart-column mr-1"></i> แสดงทั้ง 3 แผนภูมิ HDC
+                </button>
+                <button type="button" onclick="window.switchTtmMassageChartTab('nod')" id="btn-ttm-massage-chart-nod" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                  <i class="fa-solid fa-hands mr-1"></i> นวดแผนไทย
+                </button>
+                <button type="button" onclick="window.switchTtmMassageChartTab('obb')" id="btn-ttm-massage-chart-obb" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                  <i class="fa-solid fa-hot-tub-person mr-1"></i> อบสมุนไพร
+                </button>
+                <button type="button" onclick="window.switchTtmMassageChartTab('cop')" id="btn-ttm-massage-chart-cop" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                  <i class="fa-solid fa-leaf mr-1"></i> ประคบสมุนไพร
+                </button>
+              </div>
+            </div>
+
+            <!-- Year Selector -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">ปีงบประมาณ:</span>
+              <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold" id="ttm-massage-year-buttons">
+                <button type="button" onclick="window.switchTtmMassageYear('2569')" id="btn-ttm-massage-yr-2569" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">2569</button>
+                <button type="button" onclick="window.switchTtmMassageYear('2568')" id="btn-ttm-massage-yr-2568" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">2568</button>
+                <button type="button" onclick="window.switchTtmMassageYear('2567')" id="btn-ttm-massage-yr-2567" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">2567</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HDC Criteria Definition Alert -->
+        <div class="rounded-2xl p-3.5 bg-emerald-50/80 border border-emerald-200/80 text-xs text-emerald-900 space-y-1 shadow-xs">
+          <div class="flex items-start gap-2">
+            <span class="font-bold text-emerald-700 shrink-0">คำจำกัดความมาตรฐาน HDC:</span>
+            <span>รายงานจำนวนครั้งการให้บริการแผนไทยและหัตถการ (นวด, อบ, ประคบสมุนไพร) จำแนกตามสถานที่ให้บริการ (ในสถานบริการ / นอกสถานบริการ / รวมในและนอก) และจำแนกตามประเภทสิทธิการรักษา (ทุกสิทธิ / สิทธิประกันสุขภาพถ้วนหน้า UC)</span>
+          </div>
+          <div class="flex items-center gap-4 pt-1 border-t border-emerald-200/50 text-[11.5px] text-emerald-800 font-medium flex-wrap">
+            <span><strong>บริการแผนไทย:</strong> รวมครั้งบริการตรวจ วินิจฉัย สั่งยา และหัตถการ</span>
+            <span><strong>นวดแผนไทย:</strong> นวดเพื่อการรักษาและฟื้นฟูสมรรถภาพ</span>
+            <span><strong>อบสมุนไพร:</strong> อบไอน้ำสมุนไพรเพื่อสุขภาพ</span>
+            <span><strong>ประคบสมุนไพร:</strong> ประคบสมุนไพรเพื่อลดการอักเสบและปวด</span>
+            <span><strong>นวดและประคบ:</strong> บริการร่วมทั้งนวดและประคบสมุนไพร</span>
+          </div>
+        </div>
+
+        <!-- 5 Bento KPI Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          <!-- Card 1: บริการแผนไทยรวม -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">บริการแผนไทยรวม</span>
+              <span class="p-2 rounded-xl bg-teal-50 text-teal-600"><i class="fa-solid fa-stethoscope"></i></span>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-slate-800" id="ttm-massage-kpi-vs-total">0</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>สิทธิ UC:</span>
+                <span class="font-bold text-teal-700" id="ttm-massage-kpi-vs-uc">0 ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <span>ใน: <strong class="text-slate-600" id="ttm-massage-kpi-vs-in">0</strong></span>
+                <span>นอก: <strong class="text-slate-600" id="ttm-massage-kpi-vs-out">0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: นวดแผนไทย -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">นวดแผนไทย</span>
+              <span class="p-2 rounded-xl bg-blue-50 text-blue-600"><i class="fa-solid fa-hands"></i></span>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-blue-600" id="ttm-massage-kpi-nod-total">0</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>สิทธิ UC:</span>
+                <span class="font-bold text-blue-700" id="ttm-massage-kpi-nod-uc">0 ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <span>ใน: <strong class="text-slate-600" id="ttm-massage-kpi-nod-in">0</strong></span>
+                <span>นอก: <strong class="text-slate-600" id="ttm-massage-kpi-nod-out">0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: อบสมุนไพร -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">อบสมุนไพร</span>
+              <span class="p-2 rounded-xl bg-amber-50 text-amber-600"><i class="fa-solid fa-hot-tub-person"></i></span>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-amber-600" id="ttm-massage-kpi-obb-total">0</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>สิทธิ UC:</span>
+                <span class="font-bold text-amber-700" id="ttm-massage-kpi-obb-uc">0 ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <span>ใน: <strong class="text-slate-600" id="ttm-massage-kpi-obb-in">0</strong></span>
+                <span>นอก: <strong class="text-slate-600" id="ttm-massage-kpi-obb-out">0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: ประคบสมุนไพร -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ประคบสมุนไพร</span>
+              <span class="p-2 rounded-xl bg-emerald-50 text-emerald-600"><i class="fa-solid fa-leaf"></i></span>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-emerald-600" id="ttm-massage-kpi-cop-total">0</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>สิทธิ UC:</span>
+                <span class="font-bold text-emerald-700" id="ttm-massage-kpi-cop-uc">0 ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <span>ใน: <strong class="text-slate-600" id="ttm-massage-kpi-cop-in">0</strong></span>
+                <span>นอก: <strong class="text-slate-600" id="ttm-massage-kpi-cop-out">0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: นวดและประคบ -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">นวดและประคบ</span>
+              <span class="p-2 rounded-xl bg-purple-50 text-purple-600"><i class="fa-solid fa-spa"></i></span>
+            </div>
+            <div class="mt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-purple-600" id="ttm-massage-kpi-nc-total">0</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>สิทธิ UC:</span>
+                <span class="font-bold text-purple-700" id="ttm-massage-kpi-nc-uc">0 ครั้ง</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <span>ใน: <strong class="text-slate-600" id="ttm-massage-kpi-nc-in">0</strong></span>
+                <span>นอก: <strong class="text-slate-600" id="ttm-massage-kpi-nc-out">0</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 HDC STANDARD CHARTS SECTION -->
+        <div id="ttm-massage-charts-container" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- Chart 1: แผนภูมิแสดง นวดแผนไทย(ครั้ง) -->
+          <div id="ttm-massage-chart-card-nod" class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+              <div>
+                <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-hands text-blue-600"></i> แผนภูมิแสดง นวดแผนไทย(ครั้ง)
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">จำแนกรายหน่วยบริการ (HDC)</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700" id="ttm-massage-badge-nod">รวม 16,261 ครั้ง</span>
+            </div>
+            <div class="relative w-full h-[320px]">
+              <canvas id="ttmMassageChartNod"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: แผนภูมิแสดง อบสมุนไพร(ครั้ง) -->
+          <div id="ttm-massage-chart-card-obb" class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+              <div>
+                <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-hot-tub-person text-amber-600"></i> แผนภูมิแสดง อบสมุนไพร(ครั้ง)
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">จำแนกรายหน่วยบริการ (HDC)</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700" id="ttm-massage-badge-obb">รวม 355 ครั้ง</span>
+            </div>
+            <div class="relative w-full h-[320px]">
+              <canvas id="ttmMassageChartObb"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: แผนภูมิแสดง ประคบสมุนไพร(ครั้ง) -->
+          <div id="ttm-massage-chart-card-cop" class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+              <div>
+                <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-leaf text-emerald-600"></i> แผนภูมิแสดง ประคบสมุนไพร(ครั้ง)
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">จำแนกรายหน่วยบริการ (HDC)</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700" id="ttm-massage-badge-cop">รวม 15,725 ครั้ง</span>
+            </div>
+            <div class="relative w-full h-[320px]">
+              <canvas id="ttmMassageChartCop"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- HDC MATRIX TABLE SECTION -->
+        <div class="glass-card rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+          <!-- Table Header Controls -->
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-table text-emerald-600"></i>
+                <span id="ttm-massage-table-heading">ตารางข้อมูลการบริการแผนไทย นวด อบ ประคบ (HDC Matrix Table)</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5" id="ttm-massage-table-subheading">
+                จำแนกในสถานบริการ นอกสถานบริการ และรวมในและนอก (14 หน่วยบริการ อำเภอสารภี)
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto">
+              <!-- Search Box -->
+              <div class="relative flex-1 md:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="ttm-massage-table-search" placeholder="ค้นหา รพ.สต. หรือ ตำบล..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition">
+              </div>
+
+              <!-- Export CSV Button -->
+              <button type="button" onclick="window.exportTtmMassageCsv()" class="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl shadow-xs shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>ส่งออก CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Body with Horizontal Scrolling & Sticky Columns -->
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-xs text-left text-slate-600 border-collapse hdc-matrix-table" id="ttm-massage-matrix-table">
+              <!-- Dynamically populated via renderTtmMassagePanel() -->
+            </table>
+          </div>
+
+          <!-- Table Footer Note -->
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11.5px] text-slate-500">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-emerald-600"></i>
+              <span>กดปุ่ม <strong>"ดู รพ.สต."</strong> ในแต่ละแถว เพื่อสลับแดชบอร์ดด้านบนไปยังหน่วยบริการนั้นทันที</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>แหล่งข้อมูล: HDC Open Data กระทรวงสาธารณสุข (ตาราง <code>s_ttm8</code>) :: วันที่ประมวลผล 12 กันยายน 2569</span>
+              <a href="https://hdc.moph.go.th/cmi/public/standard-report-detail/9615f70d993b1b673fbe65ae958a59fc" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> รายงาน HDC ต้นฉบับ
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- SPECIAL PANEL FOR NHSO SERVICE BREAKDOWN (Shows when nhso_service is active) -->
       <div id="nhso-service-panel" class="hidden space-y-4">
 

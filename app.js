@@ -56,6 +56,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tableSearch = document.getElementById('table-search');
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
+  const ttmMassagePanel = document.getElementById('ttm-massage-panel');
+
+  let currentTtmMassageView = 'hdc_full';
+  let currentTtmMassageYear = '2569';
+  let currentTtmMassageChartTab = 'all_3';
+  let ttmMassageSearchQuery = '';
+  let ttmMassageChartNodInstance = null;
+  let ttmMassageChartObbInstance = null;
+  let ttmMassageChartCopInstance = null;
 
   let currentTtmCommonView = 'hdc_full';
   let currentTtmCommonYear = '2569';
@@ -7548,6 +7557,987 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
 
+  // =========================================================================
+  // TTM MASSAGE & PROCEDURES (s_ttm8) - HDC 1:1 CONTROLLER & RENDER FUNCTIONS
+  // =========================================================================
+
+  window.switchTtmMassageView = function(view) {
+    currentTtmMassageView = view;
+    renderTtmMassagePanel();
+  };
+
+  window.switchTtmMassageYear = function(yr) {
+    currentTtmMassageYear = yr;
+    renderTtmMassagePanel();
+  };
+
+  window.switchTtmMassageChartTab = function(tab) {
+    currentTtmMassageChartTab = tab;
+    renderTtmMassagePanel();
+  };
+
+  window.exportTtmMassageCsv = function() {
+    const yr = currentTtmMassageYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['ttm_massage'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Excel Thai language compatibility
+
+    if (currentTtmMassageView === 'hdc_full') {
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,' +
+        'ในสถาน-บริการแผนไทย-ทุกสิทธิ,ในสถาน-บริการแผนไทย-UC,' +
+        'ในสถาน-นวดแผนไทย-ทุกสิทธิ,ในสถาน-นวดแผนไทย-UC,' +
+        'ในสถาน-อบสมุนไพร-ทุกสิทธิ,ในสถาน-อบสมุนไพร-UC,' +
+        'ในสถาน-ประคบสมุนไพร-ทุกสิทธิ,ในสถาน-ประคบสมุนไพร-UC,' +
+        'ในสถาน-นวดและประคบ-ทุกสิทธิ,ในสถาน-นวดและประคบ-UC,' +
+        'นอกสถาน-บริการแผนไทย-ทุกสิทธิ,นอกสถาน-บริการแผนไทย-UC,' +
+        'นอกสถาน-นวดแผนไทย-ทุกสิทธิ,นอกสถาน-นวดแผนไทย-UC,' +
+        'นอกสถาน-อบสมุนไพร-ทุกสิทธิ,นอกสถาน-อบสมุนไพร-UC,' +
+        'นอกสถาน-ประคบสมุนไพร-ทุกสิทธิ,นอกสถาน-ประคบสมุนไพร-UC,' +
+        'นอกสถาน-นวดและประคบ-ทุกสิทธิ,นอกสถาน-นวดและประคบ-UC,' +
+        'รวม-บริการแผนไทย-ทุกสิทธิ,รวม-บริการแผนไทย-UC,' +
+        'รวม-นวดแผนไทย-ทุกสิทธิ,รวม-นวดแผนไทย-UC,' +
+        'รวม-อบสมุนไพร-ทุกสิทธิ,รวม-อบสมุนไพร-UC,' +
+        'รวม-ประคบสมุนไพร-ทุกสิทธิ,รวม-ประคบสมุนไพร-UC,' +
+        'รวม-นวดและประคบ-ทุกสิทธิ,รวม-นวดและประคบ-UC\n';
+
+      // District Total Row
+      const dIn = yrData.in || {};
+      const dOut = yrData.out || {};
+      const dTot = yrData.tot || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",` +
+        `${dIn.vs?.all || 0},${dIn.vs?.uc || 0},${dIn.nod?.all || 0},${dIn.nod?.uc || 0},${dIn.obb?.all || 0},${dIn.obb?.uc || 0},${dIn.cop?.all || 0},${dIn.cop?.uc || 0},${dIn.n_c?.all || 0},${dIn.n_c?.uc || 0},` +
+        `${dOut.vs?.all || 0},${dOut.vs?.uc || 0},${dOut.nod?.all || 0},${dOut.nod?.uc || 0},${dOut.obb?.all || 0},${dOut.obb?.uc || 0},${dOut.cop?.all || 0},${dOut.cop?.uc || 0},${dOut.n_c?.all || 0},${dOut.n_c?.uc || 0},` +
+        `${dTot.vs?.all || 0},${dTot.vs?.uc || 0},${dTot.nod?.all || 0},${dTot.nod?.uc || 0},${dTot.obb?.all || 0},${dTot.obb?.uc || 0},${dTot.cop?.all || 0},${dTot.cop?.uc || 0},${dTot.n_c?.all || 0},${dTot.n_c?.uc || 0}\n`;
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uIn = u.in || {};
+        const uOut = u.out || {};
+        const uTot = u.tot || {};
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",` +
+          `${uIn.vs?.all || 0},${uIn.vs?.uc || 0},${uIn.nod?.all || 0},${uIn.nod?.uc || 0},${uIn.obb?.all || 0},${uIn.obb?.uc || 0},${uIn.cop?.all || 0},${uIn.cop?.uc || 0},${uIn.n_c?.all || 0},${uIn.n_c?.uc || 0},` +
+          `${uOut.vs?.all || 0},${uOut.vs?.uc || 0},${uOut.nod?.all || 0},${uOut.nod?.uc || 0},${uOut.obb?.all || 0},${uOut.obb?.uc || 0},${uOut.cop?.all || 0},${uOut.cop?.uc || 0},${uOut.n_c?.all || 0},${uOut.n_c?.uc || 0},` +
+          `${uTot.vs?.all || 0},${uTot.vs?.uc || 0},${uTot.nod?.all || 0},${uTot.nod?.uc || 0},${uTot.obb?.all || 0},${uTot.obb?.uc || 0},${uTot.cop?.all || 0},${uTot.cop?.uc || 0},${uTot.n_c?.all || 0},${uTot.n_c?.uc || 0}\n`;
+      });
+
+    } else if (currentTtmMassageView === 'total_only') {
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,' +
+        'บริการแผนไทย-ทุกสิทธิ,บริการแผนไทย-UC,' +
+        'นวดแผนไทย-ทุกสิทธิ,นวดแผนไทย-UC,' +
+        'อบสมุนไพร-ทุกสิทธิ,อบสมุนไพร-UC,' +
+        'ประคบสมุนไพร-ทุกสิทธิ,ประคบสมุนไพร-UC,' +
+        'นวดและประคบ-ทุกสิทธิ,นวดและประคบ-UC\n';
+
+      const dTot = yrData.tot || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",` +
+        `${dTot.vs?.all || 0},${dTot.vs?.uc || 0},${dTot.nod?.all || 0},${dTot.nod?.uc || 0},${dTot.obb?.all || 0},${dTot.obb?.uc || 0},${dTot.cop?.all || 0},${dTot.cop?.uc || 0},${dTot.n_c?.all || 0},${dTot.n_c?.uc || 0}\n`;
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uTot = u.tot || {};
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",` +
+          `${uTot.vs?.all || 0},${uTot.vs?.uc || 0},${uTot.nod?.all || 0},${uTot.nod?.uc || 0},${uTot.obb?.all || 0},${uTot.obb?.uc || 0},${uTot.cop?.all || 0},${uTot.cop?.uc || 0},${uTot.n_c?.all || 0},${uTot.n_c?.uc || 0}\n`;
+      });
+
+    } else if (currentTtmMassageView === 'compare_in_out') {
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,' +
+        'บริการแผนไทย-ในสถาน,บริการแผนไทย-นอกสถาน,บริการแผนไทย-รวม,บริการแผนไทย-%ในสถาน,' +
+        'นวดแผนไทย-ในสถาน,นวดแผนไทย-นอกสถาน,นวดแผนไทย-รวม,' +
+        'อบสมุนไพร-ในสถาน,อบสมุนไพร-นอกสถาน,อบสมุนไพร-รวม,' +
+        'ประคบสมุนไพร-ในสถาน,ประคบสมุนไพร-นอกสถาน,ประคบสมุนไพร-รวม,' +
+        'นวดและประคบ-ในสถาน,นวดและประคบ-นอกสถาน,นวดและประคบ-รวม\n';
+
+      const dIn = yrData.in || {};
+      const dOut = yrData.out || {};
+      const dTot = yrData.tot || {};
+      const vsInPct = dTot.vs?.all > 0 ? ((dIn.vs?.all || 0) / dTot.vs.all * 100).toFixed(1) : '0.0';
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",` +
+        `${dIn.vs?.all || 0},${dOut.vs?.all || 0},${dTot.vs?.all || 0},${vsInPct}%,` +
+        `${dIn.nod?.all || 0},${dOut.nod?.all || 0},${dTot.nod?.all || 0},` +
+        `${dIn.obb?.all || 0},${dOut.obb?.all || 0},${dTot.obb?.all || 0},` +
+        `${dIn.cop?.all || 0},${dOut.cop?.all || 0},${dTot.cop?.all || 0},` +
+        `${dIn.n_c?.all || 0},${dOut.n_c?.all || 0},${dTot.n_c?.all || 0}\n`;
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uIn = u.in || {};
+        const uOut = u.out || {};
+        const uTot = u.tot || {};
+        const uVsInPct = uTot.vs?.all > 0 ? ((uIn.vs?.all || 0) / uTot.vs.all * 100).toFixed(1) : '0.0';
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",` +
+          `${uIn.vs?.all || 0},${uOut.vs?.all || 0},${uTot.vs?.all || 0},${uVsInPct}%,` +
+          `${uIn.nod?.all || 0},${uOut.nod?.all || 0},${uTot.nod?.all || 0},` +
+          `${uIn.obb?.all || 0},${uOut.obb?.all || 0},${uTot.obb?.all || 0},` +
+          `${uIn.cop?.all || 0},${uOut.cop?.all || 0},${uTot.cop?.all || 0},` +
+          `${uIn.n_c?.all || 0},${uOut.n_c?.all || 0},${uTot.n_c?.all || 0}\n`;
+      });
+
+    } else if (currentTtmMassageView === 'quarter') {
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,' +
+        'Q1-นวด,Q1-อบ,Q1-ประคบ,Q1-บริการรวม,' +
+        'Q2-นวด,Q2-อบ,Q2-ประคบ,Q2-บริการรวม,' +
+        'Q3-นวด,Q3-อบ,Q3-ประคบ,Q3-บริการรวม,' +
+        'Q4-นวด,Q4-อบ,Q4-ประคบ,Q4-บริการรวม\n';
+
+      const dQ = yrData.quarters || {};
+      let dLine = `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",`;
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = dQ[`q${qi}`]?.tot || {};
+        dLine += `${qd.nod?.all || 0},${qd.obb?.all || 0},${qd.cop?.all || 0},${qd.vs?.all || 0}${qi === 4 ? '' : ','}`;
+      }
+      csvContent += dLine + '\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uQ = u.quarters || {};
+        let line = `"${u.hospcode}","${uName}","${uSub}",`;
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = uQ[`q${qi}`]?.tot || {};
+          line += `${qd.nod?.all || 0},${qd.obb?.all || 0},${qd.cop?.all || 0},${qd.vs?.all || 0}${qi === 4 ? '' : ','}`;
+        }
+        csvContent += line + '\n';
+      });
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_s_ttm8_Saraphi_${yr}_${currentTtmMassageView}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function renderTtmMassagePanel() {
+    if (currentIndicatorId !== 'ttm_massage') {
+      if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
+      return;
+    }
+    if (ttmMassagePanel) ttmMassagePanel.classList.remove('hidden');
+
+    const yr = currentTtmMassageYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['hdc_full', 'total_only', 'compare_in_out', 'quarter'].forEach(v => {
+      const btn = document.getElementById(`btn-ttm-massage-view-${v}`);
+      if (btn) {
+        if (v === currentTtmMassageView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ttm-massage-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Sync Chart Tabs Buttons & Cards Visibility
+    ['all_3', 'nod', 'obb', 'cop'].forEach(t => {
+      const btn = document.getElementById(`btn-ttm-massage-chart-${t}`);
+      if (btn) {
+        if (t === currentTtmMassageChartTab) {
+          btn.className = 'px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    const cardNod = document.getElementById('ttm-massage-chart-card-nod');
+    const cardObb = document.getElementById('ttm-massage-chart-card-obb');
+    const cardCop = document.getElementById('ttm-massage-chart-card-cop');
+    const chartsContainer = document.getElementById('ttm-massage-charts-container');
+
+    if (chartsContainer && cardNod && cardObb && cardCop) {
+      if (currentTtmMassageChartTab === 'all_3') {
+        chartsContainer.className = 'grid grid-cols-1 lg:grid-cols-3 gap-4';
+        cardNod.classList.remove('hidden');
+        cardObb.classList.remove('hidden');
+        cardCop.classList.remove('hidden');
+      } else if (currentTtmMassageChartTab === 'nod') {
+        chartsContainer.className = 'grid grid-cols-1 gap-4';
+        cardNod.classList.remove('hidden');
+        cardObb.classList.add('hidden');
+        cardCop.classList.add('hidden');
+      } else if (currentTtmMassageChartTab === 'obb') {
+        chartsContainer.className = 'grid grid-cols-1 gap-4';
+        cardNod.classList.add('hidden');
+        cardObb.classList.remove('hidden');
+        cardCop.classList.add('hidden');
+      } else if (currentTtmMassageChartTab === 'cop') {
+        chartsContainer.className = 'grid grid-cols-1 gap-4';
+        cardNod.classList.add('hidden');
+        cardObb.classList.add('hidden');
+        cardCop.classList.remove('hidden');
+      }
+    }
+
+    // Data references
+    const ind = masterData?.indicators?.['ttm_massage'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+
+    // 4. Update 5 Bento KPI Cards
+    let vsTot = yrData.tot?.vs?.all || 0;
+    let vsUc = yrData.tot?.vs?.uc || 0;
+    let vsIn = yrData.in?.vs?.all || 0;
+    let vsOut = yrData.out?.vs?.all || 0;
+
+    let nodTot = yrData.tot?.nod?.all || 0;
+    let nodUc = yrData.tot?.nod?.uc || 0;
+    let nodIn = yrData.in?.nod?.all || 0;
+    let nodOut = yrData.out?.nod?.all || 0;
+
+    let obbTot = yrData.tot?.obb?.all || 0;
+    let obbUc = yrData.tot?.obb?.uc || 0;
+    let obbIn = yrData.in?.obb?.all || 0;
+    let obbOut = yrData.out?.obb?.all || 0;
+
+    let copTot = yrData.tot?.cop?.all || 0;
+    let copUc = yrData.tot?.cop?.uc || 0;
+    let copIn = yrData.in?.cop?.all || 0;
+    let copOut = yrData.out?.cop?.all || 0;
+
+    let ncTot = yrData.tot?.n_c?.all || 0;
+    let ncUc = yrData.tot?.n_c?.uc || 0;
+    let ncIn = yrData.in?.n_c?.all || 0;
+    let ncOut = yrData.out?.n_c?.all || 0;
+
+    if (currentUnit !== 'all') {
+      const u = units.find(x => x.hospcode === currentUnit);
+      if (u) {
+        vsTot = u.tot?.vs?.all || 0;
+        vsUc = u.tot?.vs?.uc || 0;
+        vsIn = u.in?.vs?.all || 0;
+        vsOut = u.out?.vs?.all || 0;
+
+        nodTot = u.tot?.nod?.all || 0;
+        nodUc = u.tot?.nod?.uc || 0;
+        nodIn = u.in?.nod?.all || 0;
+        nodOut = u.out?.nod?.all || 0;
+
+        obbTot = u.tot?.obb?.all || 0;
+        obbUc = u.tot?.obb?.uc || 0;
+        obbIn = u.in?.obb?.all || 0;
+        obbOut = u.out?.obb?.all || 0;
+
+        copTot = u.tot?.cop?.all || 0;
+        copUc = u.tot?.cop?.uc || 0;
+        copIn = u.in?.cop?.all || 0;
+        copOut = u.out?.cop?.all || 0;
+
+        ncTot = u.tot?.n_c?.all || 0;
+        ncUc = u.tot?.n_c?.uc || 0;
+        ncIn = u.in?.n_c?.all || 0;
+        ncOut = u.out?.n_c?.all || 0;
+      }
+    }
+
+    const setTxt = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+
+    setTxt('ttm-massage-kpi-vs-total', vsTot.toLocaleString());
+    setTxt('ttm-massage-kpi-vs-uc', `${vsUc.toLocaleString()} ครั้ง (${vsTot > 0 ? ((vsUc / vsTot) * 100).toFixed(1) : 0}%)`);
+    setTxt('ttm-massage-kpi-vs-in', vsIn.toLocaleString());
+    setTxt('ttm-massage-kpi-vs-out', vsOut.toLocaleString());
+
+    setTxt('ttm-massage-kpi-nod-total', nodTot.toLocaleString());
+    setTxt('ttm-massage-kpi-nod-uc', `${nodUc.toLocaleString()} ครั้ง (${nodTot > 0 ? ((nodUc / nodTot) * 100).toFixed(1) : 0}%)`);
+    setTxt('ttm-massage-kpi-nod-in', nodIn.toLocaleString());
+    setTxt('ttm-massage-kpi-nod-out', nodOut.toLocaleString());
+
+    setTxt('ttm-massage-kpi-obb-total', obbTot.toLocaleString());
+    setTxt('ttm-massage-kpi-obb-uc', `${obbUc.toLocaleString()} ครั้ง (${obbTot > 0 ? ((obbUc / obbTot) * 100).toFixed(1) : 0}%)`);
+    setTxt('ttm-massage-kpi-obb-in', obbIn.toLocaleString());
+    setTxt('ttm-massage-kpi-obb-out', obbOut.toLocaleString());
+
+    setTxt('ttm-massage-kpi-cop-total', copTot.toLocaleString());
+    setTxt('ttm-massage-kpi-cop-uc', `${copUc.toLocaleString()} ครั้ง (${copTot > 0 ? ((copUc / copTot) * 100).toFixed(1) : 0}%)`);
+    setTxt('ttm-massage-kpi-cop-in', copIn.toLocaleString());
+    setTxt('ttm-massage-kpi-cop-out', copOut.toLocaleString());
+
+    setTxt('ttm-massage-kpi-nc-total', ncTot.toLocaleString());
+    setTxt('ttm-massage-kpi-nc-uc', `${ncUc.toLocaleString()} ครั้ง (${ncTot > 0 ? ((ncUc / ncTot) * 100).toFixed(1) : 0}%)`);
+    setTxt('ttm-massage-kpi-nc-in', ncIn.toLocaleString());
+    setTxt('ttm-massage-kpi-nc-out', ncOut.toLocaleString());
+
+    // Badges
+    setTxt('ttm-massage-badge-nod', `รวม ${nodTot.toLocaleString()} ครั้ง`);
+    setTxt('ttm-massage-badge-obb', `รวม ${obbTot.toLocaleString()} ครั้ง`);
+    setTxt('ttm-massage-badge-cop', `รวม ${copTot.toLocaleString()} ครั้ง`);
+
+    // 5. Render 3 HDC Standard Charts
+    renderTtmMassageCharts(units);
+
+    // 6. Render HDC Matrix Table
+    renderTtmMassageTable(units, yrData, yr);
+  }
+
+  function renderTtmMassageCharts(units) {
+    // 1. Chart Nod (นวดแผนไทย)
+    const canvasNod = document.getElementById('ttmMassageChartNod');
+    if (canvasNod) {
+      if (ttmMassageChartNodInstance) {
+        ttmMassageChartNodInstance.destroy();
+        ttmMassageChartNodInstance = null;
+      }
+      const sortedNod = [...units].sort((a, b) => (b.tot?.nod?.all || 0) - (a.tot?.nod?.all || 0));
+      const labelsNod = sortedNod.map(u => (u.hospcode === '06023' ? 'รพ.สต.บ้านป่าสา' : (SARAPHI_UNITS_MAP[u.hospcode]?.short || u.name)));
+      const dataNod = sortedNod.map(u => u.tot?.nod?.all || 0);
+
+      ttmMassageChartNodInstance = new Chart(canvasNod, {
+        type: 'bar',
+        data: {
+          labels: labelsNod,
+          datasets: [{
+            label: 'นวดแผนไทย (ครั้ง)',
+            data: dataNod,
+            backgroundColor: 'rgba(37, 99, 235, 0.85)',
+            borderColor: '#2563eb',
+            borderWidth: 1,
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.y.toLocaleString()} ครั้ง`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: v => v.toLocaleString(),
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Chart Obb (อบสมุนไพร)
+    const canvasObb = document.getElementById('ttmMassageChartObb');
+    if (canvasObb) {
+      if (ttmMassageChartObbInstance) {
+        ttmMassageChartObbInstance.destroy();
+        ttmMassageChartObbInstance = null;
+      }
+      const sortedObb = [...units].sort((a, b) => (b.tot?.obb?.all || 0) - (a.tot?.obb?.all || 0));
+      const labelsObb = sortedObb.map(u => (u.hospcode === '06023' ? 'รพ.สต.บ้านป่าสา' : (SARAPHI_UNITS_MAP[u.hospcode]?.short || u.name)));
+      const dataObb = sortedObb.map(u => u.tot?.obb?.all || 0);
+
+      ttmMassageChartObbInstance = new Chart(canvasObb, {
+        type: 'bar',
+        data: {
+          labels: labelsObb,
+          datasets: [{
+            label: 'อบสมุนไพร (ครั้ง)',
+            data: dataObb,
+            backgroundColor: 'rgba(217, 119, 6, 0.85)',
+            borderColor: '#d97706',
+            borderWidth: 1,
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.y.toLocaleString()} ครั้ง`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: v => v.toLocaleString(),
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            }
+          }
+        }
+      });
+    }
+
+    // 3. Chart Cop (ประคบสมุนไพร)
+    const canvasCop = document.getElementById('ttmMassageChartCop');
+    if (canvasCop) {
+      if (ttmMassageChartCopInstance) {
+        ttmMassageChartCopInstance.destroy();
+        ttmMassageChartCopInstance = null;
+      }
+      const sortedCop = [...units].sort((a, b) => (b.tot?.cop?.all || 0) - (a.tot?.cop?.all || 0));
+      const labelsCop = sortedCop.map(u => (u.hospcode === '06023' ? 'รพ.สต.บ้านป่าสา' : (SARAPHI_UNITS_MAP[u.hospcode]?.short || u.name)));
+      const dataCop = sortedCop.map(u => u.tot?.cop?.all || 0);
+
+      ttmMassageChartCopInstance = new Chart(canvasCop, {
+        type: 'bar',
+        data: {
+          labels: labelsCop,
+          datasets: [{
+            label: 'ประคบสมุนไพร (ครั้ง)',
+            data: dataCop,
+            backgroundColor: 'rgba(5, 150, 105, 0.85)',
+            borderColor: '#059669',
+            borderWidth: 1,
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.y.toLocaleString()} ครั้ง`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: v => v.toLocaleString(),
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function renderTtmMassageTable(units, yrData, yr) {
+    const tableEl = document.getElementById('ttm-massage-matrix-table');
+    if (!tableEl) return;
+
+    const headingEl = document.getElementById('ttm-massage-table-heading');
+    const subHeadingEl = document.getElementById('ttm-massage-table-subheading');
+
+    let filtered = [...units];
+    if (ttmMassageSearchQuery) {
+      const q = ttmMassageSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter(u => {
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : u.name;
+        return uName.toLowerCase().includes(q) ||
+          u.hospcode.includes(q) ||
+          (u.subdistrict && u.subdistrict.toLowerCase().includes(q));
+      });
+    }
+
+    const fmt = (v) => (v && v > 0) ? Number(v).toLocaleString() : '<span class="text-slate-300">-</span>';
+    const fmtTot = (v) => (v && v > 0) ? Number(v).toLocaleString() : '0';
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+
+    if (currentTtmMassageView === 'hdc_full') {
+      if (headingEl) headingEl.textContent = 'ตารางข้อมูลการบริการแผนไทย นวด อบ ประคบ มาตรฐาน HDC (1:1)';
+      if (subHeadingEl) subHeadingEl.textContent = 'จำแนกในสถานบริการ นอกสถานบริการ และรวมในและนอก ครบ 30 คอลัมน์ (14 หน่วยบริการ อำเภอสารภี)';
+
+      theadHtml = `
+        <thead>
+          <tr class="bg-slate-800 text-white text-center font-bold text-xs">
+            <th rowspan="3" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-slate-800 w-[55px] min-w-[55px] border-r border-slate-700">ลำดับ</th>
+            <th rowspan="3" class="py-2.5 px-2 text-center bg-slate-800 min-w-[70px] border-r border-slate-700">รหัส</th>
+            <th rowspan="3" class="py-2.5 px-3 text-left sticky left-[55px] z-20 bg-slate-800 min-w-[190px] border-r border-slate-700 shadow-r">ชื่อสถานบริการ</th>
+            <th colspan="10" class="py-2 px-2 bg-blue-900 text-blue-100 border-r border-b border-slate-700">ในสถานบริการ</th>
+            <th colspan="10" class="py-2 px-2 bg-amber-900 text-amber-100 border-r border-b border-slate-700">นอกสถานบริการ</th>
+            <th colspan="10" class="py-2 px-2 bg-emerald-900 text-emerald-100 border-r border-b border-slate-700">รวมในและนอกสถานบริการ</th>
+            <th rowspan="3" class="py-2.5 px-2 bg-slate-800 min-w-[75px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-slate-700 text-white text-center font-semibold text-[11px]">
+            <!-- ในสถาน -->
+            <th colspan="2" class="py-1.5 px-1 bg-blue-800/90 border-r border-b border-slate-600">บริการแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-blue-800/90 border-r border-b border-slate-600">นวดแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-blue-800/90 border-r border-b border-slate-600">อบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-blue-800/90 border-r border-b border-slate-600">ประคบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-blue-800/90 border-r border-b border-slate-600">นวดและประคบ</th>
+            <!-- นอกสถาน -->
+            <th colspan="2" class="py-1.5 px-1 bg-amber-800/90 border-r border-b border-slate-600">บริการแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-amber-800/90 border-r border-b border-slate-600">นวดแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-amber-800/90 border-r border-b border-slate-600">อบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-amber-800/90 border-r border-b border-slate-600">ประคบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-amber-800/90 border-r border-b border-slate-600">นวดและประคบ</th>
+            <!-- รวมในและนอก -->
+            <th colspan="2" class="py-1.5 px-1 bg-emerald-800/90 border-r border-b border-slate-600">บริการแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-emerald-800/90 border-r border-b border-slate-600">นวดแผนไทย</th>
+            <th colspan="2" class="py-1.5 px-1 bg-emerald-800/90 border-r border-b border-slate-600">อบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-emerald-800/90 border-r border-b border-slate-600">ประคบสมุนไพร</th>
+            <th colspan="2" class="py-1.5 px-1 bg-emerald-800/90 border-r border-b border-slate-600">นวดและประคบ</th>
+          </tr>
+          <tr class="bg-slate-600 text-white text-center font-medium text-[10px]">
+            <!-- In (5 pairs) -->
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[48px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[48px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px]">สิทธิ UC</th>
+            <!-- Out (5 pairs) -->
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[45px]">สิทธิ UC</th>
+            <!-- Tot (5 pairs) -->
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[48px] font-bold text-emerald-200">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[48px] font-bold text-emerald-200">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">สิทธิ UC</th>
+            <th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">ทุกสิทธิ</th><th class="py-1 px-1 border-r border-slate-500 min-w-[52px] font-bold text-emerald-200">สิทธิ UC</th>
+          </tr>
+        </thead>
+      `;
+
+      // Top Row: Total (ตรงตามแบบ HDC)
+      const dIn = yrData.in || {};
+      const dOut = yrData.out || {};
+      const dTot = yrData.tot || {};
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold border-b-2 border-emerald-300 text-slate-900">
+          <td class="py-2.5 px-3 text-center sticky left-0 bg-emerald-100 z-10 font-black">-</td>
+          <td class="py-2.5 px-2 text-center text-slate-500 font-mono text-[11px]">-</td>
+          <td class="py-2.5 px-3 font-black text-emerald-950 sticky left-[55px] bg-emerald-100 z-10 shadow-r">รวมทั้งอำเภอสารภี (14 แห่ง)</td>
+          <!-- IN (10) -->
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-blue-900">${fmtTot(dIn.vs?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dIn.vs?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-blue-900">${fmtTot(dIn.nod?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dIn.nod?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-blue-900">${fmtTot(dIn.obb?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dIn.obb?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-blue-900">${fmtTot(dIn.cop?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dIn.cop?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-blue-900">${fmtTot(dIn.n_c?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dIn.n_c?.uc)}</td>
+          <!-- OUT (10) -->
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-amber-900">${fmtTot(dOut.vs?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dOut.vs?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-amber-900">${fmtTot(dOut.nod?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dOut.nod?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-amber-900">${fmtTot(dOut.obb?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dOut.obb?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-amber-900">${fmtTot(dOut.cop?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dOut.cop?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-bold text-amber-900">${fmtTot(dOut.n_c?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 text-slate-700">${fmtTot(dOut.n_c?.uc)}</td>
+          <!-- TOT (10) -->
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.vs?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-semibold text-emerald-800 bg-emerald-100/40">${fmtTot(dTot.vs?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.nod?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-semibold text-emerald-800 bg-emerald-100/40">${fmtTot(dTot.nod?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.obb?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-semibold text-emerald-800 bg-emerald-100/40">${fmtTot(dTot.obb?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.cop?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-semibold text-emerald-800 bg-emerald-100/40">${fmtTot(dTot.cop?.uc)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.n_c?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-semibold text-emerald-800 bg-emerald-100/40">${fmtTot(dTot.n_c?.uc)}</td>
+          <!-- Action -->
+          <td class="py-2 px-1 text-center text-xs font-bold text-slate-400">-</td>
+        </tr>
+      `;
+
+      filtered.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uIn = u.in || {};
+        const uOut = u.out || {};
+        const uTot = u.tot || {};
+        const isSelected = (currentUnit === u.hospcode);
+
+        tbodyHtml += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-slate-700 ${isSelected ? 'bg-amber-50/70 font-semibold' : ''}">
+            <td class="py-2 px-3 text-center sticky left-0 bg-white z-10 border-r border-slate-200 text-slate-400 text-[11px] ${isSelected ? 'bg-amber-50' : ''}">${idx + 1}</td>
+            <td class="py-2 px-2 text-center font-mono text-[11px] text-slate-500 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 sticky left-[55px] bg-white z-10 border-r border-slate-200 shadow-r ${isSelected ? 'bg-amber-50' : ''}">
+              <div class="flex items-center gap-1.5">
+                <span class="font-medium text-slate-900 hover:text-emerald-700 cursor-pointer" onclick="switchUnit('${u.hospcode}')">${uName}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 shrink-0">ต.${uSub}</span>
+              </div>
+            </td>
+            <!-- IN (10) -->
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uIn.vs?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uIn.vs?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-semibold text-blue-900">${fmt(uIn.nod?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uIn.nod?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uIn.obb?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uIn.obb?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-semibold text-blue-900">${fmt(uIn.cop?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uIn.cop?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uIn.n_c?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uIn.n_c?.uc)}</td>
+            <!-- OUT (10) -->
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uOut.vs?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uOut.vs?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uOut.nod?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uOut.nod?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uOut.obb?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uOut.obb?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uOut.cop?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uOut.cop?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(uOut.n_c?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-500">${fmt(uOut.n_c?.uc)}</td>
+            <!-- TOT (10) -->
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-slate-900 bg-slate-50/50">${fmt(uTot.vs?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-600 bg-slate-50/30">${fmt(uTot.vs?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-emerald-800 bg-emerald-50/30">${fmt(uTot.nod?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-600 bg-emerald-50/20">${fmt(uTot.nod?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-amber-800 bg-amber-50/30">${fmt(uTot.obb?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-600 bg-amber-50/20">${fmt(uTot.obb?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-emerald-800 bg-emerald-50/30">${fmt(uTot.cop?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-600 bg-emerald-50/20">${fmt(uTot.cop?.uc)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-purple-800 bg-purple-50/30">${fmt(uTot.n_c?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 text-slate-600 bg-purple-50/20">${fmt(uTot.n_c?.uc)}</td>
+            <!-- Action -->
+            <td class="py-2 px-1 text-center">
+              <button type="button" onclick="switchUnit('${u.hospcode}')" class="px-2 py-0.5 rounded text-[10.5px] font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+    } else if (currentTtmMassageView === 'total_only') {
+      if (headingEl) headingEl.textContent = 'ตารางรวมในและนอกสถานบริการ (Total 10 Columns)';
+      if (subHeadingEl) subHeadingEl.textContent = 'แสดงยอดรวมทั้งในและนอกสถานบริการ แยกตามสิทธิ (ทุกสิทธิ และ สิทธิ UC) อำเภอสารภี';
+
+      theadHtml = `
+        <thead>
+          <tr class="bg-slate-800 text-white text-center font-bold text-xs">
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-slate-800 w-[55px] min-w-[55px] border-r border-slate-700">ลำดับ</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center bg-slate-800 min-w-[70px] border-r border-slate-700">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-[55px] z-20 bg-slate-800 min-w-[200px] border-r border-slate-700 shadow-r">ชื่อสถานบริการ</th>
+            <th colspan="2" class="py-2 px-2 bg-teal-900 text-teal-100 border-r border-b border-slate-700">บริการแผนไทย (ครั้ง)</th>
+            <th colspan="2" class="py-2 px-2 bg-blue-900 text-blue-100 border-r border-b border-slate-700">นวดแผนไทย (ครั้ง)</th>
+            <th colspan="2" class="py-2 px-2 bg-amber-900 text-amber-100 border-r border-b border-slate-700">อบสมุนไพร (ครั้ง)</th>
+            <th colspan="2" class="py-2 px-2 bg-emerald-900 text-emerald-100 border-r border-b border-slate-700">ประคบสมุนไพร (ครั้ง)</th>
+            <th colspan="2" class="py-2 px-2 bg-purple-900 text-purple-100 border-r border-b border-slate-700">นวดและประคบ (ครั้ง)</th>
+            <th rowspan="2" class="py-2.5 px-2 bg-slate-800 min-w-[80px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-slate-700 text-white text-center font-semibold text-[10.5px]">
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">ทุกสิทธิ</th><th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">สิทธิ UC</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">ทุกสิทธิ</th><th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">สิทธิ UC</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">ทุกสิทธิ</th><th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">สิทธิ UC</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">ทุกสิทธิ</th><th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">สิทธิ UC</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">ทุกสิทธิ</th><th class="py-1 px-1.5 border-r border-slate-600 min-w-[65px]">สิทธิ UC</th>
+          </tr>
+        </thead>
+      `;
+
+      const dTot = yrData.tot || {};
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold border-b-2 border-emerald-300 text-slate-900">
+          <td class="py-2.5 px-3 text-center sticky left-0 bg-emerald-100 z-10 font-black">-</td>
+          <td class="py-2.5 px-2 text-center text-slate-500 font-mono text-[11px]">-</td>
+          <td class="py-2.5 px-3 font-black text-emerald-950 sticky left-[55px] bg-emerald-100 z-10 shadow-r">รวมทั้งอำเภอสารภี (14 แห่ง)</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-black text-slate-900 bg-teal-100/50">${fmtTot(dTot.vs?.all)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-semibold text-slate-700 bg-teal-100/30">${fmtTot(dTot.vs?.uc)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-black text-blue-900 bg-blue-100/50">${fmtTot(dTot.nod?.all)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-semibold text-slate-700 bg-blue-100/30">${fmtTot(dTot.nod?.uc)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-black text-amber-900 bg-amber-100/50">${fmtTot(dTot.obb?.all)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-semibold text-slate-700 bg-amber-100/30">${fmtTot(dTot.obb?.uc)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/50">${fmtTot(dTot.cop?.all)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-semibold text-slate-700 bg-emerald-100/30">${fmtTot(dTot.cop?.uc)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-black text-purple-900 bg-purple-100/50">${fmtTot(dTot.n_c?.all)}</td>
+          <td class="py-2 px-2 text-right border-r border-slate-200 font-semibold text-slate-700 bg-purple-100/30">${fmtTot(dTot.n_c?.uc)}</td>
+          <td class="py-2 px-2 text-center text-slate-400">-</td>
+        </tr>
+      `;
+
+      filtered.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uTot = u.tot || {};
+        const isSelected = (currentUnit === u.hospcode);
+
+        tbodyHtml += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-slate-700 ${isSelected ? 'bg-amber-50/70 font-semibold' : ''}">
+            <td class="py-2 px-3 text-center sticky left-0 bg-white z-10 border-r border-slate-200 text-slate-400 text-[11px] ${isSelected ? 'bg-amber-50' : ''}">${idx + 1}</td>
+            <td class="py-2 px-2 text-center font-mono text-[11px] text-slate-500 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 sticky left-[55px] bg-white z-10 border-r border-slate-200 shadow-r ${isSelected ? 'bg-amber-50' : ''}">
+              <div class="flex items-center gap-1.5">
+                <span class="font-medium text-slate-900 hover:text-emerald-700 cursor-pointer" onclick="switchUnit('${u.hospcode}')">${uName}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 shrink-0">ต.${uSub}</span>
+              </div>
+            </td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 font-bold text-slate-900">${fmt(uTot.vs?.all)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 text-slate-600">${fmt(uTot.vs?.uc)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 font-bold text-blue-800">${fmt(uTot.nod?.all)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 text-slate-600">${fmt(uTot.nod?.uc)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 font-bold text-amber-800">${fmt(uTot.obb?.all)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 text-slate-600">${fmt(uTot.obb?.uc)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 font-bold text-emerald-800">${fmt(uTot.cop?.all)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 text-slate-600">${fmt(uTot.cop?.uc)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 font-bold text-purple-800">${fmt(uTot.n_c?.all)}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-100 text-slate-600">${fmt(uTot.n_c?.uc)}</td>
+            <td class="py-2 px-2 text-center">
+              <button type="button" onclick="switchUnit('${u.hospcode}')" class="px-2 py-0.5 rounded text-[10.5px] font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+    } else if (currentTtmMassageView === 'compare_in_out') {
+      if (headingEl) headingEl.textContent = 'ตารางเปรียบเทียบใน vs นอกสถานบริการ (In vs Out Facility)';
+      if (subHeadingEl) subHeadingEl.textContent = 'แสดงการกระจายตัวของการให้บริการหัตถการแผนไทยระหว่างในสถานบริการและนอกสถานบริการ อำเภอสารภี';
+
+      theadHtml = `
+        <thead>
+          <tr class="bg-slate-800 text-white text-center font-bold text-xs">
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-slate-800 w-[55px] min-w-[55px] border-r border-slate-700">ลำดับ</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center bg-slate-800 min-w-[70px] border-r border-slate-700">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-[55px] z-20 bg-slate-800 min-w-[200px] border-r border-slate-700 shadow-r">ชื่อสถานบริการ</th>
+            <th colspan="4" class="py-2 px-2 bg-teal-900 text-teal-100 border-r border-b border-slate-700">บริการแผนไทย (ครั้ง)</th>
+            <th colspan="3" class="py-2 px-2 bg-blue-900 text-blue-100 border-r border-b border-slate-700">นวดแผนไทย (ครั้ง)</th>
+            <th colspan="3" class="py-2 px-2 bg-amber-900 text-amber-100 border-r border-b border-slate-700">อบสมุนไพร (ครั้ง)</th>
+            <th colspan="3" class="py-2 px-2 bg-emerald-900 text-emerald-100 border-r border-b border-slate-700">ประคบสมุนไพร (ครั้ง)</th>
+            <th rowspan="2" class="py-2.5 px-2 bg-slate-800 min-w-[80px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-slate-700 text-white text-center font-semibold text-[10.5px]">
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">ในสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">นอกสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px] font-bold text-teal-200">รวม</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[50px] font-bold text-teal-200">% ในสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">ในสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">นอกสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px] font-bold text-blue-200">รวม</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">ในสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">นอกสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px] font-bold text-amber-200">รวม</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">ในสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px]">นอกสถาน</th>
+            <th class="py-1 px-1.5 border-r border-slate-600 min-w-[55px] font-bold text-emerald-200">รวม</th>
+          </tr>
+        </thead>
+      `;
+
+      const dIn = yrData.in || {};
+      const dOut = yrData.out || {};
+      const dTot = yrData.tot || {};
+      const vsInPct = dTot.vs?.all > 0 ? ((dIn.vs?.all || 0) / dTot.vs.all * 100).toFixed(1) : '0.0';
+
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold border-b-2 border-emerald-300 text-slate-900">
+          <td class="py-2.5 px-3 text-center sticky left-0 bg-emerald-100 z-10 font-black">-</td>
+          <td class="py-2.5 px-2 text-center text-slate-500 font-mono text-[11px]">-</td>
+          <td class="py-2.5 px-3 font-black text-emerald-950 sticky left-[55px] bg-emerald-100 z-10 shadow-r">รวมทั้งอำเภอสารภี (14 แห่ง)</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dIn.vs?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dOut.vs?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200 font-black text-slate-900 bg-teal-100/60">${fmtTot(dTot.vs?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200 font-bold text-teal-800">${vsInPct}%</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dIn.nod?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dOut.nod?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200 font-black text-blue-900 bg-blue-100/60">${fmtTot(dTot.nod?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dIn.obb?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dOut.obb?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200 font-black text-amber-900 bg-amber-100/60">${fmtTot(dTot.obb?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dIn.cop?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200">${fmtTot(dOut.cop?.all)}</td>
+          <td class="py-2 px-1.5 text-right border-r border-slate-200 font-black text-emerald-900 bg-emerald-100/60">${fmtTot(dTot.cop?.all)}</td>
+          <td class="py-2 px-2 text-center text-slate-400">-</td>
+        </tr>
+      `;
+
+      filtered.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uIn = u.in || {};
+        const uOut = u.out || {};
+        const uTot = u.tot || {};
+        const uVsInPct = uTot.vs?.all > 0 ? ((uIn.vs?.all || 0) / uTot.vs.all * 100).toFixed(1) : '0.0';
+        const isSelected = (currentUnit === u.hospcode);
+
+        tbodyHtml += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-slate-700 ${isSelected ? 'bg-amber-50/70 font-semibold' : ''}">
+            <td class="py-2 px-3 text-center sticky left-0 bg-white z-10 border-r border-slate-200 text-slate-400 text-[11px] ${isSelected ? 'bg-amber-50' : ''}">${idx + 1}</td>
+            <td class="py-2 px-2 text-center font-mono text-[11px] text-slate-500 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 sticky left-[55px] bg-white z-10 border-r border-slate-200 shadow-r ${isSelected ? 'bg-amber-50' : ''}">
+              <div class="flex items-center gap-1.5">
+                <span class="font-medium text-slate-900 hover:text-emerald-700 cursor-pointer" onclick="switchUnit('${u.hospcode}')">${uName}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 shrink-0">ต.${uSub}</span>
+              </div>
+            </td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uIn.vs?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uOut.vs?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100 font-bold text-slate-900">${fmt(uTot.vs?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100 font-semibold text-teal-800">${uVsInPct}%</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uIn.nod?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uOut.nod?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100 font-bold text-blue-800">${fmt(uTot.nod?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uIn.obb?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uOut.obb?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100 font-bold text-amber-800">${fmt(uTot.obb?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uIn.cop?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100">${fmt(uOut.cop?.all)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-slate-100 font-bold text-emerald-800">${fmt(uTot.cop?.all)}</td>
+            <td class="py-2 px-2 text-center">
+              <button type="button" onclick="switchUnit('${u.hospcode}')" class="px-2 py-0.5 rounded text-[10.5px] font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+    } else if (currentTtmMassageView === 'quarter') {
+      if (headingEl) headingEl.textContent = `ตารางข้อมูลรายไตรมาส (Quarterly Breakdown ปี ${yr})`;
+      if (subHeadingEl) subHeadingEl.textContent = 'แสดงจำนวนครั้งการให้บริการหัตถการแผนไทยแยกรายไตรมาส (Q1 - Q4) อำเภอสารภี';
+
+      theadHtml = `
+        <thead>
+          <tr class="bg-slate-800 text-white text-center font-bold text-xs">
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-slate-800 w-[55px] min-w-[55px] border-r border-slate-700">ลำดับ</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center bg-slate-800 min-w-[70px] border-r border-slate-700">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left sticky left-[55px] z-20 bg-slate-800 min-w-[200px] border-r border-slate-700 shadow-r">ชื่อสถานบริการ</th>
+            <th colspan="4" class="py-2 px-2 bg-blue-900 text-blue-100 border-r border-b border-slate-700">ไตรมาสที่ 1 (ต.ค.-ธ.ค.)</th>
+            <th colspan="4" class="py-2 px-2 bg-emerald-900 text-emerald-100 border-r border-b border-slate-700">ไตรมาสที่ 2 (ม.ค.-มี.ค.)</th>
+            <th colspan="4" class="py-2 px-2 bg-amber-900 text-amber-100 border-r border-b border-slate-700">ไตรมาสที่ 3 (เม.ย.-มิ.ย.)</th>
+            <th colspan="4" class="py-2 px-2 bg-purple-900 text-purple-100 border-r border-b border-slate-700">ไตรมาสที่ 4 (ก.ค.-ก.ย.)</th>
+            <th rowspan="2" class="py-2.5 px-2 bg-slate-800 min-w-[80px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-slate-700 text-white text-center font-semibold text-[10.5px]">
+            <th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">นวด</th><th class="py-1 px-1 border-r border-slate-600 min-w-[42px]">อบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">ประคบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[52px] font-bold text-blue-200">บริการรวม</th>
+            <th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">นวด</th><th class="py-1 px-1 border-r border-slate-600 min-w-[42px]">อบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">ประคบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[52px] font-bold text-emerald-200">บริการรวม</th>
+            <th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">นวด</th><th class="py-1 px-1 border-r border-slate-600 min-w-[42px]">อบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">ประคบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[52px] font-bold text-amber-200">บริการรวม</th>
+            <th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">นวด</th><th class="py-1 px-1 border-r border-slate-600 min-w-[42px]">อบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[48px]">ประคบ</th><th class="py-1 px-1 border-r border-slate-600 min-w-[52px] font-bold text-purple-200">บริการรวม</th>
+          </tr>
+        </thead>
+      `;
+
+      const dQ = yrData.quarters || {};
+      let dLine = `
+        <tr class="bg-emerald-50/90 font-bold border-b-2 border-emerald-300 text-slate-900">
+          <td class="py-2.5 px-3 text-center sticky left-0 bg-emerald-100 z-10 font-black">-</td>
+          <td class="py-2.5 px-2 text-center text-slate-500 font-mono text-[11px]">-</td>
+          <td class="py-2.5 px-3 font-black text-emerald-950 sticky left-[55px] bg-emerald-100 z-10 shadow-r">รวมทั้งอำเภอสารภี (14 แห่ง)</td>
+      `;
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = dQ[`q${qi}`]?.tot || {};
+        dLine += `
+          <td class="py-2 px-1 text-right border-r border-slate-200">${fmtTot(qd.nod?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200">${fmtTot(qd.obb?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200">${fmtTot(qd.cop?.all)}</td>
+          <td class="py-2 px-1 text-right border-r border-slate-200 font-black text-slate-900 bg-slate-100/60">${fmtTot(qd.vs?.all)}</td>
+        `;
+      }
+      dLine += `<td class="py-2 px-2 text-center text-slate-400">-</td></tr>`;
+      tbodyHtml += dLine;
+
+      filtered.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const uQ = u.quarters || {};
+        const isSelected = (currentUnit === u.hospcode);
+
+        let rowHtml = `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-slate-700 ${isSelected ? 'bg-amber-50/70 font-semibold' : ''}">
+            <td class="py-2 px-3 text-center sticky left-0 bg-white z-10 border-r border-slate-200 text-slate-400 text-[11px] ${isSelected ? 'bg-amber-50' : ''}">${idx + 1}</td>
+            <td class="py-2 px-2 text-center font-mono text-[11px] text-slate-500 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 sticky left-[55px] bg-white z-10 border-r border-slate-200 shadow-r ${isSelected ? 'bg-amber-50' : ''}">
+              <div class="flex items-center gap-1.5">
+                <span class="font-medium text-slate-900 hover:text-emerald-700 cursor-pointer" onclick="switchUnit('${u.hospcode}')">${uName}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 shrink-0">ต.${uSub}</span>
+              </div>
+            </td>
+        `;
+
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = uQ[`q${qi}`]?.tot || {};
+          rowHtml += `
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(qd.nod?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(qd.obb?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100">${fmt(qd.cop?.all)}</td>
+            <td class="py-2 px-1 text-right border-r border-slate-100 font-bold text-slate-900 bg-slate-50/50">${fmt(qd.vs?.all)}</td>
+          `;
+        }
+
+        rowHtml += `
+            <td class="py-2 px-2 text-center">
+              <button type="button" onclick="switchUnit('${u.hospcode}')" class="px-2 py-0.5 rounded text-[10.5px] font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+        tbodyHtml += rowHtml;
+      });
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -7573,10 +8563,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isTtmEd = (currentIndicatorId === 'ttm_ed');
       const isTtmCases = (currentIndicatorId === 'ttm_cases');
       const isTtmCommon = (currentIndicatorId === 'ttm_common_dis');
+      const isTtmMassage = (currentIndicatorId === 'ttm_massage');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTtmCommon) {
+      if (isTtmMassage) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+        if (ttmMassagePanel) ttmMassagePanel.classList.remove('hidden');
+        renderTtmMassagePanel();
+      } else if (isTtmCommon) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -7588,6 +8592,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCommonPanel) ttmCommonPanel.classList.remove('hidden');
         renderTtmCommonPanel();
       } else if (isTtmCases) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7599,6 +8604,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.remove('hidden');
         renderTtmCasesPanel();
       } else if (isTtmEd) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7610,6 +8616,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
         renderTtmEdPanel();
       } else if (isTtmAgeSex) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7621,6 +8628,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
         renderTtmAgeSexPanel();
       } else if (isTTM4) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7631,6 +8639,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7642,6 +8651,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -7653,6 +8663,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
         renderNhsoServicePanel();
       } else {
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.remove('hidden');
         if (standardTableSection) standardTableSection.classList.remove('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -7967,6 +8978,15 @@ console.log("Saraphi Records:", saraphiData);`;
       renderTtmCommonPanel();
     });
   }
+
+  const ttmMassageSearchInput = document.getElementById('ttm-massage-table-search');
+  if (ttmMassageSearchInput) {
+    ttmMassageSearchInput.addEventListener('input', (e) => {
+      ttmMassageSearchQuery = e.target.value;
+      renderTtmMassagePanel();
+    });
+  }
+
 
 
   // Explorer filters

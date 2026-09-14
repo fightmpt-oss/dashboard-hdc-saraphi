@@ -958,43 +958,136 @@ for y in years:
         "units": unit_data
     }
 
-# 1.8 s_ttm8
+# 1.8 s_ttm8 (OPD-การบริการแผนไทย นวด อบ ประคบ - HDC 1:1)
 master["indicators"]["ttm_massage"] = {
     "code": "",
-    "name": "บริการหัตถการแพทย์แผนไทย นวด อบ ประคบ (ครั้ง)",
+    "name": "OPD-การบริการแผนไทย นวด อบ ประคบ",
     "table": "s_ttm8",
     "domain": "ttm",
     "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-    "desc": "จำนวนครั้งการให้บริการหัตถการแพทย์แผนไทย นวด อบ ประคบ พอกเข่า",
+    "desc": "จำนวนครั้งการให้บริการแผนไทย หัตถการนวด อบ ประคบสมุนไพร จำแนกใน/นอกสถานบริการ และทุกสิทธิ/สิทธิ UC",
     "target": 100,
     "unit": "ครั้ง",
     "num_label": "นวด อบ ประคบ รวม",
     "den_label": "ผู้รับบริการหัตถการ",
+    "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/9615f70d993b1b673fbe65ae958a59fc",
     "years": {}
 }
+
+MODALITIES_TTM8 = [
+    ("vs", "บริการแผนไทย"),
+    ("nod", "นวดแผนไทย"),
+    ("obb", "อบสมุนไพร"),
+    ("cop", "ประคบสมุนไพร"),
+    ("n_c", "นวดและประคบ")
+]
+
 for y in years:
     rows = load_json(f"s_ttm8_{y}.json")
+    rows_map = {r.get('hospcode'): r for r in rows if r.get('hospcode') in SARAPHI_UNITS}
+    
     unit_data = []
-    tot_num = 0.0; tot_den = 0.0
-    for r in rows:
-        hcode = r.get('hospcode')
-        if hcode in SARAPHI_UNITS:
-            nod = clean_num(r.get('nod_in_all_q1', 0)) + clean_num(r.get('nod_in_all_q2', 0)) + clean_num(r.get('nod_in_all_q3', 0)) + clean_num(r.get('nod_in_all_q4', 0))
-            obb = clean_num(r.get('obb_in_all_q1', 0)) + clean_num(r.get('obb_in_all_q2', 0)) + clean_num(r.get('obb_in_all_q3', 0)) + clean_num(r.get('obb_in_all_q4', 0))
-            cop = clean_num(r.get('cop_in_all_q1', 0)) + clean_num(r.get('cop_in_all_q2', 0)) + clean_num(r.get('cop_in_all_q3', 0)) + clean_num(r.get('cop_in_all_q4', 0))
-            total_hat = nod + obb + cop
-            vs = clean_num(r.get('vs_in_all_q1', 0)) + clean_num(r.get('vs_in_all_q2', 0)) + clean_num(r.get('vs_in_all_q3', 0)) + clean_num(r.get('vs_in_all_q4', 0))
-            tot_num += total_hat; tot_den += vs
-            unit_data.append({
-                "hospcode": hcode,
-                "name": SARAPHI_UNITS[hcode]["name"],
-                "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
-                "num": int(total_hat), "den": int(vs), "nod": int(nod), "obb": int(obb), "cop": int(cop),
-                "rate": int(total_hat), "pass": total_hat > 0
-            })
-    unit_data.sort(key=lambda x: x['num'], reverse=True)
+    
+    # Initialize district totals
+    dist_in = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+    dist_out = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+    dist_tot = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+    dist_quarters = {
+        f"q{q}": {
+            "in": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8},
+            "out": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8},
+            "tot": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+        } for q in range(1, 5)
+    }
+    
+    for hcode in sorted(SARAPHI_UNITS.keys()):
+        u_info = SARAPHI_UNITS[hcode]
+        r = rows_map.get(hcode, {})
+        
+        u_in = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+        u_out = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+        u_tot = {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+        u_quarters = {
+            f"q{q}": {
+                "in": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8},
+                "out": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8},
+                "tot": {m[0]: {"all": 0, "uc": 0} for m in MODALITIES_TTM8}
+            } for q in range(1, 5)
+        }
+        
+        for q in range(1, 5):
+            q_key = f"q{q}"
+            for m_code, _ in MODALITIES_TTM8:
+                val_in_all = int(clean_num(r.get(f"{m_code}_in_all_q{q}", 0)))
+                val_in_uc = int(clean_num(r.get(f"{m_code}_in_uc_q{q}", 0)))
+                val_out_all = int(clean_num(r.get(f"{m_code}_out_all_q{q}", 0)))
+                val_out_uc = int(clean_num(r.get(f"{m_code}_out_uc_q{q}", 0)))
+                val_tot_all = val_in_all + val_out_all
+                val_tot_uc = val_in_uc + val_out_uc
+                
+                u_quarters[q_key]["in"][m_code]["all"] = val_in_all
+                u_quarters[q_key]["in"][m_code]["uc"] = val_in_uc
+                u_quarters[q_key]["out"][m_code]["all"] = val_out_all
+                u_quarters[q_key]["out"][m_code]["uc"] = val_out_uc
+                u_quarters[q_key]["tot"][m_code]["all"] = val_tot_all
+                u_quarters[q_key]["tot"][m_code]["uc"] = val_tot_uc
+                
+                u_in[m_code]["all"] += val_in_all
+                u_in[m_code]["uc"] += val_in_uc
+                u_out[m_code]["all"] += val_out_all
+                u_out[m_code]["uc"] += val_out_uc
+                u_tot[m_code]["all"] += val_tot_all
+                u_tot[m_code]["uc"] += val_tot_uc
+                
+                # add to district quarter
+                dist_quarters[q_key]["in"][m_code]["all"] += val_in_all
+                dist_quarters[q_key]["in"][m_code]["uc"] += val_in_uc
+                dist_quarters[q_key]["out"][m_code]["all"] += val_out_all
+                dist_quarters[q_key]["out"][m_code]["uc"] += val_out_uc
+                dist_quarters[q_key]["tot"][m_code]["all"] += val_tot_all
+                dist_quarters[q_key]["tot"][m_code]["uc"] += val_tot_uc
+                
+                # add to district full year
+                dist_in[m_code]["all"] += val_in_all
+                dist_in[m_code]["uc"] += val_in_uc
+                dist_out[m_code]["all"] += val_out_all
+                dist_out[m_code]["uc"] += val_out_uc
+                dist_tot[m_code]["all"] += val_tot_all
+                dist_tot[m_code]["uc"] += val_tot_uc
+
+        hat_sum = u_tot["nod"]["all"] + u_tot["obb"]["all"] + u_tot["cop"]["all"]
+        unit_data.append({
+            "hospcode": hcode,
+            "name": u_info["name"],
+            "full_name": u_info["full_name"],
+            "subdistrict": u_info["subdistrict"],
+            "type": u_info["type"],
+            "num": int(hat_sum),
+            "den": int(u_tot["vs"]["all"]),
+            "rate": int(hat_sum),
+            "pass": hat_sum > 0,
+            "nod": int(u_tot["nod"]["all"]),
+            "obb": int(u_tot["obb"]["all"]),
+            "cop": int(u_tot["cop"]["all"]),
+            "n_c": int(u_tot["n_c"]["all"]),
+            "vs": int(u_tot["vs"]["all"]),
+            "in": u_in,
+            "out": u_out,
+            "tot": u_tot,
+            "quarters": u_quarters
+        })
+        
+    dist_hat_sum = dist_tot["nod"]["all"] + dist_tot["obb"]["all"] + dist_tot["cop"]["all"]
     master["indicators"]["ttm_massage"]["years"][y] = {
-        "num": int(tot_num), "den": int(tot_den), "rate": int(tot_num), "pass": True, "units": unit_data
+        "num": int(dist_hat_sum),
+        "den": int(dist_tot["vs"]["all"]),
+        "rate": int(dist_hat_sum),
+        "pass": True,
+        "in": dist_in,
+        "out": dist_out,
+        "tot": dist_tot,
+        "quarters": dist_quarters,
+        "units": unit_data
     }
 
 # 1.9 s_ttm4 (Top Herbs - Full Takwang Benchmark & District Structure)
