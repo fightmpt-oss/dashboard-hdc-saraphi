@@ -546,6 +546,21 @@ for y in years:
     rows = load_json(f"s_ttm3_{y}.json")
     unit_data = []
     tot_num = 0.0; tot_den = 0.0
+
+    # District accumulators
+    dist_age = {
+        "a0_14": {"m": 0, "f": 0, "total": 0},
+        "a15_29": {"m": 0, "f": 0, "total": 0},
+        "a30_44": {"m": 0, "f": 0, "total": 0},
+        "a45_59": {"m": 0, "f": 0, "total": 0},
+        "a60_plus": {"m": 0, "f": 0, "total": 0},
+        "all_ages": {"m": 0, "f": 0, "total": 0}
+    }
+    dist_quarters = {
+        f"q{q}": {"pt_m": 0, "vs_m": 0, "pt_f": 0, "vs_f": 0, "pt_total": 0, "vs_total": 0}
+        for q in range(1, 5)
+    }
+
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
@@ -553,16 +568,75 @@ for y in years:
             den = sum(int(clean_num(r.get(f'vs_s2q{q}') or 0)) for q in range(1, 5))
             rate = round((num / den * 100), 2) if den > 0 else 0.0
             tot_num += num; tot_den += den
+
+            # Age groups
+            a1s1 = int(clean_num(r.get('a1s1') or 0))
+            a1s2 = int(clean_num(r.get('a1s2') or 0))
+            a2s1 = int(clean_num(r.get('a2s1') or 0))
+            a2s2 = int(clean_num(r.get('a2s2') or 0))
+            a3s1 = int(clean_num(r.get('a3s1') or 0))
+            a3s2 = int(clean_num(r.get('a3s2') or 0))
+            a4s1 = int(clean_num(r.get('a4s1') or 0))
+            a4s2 = int(clean_num(r.get('a4s2') or 0))
+            a5s1 = int(clean_num(r.get('a5s1') or 0))
+            a5s2 = int(clean_num(r.get('a5s2') or 0))
+
+            m_tot = a1s1 + a2s1 + a3s1 + a4s1 + a5s1
+            f_tot = a1s2 + a2s2 + a3s2 + a4s2 + a5s2
+            all_tot = m_tot + f_tot
+
+            unit_age = {
+                "a0_14": {"m": a1s1, "f": a1s2, "total": a1s1 + a1s2},
+                "a15_29": {"m": a2s1, "f": a2s2, "total": a2s1 + a2s2},
+                "a30_44": {"m": a3s1, "f": a3s2, "total": a3s1 + a3s2},
+                "a45_59": {"m": a4s1, "f": a4s2, "total": a4s1 + a4s2},
+                "a60_plus": {"m": a5s1, "f": a5s2, "total": a5s1 + a5s2},
+                "all_ages": {"m": m_tot, "f": f_tot, "total": all_tot}
+            }
+
+            for k in ["a0_14", "a15_29", "a30_44", "a45_59", "a60_plus", "all_ages"]:
+                dist_age[k]["m"] += unit_age[k]["m"]
+                dist_age[k]["f"] += unit_age[k]["f"]
+                dist_age[k]["total"] += unit_age[k]["total"]
+
+            # Quarters
+            unit_quarters = {}
+            for q in range(1, 5):
+                pt_m = int(clean_num(r.get(f'pt_s1q{q}') or 0))
+                vs_m = int(clean_num(r.get(f'vs_s1q{q}') or 0))
+                pt_f = int(clean_num(r.get(f'pt_s2q{q}') or 0))
+                vs_f = int(clean_num(r.get(f'vs_s2q{q}') or 0))
+                unit_quarters[f"q{q}"] = {
+                    "pt_m": pt_m, "vs_m": vs_m,
+                    "pt_f": pt_f, "vs_f": vs_f,
+                    "pt_total": pt_m + pt_f,
+                    "vs_total": vs_m + vs_f
+                }
+                dist_quarters[f"q{q}"]["pt_m"] += pt_m
+                dist_quarters[f"q{q}"]["vs_m"] += vs_m
+                dist_quarters[f"q{q}"]["pt_f"] += pt_f
+                dist_quarters[f"q{q}"]["vs_f"] += vs_f
+                dist_quarters[f"q{q}"]["pt_total"] += pt_m + pt_f
+                dist_quarters[f"q{q}"]["vs_total"] += vs_m + vs_f
+
             unit_data.append({
                 "hospcode": hcode,
                 "name": SARAPHI_UNITS[hcode]["name"],
                 "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
-                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 50.0
+                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 50.0,
+                "patients_total": all_tot,
+                "age_groups": unit_age,
+                "quarters": unit_quarters
             })
+
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+    unit_data.sort(key=lambda x: x['patients_total'], reverse=True)
     master["indicators"]["ttm_age_sex"]["years"][y] = {
-        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 50.0, "units": unit_data
+        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 50.0,
+        "patients_total": dist_age["all_ages"]["total"],
+        "age_groups": dist_age,
+        "quarters": dist_quarters,
+        "units": unit_data
     }
 
 # 1.8 s_ttm8

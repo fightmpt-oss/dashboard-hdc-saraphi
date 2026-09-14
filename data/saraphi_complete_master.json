@@ -2583,25 +2583,74 @@
           "den": 9137,
           "rate": 57.06,
           "pass": true,
+          "patients_total": 10445,
+          "age_groups": {
+            "a0_14": {
+              "m": 324,
+              "f": 291,
+              "total": 615
+            },
+            "a15_29": {
+              "m": 341,
+              "f": 414,
+              "total": 755
+            },
+            "a30_44": {
+              "m": 409,
+              "f": 586,
+              "total": 995
+            },
+            "a45_59": {
+              "m": 636,
+              "f": 1386,
+              "total": 2022
+            },
+            "a60_plus": {
+              "m": 2258,
+              "f": 3800,
+              "total": 6058
+            },
+            "all_ages": {
+              "m": 3968,
+              "f": 6477,
+              "total": 10445
+            }
+          },
+          "quarters": {
+            "q1": {
+              "pt_m": 1072,
+              "vs_m": 1310,
+              "pt_f": 1718,
+              "vs_f": 2291,
+              "pt_total": 2790,
+              "vs_total": 3601
+            },
+            "q2": {
+              "pt_m": 1089,
+              "vs_m": 1495,
+              "pt_f": 1828,
+              "vs_f": 2594,
+              "pt_total": 2917,
+              "vs_total": 4089
+            },
+            "q3": {
+              "pt_m": 851,
+              "vs_m": 1116,
+              "pt_f": 1401,
+              "vs_f": 1991,
+              "pt_total": 2252,
+              "vs_total": 3107
+            },
+            "q4": {
+              "pt_m": 956,
+              "vs_m": 1293,
+              "pt_f": 1530,
+              "vs_f": 2261,
+              "pt_total": 2486,
+              "vs_total": 3554
+            }
+          },
           "units": [
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 127,
-              "den": 152,
-              "rate": 83.55,
-              "pass": true
-            },
-            {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 193,
-              "den": 272,
-              "rate": 70.96,
-              "pass": true
-            },
             {
               "hospcode": "11135",
               "name": "โรงพยาบาลสารภี",
@@ -2609,52 +2658,74 @@
               "num": 2412,
               "den": 3441,
               "rate": 70.1,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 87,
-              "den": 125,
-              "rate": 69.6,
-              "pass": true
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 53,
-              "den": 78,
-              "rate": 67.95,
-              "pass": true
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 220,
-              "den": 333,
-              "rate": 66.07,
-              "pass": true
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 351,
-              "den": 536,
-              "rate": 65.49,
-              "pass": true
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 148,
-              "den": 262,
-              "rate": 56.49,
-              "pass": true
+              "pass": true,
+              "patients_total": 4717,
+              "age_groups": {
+                "a0_14": {
+                  "m": 208,
+                  "f": 186,
+                  "total": 394
+                },
+                "a15_29": {
+                  "m": 223,
+                  "f": 278,
+                  "total": 501
+                },
+                "a30_44": {
+                  "m": 245,
+                  "f": 309,
+                  "total": 554
+                },
+                "a45_59": {
+                  "m": 294,
+                  "f": 545,
+                  "total": 839
+                },
+                "a60_plus": {
+                  "m": 1006,
+                  "f": 1423,
+                  "total": 2429
+                },
+                "all_ages": {
+                  "m": 1976,
+                  "f": 2741,
+                  "total": 4717
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 541,
+                  "vs_m": 649,
+                  "pt_f": 751,
+                  "vs_f": 962,
+                  "pt_total": 1292,
+                  "vs_total": 1611
+                },
+                "q2": {
+                  "pt_m": 486,
+                  "vs_m": 605,
+                  "pt_f": 706,
+                  "vs_f": 886,
+                  "pt_total": 1192,
+                  "vs_total": 1491
+                },
+                "q3": {
+                  "pt_m": 444,
+                  "vs_m": 543,
+                  "pt_f": 604,
+                  "vs_f": 737,
+                  "pt_total": 1048,
+                  "vs_total": 1280
+                },
+                "q4": {
+                  "pt_m": 505,
+                  "vs_m": 615,
+                  "pt_f": 680,
+                  "vs_f": 856,
+                  "pt_total": 1185,
+                  "vs_total": 1471
+                }
+              }
             },
             {
               "hospcode": "06024",
@@ -2663,43 +2734,74 @@
               "num": 689,
               "den": 1429,
               "rate": 48.22,
-              "pass": false
-            },
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 66,
-              "den": 137,
-              "rate": 48.18,
-              "pass": false
-            },
-            {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 267,
-              "den": 587,
-              "rate": 45.49,
-              "pass": false
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 154,
-              "den": 356,
-              "rate": 43.26,
-              "pass": false
-            },
-            {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 17,
-              "den": 53,
-              "rate": 32.08,
-              "pass": false
+              "pass": false,
+              "patients_total": 1221,
+              "age_groups": {
+                "a0_14": {
+                  "m": 4,
+                  "f": 3,
+                  "total": 7
+                },
+                "a15_29": {
+                  "m": 3,
+                  "f": 5,
+                  "total": 8
+                },
+                "a30_44": {
+                  "m": 13,
+                  "f": 8,
+                  "total": 21
+                },
+                "a45_59": {
+                  "m": 90,
+                  "f": 162,
+                  "total": 252
+                },
+                "a60_plus": {
+                  "m": 307,
+                  "f": 626,
+                  "total": 933
+                },
+                "all_ages": {
+                  "m": 417,
+                  "f": 804,
+                  "total": 1221
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 104,
+                  "vs_m": 151,
+                  "pt_f": 199,
+                  "vs_f": 329,
+                  "pt_total": 303,
+                  "vs_total": 480
+                },
+                "q2": {
+                  "pt_m": 101,
+                  "vs_m": 198,
+                  "pt_f": 210,
+                  "vs_f": 413,
+                  "pt_total": 311,
+                  "vs_total": 611
+                },
+                "q3": {
+                  "pt_m": 106,
+                  "vs_m": 158,
+                  "pt_f": 200,
+                  "vs_f": 330,
+                  "pt_total": 306,
+                  "vs_total": 488
+                },
+                "q4": {
+                  "pt_m": 106,
+                  "vs_m": 182,
+                  "pt_f": 195,
+                  "vs_f": 357,
+                  "pt_total": 301,
+                  "vs_total": 539
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -2708,7 +2810,910 @@
               "num": 430,
               "den": 1376,
               "rate": 31.25,
-              "pass": false
+              "pass": false,
+              "patients_total": 838,
+              "age_groups": {
+                "a0_14": {
+                  "m": 14,
+                  "f": 14,
+                  "total": 28
+                },
+                "a15_29": {
+                  "m": 26,
+                  "f": 14,
+                  "total": 40
+                },
+                "a30_44": {
+                  "m": 23,
+                  "f": 77,
+                  "total": 100
+                },
+                "a45_59": {
+                  "m": 33,
+                  "f": 154,
+                  "total": 187
+                },
+                "a60_plus": {
+                  "m": 141,
+                  "f": 342,
+                  "total": 483
+                },
+                "all_ages": {
+                  "m": 237,
+                  "f": 601,
+                  "total": 838
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 57,
+                  "vs_m": 81,
+                  "pt_f": 142,
+                  "vs_f": 292,
+                  "pt_total": 199,
+                  "vs_total": 373
+                },
+                "q2": {
+                  "pt_m": 55,
+                  "vs_m": 122,
+                  "pt_f": 140,
+                  "vs_f": 321,
+                  "pt_total": 195,
+                  "vs_total": 443
+                },
+                "q3": {
+                  "pt_m": 67,
+                  "vs_m": 116,
+                  "pt_f": 165,
+                  "vs_f": 374,
+                  "pt_total": 232,
+                  "vs_total": 490
+                },
+                "q4": {
+                  "pt_m": 58,
+                  "vs_m": 111,
+                  "pt_f": 154,
+                  "vs_f": 389,
+                  "pt_total": 212,
+                  "vs_total": 500
+                }
+              }
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 351,
+              "den": 536,
+              "rate": 65.49,
+              "pass": true,
+              "patients_total": 646,
+              "age_groups": {
+                "a0_14": {
+                  "m": 16,
+                  "f": 14,
+                  "total": 30
+                },
+                "a15_29": {
+                  "m": 17,
+                  "f": 12,
+                  "total": 29
+                },
+                "a30_44": {
+                  "m": 27,
+                  "f": 27,
+                  "total": 54
+                },
+                "a45_59": {
+                  "m": 59,
+                  "f": 110,
+                  "total": 169
+                },
+                "a60_plus": {
+                  "m": 132,
+                  "f": 232,
+                  "total": 364
+                },
+                "all_ages": {
+                  "m": 251,
+                  "f": 395,
+                  "total": 646
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 29,
+                  "vs_m": 40,
+                  "pt_f": 44,
+                  "vs_f": 49,
+                  "pt_total": 73,
+                  "vs_total": 89
+                },
+                "q2": {
+                  "pt_m": 123,
+                  "vs_m": 171,
+                  "pt_f": 185,
+                  "vs_f": 243,
+                  "pt_total": 308,
+                  "vs_total": 414
+                },
+                "q3": {
+                  "pt_m": 40,
+                  "vs_m": 61,
+                  "pt_f": 54,
+                  "vs_f": 90,
+                  "pt_total": 94,
+                  "vs_total": 151
+                },
+                "q4": {
+                  "pt_m": 59,
+                  "vs_m": 79,
+                  "pt_f": 112,
+                  "vs_f": 154,
+                  "pt_total": 171,
+                  "vs_total": 233
+                }
+              }
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 267,
+              "den": 587,
+              "rate": 45.49,
+              "pass": false,
+              "patients_total": 646,
+              "age_groups": {
+                "a0_14": {
+                  "m": 11,
+                  "f": 11,
+                  "total": 22
+                },
+                "a15_29": {
+                  "m": 13,
+                  "f": 19,
+                  "total": 32
+                },
+                "a30_44": {
+                  "m": 13,
+                  "f": 48,
+                  "total": 61
+                },
+                "a45_59": {
+                  "m": 36,
+                  "f": 98,
+                  "total": 134
+                },
+                "a60_plus": {
+                  "m": 131,
+                  "f": 266,
+                  "total": 397
+                },
+                "all_ages": {
+                  "m": 204,
+                  "f": 442,
+                  "total": 646
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 36,
+                  "vs_m": 46,
+                  "pt_f": 84,
+                  "vs_f": 98,
+                  "pt_total": 120,
+                  "vs_total": 144
+                },
+                "q2": {
+                  "pt_m": 93,
+                  "vs_m": 118,
+                  "pt_f": 170,
+                  "vs_f": 236,
+                  "pt_total": 263,
+                  "vs_total": 354
+                },
+                "q3": {
+                  "pt_m": 33,
+                  "vs_m": 41,
+                  "pt_f": 100,
+                  "vs_f": 132,
+                  "pt_total": 133,
+                  "vs_total": 173
+                },
+                "q4": {
+                  "pt_m": 42,
+                  "vs_m": 62,
+                  "pt_f": 88,
+                  "vs_f": 121,
+                  "pt_total": 130,
+                  "vs_total": 183
+                }
+              }
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 220,
+              "den": 333,
+              "rate": 66.07,
+              "pass": true,
+              "patients_total": 525,
+              "age_groups": {
+                "a0_14": {
+                  "m": 3,
+                  "f": 1,
+                  "total": 4
+                },
+                "a15_29": {
+                  "m": 3,
+                  "f": 6,
+                  "total": 9
+                },
+                "a30_44": {
+                  "m": 30,
+                  "f": 33,
+                  "total": 63
+                },
+                "a45_59": {
+                  "m": 39,
+                  "f": 64,
+                  "total": 103
+                },
+                "a60_plus": {
+                  "m": 133,
+                  "f": 213,
+                  "total": 346
+                },
+                "all_ages": {
+                  "m": 208,
+                  "f": 317,
+                  "total": 525
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 133,
+                  "vs_m": 135,
+                  "pt_f": 205,
+                  "vs_f": 215,
+                  "pt_total": 338,
+                  "vs_total": 350
+                },
+                "q2": {
+                  "pt_m": 55,
+                  "vs_m": 60,
+                  "pt_f": 70,
+                  "vs_f": 75,
+                  "pt_total": 125,
+                  "vs_total": 135
+                },
+                "q3": {
+                  "pt_m": 8,
+                  "vs_m": 9,
+                  "pt_f": 22,
+                  "vs_f": 23,
+                  "pt_total": 30,
+                  "vs_total": 32
+                },
+                "q4": {
+                  "pt_m": 12,
+                  "vs_m": 16,
+                  "pt_f": 20,
+                  "vs_f": 20,
+                  "pt_total": 32,
+                  "vs_total": 36
+                }
+              }
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 193,
+              "den": 272,
+              "rate": 70.96,
+              "pass": true,
+              "patients_total": 404,
+              "age_groups": {
+                "a0_14": {
+                  "m": 16,
+                  "f": 11,
+                  "total": 27
+                },
+                "a15_29": {
+                  "m": 18,
+                  "f": 13,
+                  "total": 31
+                },
+                "a30_44": {
+                  "m": 11,
+                  "f": 18,
+                  "total": 29
+                },
+                "a45_59": {
+                  "m": 17,
+                  "f": 47,
+                  "total": 64
+                },
+                "a60_plus": {
+                  "m": 101,
+                  "f": 152,
+                  "total": 253
+                },
+                "all_ages": {
+                  "m": 163,
+                  "f": 241,
+                  "total": 404
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 47,
+                  "vs_m": 57,
+                  "pt_f": 69,
+                  "vs_f": 79,
+                  "pt_total": 116,
+                  "vs_total": 136
+                },
+                "q2": {
+                  "pt_m": 56,
+                  "vs_m": 64,
+                  "pt_f": 95,
+                  "vs_f": 104,
+                  "pt_total": 151,
+                  "vs_total": 168
+                },
+                "q3": {
+                  "pt_m": 35,
+                  "vs_m": 40,
+                  "pt_f": 42,
+                  "vs_f": 52,
+                  "pt_total": 77,
+                  "vs_total": 92
+                },
+                "q4": {
+                  "pt_m": 25,
+                  "vs_m": 32,
+                  "pt_f": 35,
+                  "vs_f": 37,
+                  "pt_total": 60,
+                  "vs_total": 69
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 154,
+              "den": 356,
+              "rate": 43.26,
+              "pass": false,
+              "patients_total": 401,
+              "age_groups": {
+                "a0_14": {
+                  "m": 15,
+                  "f": 22,
+                  "total": 37
+                },
+                "a15_29": {
+                  "m": 9,
+                  "f": 13,
+                  "total": 22
+                },
+                "a30_44": {
+                  "m": 9,
+                  "f": 16,
+                  "total": 25
+                },
+                "a45_59": {
+                  "m": 26,
+                  "f": 66,
+                  "total": 92
+                },
+                "a60_plus": {
+                  "m": 65,
+                  "f": 160,
+                  "total": 225
+                },
+                "all_ages": {
+                  "m": 124,
+                  "f": 277,
+                  "total": 401
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 26,
+                  "vs_m": 34,
+                  "pt_f": 67,
+                  "vs_f": 90,
+                  "pt_total": 93,
+                  "vs_total": 124
+                },
+                "q2": {
+                  "pt_m": 27,
+                  "vs_m": 31,
+                  "pt_f": 75,
+                  "vs_f": 96,
+                  "pt_total": 102,
+                  "vs_total": 127
+                },
+                "q3": {
+                  "pt_m": 37,
+                  "vs_m": 46,
+                  "pt_f": 62,
+                  "vs_f": 74,
+                  "pt_total": 99,
+                  "vs_total": 120
+                },
+                "q4": {
+                  "pt_m": 34,
+                  "vs_m": 43,
+                  "pt_f": 73,
+                  "vs_f": 96,
+                  "pt_total": 107,
+                  "vs_total": 139
+                }
+              }
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 148,
+              "den": 262,
+              "rate": 56.49,
+              "pass": true,
+              "patients_total": 281,
+              "age_groups": {
+                "a0_14": {
+                  "m": 7,
+                  "f": 4,
+                  "total": 11
+                },
+                "a15_29": {
+                  "m": 2,
+                  "f": 10,
+                  "total": 12
+                },
+                "a30_44": {
+                  "m": 14,
+                  "f": 11,
+                  "total": 25
+                },
+                "a45_59": {
+                  "m": 10,
+                  "f": 37,
+                  "total": 47
+                },
+                "a60_plus": {
+                  "m": 69,
+                  "f": 117,
+                  "total": 186
+                },
+                "all_ages": {
+                  "m": 102,
+                  "f": 179,
+                  "total": 281
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 21,
+                  "vs_m": 25,
+                  "pt_f": 20,
+                  "vs_f": 22,
+                  "pt_total": 41,
+                  "vs_total": 47
+                },
+                "q2": {
+                  "pt_m": 32,
+                  "vs_m": 45,
+                  "pt_f": 57,
+                  "vs_f": 83,
+                  "pt_total": 89,
+                  "vs_total": 128
+                },
+                "q3": {
+                  "pt_m": 18,
+                  "vs_m": 23,
+                  "pt_f": 38,
+                  "vs_f": 55,
+                  "pt_total": 56,
+                  "vs_total": 78
+                },
+                "q4": {
+                  "pt_m": 31,
+                  "vs_m": 55,
+                  "pt_f": 64,
+                  "vs_f": 102,
+                  "pt_total": 95,
+                  "vs_total": 157
+                }
+              }
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 127,
+              "den": 152,
+              "rate": 83.55,
+              "pass": true,
+              "patients_total": 231,
+              "age_groups": {
+                "a0_14": {
+                  "m": 13,
+                  "f": 4,
+                  "total": 17
+                },
+                "a15_29": {
+                  "m": 11,
+                  "f": 11,
+                  "total": 22
+                },
+                "a30_44": {
+                  "m": 6,
+                  "f": 13,
+                  "total": 19
+                },
+                "a45_59": {
+                  "m": 13,
+                  "f": 29,
+                  "total": 42
+                },
+                "a60_plus": {
+                  "m": 58,
+                  "f": 73,
+                  "total": 131
+                },
+                "all_ages": {
+                  "m": 101,
+                  "f": 130,
+                  "total": 231
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 27,
+                  "vs_m": 32,
+                  "pt_f": 36,
+                  "vs_f": 41,
+                  "pt_total": 63,
+                  "vs_total": 73
+                },
+                "q2": {
+                  "pt_m": 26,
+                  "vs_m": 39,
+                  "pt_f": 34,
+                  "vs_f": 39,
+                  "pt_total": 60,
+                  "vs_total": 78
+                },
+                "q3": {
+                  "pt_m": 23,
+                  "vs_m": 25,
+                  "pt_f": 39,
+                  "vs_f": 45,
+                  "pt_total": 62,
+                  "vs_total": 70
+                },
+                "q4": {
+                  "pt_m": 25,
+                  "vs_m": 31,
+                  "pt_f": 21,
+                  "vs_f": 27,
+                  "pt_total": 46,
+                  "vs_total": 58
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 66,
+              "den": 137,
+              "rate": 48.18,
+              "pass": false,
+              "patients_total": 176,
+              "age_groups": {
+                "a0_14": {
+                  "m": 7,
+                  "f": 14,
+                  "total": 21
+                },
+                "a15_29": {
+                  "m": 6,
+                  "f": 17,
+                  "total": 23
+                },
+                "a30_44": {
+                  "m": 6,
+                  "f": 8,
+                  "total": 14
+                },
+                "a45_59": {
+                  "m": 5,
+                  "f": 24,
+                  "total": 29
+                },
+                "a60_plus": {
+                  "m": 33,
+                  "f": 56,
+                  "total": 89
+                },
+                "all_ages": {
+                  "m": 57,
+                  "f": 119,
+                  "total": 176
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 14,
+                  "vs_m": 16,
+                  "pt_f": 34,
+                  "vs_f": 39,
+                  "pt_total": 48,
+                  "vs_total": 55
+                },
+                "q2": {
+                  "pt_m": 14,
+                  "vs_m": 17,
+                  "pt_f": 34,
+                  "vs_f": 42,
+                  "pt_total": 48,
+                  "vs_total": 59
+                },
+                "q3": {
+                  "pt_m": 12,
+                  "vs_m": 14,
+                  "pt_f": 19,
+                  "vs_f": 19,
+                  "pt_total": 31,
+                  "vs_total": 33
+                },
+                "q4": {
+                  "pt_m": 17,
+                  "vs_m": 19,
+                  "pt_f": 32,
+                  "vs_f": 37,
+                  "pt_total": 49,
+                  "vs_total": 56
+                }
+              }
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 87,
+              "den": 125,
+              "rate": 69.6,
+              "pass": true,
+              "patients_total": 171,
+              "age_groups": {
+                "a0_14": {
+                  "m": 7,
+                  "f": 2,
+                  "total": 9
+                },
+                "a15_29": {
+                  "m": 7,
+                  "f": 9,
+                  "total": 16
+                },
+                "a30_44": {
+                  "m": 9,
+                  "f": 13,
+                  "total": 22
+                },
+                "a45_59": {
+                  "m": 4,
+                  "f": 33,
+                  "total": 37
+                },
+                "a60_plus": {
+                  "m": 36,
+                  "f": 51,
+                  "total": 87
+                },
+                "all_ages": {
+                  "m": 63,
+                  "f": 108,
+                  "total": 171
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 18,
+                  "vs_m": 24,
+                  "pt_f": 28,
+                  "vs_f": 32,
+                  "pt_total": 46,
+                  "vs_total": 56
+                },
+                "q2": {
+                  "pt_m": 10,
+                  "vs_m": 12,
+                  "pt_f": 21,
+                  "vs_f": 25,
+                  "pt_total": 31,
+                  "vs_total": 37
+                },
+                "q3": {
+                  "pt_m": 12,
+                  "vs_m": 22,
+                  "pt_f": 26,
+                  "vs_f": 28,
+                  "pt_total": 38,
+                  "vs_total": 50
+                },
+                "q4": {
+                  "pt_m": 23,
+                  "vs_m": 29,
+                  "pt_f": 33,
+                  "vs_f": 40,
+                  "pt_total": 56,
+                  "vs_total": 69
+                }
+              }
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 53,
+              "den": 78,
+              "rate": 67.95,
+              "pass": true,
+              "patients_total": 127,
+              "age_groups": {
+                "a0_14": {
+                  "m": 2,
+                  "f": 4,
+                  "total": 6
+                },
+                "a15_29": {
+                  "m": 2,
+                  "f": 7,
+                  "total": 9
+                },
+                "a30_44": {
+                  "m": 3,
+                  "f": 5,
+                  "total": 8
+                },
+                "a45_59": {
+                  "m": 9,
+                  "f": 9,
+                  "total": 18
+                },
+                "a60_plus": {
+                  "m": 34,
+                  "f": 52,
+                  "total": 86
+                },
+                "all_ages": {
+                  "m": 50,
+                  "f": 77,
+                  "total": 127
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 13,
+                  "vs_m": 13,
+                  "pt_f": 18,
+                  "vs_f": 18,
+                  "pt_total": 31,
+                  "vs_total": 31
+                },
+                "q2": {
+                  "pt_m": 8,
+                  "vs_m": 10,
+                  "pt_f": 25,
+                  "vs_f": 25,
+                  "pt_total": 33,
+                  "vs_total": 35
+                },
+                "q3": {
+                  "pt_m": 13,
+                  "vs_m": 14,
+                  "pt_f": 13,
+                  "vs_f": 13,
+                  "pt_total": 26,
+                  "vs_total": 27
+                },
+                "q4": {
+                  "pt_m": 16,
+                  "vs_m": 16,
+                  "pt_f": 21,
+                  "vs_f": 22,
+                  "pt_total": 37,
+                  "vs_total": 38
+                }
+              }
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 17,
+              "den": 53,
+              "rate": 32.08,
+              "pass": false,
+              "patients_total": 61,
+              "age_groups": {
+                "a0_14": {
+                  "m": 1,
+                  "f": 1,
+                  "total": 2
+                },
+                "a15_29": {
+                  "m": 1,
+                  "f": 0,
+                  "total": 1
+                },
+                "a30_44": {
+                  "m": 0,
+                  "f": 0,
+                  "total": 0
+                },
+                "a45_59": {
+                  "m": 1,
+                  "f": 8,
+                  "total": 9
+                },
+                "a60_plus": {
+                  "m": 12,
+                  "f": 37,
+                  "total": 49
+                },
+                "all_ages": {
+                  "m": 15,
+                  "f": 46,
+                  "total": 61
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 6,
+                  "vs_m": 7,
+                  "pt_f": 21,
+                  "vs_f": 25,
+                  "pt_total": 27,
+                  "vs_total": 32
+                },
+                "q2": {
+                  "pt_m": 3,
+                  "vs_m": 3,
+                  "pt_f": 6,
+                  "vs_f": 6,
+                  "pt_total": 9,
+                  "vs_total": 9
+                },
+                "q3": {
+                  "pt_m": 3,
+                  "vs_m": 4,
+                  "pt_f": 17,
+                  "vs_f": 19,
+                  "pt_total": 20,
+                  "vs_total": 23
+                },
+                "q4": {
+                  "pt_m": 3,
+                  "vs_m": 3,
+                  "pt_f": 2,
+                  "vs_f": 3,
+                  "pt_total": 5,
+                  "vs_total": 6
+                }
+              }
             }
           ]
         },
@@ -2717,6 +3722,73 @@
           "den": 8825,
           "rate": 57.26,
           "pass": true,
+          "patients_total": 10667,
+          "age_groups": {
+            "a0_14": {
+              "m": 300,
+              "f": 266,
+              "total": 566
+            },
+            "a15_29": {
+              "m": 295,
+              "f": 399,
+              "total": 694
+            },
+            "a30_44": {
+              "m": 345,
+              "f": 532,
+              "total": 877
+            },
+            "a45_59": {
+              "m": 641,
+              "f": 1260,
+              "total": 1901
+            },
+            "a60_plus": {
+              "m": 2369,
+              "f": 4260,
+              "total": 6629
+            },
+            "all_ages": {
+              "m": 3950,
+              "f": 6717,
+              "total": 10667
+            }
+          },
+          "quarters": {
+            "q1": {
+              "pt_m": 1065,
+              "vs_m": 1343,
+              "pt_f": 1769,
+              "vs_f": 2294,
+              "pt_total": 2834,
+              "vs_total": 3637
+            },
+            "q2": {
+              "pt_m": 1102,
+              "vs_m": 1402,
+              "pt_f": 1820,
+              "vs_f": 2364,
+              "pt_total": 2922,
+              "vs_total": 3766
+            },
+            "q3": {
+              "pt_m": 856,
+              "vs_m": 1102,
+              "pt_f": 1582,
+              "vs_f": 2082,
+              "pt_total": 2438,
+              "vs_total": 3184
+            },
+            "q4": {
+              "pt_m": 927,
+              "vs_m": 1206,
+              "pt_f": 1546,
+              "vs_f": 2085,
+              "pt_total": 2473,
+              "vs_total": 3291
+            }
+          },
           "units": [
             {
               "hospcode": "11135",
@@ -2725,52 +3797,74 @@
               "num": 2088,
               "den": 2982,
               "rate": 70.02,
-              "pass": true
-            },
-            {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 162,
-              "den": 236,
-              "rate": 68.64,
-              "pass": true
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 216,
-              "den": 318,
-              "rate": 67.92,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 91,
-              "den": 144,
-              "rate": 63.19,
-              "pass": true
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 48,
-              "den": 80,
-              "rate": 60.0,
-              "pass": true
-            },
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 73,
-              "den": 128,
-              "rate": 57.03,
-              "pass": true
+              "pass": true,
+              "patients_total": 4201,
+              "age_groups": {
+                "a0_14": {
+                  "m": 173,
+                  "f": 150,
+                  "total": 323
+                },
+                "a15_29": {
+                  "m": 191,
+                  "f": 281,
+                  "total": 472
+                },
+                "a30_44": {
+                  "m": 187,
+                  "f": 280,
+                  "total": 467
+                },
+                "a45_59": {
+                  "m": 261,
+                  "f": 471,
+                  "total": 732
+                },
+                "a60_plus": {
+                  "m": 904,
+                  "f": 1303,
+                  "total": 2207
+                },
+                "all_ages": {
+                  "m": 1716,
+                  "f": 2485,
+                  "total": 4201
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 441,
+                  "vs_m": 543,
+                  "pt_f": 576,
+                  "vs_f": 683,
+                  "pt_total": 1017,
+                  "vs_total": 1226
+                },
+                "q2": {
+                  "pt_m": 474,
+                  "vs_m": 575,
+                  "pt_f": 712,
+                  "vs_f": 854,
+                  "pt_total": 1186,
+                  "vs_total": 1429
+                },
+                "q3": {
+                  "pt_m": 392,
+                  "vs_m": 466,
+                  "pt_f": 609,
+                  "vs_f": 724,
+                  "pt_total": 1001,
+                  "vs_total": 1190
+                },
+                "q4": {
+                  "pt_m": 409,
+                  "vs_m": 504,
+                  "pt_f": 588,
+                  "vs_f": 721,
+                  "pt_total": 997,
+                  "vs_total": 1225
+                }
+              }
             },
             {
               "hospcode": "06022",
@@ -2779,34 +3873,74 @@
               "num": 792,
               "den": 1474,
               "rate": 53.73,
-              "pass": true
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 163,
-              "den": 318,
-              "rate": 51.26,
-              "pass": true
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 158,
-              "den": 310,
-              "rate": 50.97,
-              "pass": true
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 210,
-              "den": 415,
-              "rate": 50.6,
-              "pass": true
+              "pass": true,
+              "patients_total": 1811,
+              "age_groups": {
+                "a0_14": {
+                  "m": 10,
+                  "f": 15,
+                  "total": 25
+                },
+                "a15_29": {
+                  "m": 19,
+                  "f": 17,
+                  "total": 36
+                },
+                "a30_44": {
+                  "m": 28,
+                  "f": 40,
+                  "total": 68
+                },
+                "a45_59": {
+                  "m": 102,
+                  "f": 217,
+                  "total": 319
+                },
+                "a60_plus": {
+                  "m": 465,
+                  "f": 898,
+                  "total": 1363
+                },
+                "all_ages": {
+                  "m": 624,
+                  "f": 1187,
+                  "total": 1811
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 158,
+                  "vs_m": 216,
+                  "pt_f": 292,
+                  "vs_f": 374,
+                  "pt_total": 450,
+                  "vs_total": 590
+                },
+                "q2": {
+                  "pt_m": 176,
+                  "vs_m": 238,
+                  "pt_f": 310,
+                  "vs_f": 407,
+                  "pt_total": 486,
+                  "vs_total": 645
+                },
+                "q3": {
+                  "pt_m": 146,
+                  "vs_m": 174,
+                  "pt_f": 309,
+                  "vs_f": 370,
+                  "pt_total": 455,
+                  "vs_total": 544
+                },
+                "q4": {
+                  "pt_m": 144,
+                  "vs_m": 164,
+                  "pt_f": 276,
+                  "vs_f": 323,
+                  "pt_total": 420,
+                  "vs_total": 487
+                }
+              }
             },
             {
               "hospcode": "06024",
@@ -2815,7 +3949,74 @@
               "num": 445,
               "den": 907,
               "rate": 49.06,
-              "pass": false
+              "pass": false,
+              "patients_total": 859,
+              "age_groups": {
+                "a0_14": {
+                  "m": 4,
+                  "f": 1,
+                  "total": 5
+                },
+                "a15_29": {
+                  "m": 8,
+                  "f": 5,
+                  "total": 13
+                },
+                "a30_44": {
+                  "m": 11,
+                  "f": 7,
+                  "total": 18
+                },
+                "a45_59": {
+                  "m": 60,
+                  "f": 110,
+                  "total": 170
+                },
+                "a60_plus": {
+                  "m": 217,
+                  "f": 436,
+                  "total": 653
+                },
+                "all_ages": {
+                  "m": 300,
+                  "f": 559,
+                  "total": 859
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 66,
+                  "vs_m": 81,
+                  "pt_f": 141,
+                  "vs_f": 190,
+                  "pt_total": 207,
+                  "vs_total": 271
+                },
+                "q2": {
+                  "pt_m": 63,
+                  "vs_m": 82,
+                  "pt_f": 101,
+                  "vs_f": 142,
+                  "pt_total": 164,
+                  "vs_total": 224
+                },
+                "q3": {
+                  "pt_m": 72,
+                  "vs_m": 117,
+                  "pt_f": 125,
+                  "vs_f": 227,
+                  "pt_total": 197,
+                  "vs_total": 344
+                },
+                "q4": {
+                  "pt_m": 99,
+                  "vs_m": 165,
+                  "pt_f": 192,
+                  "vs_f": 348,
+                  "pt_total": 291,
+                  "vs_total": 513
+                }
+              }
             },
             {
               "hospcode": "06018",
@@ -2824,7 +4025,74 @@
               "num": 365,
               "den": 840,
               "rate": 43.45,
-              "pass": false
+              "pass": false,
+              "patients_total": 776,
+              "age_groups": {
+                "a0_14": {
+                  "m": 23,
+                  "f": 16,
+                  "total": 39
+                },
+                "a15_29": {
+                  "m": 12,
+                  "f": 13,
+                  "total": 25
+                },
+                "a30_44": {
+                  "m": 20,
+                  "f": 50,
+                  "total": 70
+                },
+                "a45_59": {
+                  "m": 42,
+                  "f": 94,
+                  "total": 136
+                },
+                "a60_plus": {
+                  "m": 159,
+                  "f": 347,
+                  "total": 506
+                },
+                "all_ages": {
+                  "m": 256,
+                  "f": 520,
+                  "total": 776
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 55,
+                  "vs_m": 67,
+                  "pt_f": 113,
+                  "vs_f": 143,
+                  "pt_total": 168,
+                  "vs_total": 210
+                },
+                "q2": {
+                  "pt_m": 67,
+                  "vs_m": 95,
+                  "pt_f": 139,
+                  "vs_f": 243,
+                  "pt_total": 206,
+                  "vs_total": 338
+                },
+                "q3": {
+                  "pt_m": 58,
+                  "vs_m": 92,
+                  "pt_f": 139,
+                  "vs_f": 242,
+                  "pt_total": 197,
+                  "vs_total": 334
+                },
+                "q4": {
+                  "pt_m": 76,
+                  "vs_m": 111,
+                  "pt_f": 129,
+                  "vs_f": 212,
+                  "pt_total": 205,
+                  "vs_total": 323
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -2833,7 +4101,682 @@
               "num": 231,
               "den": 638,
               "rate": 36.21,
-              "pass": false
+              "pass": false,
+              "patients_total": 579,
+              "age_groups": {
+                "a0_14": {
+                  "m": 14,
+                  "f": 15,
+                  "total": 29
+                },
+                "a15_29": {
+                  "m": 11,
+                  "f": 22,
+                  "total": 33
+                },
+                "a30_44": {
+                  "m": 12,
+                  "f": 26,
+                  "total": 38
+                },
+                "a45_59": {
+                  "m": 28,
+                  "f": 83,
+                  "total": 111
+                },
+                "a60_plus": {
+                  "m": 102,
+                  "f": 266,
+                  "total": 368
+                },
+                "all_ages": {
+                  "m": 167,
+                  "f": 412,
+                  "total": 579
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 47,
+                  "vs_m": 77,
+                  "pt_f": 143,
+                  "vs_f": 276,
+                  "pt_total": 190,
+                  "vs_total": 353
+                },
+                "q2": {
+                  "pt_m": 52,
+                  "vs_m": 67,
+                  "pt_f": 104,
+                  "vs_f": 130,
+                  "pt_total": 156,
+                  "vs_total": 197
+                },
+                "q3": {
+                  "pt_m": 36,
+                  "vs_m": 46,
+                  "pt_f": 90,
+                  "vs_f": 124,
+                  "pt_total": 126,
+                  "vs_total": 170
+                },
+                "q4": {
+                  "pt_m": 32,
+                  "vs_m": 41,
+                  "pt_f": 75,
+                  "vs_f": 108,
+                  "pt_total": 107,
+                  "vs_total": 149
+                }
+              }
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 216,
+              "den": 318,
+              "rate": 67.92,
+              "pass": true,
+              "patients_total": 505,
+              "age_groups": {
+                "a0_14": {
+                  "m": 2,
+                  "f": 2,
+                  "total": 4
+                },
+                "a15_29": {
+                  "m": 5,
+                  "f": 2,
+                  "total": 7
+                },
+                "a30_44": {
+                  "m": 26,
+                  "f": 35,
+                  "total": 61
+                },
+                "a45_59": {
+                  "m": 56,
+                  "f": 76,
+                  "total": 132
+                },
+                "a60_plus": {
+                  "m": 117,
+                  "f": 184,
+                  "total": 301
+                },
+                "all_ages": {
+                  "m": 206,
+                  "f": 299,
+                  "total": 505
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 127,
+                  "vs_m": 130,
+                  "pt_f": 163,
+                  "vs_f": 167,
+                  "pt_total": 290,
+                  "vs_total": 297
+                },
+                "q2": {
+                  "pt_m": 61,
+                  "vs_m": 61,
+                  "pt_f": 93,
+                  "vs_f": 103,
+                  "pt_total": 154,
+                  "vs_total": 164
+                },
+                "q3": {
+                  "pt_m": 6,
+                  "vs_m": 9,
+                  "pt_f": 27,
+                  "vs_f": 30,
+                  "pt_total": 33,
+                  "vs_total": 39
+                },
+                "q4": {
+                  "pt_m": 12,
+                  "vs_m": 16,
+                  "pt_f": 16,
+                  "vs_f": 18,
+                  "pt_total": 28,
+                  "vs_total": 34
+                }
+              }
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 158,
+              "den": 310,
+              "rate": 50.97,
+              "pass": true,
+              "patients_total": 383,
+              "age_groups": {
+                "a0_14": {
+                  "m": 24,
+                  "f": 16,
+                  "total": 40
+                },
+                "a15_29": {
+                  "m": 8,
+                  "f": 9,
+                  "total": 17
+                },
+                "a30_44": {
+                  "m": 7,
+                  "f": 15,
+                  "total": 22
+                },
+                "a45_59": {
+                  "m": 11,
+                  "f": 30,
+                  "total": 41
+                },
+                "a60_plus": {
+                  "m": 81,
+                  "f": 182,
+                  "total": 263
+                },
+                "all_ages": {
+                  "m": 131,
+                  "f": 252,
+                  "total": 383
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 33,
+                  "vs_m": 41,
+                  "pt_f": 78,
+                  "vs_f": 92,
+                  "pt_total": 111,
+                  "vs_total": 133
+                },
+                "q2": {
+                  "pt_m": 46,
+                  "vs_m": 56,
+                  "pt_f": 69,
+                  "vs_f": 83,
+                  "pt_total": 115,
+                  "vs_total": 139
+                },
+                "q3": {
+                  "pt_m": 28,
+                  "vs_m": 34,
+                  "pt_f": 62,
+                  "vs_f": 77,
+                  "pt_total": 90,
+                  "vs_total": 111
+                },
+                "q4": {
+                  "pt_m": 24,
+                  "vs_m": 27,
+                  "pt_f": 43,
+                  "vs_f": 58,
+                  "pt_total": 67,
+                  "vs_total": 85
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 163,
+              "den": 318,
+              "rate": 51.26,
+              "pass": true,
+              "patients_total": 367,
+              "age_groups": {
+                "a0_14": {
+                  "m": 12,
+                  "f": 14,
+                  "total": 26
+                },
+                "a15_29": {
+                  "m": 9,
+                  "f": 6,
+                  "total": 15
+                },
+                "a30_44": {
+                  "m": 12,
+                  "f": 8,
+                  "total": 20
+                },
+                "a45_59": {
+                  "m": 15,
+                  "f": 50,
+                  "total": 65
+                },
+                "a60_plus": {
+                  "m": 79,
+                  "f": 162,
+                  "total": 241
+                },
+                "all_ages": {
+                  "m": 127,
+                  "f": 240,
+                  "total": 367
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 33,
+                  "vs_m": 41,
+                  "pt_f": 68,
+                  "vs_f": 93,
+                  "pt_total": 101,
+                  "vs_total": 134
+                },
+                "q2": {
+                  "pt_m": 38,
+                  "vs_m": 50,
+                  "pt_f": 74,
+                  "vs_f": 99,
+                  "pt_total": 112,
+                  "vs_total": 149
+                },
+                "q3": {
+                  "pt_m": 29,
+                  "vs_m": 37,
+                  "pt_f": 50,
+                  "vs_f": 66,
+                  "pt_total": 79,
+                  "vs_total": 103
+                },
+                "q4": {
+                  "pt_m": 27,
+                  "vs_m": 35,
+                  "pt_f": 48,
+                  "vs_f": 60,
+                  "pt_total": 75,
+                  "vs_total": 95
+                }
+              }
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 210,
+              "den": 415,
+              "rate": 50.6,
+              "pass": true,
+              "patients_total": 334,
+              "age_groups": {
+                "a0_14": {
+                  "m": 3,
+                  "f": 3,
+                  "total": 6
+                },
+                "a15_29": {
+                  "m": 2,
+                  "f": 6,
+                  "total": 8
+                },
+                "a30_44": {
+                  "m": 17,
+                  "f": 26,
+                  "total": 43
+                },
+                "a45_59": {
+                  "m": 22,
+                  "f": 47,
+                  "total": 69
+                },
+                "a60_plus": {
+                  "m": 60,
+                  "f": 148,
+                  "total": 208
+                },
+                "all_ages": {
+                  "m": 104,
+                  "f": 230,
+                  "total": 334
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 23,
+                  "vs_m": 54,
+                  "pt_f": 61,
+                  "vs_f": 116,
+                  "pt_total": 84,
+                  "vs_total": 170
+                },
+                "q2": {
+                  "pt_m": 31,
+                  "vs_m": 62,
+                  "pt_f": 59,
+                  "vs_f": 112,
+                  "pt_total": 90,
+                  "vs_total": 174
+                },
+                "q3": {
+                  "pt_m": 21,
+                  "vs_m": 46,
+                  "pt_f": 41,
+                  "vs_f": 78,
+                  "pt_total": 62,
+                  "vs_total": 124
+                },
+                "q4": {
+                  "pt_m": 29,
+                  "vs_m": 48,
+                  "pt_f": 69,
+                  "vs_f": 109,
+                  "pt_total": 98,
+                  "vs_total": 157
+                }
+              }
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 162,
+              "den": 236,
+              "rate": 68.64,
+              "pass": true,
+              "patients_total": 310,
+              "age_groups": {
+                "a0_14": {
+                  "m": 10,
+                  "f": 7,
+                  "total": 17
+                },
+                "a15_29": {
+                  "m": 10,
+                  "f": 8,
+                  "total": 18
+                },
+                "a30_44": {
+                  "m": 5,
+                  "f": 18,
+                  "total": 23
+                },
+                "a45_59": {
+                  "m": 19,
+                  "f": 38,
+                  "total": 57
+                },
+                "a60_plus": {
+                  "m": 76,
+                  "f": 119,
+                  "total": 195
+                },
+                "all_ages": {
+                  "m": 120,
+                  "f": 190,
+                  "total": 310
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 28,
+                  "vs_m": 34,
+                  "pt_f": 43,
+                  "vs_f": 56,
+                  "pt_total": 71,
+                  "vs_total": 90
+                },
+                "q2": {
+                  "pt_m": 27,
+                  "vs_m": 42,
+                  "pt_f": 49,
+                  "vs_f": 61,
+                  "pt_total": 76,
+                  "vs_total": 103
+                },
+                "q3": {
+                  "pt_m": 34,
+                  "vs_m": 46,
+                  "pt_f": 45,
+                  "vs_f": 53,
+                  "pt_total": 79,
+                  "vs_total": 99
+                },
+                "q4": {
+                  "pt_m": 31,
+                  "vs_m": 40,
+                  "pt_f": 53,
+                  "vs_f": 66,
+                  "pt_total": 84,
+                  "vs_total": 106
+                }
+              }
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 91,
+              "den": 144,
+              "rate": 63.19,
+              "pass": true,
+              "patients_total": 194,
+              "age_groups": {
+                "a0_14": {
+                  "m": 10,
+                  "f": 5,
+                  "total": 15
+                },
+                "a15_29": {
+                  "m": 7,
+                  "f": 13,
+                  "total": 20
+                },
+                "a30_44": {
+                  "m": 5,
+                  "f": 16,
+                  "total": 21
+                },
+                "a45_59": {
+                  "m": 10,
+                  "f": 13,
+                  "total": 23
+                },
+                "a60_plus": {
+                  "m": 41,
+                  "f": 74,
+                  "total": 115
+                },
+                "all_ages": {
+                  "m": 73,
+                  "f": 121,
+                  "total": 194
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 14,
+                  "vs_m": 16,
+                  "pt_f": 30,
+                  "vs_f": 39,
+                  "pt_total": 44,
+                  "vs_total": 55
+                },
+                "q2": {
+                  "pt_m": 32,
+                  "vs_m": 37,
+                  "pt_f": 47,
+                  "vs_f": 60,
+                  "pt_total": 79,
+                  "vs_total": 97
+                },
+                "q3": {
+                  "pt_m": 11,
+                  "vs_m": 12,
+                  "pt_f": 24,
+                  "vs_f": 25,
+                  "pt_total": 35,
+                  "vs_total": 37
+                },
+                "q4": {
+                  "pt_m": 16,
+                  "vs_m": 26,
+                  "pt_f": 20,
+                  "vs_f": 20,
+                  "pt_total": 36,
+                  "vs_total": 46
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 73,
+              "den": 128,
+              "rate": 57.03,
+              "pass": true,
+              "patients_total": 185,
+              "age_groups": {
+                "a0_14": {
+                  "m": 10,
+                  "f": 17,
+                  "total": 27
+                },
+                "a15_29": {
+                  "m": 9,
+                  "f": 12,
+                  "total": 21
+                },
+                "a30_44": {
+                  "m": 12,
+                  "f": 7,
+                  "total": 19
+                },
+                "a45_59": {
+                  "m": 11,
+                  "f": 13,
+                  "total": 24
+                },
+                "a60_plus": {
+                  "m": 30,
+                  "f": 64,
+                  "total": 94
+                },
+                "all_ages": {
+                  "m": 72,
+                  "f": 113,
+                  "total": 185
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 22,
+                  "vs_m": 22,
+                  "pt_f": 29,
+                  "vs_f": 33,
+                  "pt_total": 51,
+                  "vs_total": 55
+                },
+                "q2": {
+                  "pt_m": 20,
+                  "vs_m": 21,
+                  "pt_f": 30,
+                  "vs_f": 34,
+                  "pt_total": 50,
+                  "vs_total": 55
+                },
+                "q3": {
+                  "pt_m": 13,
+                  "vs_m": 13,
+                  "pt_f": 28,
+                  "vs_f": 31,
+                  "pt_total": 41,
+                  "vs_total": 44
+                },
+                "q4": {
+                  "pt_m": 17,
+                  "vs_m": 17,
+                  "pt_f": 26,
+                  "vs_f": 30,
+                  "pt_total": 43,
+                  "vs_total": 47
+                }
+              }
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 48,
+              "den": 80,
+              "rate": 60.0,
+              "pass": true,
+              "patients_total": 121,
+              "age_groups": {
+                "a0_14": {
+                  "m": 5,
+                  "f": 5,
+                  "total": 10
+                },
+                "a15_29": {
+                  "m": 4,
+                  "f": 5,
+                  "total": 9
+                },
+                "a30_44": {
+                  "m": 3,
+                  "f": 3,
+                  "total": 6
+                },
+                "a45_59": {
+                  "m": 4,
+                  "f": 11,
+                  "total": 15
+                },
+                "a60_plus": {
+                  "m": 29,
+                  "f": 52,
+                  "total": 81
+                },
+                "all_ages": {
+                  "m": 45,
+                  "f": 76,
+                  "total": 121
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 16,
+                  "vs_m": 18,
+                  "pt_f": 22,
+                  "vs_f": 22,
+                  "pt_total": 38,
+                  "vs_total": 40
+                },
+                "q2": {
+                  "pt_m": 15,
+                  "vs_m": 16,
+                  "pt_f": 27,
+                  "vs_f": 30,
+                  "pt_total": 42,
+                  "vs_total": 46
+                },
+                "q3": {
+                  "pt_m": 6,
+                  "vs_m": 6,
+                  "pt_f": 19,
+                  "vs_f": 19,
+                  "pt_total": 25,
+                  "vs_total": 25
+                },
+                "q4": {
+                  "pt_m": 8,
+                  "vs_m": 8,
+                  "pt_f": 8,
+                  "vs_f": 9,
+                  "pt_total": 16,
+                  "vs_total": 17
+                }
+              }
             },
             {
               "hospcode": "99758",
@@ -2842,25 +4785,150 @@
               "num": 11,
               "den": 35,
               "rate": 31.43,
-              "pass": false
+              "pass": false,
+              "patients_total": 42,
+              "age_groups": {
+                "a0_14": {
+                  "m": 0,
+                  "f": 0,
+                  "total": 0
+                },
+                "a15_29": {
+                  "m": 0,
+                  "f": 0,
+                  "total": 0
+                },
+                "a30_44": {
+                  "m": 0,
+                  "f": 1,
+                  "total": 1
+                },
+                "a45_59": {
+                  "m": 0,
+                  "f": 7,
+                  "total": 7
+                },
+                "a60_plus": {
+                  "m": 9,
+                  "f": 25,
+                  "total": 34
+                },
+                "all_ages": {
+                  "m": 9,
+                  "f": 33,
+                  "total": 42
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 2,
+                  "vs_m": 3,
+                  "pt_f": 10,
+                  "vs_f": 10,
+                  "pt_total": 12,
+                  "vs_total": 13
+                },
+                "q2": {
+                  "pt_m": 0,
+                  "vs_m": 0,
+                  "pt_f": 6,
+                  "vs_f": 6,
+                  "pt_total": 6,
+                  "vs_total": 6
+                },
+                "q3": {
+                  "pt_m": 4,
+                  "vs_m": 4,
+                  "pt_f": 14,
+                  "vs_f": 16,
+                  "pt_total": 18,
+                  "vs_total": 20
+                },
+                "q4": {
+                  "pt_m": 3,
+                  "vs_m": 4,
+                  "pt_f": 3,
+                  "vs_f": 3,
+                  "pt_total": 6,
+                  "vs_total": 7
+                }
+              }
             }
           ]
         },
         "2569": {
-          "num": 7125,
-          "den": 11135,
-          "rate": 63.99,
+          "num": 7173,
+          "den": 11241,
+          "rate": 63.81,
           "pass": true,
-          "units": [
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 87,
-              "den": 119,
-              "rate": 73.11,
-              "pass": true
+          "patients_total": 13869,
+          "age_groups": {
+            "a0_14": {
+              "m": 143,
+              "f": 123,
+              "total": 266
             },
+            "a15_29": {
+              "m": 230,
+              "f": 339,
+              "total": 569
+            },
+            "a30_44": {
+              "m": 405,
+              "f": 513,
+              "total": 918
+            },
+            "a45_59": {
+              "m": 989,
+              "f": 1548,
+              "total": 2537
+            },
+            "a60_plus": {
+              "m": 3612,
+              "f": 5967,
+              "total": 9579
+            },
+            "all_ages": {
+              "m": 5379,
+              "f": 8490,
+              "total": 13869
+            }
+          },
+          "quarters": {
+            "q1": {
+              "pt_m": 951,
+              "vs_m": 1175,
+              "pt_f": 1591,
+              "vs_f": 1984,
+              "pt_total": 2542,
+              "vs_total": 3159
+            },
+            "q2": {
+              "pt_m": 885,
+              "vs_m": 1096,
+              "pt_f": 1679,
+              "vs_f": 2104,
+              "pt_total": 2564,
+              "vs_total": 3200
+            },
+            "q3": {
+              "pt_m": 2003,
+              "vs_m": 3184,
+              "pt_f": 2982,
+              "vs_f": 4609,
+              "pt_total": 4985,
+              "vs_total": 7793
+            },
+            "q4": {
+              "pt_m": 1540,
+              "vs_m": 1718,
+              "pt_f": 2238,
+              "vs_f": 2544,
+              "pt_total": 3778,
+              "vs_total": 4262
+            }
+          },
+          "units": [
             {
               "hospcode": "11135",
               "name": "โรงพยาบาลสารภี",
@@ -2868,43 +4936,150 @@
               "num": 4530,
               "den": 6313,
               "rate": 71.76,
-              "pass": true
+              "pass": true,
+              "patients_total": 7948,
+              "age_groups": {
+                "a0_14": {
+                  "m": 61,
+                  "f": 47,
+                  "total": 108
+                },
+                "a15_29": {
+                  "m": 128,
+                  "f": 208,
+                  "total": 336
+                },
+                "a30_44": {
+                  "m": 268,
+                  "f": 316,
+                  "total": 584
+                },
+                "a45_59": {
+                  "m": 631,
+                  "f": 913,
+                  "total": 1544
+                },
+                "a60_plus": {
+                  "m": 2212,
+                  "f": 3164,
+                  "total": 5376
+                },
+                "all_ages": {
+                  "m": 3300,
+                  "f": 4648,
+                  "total": 7948
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 443,
+                  "vs_m": 514,
+                  "pt_f": 673,
+                  "vs_f": 812,
+                  "pt_total": 1116,
+                  "vs_total": 1326
+                },
+                "q2": {
+                  "pt_m": 386,
+                  "vs_m": 458,
+                  "pt_f": 630,
+                  "vs_f": 787,
+                  "pt_total": 1016,
+                  "vs_total": 1245
+                },
+                "q3": {
+                  "pt_m": 1424,
+                  "vs_m": 2441,
+                  "pt_f": 1934,
+                  "vs_f": 3218,
+                  "pt_total": 3358,
+                  "vs_total": 5659
+                },
+                "q4": {
+                  "pt_m": 1047,
+                  "vs_m": 1117,
+                  "pt_f": 1411,
+                  "vs_f": 1496,
+                  "pt_total": 2458,
+                  "vs_total": 2613
+                }
+              }
             },
             {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 219,
-              "den": 329,
-              "rate": 66.57,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 117,
-              "den": 179,
-              "rate": 65.36,
-              "pass": true
-            },
-            {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 125,
-              "den": 206,
-              "rate": 60.68,
-              "pass": true
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 159,
-              "den": 268,
-              "rate": 59.33,
-              "pass": true
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 440,
+              "den": 943,
+              "rate": 46.66,
+              "pass": false,
+              "patients_total": 1078,
+              "age_groups": {
+                "a0_14": {
+                  "m": 18,
+                  "f": 9,
+                  "total": 27
+                },
+                "a15_29": {
+                  "m": 8,
+                  "f": 24,
+                  "total": 32
+                },
+                "a30_44": {
+                  "m": 25,
+                  "f": 35,
+                  "total": 60
+                },
+                "a45_59": {
+                  "m": 86,
+                  "f": 114,
+                  "total": 200
+                },
+                "a60_plus": {
+                  "m": 235,
+                  "f": 524,
+                  "total": 759
+                },
+                "all_ages": {
+                  "m": 372,
+                  "f": 706,
+                  "total": 1078
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 44,
+                  "vs_m": 52,
+                  "pt_f": 98,
+                  "vs_f": 119,
+                  "pt_total": 142,
+                  "vs_total": 171
+                },
+                "q2": {
+                  "pt_m": 40,
+                  "vs_m": 44,
+                  "pt_f": 135,
+                  "vs_f": 161,
+                  "pt_total": 175,
+                  "vs_total": 205
+                },
+                "q3": {
+                  "pt_m": 140,
+                  "vs_m": 173,
+                  "pt_f": 245,
+                  "vs_f": 331,
+                  "pt_total": 385,
+                  "vs_total": 504
+                },
+                "q4": {
+                  "pt_m": 148,
+                  "vs_m": 171,
+                  "pt_f": 228,
+                  "vs_f": 332,
+                  "pt_total": 376,
+                  "vs_total": 503
+                }
+              }
             },
             {
               "hospcode": "06018",
@@ -2913,61 +5088,150 @@
               "num": 381,
               "den": 684,
               "rate": 55.7,
-              "pass": true
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 243,
-              "den": 442,
-              "rate": 54.98,
-              "pass": true
+              "pass": true,
+              "patients_total": 771,
+              "age_groups": {
+                "a0_14": {
+                  "m": 17,
+                  "f": 7,
+                  "total": 24
+                },
+                "a15_29": {
+                  "m": 11,
+                  "f": 10,
+                  "total": 21
+                },
+                "a30_44": {
+                  "m": 18,
+                  "f": 33,
+                  "total": 51
+                },
+                "a45_59": {
+                  "m": 41,
+                  "f": 82,
+                  "total": 123
+                },
+                "a60_plus": {
+                  "m": 187,
+                  "f": 365,
+                  "total": 552
+                },
+                "all_ages": {
+                  "m": 274,
+                  "f": 497,
+                  "total": 771
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 76,
+                  "vs_m": 114,
+                  "pt_f": 114,
+                  "vs_f": 165,
+                  "pt_total": 190,
+                  "vs_total": 279
+                },
+                "q2": {
+                  "pt_m": 77,
+                  "vs_m": 105,
+                  "pt_f": 154,
+                  "vs_f": 208,
+                  "pt_total": 231,
+                  "vs_total": 313
+                },
+                "q3": {
+                  "pt_m": 75,
+                  "vs_m": 105,
+                  "pt_f": 146,
+                  "vs_f": 215,
+                  "pt_total": 221,
+                  "vs_total": 320
+                },
+                "q4": {
+                  "pt_m": 46,
+                  "vs_m": 57,
+                  "pt_f": 83,
+                  "vs_f": 96,
+                  "pt_total": 129,
+                  "vs_total": 153
+                }
+              }
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
               "num": 337,
-              "den": 639,
-              "rate": 52.74,
-              "pass": true
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 188,
-              "den": 360,
-              "rate": 52.22,
-              "pass": true
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 131,
-              "den": 253,
-              "rate": 51.78,
-              "pass": true
-            },
-            {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 15,
-              "den": 30,
-              "rate": 50.0,
-              "pass": true
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 400,
-              "den": 847,
-              "rate": 47.23,
-              "pass": false
+              "den": 640,
+              "rate": 52.66,
+              "pass": true,
+              "patients_total": 758,
+              "age_groups": {
+                "a0_14": {
+                  "m": 4,
+                  "f": 3,
+                  "total": 7
+                },
+                "a15_29": {
+                  "m": 10,
+                  "f": 8,
+                  "total": 18
+                },
+                "a30_44": {
+                  "m": 6,
+                  "f": 9,
+                  "total": 15
+                },
+                "a45_59": {
+                  "m": 47,
+                  "f": 79,
+                  "total": 126
+                },
+                "a60_plus": {
+                  "m": 197,
+                  "f": 395,
+                  "total": 592
+                },
+                "all_ages": {
+                  "m": 264,
+                  "f": 494,
+                  "total": 758
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 80,
+                  "vs_m": 102,
+                  "pt_f": 139,
+                  "vs_f": 188,
+                  "pt_total": 219,
+                  "vs_total": 290
+                },
+                "q2": {
+                  "pt_m": 76,
+                  "vs_m": 102,
+                  "pt_f": 140,
+                  "vs_f": 180,
+                  "pt_total": 216,
+                  "vs_total": 282
+                },
+                "q3": {
+                  "pt_m": 50,
+                  "vs_m": 68,
+                  "pt_f": 102,
+                  "vs_f": 135,
+                  "pt_total": 152,
+                  "vs_total": 203
+                },
+                "q4": {
+                  "pt_m": 58,
+                  "vs_m": 65,
+                  "pt_f": 113,
+                  "vs_f": 137,
+                  "pt_total": 171,
+                  "vs_total": 202
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -2976,7 +5240,758 @@
               "num": 193,
               "den": 466,
               "rate": 41.42,
-              "pass": false
+              "pass": false,
+              "patients_total": 501,
+              "age_groups": {
+                "a0_14": {
+                  "m": 13,
+                  "f": 9,
+                  "total": 22
+                },
+                "a15_29": {
+                  "m": 5,
+                  "f": 23,
+                  "total": 28
+                },
+                "a30_44": {
+                  "m": 11,
+                  "f": 14,
+                  "total": 25
+                },
+                "a45_59": {
+                  "m": 23,
+                  "f": 60,
+                  "total": 83
+                },
+                "a60_plus": {
+                  "m": 89,
+                  "f": 254,
+                  "total": 343
+                },
+                "all_ages": {
+                  "m": 141,
+                  "f": 360,
+                  "total": 501
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 49,
+                  "vs_m": 65,
+                  "pt_f": 102,
+                  "vs_f": 129,
+                  "pt_total": 151,
+                  "vs_total": 194
+                },
+                "q2": {
+                  "pt_m": 36,
+                  "vs_m": 52,
+                  "pt_f": 98,
+                  "vs_f": 128,
+                  "pt_total": 134,
+                  "vs_total": 180
+                },
+                "q3": {
+                  "pt_m": 25,
+                  "vs_m": 37,
+                  "pt_f": 85,
+                  "vs_f": 113,
+                  "pt_total": 110,
+                  "vs_total": 150
+                },
+                "q4": {
+                  "pt_m": 31,
+                  "vs_m": 39,
+                  "pt_f": 75,
+                  "vs_f": 96,
+                  "pt_total": 106,
+                  "vs_total": 135
+                }
+              }
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 243,
+              "den": 442,
+              "rate": 54.98,
+              "pass": true,
+              "patients_total": 500,
+              "age_groups": {
+                "a0_14": {
+                  "m": 6,
+                  "f": 9,
+                  "total": 15
+                },
+                "a15_29": {
+                  "m": 19,
+                  "f": 13,
+                  "total": 32
+                },
+                "a30_44": {
+                  "m": 19,
+                  "f": 29,
+                  "total": 48
+                },
+                "a45_59": {
+                  "m": 27,
+                  "f": 73,
+                  "total": 100
+                },
+                "a60_plus": {
+                  "m": 109,
+                  "f": 196,
+                  "total": 305
+                },
+                "all_ages": {
+                  "m": 180,
+                  "f": 320,
+                  "total": 500
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 45,
+                  "vs_m": 54,
+                  "pt_f": 89,
+                  "vs_f": 120,
+                  "pt_total": 134,
+                  "vs_total": 174
+                },
+                "q2": {
+                  "pt_m": 46,
+                  "vs_m": 61,
+                  "pt_f": 92,
+                  "vs_f": 129,
+                  "pt_total": 138,
+                  "vs_total": 190
+                },
+                "q3": {
+                  "pt_m": 38,
+                  "vs_m": 60,
+                  "pt_f": 76,
+                  "vs_f": 112,
+                  "pt_total": 114,
+                  "vs_total": 172
+                },
+                "q4": {
+                  "pt_m": 51,
+                  "vs_m": 68,
+                  "pt_f": 63,
+                  "vs_f": 81,
+                  "pt_total": 114,
+                  "vs_total": 149
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 226,
+              "den": 334,
+              "rate": 67.66,
+              "pass": true,
+              "patients_total": 430,
+              "age_groups": {
+                "a0_14": {
+                  "m": 7,
+                  "f": 13,
+                  "total": 20
+                },
+                "a15_29": {
+                  "m": 7,
+                  "f": 7,
+                  "total": 14
+                },
+                "a30_44": {
+                  "m": 10,
+                  "f": 19,
+                  "total": 29
+                },
+                "a45_59": {
+                  "m": 27,
+                  "f": 43,
+                  "total": 70
+                },
+                "a60_plus": {
+                  "m": 119,
+                  "f": 178,
+                  "total": 297
+                },
+                "all_ages": {
+                  "m": 170,
+                  "f": 260,
+                  "total": 430
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 36,
+                  "vs_m": 42,
+                  "pt_f": 63,
+                  "vs_f": 84,
+                  "pt_total": 99,
+                  "vs_total": 126
+                },
+                "q2": {
+                  "pt_m": 48,
+                  "vs_m": 63,
+                  "pt_f": 73,
+                  "vs_f": 96,
+                  "pt_total": 121,
+                  "vs_total": 159
+                },
+                "q3": {
+                  "pt_m": 45,
+                  "vs_m": 60,
+                  "pt_f": 66,
+                  "vs_f": 91,
+                  "pt_total": 111,
+                  "vs_total": 151
+                },
+                "q4": {
+                  "pt_m": 41,
+                  "vs_m": 61,
+                  "pt_f": 58,
+                  "vs_f": 63,
+                  "pt_total": 99,
+                  "vs_total": 124
+                }
+              }
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 159,
+              "den": 268,
+              "rate": 59.33,
+              "pass": true,
+              "patients_total": 399,
+              "age_groups": {
+                "a0_14": {
+                  "m": 1,
+                  "f": 2,
+                  "total": 3
+                },
+                "a15_29": {
+                  "m": 8,
+                  "f": 5,
+                  "total": 13
+                },
+                "a30_44": {
+                  "m": 12,
+                  "f": 8,
+                  "total": 20
+                },
+                "a45_59": {
+                  "m": 29,
+                  "f": 41,
+                  "total": 70
+                },
+                "a60_plus": {
+                  "m": 98,
+                  "f": 195,
+                  "total": 293
+                },
+                "all_ages": {
+                  "m": 148,
+                  "f": 251,
+                  "total": 399
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 20,
+                  "vs_m": 23,
+                  "pt_f": 23,
+                  "vs_f": 26,
+                  "pt_total": 43,
+                  "vs_total": 49
+                },
+                "q2": {
+                  "pt_m": 20,
+                  "vs_m": 23,
+                  "pt_f": 42,
+                  "vs_f": 46,
+                  "pt_total": 62,
+                  "vs_total": 69
+                },
+                "q3": {
+                  "pt_m": 68,
+                  "vs_m": 72,
+                  "pt_f": 122,
+                  "vs_f": 129,
+                  "pt_total": 190,
+                  "vs_total": 201
+                },
+                "q4": {
+                  "pt_m": 40,
+                  "vs_m": 41,
+                  "pt_f": 64,
+                  "vs_f": 67,
+                  "pt_total": 104,
+                  "vs_total": 108
+                }
+              }
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 188,
+              "den": 360,
+              "rate": 52.22,
+              "pass": true,
+              "patients_total": 379,
+              "age_groups": {
+                "a0_14": {
+                  "m": 0,
+                  "f": 1,
+                  "total": 1
+                },
+                "a15_29": {
+                  "m": 5,
+                  "f": 6,
+                  "total": 11
+                },
+                "a30_44": {
+                  "m": 9,
+                  "f": 15,
+                  "total": 24
+                },
+                "a45_59": {
+                  "m": 23,
+                  "f": 51,
+                  "total": 74
+                },
+                "a60_plus": {
+                  "m": 88,
+                  "f": 181,
+                  "total": 269
+                },
+                "all_ages": {
+                  "m": 125,
+                  "f": 254,
+                  "total": 379
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 32,
+                  "vs_m": 48,
+                  "pt_f": 66,
+                  "vs_f": 84,
+                  "pt_total": 98,
+                  "vs_total": 132
+                },
+                "q2": {
+                  "pt_m": 44,
+                  "vs_m": 61,
+                  "pt_f": 88,
+                  "vs_f": 110,
+                  "pt_total": 132,
+                  "vs_total": 171
+                },
+                "q3": {
+                  "pt_m": 31,
+                  "vs_m": 49,
+                  "pt_f": 61,
+                  "vs_f": 105,
+                  "pt_total": 92,
+                  "vs_total": 154
+                },
+                "q4": {
+                  "pt_m": 18,
+                  "vs_m": 30,
+                  "pt_f": 39,
+                  "vs_f": 61,
+                  "pt_total": 57,
+                  "vs_total": 91
+                }
+              }
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 131,
+              "den": 254,
+              "rate": 51.57,
+              "pass": true,
+              "patients_total": 346,
+              "age_groups": {
+                "a0_14": {
+                  "m": 2,
+                  "f": 3,
+                  "total": 5
+                },
+                "a15_29": {
+                  "m": 3,
+                  "f": 6,
+                  "total": 9
+                },
+                "a30_44": {
+                  "m": 2,
+                  "f": 7,
+                  "total": 9
+                },
+                "a45_59": {
+                  "m": 15,
+                  "f": 22,
+                  "total": 37
+                },
+                "a60_plus": {
+                  "m": 91,
+                  "f": 195,
+                  "total": 286
+                },
+                "all_ages": {
+                  "m": 113,
+                  "f": 233,
+                  "total": 346
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 24,
+                  "vs_m": 33,
+                  "pt_f": 48,
+                  "vs_f": 56,
+                  "pt_total": 72,
+                  "vs_total": 89
+                },
+                "q2": {
+                  "pt_m": 42,
+                  "vs_m": 44,
+                  "pt_f": 89,
+                  "vs_f": 96,
+                  "pt_total": 131,
+                  "vs_total": 140
+                },
+                "q3": {
+                  "pt_m": 33,
+                  "vs_m": 38,
+                  "pt_f": 70,
+                  "vs_f": 74,
+                  "pt_total": 103,
+                  "vs_total": 112
+                },
+                "q4": {
+                  "pt_m": 14,
+                  "vs_m": 16,
+                  "pt_f": 26,
+                  "vs_f": 28,
+                  "pt_total": 40,
+                  "vs_total": 44
+                }
+              }
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 126,
+              "den": 209,
+              "rate": 60.29,
+              "pass": true,
+              "patients_total": 285,
+              "age_groups": {
+                "a0_14": {
+                  "m": 3,
+                  "f": 4,
+                  "total": 7
+                },
+                "a15_29": {
+                  "m": 8,
+                  "f": 4,
+                  "total": 12
+                },
+                "a30_44": {
+                  "m": 8,
+                  "f": 12,
+                  "total": 20
+                },
+                "a45_59": {
+                  "m": 12,
+                  "f": 29,
+                  "total": 41
+                },
+                "a60_plus": {
+                  "m": 74,
+                  "f": 131,
+                  "total": 205
+                },
+                "all_ages": {
+                  "m": 105,
+                  "f": 180,
+                  "total": 285
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 33,
+                  "vs_m": 46,
+                  "pt_f": 52,
+                  "vs_f": 61,
+                  "pt_total": 85,
+                  "vs_total": 107
+                },
+                "q2": {
+                  "pt_m": 28,
+                  "vs_m": 31,
+                  "pt_f": 55,
+                  "vs_f": 63,
+                  "pt_total": 83,
+                  "vs_total": 94
+                },
+                "q3": {
+                  "pt_m": 26,
+                  "vs_m": 30,
+                  "pt_f": 27,
+                  "vs_f": 32,
+                  "pt_total": 53,
+                  "vs_total": 62
+                },
+                "q4": {
+                  "pt_m": 18,
+                  "vs_m": 19,
+                  "pt_f": 46,
+                  "vs_f": 53,
+                  "pt_total": 64,
+                  "vs_total": 72
+                }
+              }
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 117,
+              "den": 179,
+              "rate": 65.36,
+              "pass": true,
+              "patients_total": 261,
+              "age_groups": {
+                "a0_14": {
+                  "m": 7,
+                  "f": 7,
+                  "total": 14
+                },
+                "a15_29": {
+                  "m": 14,
+                  "f": 17,
+                  "total": 31
+                },
+                "a30_44": {
+                  "m": 12,
+                  "f": 11,
+                  "total": 23
+                },
+                "a45_59": {
+                  "m": 12,
+                  "f": 25,
+                  "total": 37
+                },
+                "a60_plus": {
+                  "m": 56,
+                  "f": 100,
+                  "total": 156
+                },
+                "all_ages": {
+                  "m": 101,
+                  "f": 160,
+                  "total": 261
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 44,
+                  "vs_m": 52,
+                  "pt_f": 70,
+                  "vs_f": 79,
+                  "pt_total": 114,
+                  "vs_total": 131
+                },
+                "q2": {
+                  "pt_m": 25,
+                  "vs_m": 31,
+                  "pt_f": 49,
+                  "vs_f": 57,
+                  "pt_total": 74,
+                  "vs_total": 88
+                },
+                "q3": {
+                  "pt_m": 20,
+                  "vs_m": 20,
+                  "pt_f": 22,
+                  "vs_f": 24,
+                  "pt_total": 42,
+                  "vs_total": 44
+                },
+                "q4": {
+                  "pt_m": 12,
+                  "vs_m": 14,
+                  "pt_f": 19,
+                  "vs_f": 19,
+                  "pt_total": 31,
+                  "vs_total": 33
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 87,
+              "den": 119,
+              "rate": 73.11,
+              "pass": true,
+              "patients_total": 173,
+              "age_groups": {
+                "a0_14": {
+                  "m": 4,
+                  "f": 9,
+                  "total": 13
+                },
+                "a15_29": {
+                  "m": 4,
+                  "f": 6,
+                  "total": 10
+                },
+                "a30_44": {
+                  "m": 5,
+                  "f": 5,
+                  "total": 10
+                },
+                "a45_59": {
+                  "m": 16,
+                  "f": 15,
+                  "total": 31
+                },
+                "a60_plus": {
+                  "m": 43,
+                  "f": 66,
+                  "total": 109
+                },
+                "all_ages": {
+                  "m": 72,
+                  "f": 101,
+                  "total": 173
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 19,
+                  "vs_m": 23,
+                  "pt_f": 38,
+                  "vs_f": 43,
+                  "pt_total": 57,
+                  "vs_total": 66
+                },
+                "q2": {
+                  "pt_m": 14,
+                  "vs_m": 18,
+                  "pt_f": 28,
+                  "vs_f": 35,
+                  "pt_total": 42,
+                  "vs_total": 53
+                },
+                "q3": {
+                  "pt_m": 23,
+                  "vs_m": 26,
+                  "pt_f": 22,
+                  "vs_f": 26,
+                  "pt_total": 45,
+                  "vs_total": 52
+                },
+                "q4": {
+                  "pt_m": 16,
+                  "vs_m": 20,
+                  "pt_f": 13,
+                  "vs_f": 15,
+                  "pt_total": 29,
+                  "vs_total": 35
+                }
+              }
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 15,
+              "den": 30,
+              "rate": 50.0,
+              "pass": true,
+              "patients_total": 40,
+              "age_groups": {
+                "a0_14": {
+                  "m": 0,
+                  "f": 0,
+                  "total": 0
+                },
+                "a15_29": {
+                  "m": 0,
+                  "f": 2,
+                  "total": 2
+                },
+                "a30_44": {
+                  "m": 0,
+                  "f": 0,
+                  "total": 0
+                },
+                "a45_59": {
+                  "m": 0,
+                  "f": 1,
+                  "total": 1
+                },
+                "a60_plus": {
+                  "m": 14,
+                  "f": 23,
+                  "total": 37
+                },
+                "all_ages": {
+                  "m": 14,
+                  "f": 26,
+                  "total": 40
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "pt_m": 6,
+                  "vs_m": 7,
+                  "pt_f": 16,
+                  "vs_f": 18,
+                  "pt_total": 22,
+                  "vs_total": 25
+                },
+                "q2": {
+                  "pt_m": 3,
+                  "vs_m": 3,
+                  "pt_f": 6,
+                  "vs_f": 8,
+                  "pt_total": 9,
+                  "vs_total": 11
+                },
+                "q3": {
+                  "pt_m": 5,
+                  "vs_m": 5,
+                  "pt_f": 4,
+                  "vs_f": 4,
+                  "pt_total": 9,
+                  "vs_total": 9
+                },
+                "q4": {
+                  "pt_m": 0,
+                  "vs_m": 0,
+                  "pt_f": 0,
+                  "vs_f": 0,
+                  "pt_total": 0,
+                  "vs_total": 0
+                }
+              }
             }
           ]
         }

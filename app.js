@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const topHerbsPanel = document.getElementById('top-herbs-panel');
   const nhsoErrorPanel = document.getElementById('nhso-error-panel');
   const nhsoServicePanel = document.getElementById('nhso-service-panel');
+  const ttmAgeSexPanel = document.getElementById('ttm-age-sex-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
@@ -58,6 +59,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentProcedureService = 'all';
   let currentProcedureYear = '2569';
   let procedureChartInstance = null;
+
+  let currentTtmAgeView = 'age';
+  let currentTtmAgeYear = '2569';
+  let currentTtmChart2Mode = 'pie';
+  let ttmAgePyramidChartInstance = null;
+  let ttmAgeDonutChartInstance = null;
+  let ttmAgeSearchQuery = '';
 
   // Load Data with Cache-Busting
   let nhsoMasterData = null;
@@ -1252,6 +1260,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('ind-target-text').textContent = 'เป้าหมาย: 0 ครั้ง (ไม่พบ Error)';
     } else if (ind.id === 'nhso_service') {
       document.getElementById('ind-target-text').textContent = 'ชดเชยตามผลงาน: 1 Point = 1 บาท (6 บริการหัตถการ)';
+    } else if (ind.id === 'ttm_age_sex') {
+      document.getElementById('ind-target-text').textContent = 'รายงานจำแนก 5 กลุ่มอายุและเพศ (คน/ครั้ง)';
     } else {
       document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
     }
@@ -1277,18 +1287,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rateEl = document.getElementById('ind-current-rate');
     const badgeEl = document.getElementById('ind-status-badge');
 
-    rateEl.textContent = `${Number(rate).toLocaleString()} ${ind.unit}`;
-    if (ind.target === 0) {
+    if (ind.id === 'ttm_age_sex') {
+      const totPt = (currentUnit === 'all')
+        ? (yData?.patients_total || yData?.num || 0)
+        : ((yData?.units?.find(item => item.hospcode === currentUnit)?.patients_total) || 0);
+      rateEl.textContent = `${Number(totPt).toLocaleString()} คน`;
       badgeEl.className = 'badge-neutral px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
-      badgeEl.textContent = 'ผลงานสะสม';
-    } else if (isPass) {
-      badgeEl.className = 'badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
-      badgeEl.textContent = '✓ ผ่านเกณฑ์';
-      rateEl.className = 'text-2xl font-black text-emerald-600 num-font';
+      badgeEl.textContent = 'จำแนกอายุ & เพศ';
     } else {
-      badgeEl.className = 'badge-fail px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
-      badgeEl.textContent = '✕ ต่ำกว่าเกณฑ์';
-      rateEl.className = 'text-2xl font-black text-rose-600 num-font';
+      rateEl.textContent = `${Number(rate).toLocaleString()} ${ind.unit}`;
+      if (ind.target === 0) {
+        badgeEl.className = 'badge-neutral px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+        badgeEl.textContent = 'ผลงานสะสม';
+      } else if (isPass) {
+        badgeEl.className = 'badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+        badgeEl.textContent = '✓ ผ่านเกณฑ์';
+        rateEl.className = 'text-2xl font-black text-emerald-600 num-font';
+      } else {
+        badgeEl.className = 'badge-fail px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+        badgeEl.textContent = '✕ ต่ำกว่าเกณฑ์';
+        rateEl.className = 'text-2xl font-black text-rose-600 num-font';
+      }
     }
   }
 
@@ -3233,6 +3252,1068 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+
+  // ==========================================
+  // HDC TTM3: Age & Sex Matrix Table & Charts
+  // ==========================================
+
+  window.switchTtmAgeView = function(view) {
+    currentTtmAgeView = view;
+    renderTtmAgeSexPanel();
+  };
+
+  window.switchTtmAgeYear = function(yr) {
+    currentTtmAgeYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    updateDashboardView();
+  };
+
+  window.switchTtmChart2Mode = function(mode) {
+    currentTtmChart2Mode = mode;
+    renderTtmAgeSexPanel();
+  };
+
+  window.selectTtmAgeHospital = function(hospcode) {
+    currentUnit = hospcode;
+    if (unitSelect) unitSelect.value = hospcode;
+    updateExecutiveOverview();
+    updateIndicatorHeader();
+    renderTtmAgeSexPanel();
+  };
+
+  window.exportTtmAgeCsv = function() {
+    const yr = currentTtmAgeYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['ttm_age_sex'];
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const distAge = yrData.age_groups || {};
+    const distQtr = yrData.quarters || {};
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Excel
+
+    if (currentTtmAgeView === 'age') {
+      csvContent += `รายงานการจ่ายยาสมุนไพรจำแนกตามกลุ่มอายุและเพศ อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,0-14ปี(ชาย),0-14ปี(หญิง),0-14ปี(รวม),15-29ปี(ชาย),15-29ปี(หญิง),15-29ปี(รวม),30-44ปี(ชาย),30-44ปี(หญิง),30-44ปี(รวม),45-59ปี(ชาย),45-59ปี(หญิง),45-59ปี(รวม),60+ปี(ชาย),60+ปี(หญิง),60+ปี(รวม),รวมทุกกลุ่ม(ชาย),รวมทุกกลุ่ม(หญิง),รวมทุกกลุ่ม(คน)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = meta ? meta.subdistrict : (u.subdistrict || '');
+        const ag = u.age_groups || {};
+        const row = [
+          `"${u.hospcode}"`,
+          `"${uName}"`,
+          `"${uSub}"`,
+          ag.a0_14?.m || 0, ag.a0_14?.f || 0, ag.a0_14?.total || 0,
+          ag.a15_29?.m || 0, ag.a15_29?.f || 0, ag.a15_29?.total || 0,
+          ag.a30_44?.m || 0, ag.a30_44?.f || 0, ag.a30_44?.total || 0,
+          ag.a45_59?.m || 0, ag.a45_59?.f || 0, ag.a45_59?.total || 0,
+          ag.a60_plus?.m || 0, ag.a60_plus?.f || 0, ag.a60_plus?.total || 0,
+          ag.all_ages?.m || 0, ag.all_ages?.f || 0, ag.all_ages?.total || 0
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const totRow = [
+        '"total"',
+        '"รวมทั้งอำเภอสารภี (14 หน่วยบริการ)"',
+        '"-"',
+        distAge.a0_14?.m || 0, distAge.a0_14?.f || 0, distAge.a0_14?.total || 0,
+        distAge.a15_29?.m || 0, distAge.a15_29?.f || 0, distAge.a15_29?.total || 0,
+        distAge.a30_44?.m || 0, distAge.a30_44?.f || 0, distAge.a30_44?.total || 0,
+        distAge.a45_59?.m || 0, distAge.a45_59?.f || 0, distAge.a45_59?.total || 0,
+        distAge.a60_plus?.m || 0, distAge.a60_plus?.f || 0, distAge.a60_plus?.total || 0,
+        distAge.all_ages?.m || 0, distAge.all_ages?.f || 0, distAge.all_ages?.total || 0
+      ];
+      csvContent += totRow.join(',') + '\n';
+
+    } else if (currentTtmAgeView === 'quarter') {
+      csvContent += `รายงานการจ่ายยาสมุนไพรรายไตรมาส (Q1 - Q4) อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัส,หน่วยบริการ,ตำบล,Q1 ชาย(คน),Q1 ชาย(ครั้ง),Q1 หญิง(คน),Q1 หญิง(ครั้ง),Q1 รวม(คน),Q2 ชาย(คน),Q2 ชาย(ครั้ง),Q2 หญิง(คน),Q2 หญิง(ครั้ง),Q2 รวม(คน),Q3 ชาย(คน),Q3 ชาย(ครั้ง),Q3 หญิง(คน),Q3 หญิง(ครั้ง),Q3 รวม(คน),Q4 ชาย(คน),Q4 ชาย(ครั้ง),Q4 หญิง(คน),Q4 หญิง(ครั้ง),Q4 รวม(คน),รวมทั้งปี(คน),รวมทั้งปี(ครั้ง)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = meta ? meta.subdistrict : (u.subdistrict || '');
+        const q = u.quarters || {};
+        const q1 = q.q1 || {};
+        const q2 = q.q2 || {};
+        const q3 = q.q3 || {};
+        const q4 = q.q4 || {};
+        const totPt = u.patients_total || (u.age_groups?.all_ages?.total || 0);
+        const totVs = (q1.vs_total || 0) + (q2.vs_total || 0) + (q3.vs_total || 0) + (q4.vs_total || 0);
+
+        const row = [
+          `"${u.hospcode}"`, `"${uName}"`, `"${uSub}"`,
+          q1.pt_m || 0, q1.vs_m || 0, q1.pt_f || 0, q1.vs_f || 0, q1.pt_total || 0,
+          q2.pt_m || 0, q2.vs_m || 0, q2.pt_f || 0, q2.vs_f || 0, q2.pt_total || 0,
+          q3.pt_m || 0, q3.vs_m || 0, q3.pt_f || 0, q3.vs_f || 0, q3.pt_total || 0,
+          q4.pt_m || 0, q4.vs_m || 0, q4.pt_f || 0, q4.vs_f || 0, q4.pt_total || 0,
+          totPt, totVs
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const q1 = distQtr.q1 || {};
+      const q2 = distQtr.q2 || {};
+      const q3 = distQtr.q3 || {};
+      const q4 = distQtr.q4 || {};
+      const distPt = yrData.patients_total || (distAge.all_ages?.total || 0);
+      const distVs = (q1.vs_total || 0) + (q2.vs_total || 0) + (q3.vs_total || 0) + (q4.vs_total || 0);
+      const totRow = [
+        '"total"', '"รวมทั้งอำเภอสารภี (14 หน่วยบริการ)"', '"-"',
+        q1.pt_m || 0, q1.vs_m || 0, q1.pt_f || 0, q1.vs_f || 0, q1.pt_total || 0,
+        q2.pt_m || 0, q2.vs_m || 0, q2.pt_f || 0, q2.vs_f || 0, q2.pt_total || 0,
+        q3.pt_m || 0, q3.vs_m || 0, q3.pt_f || 0, q3.vs_f || 0, q3.pt_total || 0,
+        q4.pt_m || 0, q4.vs_m || 0, q4.pt_f || 0, q4.vs_f || 0, q4.pt_total || 0,
+        distPt, distVs
+      ];
+      csvContent += totRow.join(',') + '\n';
+
+    } else {
+      // Full HDC Table
+      csvContent += `ตารางมาตรฐาน HDC s_ttm3: การจ่ายยาสมุนไพรจำแนกตามกลุ่มอายุ เพศ และไตรมาส อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัสสถานพยาบาล,ชื่อสถานพยาบาล,0-14(ชาย),0-14(หญิง),0-14(รวม),15-29(ชาย),15-29(หญิง),15-29(รวม),30-44(ชาย),30-44(หญิง),30-44(รวม),45-59(ชาย),45-59(หญิง),45-59(รวม),60+(ชาย),60+(หญิง),60+(รวม),รวมทุกกลุ่ม(ชาย),รวมทุกกลุ่ม(หญิง),รวมทุกกลุ่ม(รวม),ไตรมาส1 ชาย(คน),ไตรมาส1 ชาย(ครั้ง),ไตรมาส1 หญิง(คน),ไตรมาส1 หญิง(ครั้ง),ไตรมาส2 ชาย(คน),ไตรมาส2 ชาย(ครั้ง),ไตรมาส2 หญิง(คน),ไตรมาส2 หญิง(ครั้ง),ไตรมาส3 ชาย(คน),ไตรมาส3 ชาย(ครั้ง),ไตรมาส3 หญิง(คน),ไตรมาส3 หญิง(ครั้ง),ไตรมาส4 ชาย(คน),ไตรมาส4 ชาย(ครั้ง),ไตรมาส4 หญิง(คน),ไตรมาส4 หญิง(ครั้ง)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const ag = u.age_groups || {};
+        const q = u.quarters || {};
+        const row = [
+          `"${u.hospcode}"`, `"${uName}"`,
+          ag.a0_14?.m || 0, ag.a0_14?.f || 0, ag.a0_14?.total || 0,
+          ag.a15_29?.m || 0, ag.a15_29?.f || 0, ag.a15_29?.total || 0,
+          ag.a30_44?.m || 0, ag.a30_44?.f || 0, ag.a30_44?.total || 0,
+          ag.a45_59?.m || 0, ag.a45_59?.f || 0, ag.a45_59?.total || 0,
+          ag.a60_plus?.m || 0, ag.a60_plus?.f || 0, ag.a60_plus?.total || 0,
+          ag.all_ages?.m || 0, ag.all_ages?.f || 0, ag.all_ages?.total || 0,
+          q.q1?.pt_m || 0, q.q1?.vs_m || 0, q.q1?.pt_f || 0, q.q1?.vs_f || 0,
+          q.q2?.pt_m || 0, q.q2?.vs_m || 0, q.q2?.pt_f || 0, q.q2?.vs_f || 0,
+          q.q3?.pt_m || 0, q.q3?.vs_m || 0, q.q3?.pt_f || 0, q.q3?.vs_f || 0,
+          q.q4?.pt_m || 0, q.q4?.vs_m || 0, q.q4?.pt_f || 0, q.q4?.vs_f || 0
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const q = distQtr;
+      const totRow = [
+        '"total"', '"รวมทั้งอำเภอสารภี (14 หน่วยบริการ)"',
+        distAge.a0_14?.m || 0, distAge.a0_14?.f || 0, distAge.a0_14?.total || 0,
+        distAge.a15_29?.m || 0, distAge.a15_29?.f || 0, distAge.a15_29?.total || 0,
+        distAge.a30_44?.m || 0, distAge.a30_44?.f || 0, distAge.a30_44?.total || 0,
+        distAge.a45_59?.m || 0, distAge.a45_59?.f || 0, distAge.a45_59?.total || 0,
+        distAge.a60_plus?.m || 0, distAge.a60_plus?.f || 0, distAge.a60_plus?.total || 0,
+        distAge.all_ages?.m || 0, distAge.all_ages?.f || 0, distAge.all_ages?.total || 0,
+        q.q1?.pt_m || 0, q.q1?.vs_m || 0, q.q1?.pt_f || 0, q.q1?.vs_f || 0,
+        q.q2?.pt_m || 0, q.q2?.vs_m || 0, q.q2?.pt_f || 0, q.q2?.vs_f || 0,
+        q.q3?.pt_m || 0, q.q3?.vs_m || 0, q.q3?.pt_f || 0, q.q3?.vs_f || 0,
+        q.q4?.pt_m || 0, q.q4?.vs_m || 0, q.q4?.pt_f || 0, q.q4?.vs_f || 0
+      ];
+      csvContent += totRow.join(',') + '\n';
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hdc_ttm3_saraphi_${yr}_${currentTtmAgeView}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  function renderTtmAgeSexPanel() {
+    if (currentIndicatorId !== 'ttm_age_sex') {
+      if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+      return;
+    }
+    if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
+
+    const yr = currentTtmAgeYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['age', 'quarter', 'full'].forEach(v => {
+      const btn = document.getElementById(`btn-ttm-view-${v}`);
+      if (btn) {
+        if (v === currentTtmAgeView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ttm-age-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Sync Chart 2 Mode Buttons
+    const btnPie = document.getElementById('btn-ttm-chart2-pie');
+    const btnQtr = document.getElementById('btn-ttm-chart2-quarter');
+    if (btnPie && btnQtr) {
+      if (currentTtmChart2Mode === 'pie') {
+        btnPie.className = 'px-2 py-1 rounded-md bg-white text-emerald-700 shadow-xs font-bold transition';
+        btnQtr.className = 'px-2 py-1 rounded-md text-slate-500 hover:text-slate-800 transition bg-transparent';
+      } else {
+        btnPie.className = 'px-2 py-1 rounded-md text-slate-500 hover:text-slate-800 transition bg-transparent';
+        btnQtr.className = 'px-2 py-1 rounded-md bg-white text-emerald-700 shadow-xs font-bold transition';
+      }
+    }
+
+    // 4. Resolve Master Data
+    const ind = masterData?.indicators?.['ttm_age_sex'];
+    const yrData = ind?.years?.[yr] || {};
+    const distAgeGroups = yrData.age_groups || {
+      a0_14: { m: 0, f: 0, total: 0 },
+      a15_29: { m: 0, f: 0, total: 0 },
+      a30_44: { m: 0, f: 0, total: 0 },
+      a45_59: { m: 0, f: 0, total: 0 },
+      a60_plus: { m: 0, f: 0, total: 0 },
+      all_ages: { m: 0, f: 0, total: 0 }
+    };
+    const distQuarters = yrData.quarters || {
+      q1: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+      q2: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+      q3: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+      q4: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 }
+    };
+    const rawUnits = yrData.units || [];
+    const unitsList = rawUnits.map(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const cleanName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+      const cleanShort = (u.hospcode === '06023') ? 'บ้านป่าสา' : (meta ? meta.short : (u.subdistrict || u.name));
+      const cleanSubdistrict = meta ? meta.subdistrict : (u.subdistrict || '');
+      return {
+        ...u,
+        name: cleanName,
+        short: cleanShort,
+        subdistrict: cleanSubdistrict,
+        patients_total: u.patients_total || (u.age_groups?.all_ages?.total || 0),
+        age_groups: u.age_groups || {
+          a0_14: { m: 0, f: 0, total: 0 },
+          a15_29: { m: 0, f: 0, total: 0 },
+          a30_44: { m: 0, f: 0, total: 0 },
+          a45_59: { m: 0, f: 0, total: 0 },
+          a60_plus: { m: 0, f: 0, total: 0 },
+          all_ages: { m: 0, f: 0, total: 0 }
+        },
+        quarters: u.quarters || {
+          q1: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+          q2: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+          q3: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 },
+          q4: { pt_m: 0, vs_m: 0, pt_f: 0, vs_f: 0, pt_total: 0, vs_total: 0 }
+        }
+      };
+    });
+
+    const isDistrict = (currentUnit === 'all');
+    const selectedUnit = isDistrict ? null : unitsList.find(u => u.hospcode === currentUnit);
+    const activeAgeGroups = selectedUnit ? selectedUnit.age_groups : distAgeGroups;
+    const activeQuarters = selectedUnit ? selectedUnit.quarters : distQuarters;
+    const activePatientsTotal = selectedUnit ? selectedUnit.patients_total : (yrData.patients_total || distAgeGroups.all_ages.total || 0);
+
+    // 5. Update 4 Bento Metric Cards
+    const elTotal = document.getElementById('ttm-age-stat-total');
+    const elGenderRatio = document.getElementById('ttm-age-stat-gender-ratio');
+    const elCard1Badge = document.getElementById('ttm-age-card1-badge');
+    if (elTotal) elTotal.textContent = Number(activePatientsTotal).toLocaleString();
+    if (elCard1Badge) elCard1Badge.textContent = isDistrict ? `HDC s_ttm3 (${yr})` : `${selectedUnit.short} (${yr})`;
+
+    const allM = activeAgeGroups.all_ages?.m || 0;
+    const allF = activeAgeGroups.all_ages?.f || 0;
+    const pctM = activePatientsTotal > 0 ? ((allM / activePatientsTotal) * 100).toFixed(1) : '0.0';
+    const pctF = activePatientsTotal > 0 ? ((allF / activePatientsTotal) * 100).toFixed(1) : '0.0';
+    if (elGenderRatio) {
+      elGenderRatio.textContent = `ชาย ${pctM}% (${Number(allM).toLocaleString()}) • หญิง ${pctF}% (${Number(allF).toLocaleString()})`;
+    }
+
+    // Card 2: 60+
+    const a60Tot = activeAgeGroups.a60_plus?.total || 0;
+    const a60M = activeAgeGroups.a60_plus?.m || 0;
+    const a60F = activeAgeGroups.a60_plus?.f || 0;
+    const a60Pct = activePatientsTotal > 0 ? ((a60Tot / activePatientsTotal) * 100).toFixed(1) : '0.0';
+    const a60FemalePct = a60Tot > 0 ? ((a60F / a60Tot) * 100).toFixed(1) : '0.0';
+
+    const el60Plus = document.getElementById('ttm-age-stat-60plus');
+    const el60Share = document.getElementById('ttm-age-card2-share');
+    const el60Detail = document.getElementById('ttm-age-stat-60plus-detail');
+    if (el60Plus) el60Plus.textContent = Number(a60Tot).toLocaleString();
+    if (el60Share) el60Share.textContent = `${a60Pct}% สูงสุด`;
+    if (el60Detail) el60Detail.textContent = `ชาย ${Number(a60M).toLocaleString()} • หญิง ${Number(a60F).toLocaleString()} (${a60FemalePct}%)`;
+
+    // Card 3: 45-59
+    const a45Tot = activeAgeGroups.a45_59?.total || 0;
+    const a45M = activeAgeGroups.a45_59?.m || 0;
+    const a45F = activeAgeGroups.a45_59?.f || 0;
+    const a45Pct = activePatientsTotal > 0 ? ((a45Tot / activePatientsTotal) * 100).toFixed(1) : '0.0';
+    const a45FemalePct = a45Tot > 0 ? ((a45F / a45Tot) * 100).toFixed(1) : '0.0';
+
+    const el4559 = document.getElementById('ttm-age-stat-4559');
+    const el45Share = document.getElementById('ttm-age-card3-share');
+    const el45Detail = document.getElementById('ttm-age-stat-4559-detail');
+    if (el4559) el4559.textContent = Number(a45Tot).toLocaleString();
+    if (el45Share) el45Share.textContent = `${a45Pct}% อันดับ 2`;
+    if (el45Detail) el45Detail.textContent = `ชาย ${Number(a45M).toLocaleString()} • หญิง ${Number(a45F).toLocaleString()} (${a45FemalePct}%)`;
+
+    // Card 4: Top Performer
+    const sortedUnits = [...unitsList].sort((a, b) => (b.patients_total || 0) - (a.patients_total || 0));
+    const topUnit = sortedUnits[0];
+    const elTopName = document.getElementById('ttm-age-stat-top-name');
+    const elTopVal = document.getElementById('ttm-age-stat-top-val');
+    const elCard4Badge = document.getElementById('ttm-age-card4-badge');
+    const elCard4Title = document.getElementById('ttm-age-card4-title');
+    const elCard4Sub = document.getElementById('ttm-age-card4-sublabel');
+
+    if (isDistrict) {
+      if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการที่มีผู้รับยามากที่สุด';
+      if (elCard4Badge) elCard4Badge.textContent = 'อันดับ 1 ในอำเภอ';
+      if (elTopName) elTopName.textContent = topUnit ? topUnit.name : '-';
+      if (elCard4Sub) elCard4Sub.textContent = 'จำนวนผู้รับยา';
+      if (elTopVal) {
+        const topPt = topUnit ? (topUnit.patients_total || 0) : 0;
+        const topPct = (distAgeGroups.all_ages.total || 1) > 0 ? ((topPt / distAgeGroups.all_ages.total) * 100).toFixed(1) : '0.0';
+        elTopVal.textContent = `${Number(topPt).toLocaleString()} คน (${topPct}%)`;
+      }
+    } else {
+      if (elCard4Title) elCard4Title.textContent = 'สัดส่วนเปรียบเทียบทั้งอำเภอ';
+      if (elCard4Badge) elCard4Badge.textContent = selectedUnit ? `รหัส ${selectedUnit.hospcode}` : 'หน่วยบริการ';
+      if (elTopName) elTopName.textContent = selectedUnit ? selectedUnit.name : '-';
+      if (elCard4Sub) elCard4Sub.textContent = 'สัดส่วนต่ออำเภอ';
+      if (elTopVal) {
+        const uPt = selectedUnit ? (selectedUnit.patients_total || 0) : 0;
+        const uPct = (distAgeGroups.all_ages.total || 1) > 0 ? ((uPt / distAgeGroups.all_ages.total) * 100).toFixed(1) : '0.0';
+        elTopVal.textContent = `${Number(uPt).toLocaleString()} คน (${uPct}% ของอำเภอ)`;
+      }
+    }
+
+    // 6. Render Chart 1: Age Pyramid / Grouped Horizontal Bar
+    const pyramidCanvas = document.getElementById('ttmAgePyramidChart');
+    if (pyramidCanvas) {
+      if (ttmAgePyramidChartInstance) {
+        ttmAgePyramidChartInstance.destroy();
+        ttmAgePyramidChartInstance = null;
+      }
+
+      const ageLabels = [
+        '0 - 14 ปี (วัยเด็ก)',
+        '15 - 29 ปี (วัยรุ่น/เริ่มทำงาน)',
+        '30 - 44 ปี (วัยทำงาน)',
+        '45 - 59 ปี (วัยทำงานตอนปลาย)',
+        '60 ปีขึ้นไป (ผู้สูงอายุ)'
+      ];
+      const mData = [
+        activeAgeGroups.a0_14?.m || 0,
+        activeAgeGroups.a15_29?.m || 0,
+        activeAgeGroups.a30_44?.m || 0,
+        activeAgeGroups.a45_59?.m || 0,
+        activeAgeGroups.a60_plus?.m || 0
+      ];
+      const fData = [
+        activeAgeGroups.a0_14?.f || 0,
+        activeAgeGroups.a15_29?.f || 0,
+        activeAgeGroups.a30_44?.f || 0,
+        activeAgeGroups.a45_59?.f || 0,
+        activeAgeGroups.a60_plus?.f || 0
+      ];
+      const totData = [
+        activeAgeGroups.a0_14?.total || 0,
+        activeAgeGroups.a15_29?.total || 0,
+        activeAgeGroups.a30_44?.total || 0,
+        activeAgeGroups.a45_59?.total || 0,
+        activeAgeGroups.a60_plus?.total || 0
+      ];
+
+      const ctx = pyramidCanvas.getContext('2d');
+      ttmAgePyramidChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ageLabels,
+          datasets: [
+            {
+              label: 'เพศชาย (คน)',
+              data: mData,
+              backgroundColor: '#0284c7',
+              hoverBackgroundColor: '#0369a1',
+              borderRadius: 5,
+              borderSkipped: false,
+              barPercentage: 0.8,
+              categoryPercentage: 0.75
+            },
+            {
+              label: 'เพศหญิง (คน)',
+              data: fData,
+              backgroundColor: '#f43f5e',
+              hoverBackgroundColor: '#e11d48',
+              borderRadius: 5,
+              borderSkipped: false,
+              barPercentage: 0.8,
+              categoryPercentage: 0.75
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              grid: { color: 'rgba(226, 232, 240, 0.6)' },
+              ticks: {
+                font: { family: 'Prompt', size: 11 },
+                callback: val => Number(val).toLocaleString() + ' คน'
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                font: { family: 'Prompt', size: 11.5, weight: '600' },
+                color: '#334155'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                boxHeight: 12,
+                usePointStyle: true,
+                pointStyle: 'rectRounded',
+                font: { family: 'Prompt', size: 12, weight: '600' },
+                color: '#334155'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { family: 'Prompt', size: 13, weight: 'bold' },
+              bodyFont: { family: 'Prompt', size: 12 },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw || 0;
+                  const idx = context.dataIndex;
+                  const grpTotal = totData[idx] || 1;
+                  const pctInGrp = ((val / grpTotal) * 100).toFixed(1);
+                  const isMale = context.datasetIndex === 0;
+                  return ` ${isMale ? 'ชาย' : 'หญิง'}: ${Number(val).toLocaleString()} คน (${pctInGrp}% ของกลุ่มนี้)`;
+                },
+                afterBody: function(contexts) {
+                  const idx = contexts[0].dataIndex;
+                  const grpTotal = totData[idx] || 0;
+                  const overallPct = activePatientsTotal > 0 ? ((grpTotal / activePatientsTotal) * 100).toFixed(1) : '0.0';
+                  return `รวมกลุ่มนี้: ${Number(grpTotal).toLocaleString()} คน (${overallPct}% ของทั้งหมด)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 7. Render Chart 2: Donut or Quarterly Trend
+    const donutCanvas = document.getElementById('ttmAgeDonutChart');
+    const chart2Title = document.getElementById('ttm-age-chart2-title');
+    const chart2Subtitle = document.getElementById('ttm-age-chart2-subtitle');
+
+    if (donutCanvas) {
+      if (ttmAgeDonutChartInstance) {
+        ttmAgeDonutChartInstance.destroy();
+        ttmAgeDonutChartInstance = null;
+      }
+
+      const ctx2 = donutCanvas.getContext('2d');
+
+      if (currentTtmChart2Mode === 'pie') {
+        if (chart2Title) chart2Title.textContent = 'สัดส่วนผู้รับบริการตามช่วงอายุ (%)';
+        if (chart2Subtitle) chart2Subtitle.textContent = isDistrict ? `ร้อยละของแต่ละกลุ่มวัยใน อ.สารภี ปี ${yr}` : `สัดส่วนกลุ่มวัยของ ${selectedUnit.short} ปี ${yr}`;
+
+        const pieLabels = ['0-14 ปี', '15-29 ปี', '30-44 ปี', '45-59 ปี', '60+ ปี'];
+        const pieData = [
+          activeAgeGroups.a0_14?.total || 0,
+          activeAgeGroups.a15_29?.total || 0,
+          activeAgeGroups.a30_44?.total || 0,
+          activeAgeGroups.a45_59?.total || 0,
+          activeAgeGroups.a60_plus?.total || 0
+        ];
+        const pieColors = ['#38bdf8', '#34d399', '#fbbf24', '#818cf8', '#059669'];
+
+        ttmAgeDonutChartInstance = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: pieLabels,
+            datasets: [{
+              data: pieData,
+              backgroundColor: pieColors,
+              borderWidth: 2,
+              borderColor: '#ffffff',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  usePointStyle: true,
+                  font: { family: 'Prompt', size: 11.5, weight: '500' },
+                  color: '#334155',
+                  generateLabels: function(chart) {
+                    const data = chart.data;
+                    if (data.labels.length && data.datasets.length) {
+                      return data.labels.map((label, i) => {
+                        const val = data.datasets[0].data[i] || 0;
+                        const pct = activePatientsTotal > 0 ? ((val / activePatientsTotal) * 100).toFixed(1) : '0.0';
+                        return {
+                          text: `${label} (${pct}%)`,
+                          fillStyle: pieColors[i],
+                          strokeStyle: '#ffffff',
+                          lineWidth: 1,
+                          hidden: isNaN(val) || val === 0,
+                          index: i
+                        };
+                      });
+                    }
+                    return [];
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleFont: { family: 'Prompt', size: 12, weight: 'bold' },
+                bodyFont: { family: 'Prompt', size: 11.5 },
+                callbacks: {
+                  label: function(context) {
+                    const val = context.raw || 0;
+                    const pct = activePatientsTotal > 0 ? ((val / activePatientsTotal) * 100).toFixed(1) : '0.0';
+                    return ` ${context.label}: ${Number(val).toLocaleString()} คน (${pct}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      } else {
+        if (chart2Title) chart2Title.textContent = 'แนวโน้มการรับบริการรายไตรมาส (Q1 - Q4)';
+        if (chart2Subtitle) chart2Subtitle.textContent = isDistrict ? `ผู้รับยา ชาย vs หญิง รายไตรมาส ปี ${yr}` : `ยอดบริการรายไตรมาสของ ${selectedUnit.short} ปี ${yr}`;
+
+        const qtrLabels = ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'];
+        const qM = [activeQuarters.q1?.pt_m || 0, activeQuarters.q2?.pt_m || 0, activeQuarters.q3?.pt_m || 0, activeQuarters.q4?.pt_m || 0];
+        const qF = [activeQuarters.q1?.pt_f || 0, activeQuarters.q2?.pt_f || 0, activeQuarters.q3?.pt_f || 0, activeQuarters.q4?.pt_f || 0];
+
+        ttmAgeDonutChartInstance = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: qtrLabels,
+            datasets: [
+              {
+                label: 'เพศชาย (คน)',
+                data: qM,
+                backgroundColor: '#0284c7',
+                borderRadius: 5
+              },
+              {
+                label: 'เพศหญิง (คน)',
+                data: qF,
+                backgroundColor: '#f43f5e',
+                borderRadius: 5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { font: { family: 'Prompt', size: 11 } }
+              },
+              y: {
+                grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                ticks: {
+                  font: { family: 'Prompt', size: 11 },
+                  callback: val => Number(val).toLocaleString()
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  usePointStyle: true,
+                  font: { family: 'Prompt', size: 11 }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                callbacks: {
+                  label: (ctx) => ` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()} คน`
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 8. Render HDC Matrix Data Table
+    const tableEl = document.getElementById('ttm-age-matrix-table');
+    const captionEl = document.getElementById('ttm-age-table-caption');
+    if (!tableEl) return;
+
+    // Filter units
+    const q = (ttmAgeSearchQuery || '').trim().toLowerCase();
+    const filteredUnits = unitsList.filter(u => {
+      if (!q) return true;
+      return (
+        (u.hospcode && u.hospcode.toLowerCase().includes(q)) ||
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+      );
+    });
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+    let tfootHtml = '';
+
+    if (currentTtmAgeView === 'age') {
+      if (captionEl) captionEl.textContent = `จำแนก 5 กลุ่มอายุ (ชาย / หญิง / รวม) ราย 14 หน่วยบริการใน อ.สารภี ปีงบประมาณ ${yr}`;
+
+      theadHtml = `
+        <thead class="text-white text-xs font-bold sticky top-0 z-20" style="background-color: #047857;">
+          <tr class="border-b border-emerald-600">
+            <th rowspan="2" class="py-2.5 px-3 text-center w-[76px] min-w-[76px] border-r border-emerald-600 hdc-sticky-col-1" style="background-color: #047857;">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 min-w-[200px] border-r border-emerald-600 hdc-sticky-col-2" style="background-color: #047857;">ชื่อสถานพยาบาล</th>
+            <th rowspan="2" class="py-2.5 px-3 w-24 border-r border-emerald-600">ตำบล</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">0 - 14 ปี (เด็ก)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">15 - 29 ปี (เยาวชน)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">30 - 44 ปี (วัยทำงาน)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">45 - 59 ปี (วัยกลางคน)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-900 font-black text-amber-200">60+ ปี (ผู้สูงอายุ)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-950 font-black text-amber-300">รวมทุกกลุ่ม (คน)</th>
+            <th rowspan="2" class="py-2.5 px-3 text-center w-20">จัดการ</th>
+          </tr>
+          <tr class="border-b border-emerald-700 text-[11px] bg-emerald-900/90">
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40">รวม</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40">รวม</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40">รวม</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40">รวม</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-bold text-sky-200">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-bold text-rose-200">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-black bg-emerald-950/70 text-amber-200">รวม</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-bold text-sky-200">ชาย</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-bold text-rose-200">หญิง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-black bg-emerald-950 text-amber-300">รวม (คน)</th>
+          </tr>
+        </thead>
+      `;
+
+      filteredUnits.forEach((u, idx) => {
+        const isSel = (currentUnit === u.hospcode);
+        const rowBg = isSel ? 'bg-emerald-50/80 ring-2 ring-emerald-500/40 font-semibold' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40');
+        const stickyBg = isSel ? 'background-color: #ecfdf5;' : (idx % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8fafc;');
+        const ag = u.age_groups;
+
+        tbodyHtml += `
+          <tr class="${rowBg} hover:bg-emerald-50/50 transition border-b border-slate-100 text-slate-700">
+            <td class="py-2.5 px-3 text-center num-font text-slate-500 border-r border-slate-100 hdc-sticky-col-1" style="${stickyBg}">${u.hospcode}</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-800 border-r border-slate-100 hdc-sticky-col-2 flex items-center justify-between gap-1" style="${stickyBg}">
+              <span class="truncate">${u.name}</span>
+              ${isSel ? '<span class="text-[9.5px] bg-emerald-600 text-white px-1.5 py-0.2 rounded font-bold shrink-0">เลือก</span>' : ''}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 border-r border-slate-100 text-[11.5px]">ต.${u.subdistrict}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a0_14?.m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a0_14?.f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a0_14?.total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a15_29?.m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a15_29?.f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a15_29?.total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a30_44?.m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a30_44?.f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a30_44?.total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a45_59?.m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-600">${ag.a45_59?.f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a45_59?.total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 font-semibold text-sky-700 bg-sky-50/30">${ag.a60_plus?.m ? Number(ag.a60_plus.m).toLocaleString() : 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 font-semibold text-rose-700 bg-rose-50/30">${ag.a60_plus?.f ? Number(ag.a60_plus.f).toLocaleString() : 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-black text-emerald-800 bg-emerald-50/50">${ag.a60_plus?.total ? Number(ag.a60_plus.total).toLocaleString() : 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 font-bold text-sky-800 bg-sky-50/40">${ag.all_ages?.m ? Number(ag.all_ages.m).toLocaleString() : 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 font-bold text-rose-800 bg-rose-50/40">${ag.all_ages?.f ? Number(ag.all_ages.f).toLocaleString() : 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-black text-emerald-950 bg-emerald-100/50 text-sm">${Number(u.patients_total).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-center">
+              <button type="button" onclick="window.selectTtmAgeHospital('${u.hospcode}')" class="px-2 py-1 rounded-lg text-[11px] font-bold ${isSel ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-800'} transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tfootHtml = `
+        <tfoot class="sticky bottom-0 z-20 text-white font-black text-xs" style="background-color: #065f46;">
+          <tr class="border-t-2 border-emerald-400">
+            <td colspan="3" class="py-3 px-3 text-left border-r border-emerald-700 text-white font-black hdc-sticky-col-1" style="background-color: #065f46;">
+              รวมทั้งอำเภอสารภี (14 หน่วยบริการ)
+            </td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a0_14?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a0_14?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(distAgeGroups.a0_14?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a15_29?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a15_29?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(distAgeGroups.a15_29?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a30_44?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a30_44?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(distAgeGroups.a30_44?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a45_59?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80">${Number(distAgeGroups.a45_59?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(distAgeGroups.a45_59?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 font-bold text-sky-200">${Number(distAgeGroups.a60_plus?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 font-bold text-rose-200">${Number(distAgeGroups.a60_plus?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-300 bg-emerald-950/80">${Number(distAgeGroups.a60_plus?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 font-bold text-sky-200">${Number(distAgeGroups.all_ages?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 font-bold text-rose-200">${Number(distAgeGroups.all_ages?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700 font-black text-amber-300 text-sm bg-emerald-950">${Number(distAgeGroups.all_ages?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 text-center text-emerald-200 font-normal text-[11px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmAgeView === 'quarter') {
+      if (captionEl) captionEl.textContent = `จำแนกยอดผู้รับบริการและจำนวนครั้งสะสม ราย 4 ไตรมาส (Q1 - Q4) รายหน่วยบริการ ปีงบประมาณ ${yr}`;
+
+      theadHtml = `
+        <thead class="text-white text-xs font-bold sticky top-0 z-20" style="background-color: #047857;">
+          <tr class="border-b border-emerald-600">
+            <th rowspan="2" class="py-2.5 px-3 text-center w-[76px] min-w-[76px] border-r border-emerald-600 hdc-sticky-col-1" style="background-color: #047857;">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 min-w-[200px] border-r border-emerald-600 hdc-sticky-col-2" style="background-color: #047857;">ชื่อสถานพยาบาล</th>
+            <th rowspan="2" class="py-2.5 px-3 w-24 border-r border-emerald-600">ตำบล</th>
+            <th colspan="5" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">ไตรมาส 1 (ต.ค. - ธ.ค.)</th>
+            <th colspan="5" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">ไตรมาส 2 (ม.ค. - มี.ค.)</th>
+            <th colspan="5" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">ไตรมาส 3 (เม.ย. - มิ.ย.)</th>
+            <th colspan="5" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800/90">ไตรมาส 4 (ก.ค. - ก.ย.)</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-950 font-black text-amber-300">รวมทั้งปีสะสม</th>
+            <th rowspan="2" class="py-2.5 px-3 text-center w-20">จัดการ</th>
+          </tr>
+          <tr class="border-b border-emerald-700 text-[11px] bg-emerald-900/90">
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-200">ช.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-100">ช.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-200">ญ.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-100">ญ.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40 text-amber-200">รวมคน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-200">ช.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-100">ช.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-200">ญ.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-100">ญ.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40 text-amber-200">รวมคน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-200">ช.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-100">ช.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-200">ญ.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-100">ญ.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40 text-amber-200">รวมคน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-200">ช.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-sky-100">ช.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-200">ญ.คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700/60 font-semibold text-rose-100">ญ.ครั้ง</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-bold bg-emerald-950/40 text-amber-200">รวมคน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-black text-amber-300 bg-emerald-950">คน</th>
+            <th class="py-1.5 px-2 text-right border-r border-emerald-700 font-black text-emerald-200 bg-emerald-950">ครั้ง</th>
+          </tr>
+        </thead>
+      `;
+
+      filteredUnits.forEach((u, idx) => {
+        const isSel = (currentUnit === u.hospcode);
+        const rowBg = isSel ? 'bg-emerald-50/80 ring-2 ring-emerald-500/40 font-semibold' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40');
+        const stickyBg = isSel ? 'background-color: #ecfdf5;' : (idx % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8fafc;');
+        const q = u.quarters;
+        const q1 = q.q1 || {};
+        const q2 = q.q2 || {};
+        const q3 = q.q3 || {};
+        const q4 = q.q4 || {};
+        const totPt = u.patients_total || (u.age_groups?.all_ages?.total || 0);
+        const totVs = (q1.vs_total || 0) + (q2.vs_total || 0) + (q3.vs_total || 0) + (q4.vs_total || 0);
+
+        tbodyHtml += `
+          <tr class="${rowBg} hover:bg-emerald-50/50 transition border-b border-slate-100 text-slate-700">
+            <td class="py-2.5 px-3 text-center num-font text-slate-500 border-r border-slate-100 hdc-sticky-col-1" style="${stickyBg}">${u.hospcode}</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-800 border-r border-slate-100 hdc-sticky-col-2 flex items-center justify-between gap-1" style="${stickyBg}">
+              <span class="truncate">${u.name}</span>
+              ${isSel ? '<span class="text-[9.5px] bg-emerald-600 text-white px-1.5 py-0.2 rounded font-bold shrink-0">เลือก</span>' : ''}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 border-r border-slate-100 text-[11.5px]">ต.${u.subdistrict}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-sky-700">${q1.pt_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q1.vs_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-rose-700">${q1.pt_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q1.vs_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-bold text-slate-900 bg-slate-50/50">${q1.pt_total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-sky-700">${q2.pt_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q2.vs_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-rose-700">${q2.pt_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q2.vs_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-bold text-slate-900 bg-slate-50/50">${q2.pt_total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-sky-700 font-semibold">${q3.pt_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q3.vs_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-rose-700 font-semibold">${q3.pt_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q3.vs_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-bold text-slate-900 bg-slate-50/50">${q3.pt_total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-sky-700">${q4.pt_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q4.vs_m || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-rose-700">${q4.pt_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 text-slate-500">${q4.vs_f || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-bold text-slate-900 bg-slate-50/50">${q4.pt_total || 0}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-100 font-black text-emerald-950 bg-emerald-100/50 text-sm">${Number(totPt).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font border-r border-slate-200 font-bold text-slate-800 bg-slate-100/60">${Number(totVs).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-center">
+              <button type="button" onclick="window.selectTtmAgeHospital('${u.hospcode}')" class="px-2 py-1 rounded-lg text-[11px] font-bold ${isSel ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-800'} transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const q1 = distQuarters.q1 || {};
+      const q2 = distQuarters.q2 || {};
+      const q3 = distQuarters.q3 || {};
+      const q4 = distQuarters.q4 || {};
+      const distPt = yrData.patients_total || (distAgeGroups.all_ages?.total || 0);
+      const distVs = (q1.vs_total || 0) + (q2.vs_total || 0) + (q3.vs_total || 0) + (q4.vs_total || 0);
+
+      tfootHtml = `
+        <tfoot class="sticky bottom-0 z-20 text-white font-black text-xs" style="background-color: #065f46;">
+          <tr class="border-t-2 border-emerald-400">
+            <td colspan="3" class="py-3 px-3 text-left border-r border-emerald-700 text-white font-black hdc-sticky-col-1" style="background-color: #065f46;">
+              รวมทั้งอำเภอสารภี (14 หน่วยบริการ)
+            </td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q1.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q1.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q1.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q1.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(q1.pt_total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q2.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q2.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q2.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q2.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(q2.pt_total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q3.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q3.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q3.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q3.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(q3.pt_total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q4.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q4.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q4.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q4.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-600 font-black text-amber-200 bg-emerald-900/60">${Number(q4.pt_total || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700 font-black text-amber-300 text-sm bg-emerald-950">${Number(distPt).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font border-r border-emerald-700 font-black text-emerald-100 bg-emerald-900/80">${Number(distVs).toLocaleString()}</td>
+            <td class="py-3 px-3 text-center text-emerald-200 font-normal text-[11px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else {
+      // Full HDC Table
+      if (captionEl) captionEl.textContent = `ตารางแม่บท HDC: รวมทั้งปีงบประมาณ แยกรายกลุ่มอายุ 5 ช่วงวัย และ ยอดบริการราย 4 ไตรมาส ปีงบประมาณ ${yr}`;
+
+      theadHtml = `
+        <thead class="text-white text-[11.5px] font-bold sticky top-0 z-20" style="background-color: #047857;">
+          <tr class="border-b border-emerald-600">
+            <th rowspan="2" class="py-2.5 px-3 text-center w-[76px] min-w-[76px] border-r border-emerald-600 hdc-sticky-col-1" style="background-color: #047857;">รหัสสถานพยาบาล</th>
+            <th rowspan="2" class="py-2.5 px-3 min-w-[200px] border-r border-emerald-600 hdc-sticky-col-2" style="background-color: #047857;">ชื่อสถานพยาบาล</th>
+            <th colspan="18" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-800">รวมทั้งปีงบประมาณ แยกรายกลุ่มอายุ (คน)</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-850">ไตรมาสที่ 1</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-850">ไตรมาสที่ 2</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-850">ไตรมาสที่ 3</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-600 bg-emerald-850">ไตรมาสที่ 4</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center w-16">ดู รพ.สต.</th>
+          </tr>
+          <tr class="border-b border-emerald-700 text-[10.5px] bg-emerald-900/90">
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="0-14 ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="0-14 หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-bold bg-emerald-950/30" title="0-14 รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="15-29 ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="15-29 หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-bold bg-emerald-950/30" title="15-29 รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="30-44 ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="30-44 หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-bold bg-emerald-950/30" title="30-44 รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="45-59 ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-semibold" title="45-59 หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-bold bg-emerald-950/30" title="45-59 รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-bold text-sky-200" title="60+ ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-bold text-rose-200" title="60+ หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-black text-amber-200 bg-emerald-950/60" title="60+ รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-bold text-sky-200" title="รวมทุกกลุ่ม ชาย">ชาย</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 font-bold text-rose-200" title="รวมทุกกลุ่ม หญิง">หญิง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 font-black text-amber-300 bg-emerald-950" title="รวมทุกกลุ่ม รวม">รวม</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-sky-200">ช(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-slate-300">ช(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-rose-200">ญ(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-slate-300">ญ(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-sky-200">ช(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-slate-300">ช(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-rose-200">ญ(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-slate-300">ญ(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-sky-200">ช(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-slate-300">ช(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-rose-200">ญ(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-slate-300">ญ(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-sky-200">ช(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-slate-300">ช(ครั้ง)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/60 text-rose-200">ญ(คน)</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-slate-300">ญ(ครั้ง)</th>
+          </tr>
+        </thead>
+      `;
+
+      filteredUnits.forEach((u, idx) => {
+        const isSel = (currentUnit === u.hospcode);
+        const rowBg = isSel ? 'bg-emerald-50/80 ring-2 ring-emerald-500/40 font-semibold' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40');
+        const stickyBg = isSel ? 'background-color: #ecfdf5;' : (idx % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8fafc;');
+        const ag = u.age_groups;
+        const q = u.quarters;
+
+        tbodyHtml += `
+          <tr class="${rowBg} hover:bg-emerald-50/50 transition border-b border-slate-100 text-slate-700 text-[11.5px]">
+            <td class="py-2 px-2.5 text-center num-font text-slate-500 border-r border-slate-100 hdc-sticky-col-1" style="${stickyBg}">${u.hospcode}</td>
+            <td class="py-2 px-3 font-semibold text-slate-800 border-r border-slate-100 hdc-sticky-col-2 flex items-center justify-between gap-1" style="${stickyBg}">
+              <span class="truncate">${u.name}</span>
+              ${isSel ? '<span class="text-[9px] bg-emerald-600 text-white px-1 rounded font-bold shrink-0">เลือก</span>' : ''}
+            </td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a0_14?.m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a0_14?.f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a0_14?.total || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a15_29?.m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a15_29?.f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a15_29?.total || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a30_44?.m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a30_44?.f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a30_44?.total || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a45_59?.m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-600">${ag.a45_59?.f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-semibold text-slate-800 bg-slate-50/30">${ag.a45_59?.total || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 font-semibold text-sky-700 bg-sky-50/30">${ag.a60_plus?.m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 font-semibold text-rose-700 bg-rose-50/30">${ag.a60_plus?.f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-black text-emerald-800 bg-emerald-50/50">${Number(ag.a60_plus?.total || 0).toLocaleString()}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 font-bold text-sky-800 bg-sky-50/40">${Number(ag.all_ages?.m || 0).toLocaleString()}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 font-bold text-rose-800 bg-rose-50/40">${Number(ag.all_ages?.f || 0).toLocaleString()}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 font-black text-emerald-950 bg-emerald-100/50">${Number(u.patients_total).toLocaleString()}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-sky-700">${q.q1?.pt_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-500">${q.q1?.vs_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-rose-700">${q.q1?.pt_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 text-slate-500">${q.q1?.vs_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-sky-700">${q.q2?.pt_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-500">${q.q2?.vs_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-rose-700">${q.q2?.pt_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 text-slate-500">${q.q2?.vs_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-sky-700">${q.q3?.pt_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-500">${q.q3?.vs_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-rose-700">${q.q3?.pt_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 text-slate-500">${q.q3?.vs_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-sky-700">${q.q4?.pt_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-slate-500">${q.q4?.vs_m || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-100 text-rose-700">${q.q4?.pt_f || 0}</td>
+            <td class="py-2 px-1 text-right num-font border-r border-slate-200 text-slate-500">${q.q4?.vs_f || 0}</td>
+            <td class="py-2 px-1.5 text-center">
+              <button type="button" onclick="window.selectTtmAgeHospital('${u.hospcode}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold ${isSel ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-emerald-100'} transition">
+                ดู
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const q = distQuarters;
+      tfootHtml = `
+        <tfoot class="sticky bottom-0 z-20 text-white font-black text-[11.5px]" style="background-color: #065f46;">
+          <tr class="border-t-2 border-emerald-400">
+            <td colspan="2" class="py-3 px-3 text-left border-r border-emerald-700 text-white font-black hdc-sticky-col-1" style="background-color: #065f46;">
+              รวมทั้งอำเภอสารภี (14 หน่วยบริการ)
+            </td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a0_14?.m || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a0_14?.f || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-amber-200 bg-emerald-900/60">${distAgeGroups.a0_14?.total || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a15_29?.m || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a15_29?.f || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-amber-200 bg-emerald-900/60">${distAgeGroups.a15_29?.total || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a30_44?.m || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a30_44?.f || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-amber-200 bg-emerald-900/60">${distAgeGroups.a30_44?.total || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a45_59?.m || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80">${distAgeGroups.a45_59?.f || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-amber-200 bg-emerald-900/60">${distAgeGroups.a45_59?.total || 0}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(distAgeGroups.a60_plus?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(distAgeGroups.a60_plus?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-amber-300 bg-emerald-950/80">${Number(distAgeGroups.a60_plus?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(distAgeGroups.all_ages?.m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(distAgeGroups.all_ages?.f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700 text-amber-300 bg-emerald-950">${Number(distAgeGroups.all_ages?.total || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q.q1?.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q.q1?.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q.q1?.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-emerald-200">${Number(q.q1?.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q.q2?.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q.q2?.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q.q2?.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-emerald-200">${Number(q.q2?.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q.q3?.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q.q3?.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q.q3?.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-600 text-emerald-200">${Number(q.q3?.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(q.q4?.pt_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q.q4?.vs_m || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700/80 text-rose-200">${Number(q.q4?.pt_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-right num-font border-r border-emerald-700 text-emerald-200">${Number(q.q4?.vs_f || 0).toLocaleString()}</td>
+            <td class="py-3 px-1 text-center text-emerald-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -3254,20 +4335,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isTTM4 = (currentIndicatorId === 'ttm_top_herbs');
       const isNhsoError = (currentIndicatorId === 'nhso_error_code');
       const isNhsoService = (currentIndicatorId === 'nhso_service');
+      const isTtmAgeSex = (currentIndicatorId === 'ttm_age_sex');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTTM4) {
+      if (isTtmAgeSex) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
+        renderTtmAgeSexPanel();
+      } else if (isTTM4) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
@@ -3275,6 +4367,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
         renderNhsoServicePanel();
       } else {
@@ -3283,6 +4376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -3441,6 +4535,7 @@ console.log("Saraphi Records:", saraphiData);`;
       if (currentYear !== 'all') {
         currentErrorYear = currentYear;
         currentProcedureYear = currentYear;
+        currentTtmAgeYear = currentYear;
       }
       updateDashboardView();
     });
@@ -3554,6 +4649,14 @@ console.log("Saraphi Records:", saraphiData);`;
   }
 
   tableSearch?.addEventListener('input', renderDataTable);
+
+  const ttmAgeSearchInput = document.getElementById('ttm-age-table-search');
+  if (ttmAgeSearchInput) {
+    ttmAgeSearchInput.addEventListener('input', (e) => {
+      ttmAgeSearchQuery = e.target.value;
+      renderTtmAgeSexPanel();
+    });
+  }
 
   // Explorer filters
   document.getElementById('catalog-search')?.addEventListener('input', renderExplorerCatalog);
