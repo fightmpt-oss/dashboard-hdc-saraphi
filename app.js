@@ -7164,34 +7164,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (currentTtmCommonView === 'hdc_full') {
       theadHtml = `
         <thead>
-          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
-            <th rowspan="3" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-emerald-800 min-w-[210px] border-r border-emerald-700">หน่วยบริการ</th>
-            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2568 (รวมปีงบประมาณ)</th>
-            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2569 (รวมปีงบประมาณ)</th>
-            <th rowspan="3" class="py-2 px-2 border-r border-emerald-700 min-w-[95px]">ร้อยละเพิ่มขึ้น</th>
-            <th rowspan="3" class="py-2 px-2 border-emerald-700 min-w-[80px]">การกระทำ</th>
+          <tr class="bg-emerald-800 text-white text-center font-bold text-xs sm:text-sm">
+            <th rowspan="3" class="py-3 px-3.5 text-left sticky left-0 z-20 bg-emerald-800 min-w-[220px] border-r border-emerald-700">หน่วยบริการ</th>
+            <th colspan="5" class="py-2.5 px-3 border-r border-b border-emerald-700 tracking-wide text-sm md:text-base">ปีงบประมาณ 2568 (รวมปีงบประมาณ)</th>
+            <th colspan="5" class="py-2.5 px-3 border-r border-b border-emerald-700 tracking-wide text-sm md:text-base">ปีงบประมาณ 2569 (รวมปีงบประมาณ)</th>
+            <th rowspan="3" class="py-3 px-3 border-r border-emerald-700 min-w-[105px] text-xs sm:text-sm">ร้อยละเพิ่มขึ้น</th>
+            <th rowspan="3" class="py-3 px-2.5 border-emerald-700 min-w-[85px] text-xs sm:text-sm">การกระทำ</th>
           </tr>
-          <tr class="bg-emerald-700 text-white text-center font-semibold text-[11px]">
+          <tr class="bg-emerald-700 text-white text-center font-semibold text-xs sm:text-[13px]">
             <!-- 2568 Full -->
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B1)</th>
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A1)</th>
-            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C1)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+            <th colspan="2" class="py-2 px-2.5 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B1)</th>
+            <th colspan="2" class="py-2 px-2.5 border-r border-b border-emerald-600">วินิจฉัยและสั่งจ่ายยา (A1)</th>
+            <th rowspan="2" class="py-2 px-2.5 border-r border-emerald-600 font-bold bg-emerald-800/60">ร้อยละ (C1)<br><span class="font-normal text-[11px] text-emerald-200">ครั้ง</span></th>
             <!-- 2569 Full -->
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A2)</th>
-            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C2)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+            <th colspan="2" class="py-2 px-2.5 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
+            <th colspan="2" class="py-2 px-2.5 border-r border-b border-emerald-600">วินิจฉัยและสั่งจ่ายยา (A2)</th>
+            <th rowspan="2" class="py-2 px-2.5 border-r border-emerald-600 font-bold bg-emerald-800/60">ร้อยละ (C2)<br><span class="font-normal text-[11px] text-emerald-200">ครั้ง</span></th>
           </tr>
-          <tr class="bg-emerald-600 text-white text-center font-medium text-[10.5px]">
+          <tr class="bg-emerald-600 text-white text-center font-semibold text-xs">
             <!-- 2568 Full Sub -->
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">คน</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">คน</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">ครั้ง</th>
             <!-- 2569 Full Sub -->
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">คน</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">คน</th>
+            <th class="py-1.5 px-2 border-r border-emerald-500">ครั้ง</th>
           </tr>
         </thead>
       `;
@@ -7203,34 +7203,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         const uFull = (u69.hospcode === '06023') ? 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา' : (meta ? meta.name : u69.name);
         const uSub = (u69.hospcode === '06023') ? 'ตำบลสันทราย' : `ตำบล${meta ? meta.subdistrict : u69.subdistrict}`;
         const isSelected = (currentUnit === u69.hospcode);
-        const rowBg = isSelected ? 'bg-amber-50/90 font-medium' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60 hover:bg-emerald-50/40');
+        const rowBg = isSelected ? 'bg-amber-50/90 font-medium' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70 hover:bg-emerald-50/50');
 
         const growth = Number(u69.growth || 0);
         const growthClass = growth >= 0 ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold';
         const growthSign = growth >= 0 ? '+' : '';
 
         tbodyHtml += `
-          <tr class="${rowBg} border-b border-slate-100 text-[11px] transition">
-            <td class="py-2 px-3 text-left sticky left-0 z-10 bg-inherit border-r border-slate-200">
-              <div class="font-bold text-slate-800">${u69.hospcode}:${uFull} ${uSub}</div>
+          <tr class="${rowBg} border-b border-slate-200/80 text-xs sm:text-[13px] md:text-sm transition">
+            <td class="py-2.5 px-3 text-left sticky left-0 z-10 bg-inherit border-r border-slate-200">
+              <div class="font-bold text-slate-800 text-xs sm:text-[13px] md:text-sm leading-snug">${u69.hospcode}:${uFull}</div>
+              <div class="text-[11.5px] text-slate-500 font-medium mt-0.5">${uSub}</div>
             </td>
             <!-- 2568 Full -->
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono">${(u68.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-slate-900">${(u68.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-emerald-800">${(u68.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-emerald-900">${(u68.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800 bg-slate-50/50">${(u68.rate || 0).toFixed(2)}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono text-slate-700 text-xs sm:text-[13px] md:text-sm">${(u68.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-semibold text-slate-900 text-xs sm:text-[13px] md:text-sm">${(u68.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono text-emerald-800 text-xs sm:text-[13px] md:text-sm">${(u68.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-semibold text-emerald-900 text-xs sm:text-[13px] md:text-sm">${(u68.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-bold text-slate-900 bg-slate-100/60 text-xs sm:text-[13.5px] md:text-sm">${(u68.rate || 0).toFixed(2)}%</td>
             <!-- 2569 Full -->
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono">${(u69.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-slate-900">${(u69.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-emerald-800">${(u69.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-emerald-900">${(u69.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800 bg-emerald-50/60">${(u69.rate || 0).toFixed(2)}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono text-slate-700 text-xs sm:text-[13px] md:text-sm">${(u69.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-semibold text-slate-900 text-xs sm:text-[13px] md:text-sm">${(u69.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono text-emerald-800 text-xs sm:text-[13px] md:text-sm">${(u69.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-semibold text-emerald-900 text-xs sm:text-[13px] md:text-sm">${(u69.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-black text-emerald-800 bg-emerald-50/80 text-xs sm:text-[13.5px] md:text-sm">${(u69.rate || 0).toFixed(2)}%</td>
             <!-- Growth % -->
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono ${growthClass} bg-slate-50/50">${growthSign}${growth.toFixed(2)}</td>
+            <td class="py-2.5 px-2.5 text-right border-r border-slate-200 font-mono font-bold ${growthClass} bg-slate-50/80 text-xs sm:text-[13.5px] md:text-sm">${growthSign}${growth.toFixed(2)}%</td>
             <!-- Action -->
-            <td class="py-2 px-2 text-center">
-              <button type="button" onclick="window.selectTtmCommonHospital('${u69.hospcode}')" class="px-2 py-1 text-[10.5px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition shadow-2xs">
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmCommonHospital('${u69.hospcode}')" class="px-2.5 py-1.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition shadow-2xs">
                 ดู รพ.สต.
               </button>
             </td>
@@ -7243,25 +7244,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       const distGrowthSign = distGrowth >= 0 ? '+' : '';
 
       tfootHtml = `
-        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
+        <tfoot class="bg-slate-800 text-white font-bold border-t-2 border-emerald-500">
           <tr>
-            <td class="py-2.5 px-3 text-left sticky left-0 z-10 bg-slate-800 font-black border-r border-slate-700">รวม</td>
+            <td class="py-3 px-3.5 text-left sticky left-0 z-10 bg-slate-800 font-black border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
             <!-- 2568 Full -->
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y68.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y68.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y68.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y68.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black bg-slate-700/60">${(y68.rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-xs sm:text-[13.5px] md:text-sm">${(y68.diag_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-xs sm:text-[13.5px] md:text-sm">${(y68.diag_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-emerald-300 text-xs sm:text-[13.5px] md:text-sm">${(y68.drug_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-emerald-300 text-xs sm:text-[13.5px] md:text-sm">${(y68.drug_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black bg-slate-700/60 text-yellow-300 text-xs sm:text-[13.5px] md:text-sm">${(y68.rate || 0).toFixed(2)}%</td>
             <!-- 2569 Full -->
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y69.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y69.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y69.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y69.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black bg-emerald-900/80 text-emerald-200">${(y69.rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-xs sm:text-[13.5px] md:text-sm">${(y69.diag_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-xs sm:text-[13.5px] md:text-sm">${(y69.diag_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-emerald-300 text-xs sm:text-[13.5px] md:text-sm">${(y69.drug_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black text-emerald-300 text-xs sm:text-[13.5px] md:text-sm">${(y69.drug_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black bg-emerald-900 text-emerald-200 text-xs sm:text-[13.5px] md:text-sm">${(y69.rate || 0).toFixed(2)}%</td>
             <!-- Growth % -->
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono ${distGrowthClass}">${distGrowthSign}${distGrowth.toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right border-r border-slate-700 font-mono font-black ${distGrowthClass} text-xs sm:text-[13.5px] md:text-sm">${distGrowthSign}${distGrowth.toFixed(2)}%</td>
             <!-- Action -->
-            <td class="py-2.5 px-2 text-center text-slate-400">-</td>
+            <td class="py-3 px-2 text-center text-slate-400">-</td>
           </tr>
         </tfoot>
       `;
@@ -7269,19 +7270,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else if (currentTtmCommonView === 'single_year') {
       theadHtml = `
         <thead>
-          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
-            <th class="py-2.5 px-3 text-center min-w-[50px] border-r border-emerald-700">อันดับ</th>
-            <th class="py-2.5 px-3 text-center min-w-[60px] border-r border-emerald-700">รหัส</th>
-            <th class="py-2.5 px-3 text-left min-w-[180px] border-r border-emerald-700">ชื่อหน่วยบริการ</th>
-            <th class="py-2.5 px-3 text-left min-w-[100px] border-r border-emerald-700">ตำบล</th>
-            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">ได้รับการวินิจฉัย (คน)</th>
-            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700">ได้รับการวินิจฉัย (ครั้ง)</th>
-            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (คน)</th>
-            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (ครั้ง)</th>
-            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700 bg-emerald-900">ร้อยละจ่ายยาต่อครั้ง (C)</th>
-            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">ร้อยละต่อคน</th>
-            <th class="py-2.5 px-3 text-center min-w-[80px] border-r border-emerald-700">สถานะ</th>
-            <th class="py-2.5 px-3 text-center min-w-[80px]">การกระทำ</th>
+          <tr class="bg-emerald-800 text-white text-center font-bold text-xs sm:text-sm">
+            <th class="py-3 px-2.5 text-center min-w-[50px] border-r border-emerald-700">อันดับ</th>
+            <th class="py-3 px-2.5 text-center min-w-[65px] border-r border-emerald-700">รหัส</th>
+            <th class="py-3 px-3 text-left min-w-[200px] border-r border-emerald-700">ชื่อหน่วยบริการ</th>
+            <th class="py-3 px-3 text-left min-w-[100px] border-r border-emerald-700">ตำบล</th>
+            <th class="py-3 px-3 text-right min-w-[110px] border-r border-emerald-700">ได้รับการวินิจฉัย (คน)</th>
+            <th class="py-3 px-3 text-right min-w-[115px] border-r border-emerald-700">ได้รับการวินิจฉัย (ครั้ง)</th>
+            <th class="py-3 px-3 text-right min-w-[110px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (คน)</th>
+            <th class="py-3 px-3 text-right min-w-[115px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (ครั้ง)</th>
+            <th class="py-3 px-3 text-right min-w-[125px] border-r border-emerald-700 bg-emerald-900">ร้อยละจ่ายยาต่อครั้ง (C)</th>
+            <th class="py-3 px-3 text-right min-w-[110px] border-r border-emerald-700">ร้อยละต่อคน</th>
+            <th class="py-3 px-3 text-center min-w-[85px] border-r border-emerald-700">สถานะ</th>
+            <th class="py-3 px-3 text-center min-w-[85px]">การกระทำ</th>
           </tr>
         </thead>
       `;
@@ -7304,27 +7305,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
         const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
         const isPass = (u.rate >= 20.0);
-        const rowBg = (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60') + ' hover:bg-emerald-50/40';
+        const rowBg = (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70') + ' hover:bg-emerald-50/50';
 
         tbodyHtml += `
-          <tr class="${rowBg} border-b border-slate-100 text-xs transition">
-            <td class="py-2 px-3 text-center font-bold text-slate-500 border-r border-slate-200">${idx + 1}</td>
-            <td class="py-2 px-3 text-center font-mono text-slate-600 border-r border-slate-200">${u.hospcode}</td>
-            <td class="py-2 px-3 text-left font-bold text-slate-800 border-r border-slate-200">${uName}</td>
-            <td class="py-2 px-3 text-left text-slate-600 border-r border-slate-200">${uSub}</td>
-            <td class="py-2 px-3 text-right font-mono text-slate-700 border-r border-slate-200">${(u.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-3 text-right font-mono font-medium text-slate-900 border-r border-slate-200">${(u.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-3 text-right font-mono text-emerald-700 border-r border-slate-200">${(u.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-3 text-right font-mono font-medium text-emerald-800 border-r border-slate-200">${(u.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700 bg-emerald-50/60 border-r border-slate-200">${(u.rate || 0).toFixed(2)}%</td>
-            <td class="py-2 px-3 text-right font-mono text-slate-600 border-r border-slate-200">${(u.rate_person || 0).toFixed(2)}%</td>
-            <td class="py-2 px-3 text-center border-r border-slate-200">
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${isPass ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+          <tr class="${rowBg} border-b border-slate-200/80 text-xs sm:text-[13px] md:text-sm transition">
+            <td class="py-2.5 px-2.5 text-center font-bold text-slate-500 border-r border-slate-200">${idx + 1}</td>
+            <td class="py-2.5 px-2.5 text-center font-mono font-semibold text-emerald-800 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2.5 px-3 text-left font-bold text-slate-800 border-r border-slate-200">${uName}</td>
+            <td class="py-2.5 px-3 text-left text-slate-600 border-r border-slate-200">${uSub}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-slate-700 border-r border-slate-200">${(u.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-semibold text-slate-900 border-r border-slate-200">${(u.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-emerald-800 border-r border-slate-200">${(u.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-semibold text-emerald-900 border-r border-slate-200">${(u.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-900 bg-emerald-50/80 border-r border-slate-200">${(u.rate || 0).toFixed(2)}%</td>
+            <td class="py-2.5 px-3 text-right font-mono font-medium text-slate-700 border-r border-slate-200">${(u.rate_person || 0).toFixed(2)}%</td>
+            <td class="py-2.5 px-3 text-center border-r border-slate-200">
+              <span class="px-2.5 py-1 rounded-md text-xs font-bold ${isPass ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
                 ${isPass ? 'ผ่าน' : 'ไม่ผ่าน'}
               </span>
             </td>
-            <td class="py-2 px-3 text-center">
-              <button type="button" onclick="window.selectTtmCommonHospital('${u.hospcode}')" class="px-2 py-1 text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition">
+            <td class="py-2.5 px-3 text-center">
+              <button type="button" onclick="window.selectTtmCommonHospital('${u.hospcode}')" class="px-2.5 py-1.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition">
                 ดู รพ.สต.
               </button>
             </td>
@@ -7334,25 +7335,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const distPass = (yrData.rate >= 20.0);
       tfootHtml = `
-        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
+        <tfoot class="bg-slate-800 text-white font-bold border-t-2 border-emerald-500">
           <tr>
-            <td colspan="4" class="py-2.5 px-4 text-left font-black border-r border-slate-700">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-200 bg-emerald-900 border-r border-slate-700">${(yrData.rate || 0).toFixed(2)}%</td>
-            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.rate_person || 0).toFixed(2)}%</td>
-            <td class="py-2.5 px-3 text-center border-r border-slate-700">
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${distPass ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
+            <td colspan="4" class="py-3 px-4 text-left font-black border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
+            <td class="py-3 px-3 text-right font-mono font-black border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.diag_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 text-right font-mono font-black border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.diag_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.drug_person || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.drug_times || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 text-right font-mono font-black text-emerald-200 bg-emerald-900 border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.rate || 0).toFixed(2)}%</td>
+            <td class="py-3 px-3 text-right font-mono font-black border-r border-slate-700 text-xs sm:text-[13.5px] md:text-sm">${(yrData.rate_person || 0).toFixed(2)}%</td>
+            <td class="py-3 px-3 text-center border-r border-slate-700">
+              <span class="px-2.5 py-1 rounded-md text-xs font-bold ${distPass ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
                 ${distPass ? 'ผ่าน' : 'ไม่ผ่าน'}
               </span>
             </td>
-            <td class="py-2.5 px-3 text-center text-slate-400">-</td>
+            <td class="py-3 px-3 text-center text-slate-400">-</td>
           </tr>
         </tfoot>
       `;
-
     }
 
     tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
