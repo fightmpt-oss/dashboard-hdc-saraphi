@@ -7906,416 +7906,3126 @@
       }
     },
     "ttm_cases": {
-      "code": "",
-      "name": "OPD ปริมาณการจ่ายยาสมุนไพร (จำนวนครั้ง/คน)",
+      "code": "ttm_cases",
+      "name": "OPD ปริมาณการจ่ายยาสมุนไพร",
       "table": "s_ttm2",
+      "report_id": "65a9f9496401d91402b3cb38805bb4d6",
       "domain": "ttm",
       "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-      "desc": "จำนวนผู้ป่วยและจำนวนครั้งที่ได้รับยาสมุนไพร",
-      "target": 1.2,
-      "unit": "ครั้ง/คน",
-      "num_label": "ครั้งการจ่ายยาสมุนไพร",
-      "den_label": "ผู้ป่วยที่ได้รับยา (คน)",
+      "desc": "ปริมาณการจ่ายยาสมุนไพรในผู้ป่วยนอก จำแนกจ่ายยาทุกสิทธิ และสิทธิ UC (ครั้ง/รายการ) ทั้งปีงบประมาณและรายไตรมาส",
+      "target": 1.15,
+      "unit": "รายการ/ครั้ง",
+      "num_label": "จำนวนครั้งจ่ายยาทุกสิทธิ (ครั้ง)",
+      "den_label": "จำนวนรายการจ่ายยาทุกสิทธิ (รายการ)",
       "years": {
         "2567": {
-          "num": 20026,
-          "den": 14352,
+          "num": 14352,
+          "den": 20026,
           "rate": 1.4,
           "pass": true,
-          "units": [
-            {
-              "hospcode": "06024",
-              "name": "รพ.สต.บ้านศรีคำชมภู",
-              "subdistrict": "ป่าบง",
-              "num": 4145,
-              "den": 2118,
-              "rate": 1.96,
-              "pass": true
+          "date_com": "202411142320",
+          "all_visits": 14352,
+          "all_items": 20026,
+          "uc_visits": 11058,
+          "uc_items": 15685,
+          "item_ratio_all": 1.4,
+          "item_ratio_uc": 1.42,
+          "uc_share_vs": 77.05,
+          "uc_share_it": 78.32,
+          "summary": {
+            "full_year": {
+              "all_visits": 14352,
+              "all_items": 20026,
+              "uc_visits": 11058,
+              "uc_items": 15685,
+              "item_ratio_all": 1.4,
+              "item_ratio_uc": 1.42,
+              "uc_share_vs": 77.05,
+              "uc_share_it": 78.32
             },
+            "quarters": {
+              "q1": {
+                "all_visits": 3602,
+                "all_items": 5536,
+                "uc_visits": 2786,
+                "uc_items": 4383,
+                "item_ratio_all": 1.54,
+                "item_ratio_uc": 1.57,
+                "uc_share_vs": 77.35,
+                "uc_share_it": 79.17
+              },
+              "q2": {
+                "all_visits": 4089,
+                "all_items": 6319,
+                "uc_visits": 3191,
+                "uc_items": 5078,
+                "item_ratio_all": 1.55,
+                "item_ratio_uc": 1.59,
+                "uc_share_vs": 78.04,
+                "uc_share_it": 80.36
+              },
+              "q3": {
+                "all_visits": 3107,
+                "all_items": 4024,
+                "uc_visits": 2371,
+                "uc_items": 3116,
+                "item_ratio_all": 1.3,
+                "item_ratio_uc": 1.31,
+                "uc_share_vs": 76.31,
+                "uc_share_it": 77.44
+              },
+              "q4": {
+                "all_visits": 3554,
+                "all_items": 4147,
+                "uc_visits": 2710,
+                "uc_items": 3108,
+                "item_ratio_all": 1.17,
+                "item_ratio_uc": 1.15,
+                "uc_share_vs": 76.25,
+                "uc_share_it": 74.95
+              }
+            }
+          },
+          "units": [
             {
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
-              "num": 886,
-              "den": 465,
+              "num": 465,
+              "den": 886,
               "rate": 1.91,
-              "pass": true
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 1594,
-              "den": 887,
-              "rate": 1.8,
-              "pass": true
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 752,
-              "den": 510,
-              "rate": 1.47,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 305,
-              "den": 212,
-              "rate": 1.44,
-              "pass": true
-            },
-            {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 1226,
-              "den": 854,
-              "rate": 1.44,
-              "pass": true
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 390,
-              "den": 279,
-              "rate": 1.4,
-              "pass": true
-            },
-            {
-              "hospcode": "11135",
-              "name": "โรงพยาบาลสารภี",
-              "subdistrict": "สารภี",
-              "num": 7167,
-              "den": 5853,
-              "rate": 1.22,
-              "pass": true
-            },
-            {
-              "hospcode": "06020",
-              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
-              "subdistrict": "ท่ากว้าง",
-              "num": 2104,
-              "den": 1807,
-              "rate": 1.16,
-              "pass": false
+              "pass": true,
+              "all_visits": 465,
+              "all_items": 886,
+              "uc_visits": 397,
+              "uc_items": 758,
+              "item_ratio_all": 1.91,
+              "item_ratio_uc": 1.91,
+              "uc_share_vs": 85.38,
+              "uc_share_it": 85.55,
+              "full_year": {
+                "all_visits": 465,
+                "all_items": 886,
+                "uc_visits": 397,
+                "uc_items": 758,
+                "item_ratio_all": 1.91,
+                "item_ratio_uc": 1.91,
+                "uc_share_vs": 85.38,
+                "uc_share_it": 85.55
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 136,
+                  "all_items": 327,
+                  "uc_visits": 119,
+                  "uc_items": 291,
+                  "item_ratio_all": 2.4,
+                  "item_ratio_uc": 2.45,
+                  "uc_share_vs": 87.5,
+                  "uc_share_it": 88.99
+                },
+                "q2": {
+                  "all_visits": 168,
+                  "all_items": 361,
+                  "uc_visits": 143,
+                  "uc_items": 304,
+                  "item_ratio_all": 2.15,
+                  "item_ratio_uc": 2.13,
+                  "uc_share_vs": 85.12,
+                  "uc_share_it": 84.21
+                },
+                "q3": {
+                  "all_visits": 92,
+                  "all_items": 120,
+                  "uc_visits": 75,
+                  "uc_items": 96,
+                  "item_ratio_all": 1.3,
+                  "item_ratio_uc": 1.28,
+                  "uc_share_vs": 81.52,
+                  "uc_share_it": 80.0
+                },
+                "q4": {
+                  "all_visits": 69,
+                  "all_items": 78,
+                  "uc_visits": 60,
+                  "uc_items": 67,
+                  "item_ratio_all": 1.13,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 86.96,
+                  "uc_share_it": 85.9
+                }
+              }
             },
             {
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
-              "num": 466,
-              "den": 410,
+              "num": 410,
+              "den": 466,
               "rate": 1.14,
-              "pass": false
+              "pass": true,
+              "all_visits": 410,
+              "all_items": 466,
+              "uc_visits": 264,
+              "uc_items": 298,
+              "item_ratio_all": 1.14,
+              "item_ratio_uc": 1.13,
+              "uc_share_vs": 64.39,
+              "uc_share_it": 63.95,
+              "full_year": {
+                "all_visits": 410,
+                "all_items": 466,
+                "uc_visits": 264,
+                "uc_items": 298,
+                "item_ratio_all": 1.14,
+                "item_ratio_uc": 1.13,
+                "uc_share_vs": 64.39,
+                "uc_share_it": 63.95
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 47,
+                  "all_items": 52,
+                  "uc_visits": 40,
+                  "uc_items": 45,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 85.11,
+                  "uc_share_it": 86.54
+                },
+                "q2": {
+                  "all_visits": 128,
+                  "all_items": 164,
+                  "uc_visits": 86,
+                  "uc_items": 105,
+                  "item_ratio_all": 1.28,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 67.19,
+                  "uc_share_it": 64.02
+                },
+                "q3": {
+                  "all_visits": 78,
+                  "all_items": 88,
+                  "uc_visits": 55,
+                  "uc_items": 62,
+                  "item_ratio_all": 1.13,
+                  "item_ratio_uc": 1.13,
+                  "uc_share_vs": 70.51,
+                  "uc_share_it": 70.45
+                },
+                "q4": {
+                  "all_visits": 157,
+                  "all_items": 162,
+                  "uc_visits": 83,
+                  "uc_items": 86,
+                  "item_ratio_all": 1.03,
+                  "item_ratio_uc": 1.04,
+                  "uc_share_vs": 52.87,
+                  "uc_share_it": 53.09
+                }
+              }
             },
             {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 77,
-              "den": 70,
-              "rate": 1.1,
-              "pass": false
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 279,
+              "den": 390,
+              "rate": 1.4,
+              "pass": true,
+              "all_visits": 279,
+              "all_items": 390,
+              "uc_visits": 239,
+              "uc_items": 326,
+              "item_ratio_all": 1.4,
+              "item_ratio_uc": 1.36,
+              "uc_share_vs": 85.66,
+              "uc_share_it": 83.59,
+              "full_year": {
+                "all_visits": 279,
+                "all_items": 390,
+                "uc_visits": 239,
+                "uc_items": 326,
+                "item_ratio_all": 1.4,
+                "item_ratio_uc": 1.36,
+                "uc_share_vs": 85.66,
+                "uc_share_it": 83.59
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 73,
+                  "all_items": 143,
+                  "uc_visits": 61,
+                  "uc_items": 116,
+                  "item_ratio_all": 1.96,
+                  "item_ratio_uc": 1.9,
+                  "uc_share_vs": 83.56,
+                  "uc_share_it": 81.12
+                },
+                "q2": {
+                  "all_visits": 78,
+                  "all_items": 96,
+                  "uc_visits": 70,
+                  "uc_items": 87,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 89.74,
+                  "uc_share_it": 90.62
+                },
+                "q3": {
+                  "all_visits": 70,
+                  "all_items": 83,
+                  "uc_visits": 57,
+                  "uc_items": 64,
+                  "item_ratio_all": 1.19,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 81.43,
+                  "uc_share_it": 77.11
+                },
+                "q4": {
+                  "all_visits": 58,
+                  "all_items": 68,
+                  "uc_visits": 51,
+                  "uc_items": 59,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 87.93,
+                  "uc_share_it": 86.76
+                }
+              }
             },
             {
               "hospcode": "06017",
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
-              "num": 141,
-              "den": 131,
+              "num": 131,
+              "den": 141,
               "rate": 1.08,
-              "pass": false
+              "pass": true,
+              "all_visits": 131,
+              "all_items": 141,
+              "uc_visits": 110,
+              "uc_items": 115,
+              "item_ratio_all": 1.08,
+              "item_ratio_uc": 1.05,
+              "uc_share_vs": 83.97,
+              "uc_share_it": 81.56,
+              "full_year": {
+                "all_visits": 131,
+                "all_items": 141,
+                "uc_visits": 110,
+                "uc_items": 115,
+                "item_ratio_all": 1.08,
+                "item_ratio_uc": 1.05,
+                "uc_share_vs": 83.97,
+                "uc_share_it": 81.56
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 31,
+                  "all_items": 36,
+                  "uc_visits": 26,
+                  "uc_items": 28,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.08,
+                  "uc_share_vs": 83.87,
+                  "uc_share_it": 77.78
+                },
+                "q2": {
+                  "all_visits": 35,
+                  "all_items": 36,
+                  "uc_visits": 30,
+                  "uc_items": 31,
+                  "item_ratio_all": 1.03,
+                  "item_ratio_uc": 1.03,
+                  "uc_share_vs": 85.71,
+                  "uc_share_it": 86.11
+                },
+                "q3": {
+                  "all_visits": 27,
+                  "all_items": 27,
+                  "uc_visits": 22,
+                  "uc_items": 22,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 81.48,
+                  "uc_share_it": 81.48
+                },
+                "q4": {
+                  "all_visits": 38,
+                  "all_items": 42,
+                  "uc_visits": 32,
+                  "uc_items": 34,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.06,
+                  "uc_share_vs": 84.21,
+                  "uc_share_it": 80.95
+                }
+              }
             },
             {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 209,
-              "den": 203,
-              "rate": 1.03,
-              "pass": false
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 854,
+              "den": 1226,
+              "rate": 1.44,
+              "pass": true,
+              "all_visits": 854,
+              "all_items": 1226,
+              "uc_visits": 574,
+              "uc_items": 837,
+              "item_ratio_all": 1.44,
+              "item_ratio_uc": 1.46,
+              "uc_share_vs": 67.21,
+              "uc_share_it": 68.27,
+              "full_year": {
+                "all_visits": 854,
+                "all_items": 1226,
+                "uc_visits": 574,
+                "uc_items": 837,
+                "item_ratio_all": 1.44,
+                "item_ratio_uc": 1.46,
+                "uc_share_vs": 67.21,
+                "uc_share_it": 68.27
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 144,
+                  "all_items": 286,
+                  "uc_visits": 108,
+                  "uc_items": 206,
+                  "item_ratio_all": 1.99,
+                  "item_ratio_uc": 1.91,
+                  "uc_share_vs": 75.0,
+                  "uc_share_it": 72.03
+                },
+                "q2": {
+                  "all_visits": 354,
+                  "all_items": 524,
+                  "uc_visits": 245,
+                  "uc_items": 368,
+                  "item_ratio_all": 1.48,
+                  "item_ratio_uc": 1.5,
+                  "uc_share_vs": 69.21,
+                  "uc_share_it": 70.23
+                },
+                "q3": {
+                  "all_visits": 173,
+                  "all_items": 211,
+                  "uc_visits": 111,
+                  "uc_items": 140,
+                  "item_ratio_all": 1.22,
+                  "item_ratio_uc": 1.26,
+                  "uc_share_vs": 64.16,
+                  "uc_share_it": 66.35
+                },
+                "q4": {
+                  "all_visits": 183,
+                  "all_items": 205,
+                  "uc_visits": 110,
+                  "uc_items": 123,
+                  "item_ratio_all": 1.12,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 60.11,
+                  "uc_share_it": 60.0
+                }
+              }
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 1807,
+              "den": 2104,
+              "rate": 1.16,
+              "pass": true,
+              "all_visits": 1807,
+              "all_items": 2104,
+              "uc_visits": 1315,
+              "uc_items": 1552,
+              "item_ratio_all": 1.16,
+              "item_ratio_uc": 1.18,
+              "uc_share_vs": 72.77,
+              "uc_share_it": 73.76,
+              "full_year": {
+                "all_visits": 1807,
+                "all_items": 2104,
+                "uc_visits": 1315,
+                "uc_items": 1552,
+                "item_ratio_all": 1.16,
+                "item_ratio_uc": 1.18,
+                "uc_share_vs": 72.77,
+                "uc_share_it": 73.76
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 374,
+                  "all_items": 474,
+                  "uc_visits": 247,
+                  "uc_items": 330,
+                  "item_ratio_all": 1.27,
+                  "item_ratio_uc": 1.34,
+                  "uc_share_vs": 66.04,
+                  "uc_share_it": 69.62
+                },
+                "q2": {
+                  "all_visits": 443,
+                  "all_items": 531,
+                  "uc_visits": 309,
+                  "uc_items": 378,
+                  "item_ratio_all": 1.2,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 69.75,
+                  "uc_share_it": 71.19
+                },
+                "q3": {
+                  "all_visits": 490,
+                  "all_items": 542,
+                  "uc_visits": 374,
+                  "uc_items": 414,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 76.33,
+                  "uc_share_it": 76.38
+                },
+                "q4": {
+                  "all_visits": 500,
+                  "all_items": 557,
+                  "uc_visits": 385,
+                  "uc_items": 430,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 77.0,
+                  "uc_share_it": 77.2
+                }
+              }
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
-              "num": 564,
-              "den": 553,
+              "num": 553,
+              "den": 564,
               "rate": 1.02,
-              "pass": false
+              "pass": true,
+              "all_visits": 553,
+              "all_items": 564,
+              "uc_visits": 532,
+              "uc_items": 540,
+              "item_ratio_all": 1.02,
+              "item_ratio_uc": 1.02,
+              "uc_share_vs": 96.2,
+              "uc_share_it": 95.74,
+              "full_year": {
+                "all_visits": 553,
+                "all_items": 564,
+                "uc_visits": 532,
+                "uc_items": 540,
+                "item_ratio_all": 1.02,
+                "item_ratio_uc": 1.02,
+                "uc_share_vs": 96.2,
+                "uc_share_it": 95.74
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 350,
+                  "all_items": 357,
+                  "uc_visits": 345,
+                  "uc_items": 350,
+                  "item_ratio_all": 1.02,
+                  "item_ratio_uc": 1.01,
+                  "uc_share_vs": 98.57,
+                  "uc_share_it": 98.04
+                },
+                "q2": {
+                  "all_visits": 135,
+                  "all_items": 136,
+                  "uc_visits": 127,
+                  "uc_items": 127,
+                  "item_ratio_all": 1.01,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 94.07,
+                  "uc_share_it": 93.38
+                },
+                "q3": {
+                  "all_visits": 32,
+                  "all_items": 35,
+                  "uc_visits": 28,
+                  "uc_items": 31,
+                  "item_ratio_all": 1.09,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 87.5,
+                  "uc_share_it": 88.57
+                },
+                "q4": {
+                  "all_visits": 36,
+                  "all_items": 36,
+                  "uc_visits": 32,
+                  "uc_items": 32,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 88.89,
+                  "uc_share_it": 88.89
+                }
+              }
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 887,
+              "den": 1594,
+              "rate": 1.8,
+              "pass": true,
+              "all_visits": 887,
+              "all_items": 1594,
+              "uc_visits": 720,
+              "uc_items": 1321,
+              "item_ratio_all": 1.8,
+              "item_ratio_uc": 1.83,
+              "uc_share_vs": 81.17,
+              "uc_share_it": 82.87,
+              "full_year": {
+                "all_visits": 887,
+                "all_items": 1594,
+                "uc_visits": 720,
+                "uc_items": 1321,
+                "item_ratio_all": 1.8,
+                "item_ratio_uc": 1.83,
+                "uc_share_vs": 81.17,
+                "uc_share_it": 82.87
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 89,
+                  "all_items": 275,
+                  "uc_visits": 78,
+                  "uc_items": 233,
+                  "item_ratio_all": 3.09,
+                  "item_ratio_uc": 2.99,
+                  "uc_share_vs": 87.64,
+                  "uc_share_it": 84.73
+                },
+                "q2": {
+                  "all_visits": 414,
+                  "all_items": 787,
+                  "uc_visits": 376,
+                  "uc_items": 700,
+                  "item_ratio_all": 1.9,
+                  "item_ratio_uc": 1.86,
+                  "uc_share_vs": 90.82,
+                  "uc_share_it": 88.95
+                },
+                "q3": {
+                  "all_visits": 151,
+                  "all_items": 196,
+                  "uc_visits": 100,
+                  "uc_items": 130,
+                  "item_ratio_all": 1.3,
+                  "item_ratio_uc": 1.3,
+                  "uc_share_vs": 66.23,
+                  "uc_share_it": 66.33
+                },
+                "q4": {
+                  "all_visits": 233,
+                  "all_items": 336,
+                  "uc_visits": 166,
+                  "uc_items": 258,
+                  "item_ratio_all": 1.44,
+                  "item_ratio_uc": 1.55,
+                  "uc_share_vs": 71.24,
+                  "uc_share_it": 76.79
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 510,
+              "den": 752,
+              "rate": 1.47,
+              "pass": true,
+              "all_visits": 510,
+              "all_items": 752,
+              "uc_visits": 476,
+              "uc_items": 697,
+              "item_ratio_all": 1.47,
+              "item_ratio_uc": 1.46,
+              "uc_share_vs": 93.33,
+              "uc_share_it": 92.69,
+              "full_year": {
+                "all_visits": 510,
+                "all_items": 752,
+                "uc_visits": 476,
+                "uc_items": 697,
+                "item_ratio_all": 1.47,
+                "item_ratio_uc": 1.46,
+                "uc_share_vs": 93.33,
+                "uc_share_it": 92.69
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 124,
+                  "all_items": 254,
+                  "uc_visits": 114,
+                  "uc_items": 233,
+                  "item_ratio_all": 2.05,
+                  "item_ratio_uc": 2.04,
+                  "uc_share_vs": 91.94,
+                  "uc_share_it": 91.73
+                },
+                "q2": {
+                  "all_visits": 127,
+                  "all_items": 183,
+                  "uc_visits": 118,
+                  "uc_items": 167,
+                  "item_ratio_all": 1.44,
+                  "item_ratio_uc": 1.42,
+                  "uc_share_vs": 92.91,
+                  "uc_share_it": 91.26
+                },
+                "q3": {
+                  "all_visits": 120,
+                  "all_items": 142,
+                  "uc_visits": 114,
+                  "uc_items": 136,
+                  "item_ratio_all": 1.18,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 95.0,
+                  "uc_share_it": 95.77
+                },
+                "q4": {
+                  "all_visits": 139,
+                  "all_items": 173,
+                  "uc_visits": 130,
+                  "uc_items": 161,
+                  "item_ratio_all": 1.24,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 93.53,
+                  "uc_share_it": 93.06
+                }
+              }
+            },
+            {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 2118,
+              "den": 4145,
+              "rate": 1.96,
+              "pass": true,
+              "all_visits": 2118,
+              "all_items": 4145,
+              "uc_visits": 2114,
+              "uc_items": 4136,
+              "item_ratio_all": 1.96,
+              "item_ratio_uc": 1.96,
+              "uc_share_vs": 99.81,
+              "uc_share_it": 99.78,
+              "full_year": {
+                "all_visits": 2118,
+                "all_items": 4145,
+                "uc_visits": 2114,
+                "uc_items": 4136,
+                "item_ratio_all": 1.96,
+                "item_ratio_uc": 1.96,
+                "uc_share_vs": 99.81,
+                "uc_share_it": 99.78
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 480,
+                  "all_items": 1151,
+                  "uc_visits": 480,
+                  "uc_items": 1151,
+                  "item_ratio_all": 2.4,
+                  "item_ratio_uc": 2.4,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q2": {
+                  "all_visits": 611,
+                  "all_items": 1543,
+                  "uc_visits": 609,
+                  "uc_items": 1537,
+                  "item_ratio_all": 2.53,
+                  "item_ratio_uc": 2.52,
+                  "uc_share_vs": 99.67,
+                  "uc_share_it": 99.61
+                },
+                "q3": {
+                  "all_visits": 488,
+                  "all_items": 912,
+                  "uc_visits": 487,
+                  "uc_items": 910,
+                  "item_ratio_all": 1.87,
+                  "item_ratio_uc": 1.87,
+                  "uc_share_vs": 99.8,
+                  "uc_share_it": 99.78
+                },
+                "q4": {
+                  "all_visits": 539,
+                  "all_items": 539,
+                  "uc_visits": 538,
+                  "uc_items": 538,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 99.81,
+                  "uc_share_it": 99.81
+                }
+              }
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 5853,
+              "den": 7167,
+              "rate": 1.22,
+              "pass": true,
+              "all_visits": 5853,
+              "all_items": 7167,
+              "uc_visits": 3936,
+              "uc_items": 4654,
+              "item_ratio_all": 1.22,
+              "item_ratio_uc": 1.18,
+              "uc_share_vs": 67.25,
+              "uc_share_it": 64.94,
+              "full_year": {
+                "all_visits": 5853,
+                "all_items": 7167,
+                "uc_visits": 3936,
+                "uc_items": 4654,
+                "item_ratio_all": 1.22,
+                "item_ratio_uc": 1.18,
+                "uc_share_vs": 67.25,
+                "uc_share_it": 64.94
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 1611,
+                  "all_items": 1989,
+                  "uc_visits": 1055,
+                  "uc_items": 1256,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 65.49,
+                  "uc_share_it": 63.15
+                },
+                "q2": {
+                  "all_visits": 1491,
+                  "all_items": 1840,
+                  "uc_visits": 991,
+                  "uc_items": 1178,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 66.47,
+                  "uc_share_it": 64.02
+                },
+                "q3": {
+                  "all_visits": 1280,
+                  "all_items": 1546,
+                  "uc_visits": 868,
+                  "uc_items": 1020,
+                  "item_ratio_all": 1.21,
+                  "item_ratio_uc": 1.18,
+                  "uc_share_vs": 67.81,
+                  "uc_share_it": 65.98
+                },
+                "q4": {
+                  "all_visits": 1471,
+                  "all_items": 1792,
+                  "uc_visits": 1022,
+                  "uc_items": 1200,
+                  "item_ratio_all": 1.22,
+                  "item_ratio_uc": 1.17,
+                  "uc_share_vs": 69.48,
+                  "uc_share_it": 66.96
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 203,
+              "den": 209,
+              "rate": 1.03,
+              "pass": true,
+              "all_visits": 203,
+              "all_items": 209,
+              "uc_visits": 176,
+              "uc_items": 179,
+              "item_ratio_all": 1.03,
+              "item_ratio_uc": 1.02,
+              "uc_share_vs": 86.7,
+              "uc_share_it": 85.65,
+              "full_year": {
+                "all_visits": 203,
+                "all_items": 209,
+                "uc_visits": 176,
+                "uc_items": 179,
+                "item_ratio_all": 1.03,
+                "item_ratio_uc": 1.02,
+                "uc_share_vs": 86.7,
+                "uc_share_it": 85.65
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 55,
+                  "all_items": 56,
+                  "uc_visits": 50,
+                  "uc_items": 51,
+                  "item_ratio_all": 1.02,
+                  "item_ratio_uc": 1.02,
+                  "uc_share_vs": 90.91,
+                  "uc_share_it": 91.07
+                },
+                "q2": {
+                  "all_visits": 59,
+                  "all_items": 59,
+                  "uc_visits": 50,
+                  "uc_items": 50,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 84.75,
+                  "uc_share_it": 84.75
+                },
+                "q3": {
+                  "all_visits": 33,
+                  "all_items": 37,
+                  "uc_visits": 25,
+                  "uc_items": 26,
+                  "item_ratio_all": 1.12,
+                  "item_ratio_uc": 1.04,
+                  "uc_share_vs": 75.76,
+                  "uc_share_it": 70.27
+                },
+                "q4": {
+                  "all_visits": 56,
+                  "all_items": 57,
+                  "uc_visits": 51,
+                  "uc_items": 52,
+                  "item_ratio_all": 1.02,
+                  "item_ratio_uc": 1.02,
+                  "uc_share_vs": 91.07,
+                  "uc_share_it": 91.23
+                }
+              }
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 212,
+              "den": 305,
+              "rate": 1.44,
+              "pass": true,
+              "all_visits": 212,
+              "all_items": 305,
+              "uc_visits": 145,
+              "uc_items": 205,
+              "item_ratio_all": 1.44,
+              "item_ratio_uc": 1.41,
+              "uc_share_vs": 68.4,
+              "uc_share_it": 67.21,
+              "full_year": {
+                "all_visits": 212,
+                "all_items": 305,
+                "uc_visits": 145,
+                "uc_items": 205,
+                "item_ratio_all": 1.44,
+                "item_ratio_uc": 1.41,
+                "uc_share_vs": 68.4,
+                "uc_share_it": 67.21
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 56,
+                  "all_items": 101,
+                  "uc_visits": 35,
+                  "uc_items": 62,
+                  "item_ratio_all": 1.8,
+                  "item_ratio_uc": 1.77,
+                  "uc_share_vs": 62.5,
+                  "uc_share_it": 61.39
+                },
+                "q2": {
+                  "all_visits": 37,
+                  "all_items": 49,
+                  "uc_visits": 28,
+                  "uc_items": 36,
+                  "item_ratio_all": 1.32,
+                  "item_ratio_uc": 1.29,
+                  "uc_share_vs": 75.68,
+                  "uc_share_it": 73.47
+                },
+                "q3": {
+                  "all_visits": 50,
+                  "all_items": 59,
+                  "uc_visits": 36,
+                  "uc_items": 43,
+                  "item_ratio_all": 1.18,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 72.0,
+                  "uc_share_it": 72.88
+                },
+                "q4": {
+                  "all_visits": 69,
+                  "all_items": 96,
+                  "uc_visits": 46,
+                  "uc_items": 64,
+                  "item_ratio_all": 1.39,
+                  "item_ratio_uc": 1.39,
+                  "uc_share_vs": 66.67,
+                  "uc_share_it": 66.67
+                }
+              }
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 70,
+              "den": 77,
+              "rate": 1.1,
+              "pass": true,
+              "all_visits": 70,
+              "all_items": 77,
+              "uc_visits": 60,
+              "uc_items": 67,
+              "item_ratio_all": 1.1,
+              "item_ratio_uc": 1.12,
+              "uc_share_vs": 85.71,
+              "uc_share_it": 87.01,
+              "full_year": {
+                "all_visits": 70,
+                "all_items": 77,
+                "uc_visits": 60,
+                "uc_items": 67,
+                "item_ratio_all": 1.1,
+                "item_ratio_uc": 1.12,
+                "uc_share_vs": 85.71,
+                "uc_share_it": 87.01
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 32,
+                  "all_items": 35,
+                  "uc_visits": 28,
+                  "uc_items": 31,
+                  "item_ratio_all": 1.09,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 87.5,
+                  "uc_share_it": 88.57
+                },
+                "q2": {
+                  "all_visits": 9,
+                  "all_items": 10,
+                  "uc_visits": 9,
+                  "uc_items": 10,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q3": {
+                  "all_visits": 23,
+                  "all_items": 26,
+                  "uc_visits": 19,
+                  "uc_items": 22,
+                  "item_ratio_all": 1.13,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 82.61,
+                  "uc_share_it": 84.62
+                },
+                "q4": {
+                  "all_visits": 6,
+                  "all_items": 6,
+                  "uc_visits": 4,
+                  "uc_items": 4,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 66.67,
+                  "uc_share_it": 66.67
+                }
+              }
             }
           ]
         },
         "2568": {
-          "num": 19442,
-          "den": 13878,
+          "num": 13878,
+          "den": 19442,
           "rate": 1.4,
           "pass": true,
+          "date_com": "202511160037",
+          "all_visits": 13878,
+          "all_items": 19442,
+          "uc_visits": 11170,
+          "uc_items": 15906,
+          "item_ratio_all": 1.4,
+          "item_ratio_uc": 1.42,
+          "uc_share_vs": 80.49,
+          "uc_share_it": 81.81,
+          "summary": {
+            "full_year": {
+              "all_visits": 13878,
+              "all_items": 19442,
+              "uc_visits": 11170,
+              "uc_items": 15906,
+              "item_ratio_all": 1.4,
+              "item_ratio_uc": 1.42,
+              "uc_share_vs": 80.49,
+              "uc_share_it": 81.81
+            },
+            "quarters": {
+              "q1": {
+                "all_visits": 3637,
+                "all_items": 5634,
+                "uc_visits": 2886,
+                "uc_items": 4565,
+                "item_ratio_all": 1.55,
+                "item_ratio_uc": 1.58,
+                "uc_share_vs": 79.35,
+                "uc_share_it": 81.03
+              },
+              "q2": {
+                "all_visits": 3766,
+                "all_items": 5301,
+                "uc_visits": 2992,
+                "uc_items": 4271,
+                "item_ratio_all": 1.41,
+                "item_ratio_uc": 1.43,
+                "uc_share_vs": 79.45,
+                "uc_share_it": 80.57
+              },
+              "q3": {
+                "all_visits": 3184,
+                "all_items": 4095,
+                "uc_visits": 2560,
+                "uc_items": 3346,
+                "item_ratio_all": 1.29,
+                "item_ratio_uc": 1.31,
+                "uc_share_vs": 80.4,
+                "uc_share_it": 81.71
+              },
+              "q4": {
+                "all_visits": 3291,
+                "all_items": 4412,
+                "uc_visits": 2732,
+                "uc_items": 3724,
+                "item_ratio_all": 1.34,
+                "item_ratio_uc": 1.36,
+                "uc_share_vs": 83.01,
+                "uc_share_it": 84.41
+              }
+            }
+          },
           "units": [
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 398,
+              "den": 637,
+              "rate": 1.6,
+              "pass": true,
+              "all_visits": 398,
+              "all_items": 637,
+              "uc_visits": 336,
+              "uc_items": 533,
+              "item_ratio_all": 1.6,
+              "item_ratio_uc": 1.59,
+              "uc_share_vs": 84.42,
+              "uc_share_it": 83.67,
+              "full_year": {
+                "all_visits": 398,
+                "all_items": 637,
+                "uc_visits": 336,
+                "uc_items": 533,
+                "item_ratio_all": 1.6,
+                "item_ratio_uc": 1.59,
+                "uc_share_vs": 84.42,
+                "uc_share_it": 83.67
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 90,
+                  "all_items": 180,
+                  "uc_visits": 70,
+                  "uc_items": 143,
+                  "item_ratio_all": 2.0,
+                  "item_ratio_uc": 2.04,
+                  "uc_share_vs": 77.78,
+                  "uc_share_it": 79.44
+                },
+                "q2": {
+                  "all_visits": 103,
+                  "all_items": 171,
+                  "uc_visits": 93,
+                  "uc_items": 153,
+                  "item_ratio_all": 1.66,
+                  "item_ratio_uc": 1.65,
+                  "uc_share_vs": 90.29,
+                  "uc_share_it": 89.47
+                },
+                "q3": {
+                  "all_visits": 99,
+                  "all_items": 146,
+                  "uc_visits": 78,
+                  "uc_items": 112,
+                  "item_ratio_all": 1.47,
+                  "item_ratio_uc": 1.44,
+                  "uc_share_vs": 78.79,
+                  "uc_share_it": 76.71
+                },
+                "q4": {
+                  "all_visits": 106,
+                  "all_items": 140,
+                  "uc_visits": 95,
+                  "uc_items": 125,
+                  "item_ratio_all": 1.32,
+                  "item_ratio_uc": 1.32,
+                  "uc_share_vs": 89.62,
+                  "uc_share_it": 89.29
+                }
+              }
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 625,
+              "den": 729,
+              "rate": 1.17,
+              "pass": true,
+              "all_visits": 625,
+              "all_items": 729,
+              "uc_visits": 313,
+              "uc_items": 379,
+              "item_ratio_all": 1.17,
+              "item_ratio_uc": 1.21,
+              "uc_share_vs": 50.08,
+              "uc_share_it": 51.99,
+              "full_year": {
+                "all_visits": 625,
+                "all_items": 729,
+                "uc_visits": 313,
+                "uc_items": 379,
+                "item_ratio_all": 1.17,
+                "item_ratio_uc": 1.21,
+                "uc_share_vs": 50.08,
+                "uc_share_it": 51.99
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 170,
+                  "all_items": 203,
+                  "uc_visits": 79,
+                  "uc_items": 99,
+                  "item_ratio_all": 1.19,
+                  "item_ratio_uc": 1.25,
+                  "uc_share_vs": 46.47,
+                  "uc_share_it": 48.77
+                },
+                "q2": {
+                  "all_visits": 174,
+                  "all_items": 208,
+                  "uc_visits": 87,
+                  "uc_items": 108,
+                  "item_ratio_all": 1.2,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 50.0,
+                  "uc_share_it": 51.92
+                },
+                "q3": {
+                  "all_visits": 124,
+                  "all_items": 149,
+                  "uc_visits": 55,
+                  "uc_items": 71,
+                  "item_ratio_all": 1.2,
+                  "item_ratio_uc": 1.29,
+                  "uc_share_vs": 44.35,
+                  "uc_share_it": 47.65
+                },
+                "q4": {
+                  "all_visits": 157,
+                  "all_items": 169,
+                  "uc_visits": 92,
+                  "uc_items": 101,
+                  "item_ratio_all": 1.08,
+                  "item_ratio_uc": 1.1,
+                  "uc_share_vs": 58.6,
+                  "uc_share_it": 59.76
+                }
+              }
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 468,
+              "den": 668,
+              "rate": 1.43,
+              "pass": true,
+              "all_visits": 468,
+              "all_items": 668,
+              "uc_visits": 416,
+              "uc_items": 590,
+              "item_ratio_all": 1.43,
+              "item_ratio_uc": 1.42,
+              "uc_share_vs": 88.89,
+              "uc_share_it": 88.32,
+              "full_year": {
+                "all_visits": 468,
+                "all_items": 668,
+                "uc_visits": 416,
+                "uc_items": 590,
+                "item_ratio_all": 1.43,
+                "item_ratio_uc": 1.42,
+                "uc_share_vs": 88.89,
+                "uc_share_it": 88.32
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 133,
+                  "all_items": 213,
+                  "uc_visits": 120,
+                  "uc_items": 192,
+                  "item_ratio_all": 1.6,
+                  "item_ratio_uc": 1.6,
+                  "uc_share_vs": 90.23,
+                  "uc_share_it": 90.14
+                },
+                "q2": {
+                  "all_visits": 139,
+                  "all_items": 223,
+                  "uc_visits": 116,
+                  "uc_items": 186,
+                  "item_ratio_all": 1.6,
+                  "item_ratio_uc": 1.6,
+                  "uc_share_vs": 83.45,
+                  "uc_share_it": 83.41
+                },
+                "q3": {
+                  "all_visits": 111,
+                  "all_items": 141,
+                  "uc_visits": 101,
+                  "uc_items": 128,
+                  "item_ratio_all": 1.27,
+                  "item_ratio_uc": 1.27,
+                  "uc_share_vs": 90.99,
+                  "uc_share_it": 90.78
+                },
+                "q4": {
+                  "all_visits": 85,
+                  "all_items": 91,
+                  "uc_visits": 79,
+                  "uc_items": 84,
+                  "item_ratio_all": 1.07,
+                  "item_ratio_uc": 1.06,
+                  "uc_share_vs": 92.94,
+                  "uc_share_it": 92.31
+                }
+              }
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 128,
+              "den": 219,
+              "rate": 1.71,
+              "pass": true,
+              "all_visits": 128,
+              "all_items": 219,
+              "uc_visits": 99,
+              "uc_items": 168,
+              "item_ratio_all": 1.71,
+              "item_ratio_uc": 1.7,
+              "uc_share_vs": 77.34,
+              "uc_share_it": 76.71,
+              "full_year": {
+                "all_visits": 128,
+                "all_items": 219,
+                "uc_visits": 99,
+                "uc_items": 168,
+                "item_ratio_all": 1.71,
+                "item_ratio_uc": 1.7,
+                "uc_share_vs": 77.34,
+                "uc_share_it": 76.71
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 40,
+                  "all_items": 70,
+                  "uc_visits": 30,
+                  "uc_items": 53,
+                  "item_ratio_all": 1.75,
+                  "item_ratio_uc": 1.77,
+                  "uc_share_vs": 75.0,
+                  "uc_share_it": 75.71
+                },
+                "q2": {
+                  "all_visits": 46,
+                  "all_items": 100,
+                  "uc_visits": 37,
+                  "uc_items": 80,
+                  "item_ratio_all": 2.17,
+                  "item_ratio_uc": 2.16,
+                  "uc_share_vs": 80.43,
+                  "uc_share_it": 80.0
+                },
+                "q3": {
+                  "all_visits": 25,
+                  "all_items": 31,
+                  "uc_visits": 16,
+                  "uc_items": 19,
+                  "item_ratio_all": 1.24,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 64.0,
+                  "uc_share_it": 61.29
+                },
+                "q4": {
+                  "all_visits": 17,
+                  "all_items": 18,
+                  "uc_visits": 16,
+                  "uc_items": 16,
+                  "item_ratio_all": 1.06,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 94.12,
+                  "uc_share_it": 88.89
+                }
+              }
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 1205,
+              "den": 1909,
+              "rate": 1.58,
+              "pass": true,
+              "all_visits": 1205,
+              "all_items": 1909,
+              "uc_visits": 931,
+              "uc_items": 1476,
+              "item_ratio_all": 1.58,
+              "item_ratio_uc": 1.59,
+              "uc_share_vs": 77.26,
+              "uc_share_it": 77.32,
+              "full_year": {
+                "all_visits": 1205,
+                "all_items": 1909,
+                "uc_visits": 931,
+                "uc_items": 1476,
+                "item_ratio_all": 1.58,
+                "item_ratio_uc": 1.59,
+                "uc_share_vs": 77.26,
+                "uc_share_it": 77.32
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 210,
+                  "all_items": 541,
+                  "uc_visits": 149,
+                  "uc_items": 391,
+                  "item_ratio_all": 2.58,
+                  "item_ratio_uc": 2.62,
+                  "uc_share_vs": 70.95,
+                  "uc_share_it": 72.27
+                },
+                "q2": {
+                  "all_visits": 338,
+                  "all_items": 594,
+                  "uc_visits": 277,
+                  "uc_items": 487,
+                  "item_ratio_all": 1.76,
+                  "item_ratio_uc": 1.76,
+                  "uc_share_vs": 81.95,
+                  "uc_share_it": 81.99
+                },
+                "q3": {
+                  "all_visits": 334,
+                  "all_items": 390,
+                  "uc_visits": 252,
+                  "uc_items": 297,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.18,
+                  "uc_share_vs": 75.45,
+                  "uc_share_it": 76.15
+                },
+                "q4": {
+                  "all_visits": 323,
+                  "all_items": 384,
+                  "uc_visits": 253,
+                  "uc_items": 301,
+                  "item_ratio_all": 1.19,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 78.33,
+                  "uc_share_it": 78.39
+                }
+              }
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 869,
+              "den": 1509,
+              "rate": 1.74,
+              "pass": true,
+              "all_visits": 869,
+              "all_items": 1509,
+              "uc_visits": 729,
+              "uc_items": 1260,
+              "item_ratio_all": 1.74,
+              "item_ratio_uc": 1.73,
+              "uc_share_vs": 83.89,
+              "uc_share_it": 83.5,
+              "full_year": {
+                "all_visits": 869,
+                "all_items": 1509,
+                "uc_visits": 729,
+                "uc_items": 1260,
+                "item_ratio_all": 1.74,
+                "item_ratio_uc": 1.73,
+                "uc_share_vs": 83.89,
+                "uc_share_it": 83.5
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 353,
+                  "all_items": 716,
+                  "uc_visits": 292,
+                  "uc_items": 587,
+                  "item_ratio_all": 2.03,
+                  "item_ratio_uc": 2.01,
+                  "uc_share_vs": 82.72,
+                  "uc_share_it": 81.98
+                },
+                "q2": {
+                  "all_visits": 197,
+                  "all_items": 342,
+                  "uc_visits": 166,
+                  "uc_items": 284,
+                  "item_ratio_all": 1.74,
+                  "item_ratio_uc": 1.71,
+                  "uc_share_vs": 84.26,
+                  "uc_share_it": 83.04
+                },
+                "q3": {
+                  "all_visits": 170,
+                  "all_items": 267,
+                  "uc_visits": 143,
+                  "uc_items": 230,
+                  "item_ratio_all": 1.57,
+                  "item_ratio_uc": 1.61,
+                  "uc_share_vs": 84.12,
+                  "uc_share_it": 86.14
+                },
+                "q4": {
+                  "all_visits": 149,
+                  "all_items": 184,
+                  "uc_visits": 128,
+                  "uc_items": 159,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 85.91,
+                  "uc_share_it": 86.41
+                }
+              }
+            },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
-              "num": 1169,
-              "den": 534,
+              "num": 534,
+              "den": 1169,
               "rate": 2.19,
-              "pass": true
+              "pass": true,
+              "all_visits": 534,
+              "all_items": 1169,
+              "uc_visits": 520,
+              "uc_items": 1143,
+              "item_ratio_all": 2.19,
+              "item_ratio_uc": 2.2,
+              "uc_share_vs": 97.38,
+              "uc_share_it": 97.78,
+              "full_year": {
+                "all_visits": 534,
+                "all_items": 1169,
+                "uc_visits": 520,
+                "uc_items": 1143,
+                "item_ratio_all": 2.19,
+                "item_ratio_uc": 2.2,
+                "uc_share_vs": 97.38,
+                "uc_share_it": 97.78
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 297,
+                  "all_items": 707,
+                  "uc_visits": 290,
+                  "uc_items": 692,
+                  "item_ratio_all": 2.38,
+                  "item_ratio_uc": 2.39,
+                  "uc_share_vs": 97.64,
+                  "uc_share_it": 97.88
+                },
+                "q2": {
+                  "all_visits": 164,
+                  "all_items": 360,
+                  "uc_visits": 162,
+                  "uc_items": 357,
+                  "item_ratio_all": 2.2,
+                  "item_ratio_uc": 2.2,
+                  "uc_share_vs": 98.78,
+                  "uc_share_it": 99.17
+                },
+                "q3": {
+                  "all_visits": 39,
+                  "all_items": 59,
+                  "uc_visits": 37,
+                  "uc_items": 54,
+                  "item_ratio_all": 1.51,
+                  "item_ratio_uc": 1.46,
+                  "uc_share_vs": 94.87,
+                  "uc_share_it": 91.53
+                },
+                "q4": {
+                  "all_visits": 34,
+                  "all_items": 43,
+                  "uc_visits": 31,
+                  "uc_items": 40,
+                  "item_ratio_all": 1.26,
+                  "item_ratio_uc": 1.29,
+                  "uc_share_vs": 91.18,
+                  "uc_share_it": 93.02
+                }
+              }
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 2266,
+              "den": 2906,
+              "rate": 1.28,
+              "pass": true,
+              "all_visits": 2266,
+              "all_items": 2906,
+              "uc_visits": 2029,
+              "uc_items": 2621,
+              "item_ratio_all": 1.28,
+              "item_ratio_uc": 1.29,
+              "uc_share_vs": 89.54,
+              "uc_share_it": 90.19,
+              "full_year": {
+                "all_visits": 2266,
+                "all_items": 2906,
+                "uc_visits": 2029,
+                "uc_items": 2621,
+                "item_ratio_all": 1.28,
+                "item_ratio_uc": 1.29,
+                "uc_share_vs": 89.54,
+                "uc_share_it": 90.19
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 590,
+                  "all_items": 712,
+                  "uc_visits": 520,
+                  "uc_items": 632,
+                  "item_ratio_all": 1.21,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 88.14,
+                  "uc_share_it": 88.76
+                },
+                "q2": {
+                  "all_visits": 645,
+                  "all_items": 747,
+                  "uc_visits": 564,
+                  "uc_items": 656,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 87.44,
+                  "uc_share_it": 87.82
+                },
+                "q3": {
+                  "all_visits": 544,
+                  "all_items": 671,
+                  "uc_visits": 498,
+                  "uc_items": 613,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.23,
+                  "uc_share_vs": 91.54,
+                  "uc_share_it": 91.36
+                },
+                "q4": {
+                  "all_visits": 487,
+                  "all_items": 776,
+                  "uc_visits": 447,
+                  "uc_items": 720,
+                  "item_ratio_all": 1.59,
+                  "item_ratio_uc": 1.61,
+                  "uc_share_vs": 91.79,
+                  "uc_share_it": 92.78
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 481,
+              "den": 659,
+              "rate": 1.37,
+              "pass": true,
+              "all_visits": 481,
+              "all_items": 659,
+              "uc_visits": 440,
+              "uc_items": 605,
+              "item_ratio_all": 1.37,
+              "item_ratio_uc": 1.38,
+              "uc_share_vs": 91.48,
+              "uc_share_it": 91.81,
+              "full_year": {
+                "all_visits": 481,
+                "all_items": 659,
+                "uc_visits": 440,
+                "uc_items": 605,
+                "item_ratio_all": 1.37,
+                "item_ratio_uc": 1.38,
+                "uc_share_vs": 91.48,
+                "uc_share_it": 91.81
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 134,
+                  "all_items": 201,
+                  "uc_visits": 121,
+                  "uc_items": 183,
+                  "item_ratio_all": 1.5,
+                  "item_ratio_uc": 1.51,
+                  "uc_share_vs": 90.3,
+                  "uc_share_it": 91.04
+                },
+                "q2": {
+                  "all_visits": 149,
+                  "all_items": 224,
+                  "uc_visits": 140,
+                  "uc_items": 211,
+                  "item_ratio_all": 1.5,
+                  "item_ratio_uc": 1.51,
+                  "uc_share_vs": 93.96,
+                  "uc_share_it": 94.2
+                },
+                "q3": {
+                  "all_visits": 103,
+                  "all_items": 128,
+                  "uc_visits": 94,
+                  "uc_items": 117,
+                  "item_ratio_all": 1.24,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 91.26,
+                  "uc_share_it": 91.41
+                },
+                "q4": {
+                  "all_visits": 95,
+                  "all_items": 106,
+                  "uc_visits": 85,
+                  "uc_items": 94,
+                  "item_ratio_all": 1.12,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 89.47,
+                  "uc_share_it": 88.68
+                }
+              }
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
-              "num": 2486,
-              "den": 1352,
+              "num": 1352,
+              "den": 2486,
               "rate": 1.84,
-              "pass": true
+              "pass": true,
+              "all_visits": 1352,
+              "all_items": 2486,
+              "uc_visits": 1351,
+              "uc_items": 2484,
+              "item_ratio_all": 1.84,
+              "item_ratio_uc": 1.84,
+              "uc_share_vs": 99.93,
+              "uc_share_it": 99.92,
+              "full_year": {
+                "all_visits": 1352,
+                "all_items": 2486,
+                "uc_visits": 1351,
+                "uc_items": 2484,
+                "item_ratio_all": 1.84,
+                "item_ratio_uc": 1.84,
+                "uc_share_vs": 99.93,
+                "uc_share_it": 99.92
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 271,
+                  "all_items": 470,
+                  "uc_visits": 271,
+                  "uc_items": 470,
+                  "item_ratio_all": 1.73,
+                  "item_ratio_uc": 1.73,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q2": {
+                  "all_visits": 224,
+                  "all_items": 428,
+                  "uc_visits": 224,
+                  "uc_items": 428,
+                  "item_ratio_all": 1.91,
+                  "item_ratio_uc": 1.91,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q3": {
+                  "all_visits": 344,
+                  "all_items": 626,
+                  "uc_visits": 343,
+                  "uc_items": 624,
+                  "item_ratio_all": 1.82,
+                  "item_ratio_uc": 1.82,
+                  "uc_share_vs": 99.71,
+                  "uc_share_it": 99.68
+                },
+                "q4": {
+                  "all_visits": 513,
+                  "all_items": 962,
+                  "uc_visits": 513,
+                  "uc_items": 962,
+                  "item_ratio_all": 1.88,
+                  "item_ratio_uc": 1.88,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                }
+              }
             },
             {
-              "hospcode": "06020",
-              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
-              "subdistrict": "ท่ากว้าง",
-              "num": 1509,
-              "den": 869,
-              "rate": 1.74,
-              "pass": true
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 219,
-              "den": 128,
-              "rate": 1.71,
-              "pass": true
-            },
-            {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 637,
-              "den": 398,
-              "rate": 1.6,
-              "pass": true
-            },
-            {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 1909,
-              "den": 1205,
-              "rate": 1.58,
-              "pass": true
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 5070,
+              "den": 5915,
+              "rate": 1.17,
+              "pass": true,
+              "all_visits": 5070,
+              "all_items": 5915,
+              "uc_visits": 3641,
+              "uc_items": 4159,
+              "item_ratio_all": 1.17,
+              "item_ratio_uc": 1.14,
+              "uc_share_vs": 71.81,
+              "uc_share_it": 70.31,
+              "full_year": {
+                "all_visits": 5070,
+                "all_items": 5915,
+                "uc_visits": 3641,
+                "uc_items": 4159,
+                "item_ratio_all": 1.17,
+                "item_ratio_uc": 1.14,
+                "uc_share_vs": 71.81,
+                "uc_share_it": 70.31
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 1226,
+                  "all_items": 1432,
+                  "uc_visits": 854,
+                  "uc_items": 980,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.15,
+                  "uc_share_vs": 69.66,
+                  "uc_share_it": 68.44
+                },
+                "q2": {
+                  "all_visits": 1429,
+                  "all_items": 1673,
+                  "uc_visits": 1015,
+                  "uc_items": 1155,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.14,
+                  "uc_share_vs": 71.03,
+                  "uc_share_it": 69.04
+                },
+                "q3": {
+                  "all_visits": 1190,
+                  "all_items": 1384,
+                  "uc_visits": 866,
+                  "uc_items": 1002,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 72.77,
+                  "uc_share_it": 72.4
+                },
+                "q4": {
+                  "all_visits": 1225,
+                  "all_items": 1426,
+                  "uc_visits": 906,
+                  "uc_items": 1022,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.13,
+                  "uc_share_vs": 73.96,
+                  "uc_share_it": 71.67
+                }
+              }
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
-              "num": 313,
-              "den": 201,
+              "num": 201,
+              "den": 313,
               "rate": 1.56,
-              "pass": true
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 668,
-              "den": 468,
-              "rate": 1.43,
-              "pass": true
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 659,
-              "den": 481,
-              "rate": 1.37,
-              "pass": true
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 2906,
-              "den": 2266,
-              "rate": 1.28,
-              "pass": true
-            },
-            {
-              "hospcode": "11135",
-              "name": "โรงพยาบาลสารภี",
-              "subdistrict": "สารภี",
-              "num": 5915,
-              "den": 5070,
-              "rate": 1.17,
-              "pass": false
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 276,
-              "den": 235,
-              "rate": 1.17,
-              "pass": false
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 729,
-              "den": 625,
-              "rate": 1.17,
-              "pass": false
-            },
-            {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 47,
-              "den": 46,
-              "rate": 1.02,
-              "pass": false
-            }
-          ]
-        },
-        "2569": {
-          "num": 20880,
-          "den": 18260,
-          "rate": 1.14,
-          "pass": false,
-          "units": [
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 1737,
-              "den": 1247,
-              "rate": 1.39,
-              "pass": true
-            },
-            {
-              "hospcode": "06020",
-              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
-              "subdistrict": "ท่ากว้าง",
-              "num": 908,
-              "den": 659,
-              "rate": 1.38,
-              "pass": true
-            },
-            {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 919,
-              "den": 685,
-              "rate": 1.34,
-              "pass": true
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 698,
-              "den": 548,
-              "rate": 1.27,
-              "pass": true
-            },
-            {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 1288,
-              "den": 1065,
-              "rate": 1.21,
-              "pass": true
+              "pass": true,
+              "all_visits": 201,
+              "all_items": 313,
+              "uc_visits": 171,
+              "uc_items": 261,
+              "item_ratio_all": 1.56,
+              "item_ratio_uc": 1.53,
+              "uc_share_vs": 85.07,
+              "uc_share_it": 83.39,
+              "full_year": {
+                "all_visits": 201,
+                "all_items": 313,
+                "uc_visits": 171,
+                "uc_items": 261,
+                "item_ratio_all": 1.56,
+                "item_ratio_uc": 1.53,
+                "uc_share_vs": 85.07,
+                "uc_share_it": 83.39
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 55,
+                  "all_items": 111,
+                  "uc_visits": 43,
+                  "uc_items": 87,
+                  "item_ratio_all": 2.02,
+                  "item_ratio_uc": 2.02,
+                  "uc_share_vs": 78.18,
+                  "uc_share_it": 78.38
+                },
+                "q2": {
+                  "all_visits": 55,
+                  "all_items": 106,
+                  "uc_visits": 47,
+                  "uc_items": 88,
+                  "item_ratio_all": 1.93,
+                  "item_ratio_uc": 1.87,
+                  "uc_share_vs": 85.45,
+                  "uc_share_it": 83.02
+                },
+                "q3": {
+                  "all_visits": 44,
+                  "all_items": 44,
+                  "uc_visits": 38,
+                  "uc_items": 38,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 86.36,
+                  "uc_share_it": 86.36
+                },
+                "q4": {
+                  "all_visits": 47,
+                  "all_items": 52,
+                  "uc_visits": 43,
+                  "uc_items": 48,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 91.49,
+                  "uc_share_it": 92.31
+                }
+              }
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 354,
-              "den": 296,
-              "rate": 1.2,
-              "pass": true
-            },
-            {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 391,
-              "den": 331,
-              "rate": 1.18,
-              "pass": false
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 639,
-              "den": 548,
+              "num": 235,
+              "den": 276,
               "rate": 1.17,
-              "pass": false
-            },
-            {
-              "hospcode": "11135",
-              "name": "โรงพยาบาลสารภี",
-              "subdistrict": "สารภี",
-              "num": 11834,
-              "den": 10843,
-              "rate": 1.09,
-              "pass": false
-            },
-            {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 222,
-              "den": 206,
-              "rate": 1.08,
-              "pass": false
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 411,
-              "den": 384,
-              "rate": 1.07,
-              "pass": false
-            },
-            {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 446,
-              "den": 427,
-              "rate": 1.04,
-              "pass": false
+              "pass": true,
+              "all_visits": 235,
+              "all_items": 276,
+              "uc_visits": 153,
+              "uc_items": 185,
+              "item_ratio_all": 1.17,
+              "item_ratio_uc": 1.21,
+              "uc_share_vs": 65.11,
+              "uc_share_it": 67.03,
+              "full_year": {
+                "all_visits": 235,
+                "all_items": 276,
+                "uc_visits": 153,
+                "uc_items": 185,
+                "item_ratio_all": 1.17,
+                "item_ratio_uc": 1.21,
+                "uc_share_vs": 65.11,
+                "uc_share_it": 67.03
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 55,
+                  "all_items": 64,
+                  "uc_visits": 35,
+                  "uc_items": 43,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.23,
+                  "uc_share_vs": 63.64,
+                  "uc_share_it": 67.19
+                },
+                "q2": {
+                  "all_visits": 97,
+                  "all_items": 119,
+                  "uc_visits": 58,
+                  "uc_items": 72,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 59.79,
+                  "uc_share_it": 60.5
+                },
+                "q3": {
+                  "all_visits": 37,
+                  "all_items": 39,
+                  "uc_visits": 23,
+                  "uc_items": 25,
+                  "item_ratio_all": 1.05,
+                  "item_ratio_uc": 1.09,
+                  "uc_share_vs": 62.16,
+                  "uc_share_it": 64.1
+                },
+                "q4": {
+                  "all_visits": 46,
+                  "all_items": 54,
+                  "uc_visits": 37,
+                  "uc_items": 45,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 80.43,
+                  "uc_share_it": 83.33
+                }
+              }
             },
             {
               "hospcode": "99758",
               "name": "ศสม.สารภี",
               "subdistrict": "สารภี",
               "num": 46,
-              "den": 45,
+              "den": 47,
               "rate": 1.02,
-              "pass": false
+              "pass": true,
+              "all_visits": 46,
+              "all_items": 47,
+              "uc_visits": 41,
+              "uc_items": 42,
+              "item_ratio_all": 1.02,
+              "item_ratio_uc": 1.02,
+              "uc_share_vs": 89.13,
+              "uc_share_it": 89.36,
+              "full_year": {
+                "all_visits": 46,
+                "all_items": 47,
+                "uc_visits": 41,
+                "uc_items": 42,
+                "item_ratio_all": 1.02,
+                "item_ratio_uc": 1.02,
+                "uc_share_vs": 89.13,
+                "uc_share_it": 89.36
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 13,
+                  "all_items": 14,
+                  "uc_visits": 12,
+                  "uc_items": 13,
+                  "item_ratio_all": 1.08,
+                  "item_ratio_uc": 1.08,
+                  "uc_share_vs": 92.31,
+                  "uc_share_it": 92.86
+                },
+                "q2": {
+                  "all_visits": 6,
+                  "all_items": 6,
+                  "uc_visits": 6,
+                  "uc_items": 6,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q3": {
+                  "all_visits": 20,
+                  "all_items": 20,
+                  "uc_visits": 16,
+                  "uc_items": 16,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 80.0,
+                  "uc_share_it": 80.0
+                },
+                "q4": {
+                  "all_visits": 7,
+                  "all_items": 7,
+                  "uc_visits": 7,
+                  "uc_items": 7,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                }
+              }
+            }
+          ]
+        },
+        "2569": {
+          "num": 18449,
+          "den": 21096,
+          "rate": 1.14,
+          "pass": true,
+          "date_com": "202609121340",
+          "all_visits": 18449,
+          "all_items": 21096,
+          "uc_visits": 14991,
+          "uc_items": 16976,
+          "item_ratio_all": 1.14,
+          "item_ratio_uc": 1.13,
+          "uc_share_vs": 81.26,
+          "uc_share_it": 80.47,
+          "summary": {
+            "full_year": {
+              "all_visits": 18449,
+              "all_items": 21096,
+              "uc_visits": 14991,
+              "uc_items": 16976,
+              "item_ratio_all": 1.14,
+              "item_ratio_uc": 1.13,
+              "uc_share_vs": 81.26,
+              "uc_share_it": 80.47
+            },
+            "quarters": {
+              "q1": {
+                "all_visits": 3159,
+                "all_items": 3738,
+                "uc_visits": 2515,
+                "uc_items": 2911,
+                "item_ratio_all": 1.18,
+                "item_ratio_uc": 1.16,
+                "uc_share_vs": 79.61,
+                "uc_share_it": 77.88
+              },
+              "q2": {
+                "all_visits": 3200,
+                "all_items": 3796,
+                "uc_visits": 2589,
+                "uc_items": 3019,
+                "item_ratio_all": 1.19,
+                "item_ratio_uc": 1.17,
+                "uc_share_vs": 80.91,
+                "uc_share_it": 79.53
+              },
+              "q3": {
+                "all_visits": 7793,
+                "all_items": 8874,
+                "uc_visits": 6317,
+                "uc_items": 7167,
+                "item_ratio_all": 1.14,
+                "item_ratio_uc": 1.13,
+                "uc_share_vs": 81.06,
+                "uc_share_it": 80.76
+              },
+              "q4": {
+                "all_visits": 4297,
+                "all_items": 4688,
+                "uc_visits": 3570,
+                "uc_items": 3879,
+                "item_ratio_all": 1.09,
+                "item_ratio_uc": 1.09,
+                "uc_share_vs": 83.08,
+                "uc_share_it": 82.74
+              }
+            }
+          },
+          "units": [
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "num": 335,
+              "den": 395,
+              "rate": 1.18,
+              "pass": true,
+              "all_visits": 335,
+              "all_items": 395,
+              "uc_visits": 289,
+              "uc_items": 337,
+              "item_ratio_all": 1.18,
+              "item_ratio_uc": 1.17,
+              "uc_share_vs": 86.27,
+              "uc_share_it": 85.32,
+              "full_year": {
+                "all_visits": 335,
+                "all_items": 395,
+                "uc_visits": 289,
+                "uc_items": 337,
+                "item_ratio_all": 1.18,
+                "item_ratio_uc": 1.17,
+                "uc_share_vs": 86.27,
+                "uc_share_it": 85.32
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 107,
+                  "all_items": 133,
+                  "uc_visits": 92,
+                  "uc_items": 112,
+                  "item_ratio_all": 1.24,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 85.98,
+                  "uc_share_it": 84.21
+                },
+                "q2": {
+                  "all_visits": 94,
+                  "all_items": 109,
+                  "uc_visits": 81,
+                  "uc_items": 94,
+                  "item_ratio_all": 1.16,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 86.17,
+                  "uc_share_it": 86.24
+                },
+                "q3": {
+                  "all_visits": 62,
+                  "all_items": 71,
+                  "uc_visits": 52,
+                  "uc_items": 58,
+                  "item_ratio_all": 1.15,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 83.87,
+                  "uc_share_it": 81.69
+                },
+                "q4": {
+                  "all_visits": 72,
+                  "all_items": 82,
+                  "uc_visits": 64,
+                  "uc_items": 73,
+                  "item_ratio_all": 1.14,
+                  "item_ratio_uc": 1.14,
+                  "uc_share_vs": 88.89,
+                  "uc_share_it": 89.02
+                }
+              }
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 548,
+              "den": 698,
+              "rate": 1.27,
+              "pass": true,
+              "all_visits": 548,
+              "all_items": 698,
+              "uc_visits": 359,
+              "uc_items": 470,
+              "item_ratio_all": 1.27,
+              "item_ratio_uc": 1.31,
+              "uc_share_vs": 65.51,
+              "uc_share_it": 67.34,
+              "full_year": {
+                "all_visits": 548,
+                "all_items": 698,
+                "uc_visits": 359,
+                "uc_items": 470,
+                "item_ratio_all": 1.27,
+                "item_ratio_uc": 1.31,
+                "uc_share_vs": 65.51,
+                "uc_share_it": 67.34
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 132,
+                  "all_items": 194,
+                  "uc_visits": 83,
+                  "uc_items": 125,
+                  "item_ratio_all": 1.47,
+                  "item_ratio_uc": 1.51,
+                  "uc_share_vs": 62.88,
+                  "uc_share_it": 64.43
+                },
+                "q2": {
+                  "all_visits": 171,
+                  "all_items": 247,
+                  "uc_visits": 123,
+                  "uc_items": 182,
+                  "item_ratio_all": 1.44,
+                  "item_ratio_uc": 1.48,
+                  "uc_share_vs": 71.93,
+                  "uc_share_it": 73.68
+                },
+                "q3": {
+                  "all_visits": 154,
+                  "all_items": 162,
+                  "uc_visits": 97,
+                  "uc_items": 103,
+                  "item_ratio_all": 1.05,
+                  "item_ratio_uc": 1.06,
+                  "uc_share_vs": 62.99,
+                  "uc_share_it": 63.58
+                },
+                "q4": {
+                  "all_visits": 91,
+                  "all_items": 95,
+                  "uc_visits": 56,
+                  "uc_items": 60,
+                  "item_ratio_all": 1.04,
+                  "item_ratio_uc": 1.07,
+                  "uc_share_vs": 61.54,
+                  "uc_share_it": 63.16
+                }
+              }
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 1383,
+              "den": 1893,
+              "rate": 1.37,
+              "pass": true,
+              "all_visits": 1383,
+              "all_items": 1893,
+              "uc_visits": 1228,
+              "uc_items": 1655,
+              "item_ratio_all": 1.37,
+              "item_ratio_uc": 1.35,
+              "uc_share_vs": 88.79,
+              "uc_share_it": 87.43,
+              "full_year": {
+                "all_visits": 1383,
+                "all_items": 1893,
+                "uc_visits": 1228,
+                "uc_items": 1655,
+                "item_ratio_all": 1.37,
+                "item_ratio_uc": 1.35,
+                "uc_share_vs": 88.79,
+                "uc_share_it": 87.43
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 171,
+                  "all_items": 186,
+                  "uc_visits": 159,
+                  "uc_items": 170,
+                  "item_ratio_all": 1.09,
+                  "item_ratio_uc": 1.07,
+                  "uc_share_vs": 92.98,
+                  "uc_share_it": 91.4
+                },
+                "q2": {
+                  "all_visits": 205,
+                  "all_items": 217,
+                  "uc_visits": 166,
+                  "uc_items": 175,
+                  "item_ratio_all": 1.06,
+                  "item_ratio_uc": 1.05,
+                  "uc_share_vs": 80.98,
+                  "uc_share_it": 80.65
+                },
+                "q3": {
+                  "all_visits": 504,
+                  "all_items": 933,
+                  "uc_visits": 436,
+                  "uc_items": 801,
+                  "item_ratio_all": 1.85,
+                  "item_ratio_uc": 1.84,
+                  "uc_share_vs": 86.51,
+                  "uc_share_it": 85.85
+                },
+                "q4": {
+                  "all_visits": 503,
+                  "all_items": 557,
+                  "uc_visits": 467,
+                  "uc_items": 509,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.09,
+                  "uc_share_vs": 92.84,
+                  "uc_share_it": 91.38
+                }
+              }
+            },
+            {
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "num": 427,
+              "den": 446,
+              "rate": 1.04,
+              "pass": true,
+              "all_visits": 427,
+              "all_items": 446,
+              "uc_visits": 393,
+              "uc_items": 405,
+              "item_ratio_all": 1.04,
+              "item_ratio_uc": 1.03,
+              "uc_share_vs": 92.04,
+              "uc_share_it": 90.81,
+              "full_year": {
+                "all_visits": 427,
+                "all_items": 446,
+                "uc_visits": 393,
+                "uc_items": 405,
+                "item_ratio_all": 1.04,
+                "item_ratio_uc": 1.03,
+                "uc_share_vs": 92.04,
+                "uc_share_it": 90.81
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 49,
+                  "all_items": 53,
+                  "uc_visits": 39,
+                  "uc_items": 41,
+                  "item_ratio_all": 1.08,
+                  "item_ratio_uc": 1.05,
+                  "uc_share_vs": 79.59,
+                  "uc_share_it": 77.36
+                },
+                "q2": {
+                  "all_visits": 69,
+                  "all_items": 76,
+                  "uc_visits": 62,
+                  "uc_items": 69,
+                  "item_ratio_all": 1.1,
+                  "item_ratio_uc": 1.11,
+                  "uc_share_vs": 89.86,
+                  "uc_share_it": 90.79
+                },
+                "q3": {
+                  "all_visits": 201,
+                  "all_items": 205,
+                  "uc_visits": 193,
+                  "uc_items": 195,
+                  "item_ratio_all": 1.02,
+                  "item_ratio_uc": 1.01,
+                  "uc_share_vs": 96.02,
+                  "uc_share_it": 95.12
+                },
+                "q4": {
+                  "all_visits": 108,
+                  "all_items": 112,
+                  "uc_visits": 99,
+                  "uc_items": 100,
+                  "item_ratio_all": 1.04,
+                  "item_ratio_uc": 1.01,
+                  "uc_share_vs": 91.67,
+                  "uc_share_it": 89.29
+                }
+              }
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "num": 1065,
+              "den": 1288,
+              "rate": 1.21,
+              "pass": true,
+              "all_visits": 1065,
+              "all_items": 1288,
+              "uc_visits": 915,
+              "uc_items": 1103,
+              "item_ratio_all": 1.21,
+              "item_ratio_uc": 1.21,
+              "uc_share_vs": 85.92,
+              "uc_share_it": 85.64,
+              "full_year": {
+                "all_visits": 1065,
+                "all_items": 1288,
+                "uc_visits": 915,
+                "uc_items": 1103,
+                "item_ratio_all": 1.21,
+                "item_ratio_uc": 1.21,
+                "uc_share_vs": 85.92,
+                "uc_share_it": 85.64
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 279,
+                  "all_items": 347,
+                  "uc_visits": 235,
+                  "uc_items": 292,
+                  "item_ratio_all": 1.24,
+                  "item_ratio_uc": 1.24,
+                  "uc_share_vs": 84.23,
+                  "uc_share_it": 84.15
+                },
+                "q2": {
+                  "all_visits": 313,
+                  "all_items": 375,
+                  "uc_visits": 272,
+                  "uc_items": 325,
+                  "item_ratio_all": 1.2,
+                  "item_ratio_uc": 1.19,
+                  "uc_share_vs": 86.9,
+                  "uc_share_it": 86.67
+                },
+                "q3": {
+                  "all_visits": 320,
+                  "all_items": 387,
+                  "uc_visits": 271,
+                  "uc_items": 324,
+                  "item_ratio_all": 1.21,
+                  "item_ratio_uc": 1.2,
+                  "uc_share_vs": 84.69,
+                  "uc_share_it": 83.72
+                },
+                "q4": {
+                  "all_visits": 153,
+                  "all_items": 179,
+                  "uc_visits": 137,
+                  "uc_items": 162,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.18,
+                  "uc_share_vs": 89.54,
+                  "uc_share_it": 90.5
+                }
+              }
+            },
+            {
+              "hospcode": "06020",
+              "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "subdistrict": "ท่ากว้าง",
+              "num": 659,
+              "den": 908,
+              "rate": 1.38,
+              "pass": true,
+              "all_visits": 659,
+              "all_items": 908,
+              "uc_visits": 576,
+              "uc_items": 804,
+              "item_ratio_all": 1.38,
+              "item_ratio_uc": 1.4,
+              "uc_share_vs": 87.41,
+              "uc_share_it": 88.55,
+              "full_year": {
+                "all_visits": 659,
+                "all_items": 908,
+                "uc_visits": 576,
+                "uc_items": 804,
+                "item_ratio_all": 1.38,
+                "item_ratio_uc": 1.4,
+                "uc_share_vs": 87.41,
+                "uc_share_it": 88.55
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 194,
+                  "all_items": 255,
+                  "uc_visits": 166,
+                  "uc_items": 220,
+                  "item_ratio_all": 1.31,
+                  "item_ratio_uc": 1.33,
+                  "uc_share_vs": 85.57,
+                  "uc_share_it": 86.27
+                },
+                "q2": {
+                  "all_visits": 180,
+                  "all_items": 255,
+                  "uc_visits": 160,
+                  "uc_items": 228,
+                  "item_ratio_all": 1.42,
+                  "item_ratio_uc": 1.43,
+                  "uc_share_vs": 88.89,
+                  "uc_share_it": 89.41
+                },
+                "q3": {
+                  "all_visits": 150,
+                  "all_items": 207,
+                  "uc_visits": 135,
+                  "uc_items": 189,
+                  "item_ratio_all": 1.38,
+                  "item_ratio_uc": 1.4,
+                  "uc_share_vs": 90.0,
+                  "uc_share_it": 91.3
+                },
+                "q4": {
+                  "all_visits": 135,
+                  "all_items": 191,
+                  "uc_visits": 115,
+                  "uc_items": 167,
+                  "item_ratio_all": 1.41,
+                  "item_ratio_uc": 1.45,
+                  "uc_share_vs": 85.19,
+                  "uc_share_it": 87.43
+                }
+              }
+            },
+            {
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "num": 385,
+              "den": 412,
+              "rate": 1.07,
+              "pass": true,
+              "all_visits": 385,
+              "all_items": 412,
+              "uc_visits": 371,
+              "uc_items": 395,
+              "item_ratio_all": 1.07,
+              "item_ratio_uc": 1.06,
+              "uc_share_vs": 96.36,
+              "uc_share_it": 95.87,
+              "full_year": {
+                "all_visits": 385,
+                "all_items": 412,
+                "uc_visits": 371,
+                "uc_items": 395,
+                "item_ratio_all": 1.07,
+                "item_ratio_uc": 1.06,
+                "uc_share_vs": 96.36,
+                "uc_share_it": 95.87
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 89,
+                  "all_items": 102,
+                  "uc_visits": 85,
+                  "uc_items": 95,
+                  "item_ratio_all": 1.15,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 95.51,
+                  "uc_share_it": 93.14
+                },
+                "q2": {
+                  "all_visits": 140,
+                  "all_items": 145,
+                  "uc_visits": 137,
+                  "uc_items": 142,
+                  "item_ratio_all": 1.04,
+                  "item_ratio_uc": 1.04,
+                  "uc_share_vs": 97.86,
+                  "uc_share_it": 97.93
+                },
+                "q3": {
+                  "all_visits": 112,
+                  "all_items": 118,
+                  "uc_visits": 108,
+                  "uc_items": 114,
+                  "item_ratio_all": 1.05,
+                  "item_ratio_uc": 1.06,
+                  "uc_share_vs": 96.43,
+                  "uc_share_it": 96.61
+                },
+                "q4": {
+                  "all_visits": 44,
+                  "all_items": 47,
+                  "uc_visits": 41,
+                  "uc_items": 44,
+                  "item_ratio_all": 1.07,
+                  "item_ratio_uc": 1.07,
+                  "uc_share_vs": 93.18,
+                  "uc_share_it": 93.62
+                }
+              }
+            },
+            {
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "num": 685,
+              "den": 919,
+              "rate": 1.34,
+              "pass": true,
+              "all_visits": 685,
+              "all_items": 919,
+              "uc_visits": 554,
+              "uc_items": 749,
+              "item_ratio_all": 1.34,
+              "item_ratio_uc": 1.35,
+              "uc_share_vs": 80.88,
+              "uc_share_it": 81.5,
+              "full_year": {
+                "all_visits": 685,
+                "all_items": 919,
+                "uc_visits": 554,
+                "uc_items": 749,
+                "item_ratio_all": 1.34,
+                "item_ratio_uc": 1.35,
+                "uc_share_vs": 80.88,
+                "uc_share_it": 81.5
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 174,
+                  "all_items": 232,
+                  "uc_visits": 145,
+                  "uc_items": 194,
+                  "item_ratio_all": 1.33,
+                  "item_ratio_uc": 1.34,
+                  "uc_share_vs": 83.33,
+                  "uc_share_it": 83.62
+                },
+                "q2": {
+                  "all_visits": 190,
+                  "all_items": 242,
+                  "uc_visits": 139,
+                  "uc_items": 180,
+                  "item_ratio_all": 1.27,
+                  "item_ratio_uc": 1.29,
+                  "uc_share_vs": 73.16,
+                  "uc_share_it": 74.38
+                },
+                "q3": {
+                  "all_visits": 172,
+                  "all_items": 240,
+                  "uc_visits": 149,
+                  "uc_items": 210,
+                  "item_ratio_all": 1.4,
+                  "item_ratio_uc": 1.41,
+                  "uc_share_vs": 86.63,
+                  "uc_share_it": 87.5
+                },
+                "q4": {
+                  "all_visits": 149,
+                  "all_items": 205,
+                  "uc_visits": 121,
+                  "uc_items": 165,
+                  "item_ratio_all": 1.38,
+                  "item_ratio_uc": 1.36,
+                  "uc_share_vs": 81.21,
+                  "uc_share_it": 80.49
+                }
+              }
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 560,
+              "den": 651,
+              "rate": 1.16,
+              "pass": true,
+              "all_visits": 560,
+              "all_items": 651,
+              "uc_visits": 515,
+              "uc_items": 600,
+              "item_ratio_all": 1.16,
+              "item_ratio_uc": 1.17,
+              "uc_share_vs": 91.96,
+              "uc_share_it": 92.17,
+              "full_year": {
+                "all_visits": 560,
+                "all_items": 651,
+                "uc_visits": 515,
+                "uc_items": 600,
+                "item_ratio_all": 1.16,
+                "item_ratio_uc": 1.17,
+                "uc_share_vs": 91.96,
+                "uc_share_it": 92.17
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 126,
+                  "all_items": 141,
+                  "uc_visits": 110,
+                  "uc_items": 125,
+                  "item_ratio_all": 1.12,
+                  "item_ratio_uc": 1.14,
+                  "uc_share_vs": 87.3,
+                  "uc_share_it": 88.65
+                },
+                "q2": {
+                  "all_visits": 159,
+                  "all_items": 196,
+                  "uc_visits": 149,
+                  "uc_items": 182,
+                  "item_ratio_all": 1.23,
+                  "item_ratio_uc": 1.22,
+                  "uc_share_vs": 93.71,
+                  "uc_share_it": 92.86
+                },
+                "q3": {
+                  "all_visits": 151,
+                  "all_items": 174,
+                  "uc_visits": 138,
+                  "uc_items": 160,
+                  "item_ratio_all": 1.15,
+                  "item_ratio_uc": 1.16,
+                  "uc_share_vs": 91.39,
+                  "uc_share_it": 91.95
+                },
+                "q4": {
+                  "all_visits": 124,
+                  "all_items": 140,
+                  "uc_visits": 118,
+                  "uc_items": 133,
+                  "item_ratio_all": 1.13,
+                  "item_ratio_uc": 1.13,
+                  "uc_share_vs": 95.16,
+                  "uc_share_it": 95.0
+                }
+              }
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
-              "num": 987,
-              "den": 976,
+              "num": 977,
+              "den": 988,
               "rate": 1.01,
-              "pass": false
+              "pass": true,
+              "all_visits": 977,
+              "all_items": 988,
+              "uc_visits": 971,
+              "uc_items": 980,
+              "item_ratio_all": 1.01,
+              "item_ratio_uc": 1.01,
+              "uc_share_vs": 99.39,
+              "uc_share_it": 99.19,
+              "full_year": {
+                "all_visits": 977,
+                "all_items": 988,
+                "uc_visits": 971,
+                "uc_items": 980,
+                "item_ratio_all": 1.01,
+                "item_ratio_uc": 1.01,
+                "uc_share_vs": 99.39,
+                "uc_share_it": 99.19
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 290,
+                  "all_items": 296,
+                  "uc_visits": 288,
+                  "uc_items": 293,
+                  "item_ratio_all": 1.02,
+                  "item_ratio_uc": 1.02,
+                  "uc_share_vs": 99.31,
+                  "uc_share_it": 98.99
+                },
+                "q2": {
+                  "all_visits": 282,
+                  "all_items": 284,
+                  "uc_visits": 280,
+                  "uc_items": 281,
+                  "item_ratio_all": 1.01,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 99.29,
+                  "uc_share_it": 98.94
+                },
+                "q3": {
+                  "all_visits": 203,
+                  "all_items": 203,
+                  "uc_visits": 203,
+                  "uc_items": 203,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q4": {
+                  "all_visits": 202,
+                  "all_items": 205,
+                  "uc_visits": 200,
+                  "uc_items": 203,
+                  "item_ratio_all": 1.01,
+                  "item_ratio_uc": 1.01,
+                  "uc_share_vs": 99.01,
+                  "uc_share_it": 99.02
+                }
+              }
+            },
+            {
+              "hospcode": "11135",
+              "name": "โรงพยาบาลสารภี",
+              "subdistrict": "สารภี",
+              "num": 10843,
+              "den": 11834,
+              "rate": 1.09,
+              "pass": true,
+              "all_visits": 10843,
+              "all_items": 11834,
+              "uc_visits": 8380,
+              "uc_items": 8982,
+              "item_ratio_all": 1.09,
+              "item_ratio_uc": 1.07,
+              "uc_share_vs": 77.28,
+              "uc_share_it": 75.9,
+              "full_year": {
+                "all_visits": 10843,
+                "all_items": 11834,
+                "uc_visits": 8380,
+                "uc_items": 8982,
+                "item_ratio_all": 1.09,
+                "item_ratio_uc": 1.07,
+                "uc_share_vs": 77.28,
+                "uc_share_it": 75.9
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 1326,
+                  "all_items": 1546,
+                  "uc_visits": 939,
+                  "uc_items": 1048,
+                  "item_ratio_all": 1.17,
+                  "item_ratio_uc": 1.12,
+                  "uc_share_vs": 70.81,
+                  "uc_share_it": 67.79
+                },
+                "q2": {
+                  "all_visits": 1245,
+                  "all_items": 1484,
+                  "uc_visits": 899,
+                  "uc_items": 1030,
+                  "item_ratio_all": 1.19,
+                  "item_ratio_uc": 1.15,
+                  "uc_share_vs": 72.21,
+                  "uc_share_it": 69.41
+                },
+                "q3": {
+                  "all_visits": 5659,
+                  "all_items": 6051,
+                  "uc_visits": 4444,
+                  "uc_items": 4703,
+                  "item_ratio_all": 1.07,
+                  "item_ratio_uc": 1.06,
+                  "uc_share_vs": 78.53,
+                  "uc_share_it": 77.72
+                },
+                "q4": {
+                  "all_visits": 2613,
+                  "all_items": 2753,
+                  "uc_visits": 2098,
+                  "uc_items": 2201,
+                  "item_ratio_all": 1.05,
+                  "item_ratio_uc": 1.05,
+                  "uc_share_vs": 80.29,
+                  "uc_share_it": 79.95
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 206,
+              "den": 222,
+              "rate": 1.08,
+              "pass": true,
+              "all_visits": 206,
+              "all_items": 222,
+              "uc_visits": 178,
+              "uc_items": 192,
+              "item_ratio_all": 1.08,
+              "item_ratio_uc": 1.08,
+              "uc_share_vs": 86.41,
+              "uc_share_it": 86.49,
+              "full_year": {
+                "all_visits": 206,
+                "all_items": 222,
+                "uc_visits": 178,
+                "uc_items": 192,
+                "item_ratio_all": 1.08,
+                "item_ratio_uc": 1.08,
+                "uc_share_vs": 86.41,
+                "uc_share_it": 86.49
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 66,
+                  "all_items": 69,
+                  "uc_visits": 57,
+                  "uc_items": 59,
+                  "item_ratio_all": 1.05,
+                  "item_ratio_uc": 1.04,
+                  "uc_share_vs": 86.36,
+                  "uc_share_it": 85.51
+                },
+                "q2": {
+                  "all_visits": 53,
+                  "all_items": 57,
+                  "uc_visits": 45,
+                  "uc_items": 49,
+                  "item_ratio_all": 1.08,
+                  "item_ratio_uc": 1.09,
+                  "uc_share_vs": 84.91,
+                  "uc_share_it": 85.96
+                },
+                "q3": {
+                  "all_visits": 52,
+                  "all_items": 56,
+                  "uc_visits": 46,
+                  "uc_items": 50,
+                  "item_ratio_all": 1.08,
+                  "item_ratio_uc": 1.09,
+                  "uc_share_vs": 88.46,
+                  "uc_share_it": 89.29
+                },
+                "q4": {
+                  "all_visits": 35,
+                  "all_items": 40,
+                  "uc_visits": 30,
+                  "uc_items": 34,
+                  "item_ratio_all": 1.14,
+                  "item_ratio_uc": 1.13,
+                  "uc_share_vs": 85.71,
+                  "uc_share_it": 85.0
+                }
+              }
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "num": 331,
+              "den": 396,
+              "rate": 1.2,
+              "pass": true,
+              "all_visits": 331,
+              "all_items": 396,
+              "uc_visits": 220,
+              "uc_items": 261,
+              "item_ratio_all": 1.2,
+              "item_ratio_uc": 1.19,
+              "uc_share_vs": 66.47,
+              "uc_share_it": 65.91,
+              "full_year": {
+                "all_visits": 331,
+                "all_items": 396,
+                "uc_visits": 220,
+                "uc_items": 261,
+                "item_ratio_all": 1.2,
+                "item_ratio_uc": 1.19,
+                "uc_share_vs": 66.47,
+                "uc_share_it": 65.91
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 131,
+                  "all_items": 158,
+                  "uc_visits": 94,
+                  "uc_items": 113,
+                  "item_ratio_all": 1.21,
+                  "item_ratio_uc": 1.2,
+                  "uc_share_vs": 71.76,
+                  "uc_share_it": 71.52
+                },
+                "q2": {
+                  "all_visits": 88,
+                  "all_items": 98,
+                  "uc_visits": 66,
+                  "uc_items": 72,
+                  "item_ratio_all": 1.11,
+                  "item_ratio_uc": 1.09,
+                  "uc_share_vs": 75.0,
+                  "uc_share_it": 73.47
+                },
+                "q3": {
+                  "all_visits": 44,
+                  "all_items": 58,
+                  "uc_visits": 36,
+                  "uc_items": 48,
+                  "item_ratio_all": 1.32,
+                  "item_ratio_uc": 1.33,
+                  "uc_share_vs": 81.82,
+                  "uc_share_it": 82.76
+                },
+                "q4": {
+                  "all_visits": 68,
+                  "all_items": 82,
+                  "uc_visits": 24,
+                  "uc_items": 28,
+                  "item_ratio_all": 1.21,
+                  "item_ratio_uc": 1.17,
+                  "uc_share_vs": 35.29,
+                  "uc_share_it": 34.15
+                }
+              }
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "subdistrict": "สารภี",
+              "num": 45,
+              "den": 46,
+              "rate": 1.02,
+              "pass": true,
+              "all_visits": 45,
+              "all_items": 46,
+              "uc_visits": 42,
+              "uc_items": 43,
+              "item_ratio_all": 1.02,
+              "item_ratio_uc": 1.02,
+              "uc_share_vs": 93.33,
+              "uc_share_it": 93.48,
+              "full_year": {
+                "all_visits": 45,
+                "all_items": 46,
+                "uc_visits": 42,
+                "uc_items": 43,
+                "item_ratio_all": 1.02,
+                "item_ratio_uc": 1.02,
+                "uc_share_vs": 93.33,
+                "uc_share_it": 93.48
+              },
+              "quarters": {
+                "q1": {
+                  "all_visits": 25,
+                  "all_items": 26,
+                  "uc_visits": 23,
+                  "uc_items": 24,
+                  "item_ratio_all": 1.04,
+                  "item_ratio_uc": 1.04,
+                  "uc_share_vs": 92.0,
+                  "uc_share_it": 92.31
+                },
+                "q2": {
+                  "all_visits": 11,
+                  "all_items": 11,
+                  "uc_visits": 10,
+                  "uc_items": 10,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 90.91,
+                  "uc_share_it": 90.91
+                },
+                "q3": {
+                  "all_visits": 9,
+                  "all_items": 9,
+                  "uc_visits": 9,
+                  "uc_items": 9,
+                  "item_ratio_all": 1.0,
+                  "item_ratio_uc": 1.0,
+                  "uc_share_vs": 100.0,
+                  "uc_share_it": 100.0
+                },
+                "q4": {
+                  "all_visits": 0,
+                  "all_items": 0,
+                  "uc_visits": 0,
+                  "uc_items": 0,
+                  "item_ratio_all": 0.0,
+                  "item_ratio_uc": 0.0,
+                  "uc_share_vs": 0.0,
+                  "uc_share_it": 0.0
+                }
+              }
             }
           ]
         }

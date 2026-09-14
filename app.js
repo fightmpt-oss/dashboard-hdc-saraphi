@@ -49,11 +49,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nhsoServicePanel = document.getElementById('nhso-service-panel');
   const ttmAgeSexPanel = document.getElementById('ttm-age-sex-panel');
   const ttmEdPanel = document.getElementById('ttm-ed-panel');
+  const ttmCasesPanel = document.getElementById('ttm-cases-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
+
+  let currentTtmCasesView = 'full';
+  let currentTtmCasesYear = '2569';
+  let currentTtmCasesChartMode = 'hdc_4charts';
+  let ttmCasesSearchQuery = '';
+  let ttmCasesChartAllVsInstance = null;
+  let ttmCasesChartAllItInstance = null;
+  let ttmCasesChartUcVsInstance = null;
+  let ttmCasesChartUcItInstance = null;
+  let ttmCasesAltChartInstance = null;
 
   let currentErrorActivity = 'ยาสมุนไพร';
   let currentErrorYear = '2569';
@@ -1273,6 +1284,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('ind-target-text').textContent = 'รายงานจำแนก 5 กลุ่มอายุและเพศ (คน/ครั้ง)';
     } else if (ind.id === 'ttm_ed') {
       document.getElementById('ind-target-text').textContent = 'เกณฑ์กระทรวงสาธารณสุข: สัดส่วนการใช้ยาในบัญชียาหลักแห่งชาติ (ED) ≥ 80%';
+    } else if (ind.id === 'ttm_cases') {
+      document.getElementById('ind-target-text').textContent = 'รายงานปริมาณการจ่ายยา: ทุกสิทธิ และสิทธิ UC (ครั้ง/รายการ) ทั้งปีและรายไตรมาส';
     } else {
       document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
     }
@@ -1322,6 +1335,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         badgeEl.textContent = '✕ ต่ำกว่าเกณฑ์ (< 80%)';
         rateEl.className = 'text-2xl font-black text-rose-600 num-font';
       }
+    } else if (ind.id === 'ttm_cases') {
+      const allVs = (currentUnit === 'all')
+        ? (yData?.all_visits || yData?.num || 0)
+        : ((yData?.units?.find(item => item.hospcode === currentUnit)?.all_visits) || 0);
+      const allIt = (currentUnit === 'all')
+        ? (yData?.all_items || yData?.den || 0)
+        : ((yData?.units?.find(item => item.hospcode === currentUnit)?.all_items) || 0);
+      const ratioVal = allVs > 0 ? (allIt / allVs).toFixed(2) : '0.00';
+      rateEl.textContent = `${Number(allVs).toLocaleString()} ครั้ง (${Number(allIt).toLocaleString()} รายการ)`;
+      badgeEl.className = 'badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+      badgeEl.textContent = `เฉลี่ย ${ratioVal} รายการ/ครั้ง`;
+      rateEl.className = 'text-2xl font-black text-emerald-600 num-font';
     } else {
       rateEl.textContent = `${Number(rate).toLocaleString()} ${ind.unit}`;
       if (ind.target === 0) {
@@ -5655,6 +5680,971 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+
+  // ==========================================
+  // TTM CASES / QUANTITY BREAKDOWN (s_ttm2)
+  // ==========================================
+  window.switchTtmCasesView = function(view) {
+    currentTtmCasesView = view;
+    renderTtmCasesPanel();
+  };
+
+  window.switchTtmCasesYear = function(yr) {
+    currentTtmCasesYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    renderTtmCasesPanel();
+  };
+
+  window.switchTtmCasesChartMode = function(mode) {
+    currentTtmCasesChartMode = mode;
+    renderTtmCasesPanel();
+  };
+
+  window.selectTtmCasesHospital = function(hospcode) {
+    currentUnit = hospcode;
+    if (unitSelect) unitSelect.value = hospcode;
+    updateDashboardView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.exportTtmCasesCsv = function() {
+    const yr = currentTtmCasesYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['ttm_cases'];
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const distSummary = yrData.summary || {};
+    const fullYr = distSummary.full_year || {};
+    const qtr = distSummary.quarters || {};
+
+    let csvContent = '\uFEFF';
+
+    if (currentTtmCasesView === 'full_year') {
+      csvContent += `ตารางสรุปการจ่ายยาสมุนไพรทั้งปีงบประมาณ อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ทุกสิทธิ (ครั้ง),ทุกสิทธิ (รายการ),สิทธิ UC (ครั้ง),สิทธิ UC (รายการ),สัดส่วน UC ครั้ง (%),สัดส่วน UC รายการ (%),เฉลี่ยรายการต่อครั้ง (ทุกสิทธิ),เฉลี่ยรายการต่อครั้ง (สิทธิ UC)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const fy = u.full_year || {};
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${fy.all_visits || 0},${fy.all_items || 0},${fy.uc_visits || 0},${fy.uc_items || 0},${fy.uc_share_vs || 0},${fy.uc_share_it || 0},${fy.item_ratio_all || 0},${fy.item_ratio_uc || 0}\n`;
+      });
+
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${fullYr.all_visits || 0},${fullYr.all_items || 0},${fullYr.uc_visits || 0},${fullYr.uc_items || 0},${fullYr.uc_share_vs || 0},${fullYr.uc_share_it || 0},${fullYr.item_ratio_all || 0},${fullYr.item_ratio_uc || 0}\n`;
+
+    } else if (currentTtmCasesView === 'uc') {
+      csvContent += `ตารางเปรียบเทียบสิทธิการรักษา (ทุกสิทธิ vs สิทธิ UC) ปริมาณการจ่ายยาสมุนไพร อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ทุกสิทธิ (ครั้ง),สิทธิ UC (ครั้ง),สัดส่วน UC ครั้ง (%),ทุกสิทธิ (รายการ),สิทธิ UC (รายการ),สัดส่วน UC รายการ (%),เฉลี่ยต่อครั้ง ทุกสิทธิ (รายการ/ครั้ง),เฉลี่ยต่อครั้ง สิทธิ UC (รายการ/ครั้ง)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const fy = u.full_year || {};
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${fy.all_visits || 0},${fy.uc_visits || 0},${fy.uc_share_vs || 0},${fy.all_items || 0},${fy.uc_items || 0},${fy.uc_share_it || 0},${fy.item_ratio_all || 0},${fy.item_ratio_uc || 0}\n`;
+      });
+
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${fullYr.all_visits || 0},${fullYr.uc_visits || 0},${fullYr.uc_share_vs || 0},${fullYr.all_items || 0},${fullYr.uc_items || 0},${fullYr.uc_share_it || 0},${fullYr.item_ratio_all || 0},${fullYr.item_ratio_uc || 0}\n`;
+
+    } else if (currentTtmCasesView === 'quarter') {
+      csvContent += `ตารางปริมาณการจ่ายยาสมุนไพรรายไตรมาส (Q1 - Q4) อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,Q1 ทุกสิทธิ(ครั้ง),Q1 ทุกสิทธิ(รายการ),Q1 UC(ครั้ง),Q1 UC(รายการ),Q2 ทุกสิทธิ(ครั้ง),Q2 ทุกสิทธิ(รายการ),Q2 UC(ครั้ง),Q2 UC(รายการ),Q3 ทุกสิทธิ(ครั้ง),Q3 ทุกสิทธิ(รายการ),Q3 UC(ครั้ง),Q3 UC(รายการ),Q4 ทุกสิทธิ(ครั้ง),Q4 ทุกสิทธิ(รายการ),Q4 UC(ครั้ง),Q4 UC(รายการ),รวมทั้งปี ทุกสิทธิ(ครั้ง),รวมทั้งปี ทุกสิทธิ(รายการ)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const q = u.quarters || {};
+        const q1 = q.q1 || {}; const q2 = q.q2 || {}; const q3 = q.q3 || {}; const q4 = q.q4 || {};
+
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${q1.all_visits || 0},${q1.all_items || 0},${q1.uc_visits || 0},${q1.uc_items || 0},${q2.all_visits || 0},${q2.all_items || 0},${q2.uc_visits || 0},${q2.uc_items || 0},${q3.all_visits || 0},${q3.all_items || 0},${q3.uc_visits || 0},${q3.uc_items || 0},${q4.all_visits || 0},${q4.all_items || 0},${q4.uc_visits || 0},${q4.uc_items || 0},${u.full_year?.all_visits || 0},${u.full_year?.all_items || 0}\n`;
+      });
+
+      const q1 = qtr.q1 || {}; const q2 = qtr.q2 || {}; const q3 = qtr.q3 || {}; const q4 = qtr.q4 || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${q1.all_visits || 0},${q1.all_items || 0},${q1.uc_visits || 0},${q1.uc_items || 0},${q2.all_visits || 0},${q2.all_items || 0},${q2.uc_visits || 0},${q2.uc_items || 0},${q3.all_visits || 0},${q3.all_items || 0},${q3.uc_visits || 0},${q3.uc_items || 0},${q4.all_visits || 0},${q4.all_items || 0},${q4.uc_visits || 0},${q4.uc_items || 0},${fullYr.all_visits || 0},${fullYr.all_items || 0}\n`;
+
+    } else {
+      // 1:1 HDC Matrix Export
+      csvContent += `ตารางมาตรฐาน HDC s_ttm2: OPD ปริมาณการจ่ายยาสมุนไพร อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,รวมทั้งปี ทุกสิทธิ(ครั้ง),รวมทั้งปี ทุกสิทธิ(รายการ),รวมทั้งปี สิทธิ UC(ครั้ง),รวมทั้งปี สิทธิ UC(รายการ),';
+      for (let qi = 1; qi <= 4; qi++) {
+        csvContent += `Q${qi} ทุกสิทธิ(ครั้ง),Q${qi} ทุกสิทธิ(รายการ),Q${qi} สิทธิ UC(ครั้ง),Q${qi} สิทธิ UC(รายการ)${qi === 4 ? '\n' : ','}`;
+      }
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const fy = u.full_year || {};
+        const q = u.quarters || {};
+        let line = `"${u.hospcode}","${uName}",${fy.all_visits || 0},${fy.all_items || 0},${fy.uc_visits || 0},${fy.uc_items || 0},`;
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          line += `${qd.all_visits || 0},${qd.all_items || 0},${qd.uc_visits || 0},${qd.uc_items || 0}${qi === 4 ? '' : ','}`;
+        }
+        csvContent += line + '\n';
+      });
+
+      let totLine = `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)",${fullYr.all_visits || 0},${fullYr.all_items || 0},${fullYr.uc_visits || 0},${fullYr.uc_items || 0},`;
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = qtr[`q${qi}`] || {};
+        totLine += `${qd.all_visits || 0},${qd.all_items || 0},${qd.uc_visits || 0},${qd.uc_items || 0}${qi === 4 ? '' : ','}`;
+      }
+      csvContent += totLine + '\n';
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_s_ttm2_Saraphi_${yr}_${currentTtmCasesView}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
+
+  function renderTtmCasesPanel() {
+    if (currentIndicatorId !== 'ttm_cases') {
+      if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+      return;
+    }
+    if (ttmCasesPanel) ttmCasesPanel.classList.remove('hidden');
+
+    const yr = currentTtmCasesYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['full', 'full_year', 'uc', 'quarter'].forEach(v => {
+      const btn = document.getElementById(`btn-ttm-cases-view-${v}`);
+      if (btn) {
+        if (v === currentTtmCasesView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ttm-cases-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Sync Chart Mode Buttons
+    ['hdc_4charts', 'compare_uc', 'trend'].forEach(m => {
+      const btn = document.getElementById(`btn-ttm-cases-chart-${m === 'hdc_4charts' ? 'hdc' : (m === 'compare_uc' ? 'compare' : 'trend')}`);
+      if (btn) {
+        if (m === currentTtmCasesChartMode) {
+          btn.className = 'px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 4. Resolve Master Data
+    const ind = masterData?.indicators?.['ttm_cases'];
+    const yrData = ind?.years?.[yr] || {};
+    const distSummary = yrData.summary || {
+      full_year: {
+        all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0,
+        item_ratio_all: 0, item_ratio_uc: 0, uc_share_vs: 0, uc_share_it: 0
+      },
+      quarters: {
+        q1: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+        q2: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+        q3: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+        q4: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 }
+      }
+    };
+    const distFullYear = distSummary.full_year || {};
+    const distQuarters = distSummary.quarters || {};
+    const rawUnits = yrData.units || [];
+
+    const unitsList = rawUnits.map(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const cleanName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+      const cleanShort = (u.hospcode === '06023') ? 'บ้านป่าสา' : (meta ? meta.short : (u.subdistrict || u.name));
+      const cleanSubdistrict = meta ? meta.subdistrict : (u.subdistrict || '');
+      return {
+        ...u,
+        name: cleanName,
+        short: cleanShort,
+        subdistrict: cleanSubdistrict,
+        full_year: u.full_year || {
+          all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0,
+          item_ratio_all: 0, item_ratio_uc: 0, uc_share_vs: 0, uc_share_it: 0
+        },
+        quarters: u.quarters || {
+          q1: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+          q2: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+          q3: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 },
+          q4: { all_visits: 0, all_items: 0, uc_visits: 0, uc_items: 0 }
+        }
+      };
+    });
+
+    // 5. Update Bento Stats
+    let statsAllVs = distFullYear.all_visits || 0;
+    let statsAllIt = distFullYear.all_items || 0;
+    let statsUcVs = distFullYear.uc_visits || 0;
+    let statsUcIt = distFullYear.uc_items || 0;
+    let statsRatio = distFullYear.item_ratio_all || 0;
+    let statsUcRatio = distFullYear.item_ratio_uc || 0;
+    let statsUcShare = distFullYear.uc_share_vs || 0;
+
+    if (currentUnit !== 'all') {
+      const curU = unitsList.find(u => u.hospcode === currentUnit);
+      if (curU) {
+        const cfy = curU.full_year;
+        statsAllVs = cfy.all_visits || 0;
+        statsAllIt = cfy.all_items || 0;
+        statsUcVs = cfy.uc_visits || 0;
+        statsUcIt = cfy.uc_items || 0;
+        statsRatio = cfy.item_ratio_all || 0;
+        statsUcRatio = cfy.item_ratio_uc || 0;
+        statsUcShare = cfy.uc_share_vs || 0;
+      }
+    }
+
+    const statAllVsEl = document.getElementById('ttm-cases-stat-all-vs');
+    const statAllItEl = document.getElementById('ttm-cases-stat-all-it');
+    const statUcShareEl = document.getElementById('ttm-cases-stat-uc-share');
+    const statUcVsEl = document.getElementById('ttm-cases-stat-uc-vs');
+    const statUcItEl = document.getElementById('ttm-cases-stat-uc-it');
+    const card2ShareEl = document.getElementById('ttm-cases-card2-share');
+    const statRatioEl = document.getElementById('ttm-cases-stat-ratio');
+    const statUcRatioValEl = document.getElementById('ttm-cases-stat-uc-ratio-val');
+    const statTopNameEl = document.getElementById('ttm-cases-stat-top-name');
+    const statTopValEl = document.getElementById('ttm-cases-stat-top-val');
+
+    if (statAllVsEl) statAllVsEl.textContent = Number(statsAllVs).toLocaleString();
+    if (statAllItEl) statAllItEl.textContent = Number(statsAllIt).toLocaleString();
+    if (statUcShareEl) statUcShareEl.textContent = `สิทธิ UC ${statsUcShare.toFixed(1)}%`;
+    if (statUcVsEl) statUcVsEl.textContent = Number(statsUcVs).toLocaleString();
+    if (statUcItEl) statUcItEl.textContent = Number(statsUcIt).toLocaleString();
+    if (card2ShareEl) card2ShareEl.textContent = `${statsUcShare.toFixed(1)}%`;
+    if (statRatioEl) statRatioEl.textContent = Number(statsRatio).toFixed(2);
+    if (statUcRatioValEl) statUcRatioValEl.textContent = Number(statsUcRatio).toFixed(2);
+
+    // Top Health Center (excluding 11135 Saraphi Hospital)
+    const primaryCareUnits = unitsList.filter(u => u.hospcode !== '11135');
+    const topPrimaryUnit = [...primaryCareUnits].sort((a, b) => (b.full_year.all_visits || 0) - (a.full_year.all_visits || 0))[0];
+    if (statTopNameEl && topPrimaryUnit) {
+      statTopNameEl.textContent = topPrimaryUnit.name;
+    }
+    if (statTopValEl && topPrimaryUnit) {
+      statTopValEl.textContent = `${Number(topPrimaryUnit.full_year.all_visits).toLocaleString()} ครั้ง (${Number(topPrimaryUnit.full_year.all_items).toLocaleString()} รายการ)`;
+    }
+
+    // 6. Render Charts
+    const hdcChartsContainer = document.getElementById('ttm-cases-hdc-charts-container');
+    const altChartsContainer = document.getElementById('ttm-cases-alt-charts-container');
+
+    // Inline plugin to render values above bars
+    const barDataLabelsPlugin = {
+      id: 'barDataLabelsTtmCases',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, i) => {
+          const meta = chart.getDatasetMeta(i);
+          meta.data.forEach((bar, index) => {
+            const val = dataset.data[index];
+            if (val !== undefined && val !== null && val > 0) {
+              ctx.save();
+              ctx.fillStyle = '#1e293b';
+              ctx.font = 'bold 9px Prompt, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText(Number(val).toLocaleString(), bar.x, bar.y - 2);
+              ctx.restore();
+            }
+          });
+        });
+      }
+    };
+
+    if (currentTtmCasesChartMode === 'hdc_4charts') {
+      if (hdcChartsContainer) hdcChartsContainer.classList.remove('hidden');
+      if (altChartsContainer) altChartsContainer.classList.add('hidden');
+
+      // Canonical HDC labels
+      const hdcLabels = [
+        'รวม',
+        ...unitsList.map(u => `${u.hospcode} ${u.short}`)
+      ];
+
+      const createHdcBarChart = (canvasId, oldInstance, totalVal, unitProp) => {
+        if (oldInstance) oldInstance.destroy();
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return null;
+
+        const dataVals = [
+          totalVal,
+          ...unitsList.map(u => u.full_year[unitProp] || 0)
+        ];
+
+        const bgColors = dataVals.map((_, idx) => {
+          if (idx === 0) return 'rgba(110, 231, 183, 0.9)'; // Total mint
+          const u = unitsList[idx - 1];
+          return (u && u.hospcode === currentUnit) ? 'rgba(5, 150, 105, 0.95)' : 'rgba(167, 243, 208, 0.85)';
+        });
+
+        const borderColors = dataVals.map((_, idx) => {
+          if (idx === 0) return '#059669';
+          const u = unitsList[idx - 1];
+          return (u && u.hospcode === currentUnit) ? '#047857' : '#10b981';
+        });
+
+        const maxVal = Math.max(...dataVals, 10);
+        const yMax = Math.ceil(maxVal * 1.2 / 5000) * 5000;
+
+        const ctx = canvas.getContext('2d');
+        return new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: hdcLabels,
+            datasets: [{
+              data: dataVals,
+              backgroundColor: bgColors,
+              borderColor: borderColors,
+              borderWidth: 1.5,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 16, bottom: 4, left: 4, right: 4 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleFont: { family: 'Prompt', size: 12, weight: 'bold' },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: function(c) {
+                    return ` ผลงาน: ${Number(c.raw).toLocaleString()}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  maxRotation: 45,
+                  minRotation: 45,
+                  font: { family: 'Prompt', size: 9.5, weight: '500' },
+                  color: function(c) {
+                    if (c.index === 0) return '#047857';
+                    const u = unitsList[c.index - 1];
+                    return (u && u.hospcode === currentUnit) ? '#059669' : '#475569';
+                  }
+                }
+              },
+              y: {
+                max: yMax,
+                grid: { color: 'rgba(226, 232, 240, 0.7)' },
+                ticks: {
+                  font: { family: 'Prompt', size: 10 },
+                  callback: function(v) {
+                    return v >= 1000 ? (v / 1000) + 'k' : v;
+                  }
+                }
+              }
+            }
+          },
+          plugins: [barDataLabelsPlugin]
+        });
+      };
+
+      ttmCasesChartAllVsInstance = createHdcBarChart('ttmCasesChartAllVs', ttmCasesChartAllVsInstance, distFullYear.all_visits || 0, 'all_visits');
+      ttmCasesChartAllItInstance = createHdcBarChart('ttmCasesChartAllIt', ttmCasesChartAllItInstance, distFullYear.all_items || 0, 'all_items');
+      ttmCasesChartUcVsInstance = createHdcBarChart('ttmCasesChartUcVs', ttmCasesChartUcVsInstance, distFullYear.uc_visits || 0, 'uc_visits');
+      ttmCasesChartUcItInstance = createHdcBarChart('ttmCasesChartUcIt', ttmCasesChartUcItInstance, distFullYear.uc_items || 0, 'uc_items');
+
+    } else {
+      if (hdcChartsContainer) hdcChartsContainer.classList.add('hidden');
+      if (altChartsContainer) altChartsContainer.classList.remove('hidden');
+
+      if (ttmCasesAltChartInstance) ttmCasesAltChartInstance.destroy();
+      const altCanvas = document.getElementById('ttmCasesAltChart');
+
+      if (altCanvas) {
+        const altCtx = altCanvas.getContext('2d');
+        const altTitleEl = document.getElementById('ttm-cases-alt-chart-title');
+        const altSubtitleEl = document.getElementById('ttm-cases-alt-chart-subtitle');
+
+        if (currentTtmCasesChartMode === 'compare_uc') {
+          if (altTitleEl) altTitleEl.innerHTML = '<i class="fa-solid fa-chart-column text-emerald-600"></i> เปรียบเทียบปริมาณการจ่ายยาสมุนไพร ทุกสิทธิ vs สิทธิ UC (จำนวนครั้ง)';
+          if (altSubtitleEl) altSubtitleEl.textContent = `จำแนกตาม 14 สถานบริการในอำเภอสารภี ปีงบประมาณ ${yr}`;
+
+          const altLabels = unitsList.map(u => `${u.hospcode} ${u.short}`);
+          const allVsData = unitsList.map(u => u.full_year.all_visits || 0);
+          const ucVsData = unitsList.map(u => u.full_year.uc_visits || 0);
+
+          ttmCasesAltChartInstance = new Chart(altCtx, {
+            type: 'bar',
+            data: {
+              labels: altLabels,
+              datasets: [
+                {
+                  label: 'จ่ายยาทุกสิทธิ (ครั้ง)',
+                  data: allVsData,
+                  backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                  borderColor: '#059669',
+                  borderWidth: 1.5,
+                  borderRadius: 4
+                },
+                {
+                  label: 'จ่ายยาสิทธิ UC (ครั้ง)',
+                  data: ucVsData,
+                  backgroundColor: 'rgba(14, 165, 233, 0.85)',
+                  borderColor: '#0284c7',
+                  borderWidth: 1.5,
+                  borderRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: { font: { family: 'Prompt', size: 11, weight: '600' } }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: { maxRotation: 45, minRotation: 45, font: { family: 'Prompt', size: 10 } },
+                  grid: { display: false }
+                },
+                y: {
+                  ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() },
+                  grid: { color: 'rgba(226, 232, 240, 0.7)' }
+                }
+              }
+            }
+          });
+
+        } else if (currentTtmCasesChartMode === 'trend') {
+          if (altTitleEl) altTitleEl.innerHTML = '<i class="fa-solid fa-chart-line text-emerald-600"></i> แนวโน้มปริมาณการจ่ายยาสมุนไพรรายไตรมาส (Q1 - Q4)';
+          if (altSubtitleEl) altSubtitleEl.textContent = `เปรียบเทียบผลงาน Q1 ถึง Q4 อำเภอสารภี ปีงบประมาณ ${yr}`;
+
+          const quarters = ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'];
+          const qKeys = ['q1', 'q2', 'q3', 'q4'];
+
+          let allVsTrend = [];
+          let allItTrend = [];
+          let ucVsTrend = [];
+          let ucItTrend = [];
+
+          if (currentUnit === 'all') {
+            allVsTrend = qKeys.map(k => distQuarters[k]?.all_visits || 0);
+            allItTrend = qKeys.map(k => distQuarters[k]?.all_items || 0);
+            ucVsTrend = qKeys.map(k => distQuarters[k]?.uc_visits || 0);
+            ucItTrend = qKeys.map(k => distQuarters[k]?.uc_items || 0);
+          } else {
+            const curU = unitsList.find(u => u.hospcode === currentUnit);
+            allVsTrend = qKeys.map(k => curU?.quarters?.[k]?.all_visits || 0);
+            allItTrend = qKeys.map(k => curU?.quarters?.[k]?.all_items || 0);
+            ucVsTrend = qKeys.map(k => curU?.quarters?.[k]?.uc_visits || 0);
+            ucItTrend = qKeys.map(k => curU?.quarters?.[k]?.uc_items || 0);
+          }
+
+          ttmCasesAltChartInstance = new Chart(altCtx, {
+            type: 'line',
+            data: {
+              labels: quarters,
+              datasets: [
+                {
+                  label: 'ทุกสิทธิ (ครั้ง)',
+                  data: allVsTrend,
+                  borderColor: '#10b981',
+                  backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                  tension: 0.3,
+                  fill: true,
+                  pointRadius: 5
+                },
+                {
+                  label: 'ทุกสิทธิ (รายการ)',
+                  data: allItTrend,
+                  borderColor: '#059669',
+                  backgroundColor: 'transparent',
+                  borderDash: [5, 5],
+                  tension: 0.3,
+                  pointRadius: 4
+                },
+                {
+                  label: 'สิทธิ UC (ครั้ง)',
+                  data: ucVsTrend,
+                  borderColor: '#0284c7',
+                  backgroundColor: 'rgba(14, 165, 233, 0.15)',
+                  tension: 0.3,
+                  fill: true,
+                  pointRadius: 5
+                },
+                {
+                  label: 'สิทธิ UC (รายการ)',
+                  data: ucItTrend,
+                  borderColor: '#0369a1',
+                  backgroundColor: 'transparent',
+                  borderDash: [5, 5],
+                  tension: 0.3,
+                  pointRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: { font: { family: 'Prompt', size: 11, weight: '600' } }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: { font: { family: 'Prompt', size: 11, weight: '600' } },
+                  grid: { display: false }
+                },
+                y: {
+                  ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() },
+                  grid: { color: 'rgba(226, 232, 240, 0.7)' }
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+
+    // 7. Render HDC Matrix Table
+    const tableEl = document.getElementById('ttm-cases-matrix-table');
+    if (!tableEl) return;
+
+    // Filter units by search query
+    const qLower = (ttmCasesSearchQuery || '').trim().toLowerCase();
+    const filteredUnits = unitsList.filter(u => {
+      if (!qLower) return true;
+      return (u.name && u.name.toLowerCase().includes(qLower)) ||
+             (u.short && u.short.toLowerCase().includes(qLower)) ||
+             (u.hospcode && u.hospcode.includes(qLower)) ||
+             (u.subdistrict && u.subdistrict.toLowerCase().includes(qLower));
+    });
+
+    // Update table heading
+    const headEl = document.getElementById('ttm-cases-table-heading');
+    const subHeadEl = document.getElementById('ttm-cases-table-subheading');
+    if (headEl) {
+      if (currentTtmCasesView === 'full_year') headEl.textContent = `ตารางสรุปผลงานทั้งปีงบประมาณ ${yr} (ทุกสิทธิ และสิทธิ UC)`;
+      else if (currentTtmCasesView === 'uc') headEl.textContent = `ตารางเปรียบเทียบสิทธิการรักษา ทุกสิทธิ vs สิทธิ UC ปีงบประมาณ ${yr}`;
+      else if (currentTtmCasesView === 'quarter') headEl.textContent = `ตารางแจกแจงผลงานรายไตรมาส (Q1 - Q4) ปีงบประมาณ ${yr}`;
+      else headEl.textContent = `ตารางมาตรฐาน HDC s_ttm2: OPD ปริมาณการจ่ายยาสมุนไพร 1:1 (${yr})`;
+    }
+    if (subHeadEl) {
+      subHeadEl.textContent = `แสดงข้อมูล 14 หน่วยบริการ อำเภอสารภี (พบ ${filteredUnits.length} แห่ง)`;
+    }
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+    let tfootHtml = '';
+
+    if (currentTtmCasesView === 'full_year') {
+      // 1. FULL YEAR SUMMARY VIEW
+      theadHtml = `
+        <thead class="bg-gradient-to-r from-[#047857] via-[#059669] to-[#065f46] text-white font-bold text-[11px] border-b border-emerald-800">
+          <tr>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left border-r border-emerald-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-emerald-800/80">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-teal-800/80">จ่ายยาสมุนไพรสิทธิ UC</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-sky-800/80">สัดส่วน UC (%)</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-amber-800/80">เฉลี่ยรายการต่อครั้ง</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr class="text-[10.5px] bg-emerald-900/60 text-emerald-100">
+            <th class="py-1 px-2 text-right border-r border-emerald-800/60">ครั้ง</th>
+            <th class="py-1 px-2 text-right border-r border-emerald-800/60">รายการ</th>
+            <th class="py-1 px-2 text-right border-r border-emerald-800/60 text-sky-200">ครั้ง</th>
+            <th class="py-1 px-2 text-right border-r border-emerald-800/60 text-sky-200">รายการ</th>
+            <th class="py-1 px-2 text-center border-r border-emerald-800/60 text-sky-200">% ครั้ง</th>
+            <th class="py-1 px-2 text-center border-r border-emerald-800/60 text-sky-200">% รายการ</th>
+            <th class="py-1 px-2 text-center border-r border-emerald-800/60">ทุกสิทธิ</th>
+            <th class="py-1 px-2 text-center border-r border-emerald-800/60 text-sky-200">สิทธิ UC</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/50 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-500 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-800">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <td class="py-2.5 px-2 text-right num-font font-bold text-slate-900 border-r border-slate-100">${Number(fy.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-black text-emerald-800 border-r border-slate-100">${Number(fy.all_items || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-bold text-teal-700 border-r border-slate-100">${Number(fy.uc_visits || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-black text-teal-900 border-r border-slate-100">${Number(fy.uc_items || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font font-semibold text-sky-700 border-r border-slate-100 bg-sky-50/30">${fy.uc_share_vs || 0}%</td>
+            <td class="py-2.5 px-2 text-center num-font font-semibold text-sky-700 border-r border-slate-100 bg-sky-50/30">${fy.uc_share_it || 0}%</td>
+            <td class="py-2.5 px-2 text-center num-font font-bold text-amber-800 border-r border-slate-100 bg-amber-50/20">${fy.item_ratio_all || 0}</td>
+            <td class="py-2.5 px-2 text-center num-font font-bold text-blue-800 border-r border-slate-100 bg-blue-50/20">${fy.item_ratio_uc || 0}</td>
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmCasesHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tfootHtml = `
+        <tfoot class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white font-bold text-[11px] border-t-2 border-emerald-500">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-emerald-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-emerald-300 font-normal">ข้อมูลระบบ HDC ราชการ</div>
+            </td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-emerald-700/80 text-white bg-emerald-800/40">${Number(distFullYear.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-emerald-700/80 text-yellow-300 bg-emerald-950/70">${Number(distFullYear.all_items || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-emerald-700/80 text-teal-200">${Number(distFullYear.uc_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-emerald-700/80 text-teal-300">${Number(distFullYear.uc_items || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-sky-300 num-font font-black">${distFullYear.uc_share_vs || 0}%</td>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-sky-300 num-font font-black">${distFullYear.uc_share_it || 0}%</td>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-amber-200 num-font font-black">${distFullYear.item_ratio_all || 0}</td>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-blue-200 num-font font-black">${distFullYear.item_ratio_uc || 0}</td>
+            <td class="py-3 px-2 text-center text-emerald-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmCasesView === 'uc') {
+      // 2. RIGHTS COMPARISON VIEW
+      theadHtml = `
+        <thead class="bg-gradient-to-r from-teal-800 via-sky-800 to-indigo-900 text-white font-bold text-[11px] border-b border-sky-800">
+          <tr>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-sky-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left border-r border-sky-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-sky-700/80 bg-emerald-800/80">จำนวนครั้ง (Visits)</th>
+            <th colspan="3" class="py-2 px-2 text-center border-r border-sky-700/80 bg-teal-800/80">จำนวนรายการ (Items)</th>
+            <th colspan="2" class="py-2 px-2 text-center border-r border-sky-700/80 bg-blue-800/80">เฉลี่ยรายการต่อครั้ง</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr class="text-[10.5px] bg-sky-950/80 text-sky-100">
+            <th class="py-1 px-2 text-right border-r border-sky-800/80">ทุกสิทธิ</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/80 text-sky-200">สิทธิ UC</th>
+            <th class="py-1 px-2 text-center border-r border-sky-800/80 text-emerald-300">% UC</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/80">ทุกสิทธิ</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/80 text-sky-200">สิทธิ UC</th>
+            <th class="py-1 px-2 text-center border-r border-sky-800/80 text-teal-300">% UC</th>
+            <th class="py-1 px-2 text-center border-r border-sky-800/80">ทุกสิทธิ</th>
+            <th class="py-1 px-2 text-center border-r border-sky-800/80 text-sky-200">สิทธิ UC</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#f0fdf4; border-left: 4px solid #0ea5e9;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-sky-50/50 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-500 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-800">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <td class="py-2.5 px-2 text-right num-font font-black text-slate-900 border-r border-slate-100">${Number(fy.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-bold text-sky-800 border-r border-slate-100">${Number(fy.uc_visits || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font font-black text-emerald-700 border-r border-slate-100 bg-emerald-50/40">${fy.uc_share_vs || 0}%</td>
+            <td class="py-2.5 px-2 text-right num-font font-black text-slate-900 border-r border-slate-100">${Number(fy.all_items || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-bold text-teal-800 border-r border-slate-100">${Number(fy.uc_items || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font font-black text-teal-700 border-r border-slate-100 bg-teal-50/40">${fy.uc_share_it || 0}%</td>
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-700 border-r border-slate-100">${fy.item_ratio_all || 0}</td>
+            <td class="py-2.5 px-2 text-center num-font font-bold text-blue-800 border-r border-slate-100">${fy.item_ratio_uc || 0}</td>
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmCasesHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-sky-600 text-white' : 'bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tfootHtml = `
+        <tfoot class="bg-gradient-to-r from-sky-950 via-sky-900 to-slate-900 text-white font-bold text-[11px] border-t-2 border-sky-500">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-sky-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-sky-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-sky-300 font-normal">เปรียบเทียบสิทธิ UC รายอำเภอ</div>
+            </td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-white bg-slate-800/40">${Number(distFullYear.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-sky-700/80 text-sky-200">${Number(distFullYear.uc_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-emerald-300">${distFullYear.uc_share_vs || 0}%</td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-white bg-slate-800/40">${Number(distFullYear.all_items || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-sky-700/80 text-teal-200">${Number(distFullYear.uc_items || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-teal-300">${distFullYear.uc_share_it || 0}%</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-amber-200">${distFullYear.item_ratio_all || 0}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-blue-200">${distFullYear.item_ratio_uc || 0}</td>
+            <td class="py-3 px-2 text-center text-sky-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmCasesView === 'quarter') {
+      // 3. QUARTERLY BREAKDOWN VIEW
+      theadHtml = `
+        <thead class="bg-[#064e3b] text-white font-bold text-[11px] border-b border-emerald-800">
+          <tr>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left border-r border-emerald-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="2" class="py-2 px-1 text-center border-r border-emerald-700/80 bg-emerald-800">ไตรมาส 1</th>
+            <th colspan="2" class="py-2 px-1 text-center border-r border-emerald-700/80 bg-teal-800">ไตรมาส 2</th>
+            <th colspan="2" class="py-2 px-1 text-center border-r border-emerald-700/80 bg-emerald-800">ไตรมาส 3</th>
+            <th colspan="2" class="py-2 px-1 text-center border-r border-emerald-700/80 bg-teal-800">ไตรมาส 4</th>
+            <th colspan="2" class="py-2 px-1 text-center border-r border-emerald-700/80 bg-emerald-950">รวมทั้งปี</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr class="text-[10px] bg-[#022c19] text-emerald-100">
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800">ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-200">UC ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800">ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-200">UC ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800">ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-200">UC ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800">ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-200">UC ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800 text-yellow-300">ครั้ง</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-300">UC ครั้ง</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const q = u.quarters || {};
+        const q1 = q.q1 || {}; const q2 = q.q2 || {}; const q3 = q.q3 || {}; const q4 = q.q4 || {};
+        const fy = u.full_year || {};
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/40 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-500 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-800">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <td class="py-2 px-1.5 text-right num-font font-bold text-slate-800 border-r border-slate-100">${Number(q1.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(q1.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-2 px-1.5 text-right num-font font-bold text-slate-800 border-r border-slate-100">${Number(q2.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(q2.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-2 px-1.5 text-right num-font font-bold text-slate-800 border-r border-slate-100">${Number(q3.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(q3.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-2 px-1.5 text-right num-font font-bold text-slate-800 border-r border-slate-100">${Number(q4.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(q4.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-2 px-1.5 text-right num-font font-black text-slate-900 border-r border-slate-100 bg-slate-50">${Number(fy.all_visits || 0).toLocaleString()}</td>
+            <td class="py-2 px-1.5 text-right num-font font-bold text-sky-800 border-r border-slate-100 bg-sky-50/40">${Number(fy.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-2 px-2 text-center">
+              <button type="button" onclick="window.selectTtmCasesHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const q1 = distQuarters.q1 || {}; const q2 = distQuarters.q2 || {};
+      const q3 = distQuarters.q3 || {}; const q4 = distQuarters.q4 || {};
+
+      tfootHtml = `
+        <tfoot class="bg-[#022c19] text-white font-bold text-[11px] border-t-2 border-emerald-400">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-emerald-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-emerald-300 font-normal">แจกแจงตามไตรมาส</div>
+            </td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(q1.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-200">${Number(q1.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(q2.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-200">${Number(q2.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(q3.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-200">${Number(q3.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(q4.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-200">${Number(q4.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-yellow-300 bg-emerald-950/80">${Number(distFullYear.all_visits || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-sky-300 bg-emerald-950/80">${Number(distFullYear.uc_visits || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-2 text-center text-emerald-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else {
+      // 4. FULL HDC MATRIX TABLE (1:1 with media_1789356535025.png)
+      theadHtml = `
+        <thead class="bg-[#047857] text-white font-bold text-[11px] border-b border-emerald-800">
+          <tr>
+            <th rowspan="3" class="py-2.5 px-3 text-left border-r border-emerald-700/80 hdc-sticky-col-1 bg-[#047857]" style="min-width: 230px;">หน่วยบริการ</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-emerald-800">รวมทั้งปีงบประมาณ</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#065f46]">ไตรมาส 1</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-emerald-800">ไตรมาส 2</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#065f46]">ไตรมาส 3</th>
+            <th colspan="4" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-emerald-800">ไตรมาส 4</th>
+          </tr>
+          <tr>
+            <!-- รวมทั้งปี -->
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/90 text-emerald-100">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-teal-700/90 text-sky-100">จ่ายยาสมุนไพรสิทธิ UC</th>
+
+            <!-- ไตรมาส 1 -->
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/90 text-emerald-100">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-teal-700/90 text-sky-100">จ่ายยาสมุนไพรสิทธิ UC</th>
+
+            <!-- ไตรมาส 2 -->
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/90 text-emerald-100">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-teal-700/90 text-sky-100">จ่ายยาสมุนไพรสิทธิ UC</th>
+
+            <!-- ไตรมาส 3 -->
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/90 text-emerald-100">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-teal-700/90 text-sky-100">จ่ายยาสมุนไพรสิทธิ UC</th>
+
+            <!-- ไตรมาส 4 -->
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/90 text-emerald-100">จ่ายยาสมุนไพรทุกสิทธิ</th>
+            <th colspan="2" class="py-1 px-1 text-center border-r border-emerald-700/80 bg-teal-700/90 text-sky-100">จ่ายยาสมุนไพรสิทธิ UC</th>
+          </tr>
+          <tr class="text-[10px] bg-[#022c19] text-emerald-100">
+            ${[0, 1, 2, 3, 4].map(() => `
+              <th class="py-1 px-1.5 text-right border-r border-emerald-800">ครั้ง</th>
+              <th class="py-1 px-1.5 text-right border-r border-emerald-800">รายการ</th>
+              <th class="py-1 px-1.5 text-right border-r border-emerald-800 text-sky-200">ครั้ง</th>
+              <th class="py-1 px-1.5 text-right border-r border-emerald-700 text-sky-200">รายการ</th>
+            `).join('')}
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+        const q = u.quarters || {};
+
+        let cells = [];
+        // 1. Full Year
+        cells.push(
+          `<td class="py-2 px-1.5 text-right num-font font-black border-r border-slate-100 text-slate-900">${Number(fy.all_visits || 0).toLocaleString()}</td>`,
+          `<td class="py-2 px-1.5 text-right num-font font-bold border-r border-slate-100 text-emerald-800">${Number(fy.all_items || 0).toLocaleString()}</td>`,
+          `<td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(fy.uc_visits || 0).toLocaleString()}</td>`,
+          `<td class="py-2 px-1.5 text-right num-font font-bold text-sky-800 border-r border-slate-200 bg-sky-50/20">${Number(fy.uc_items || 0).toLocaleString()}</td>`
+        );
+
+        // 2. Q1 - Q4
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          cells.push(
+            `<td class="py-2 px-1.5 text-right num-font font-bold border-r border-slate-100">${Number(qd.all_visits || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1.5 text-right num-font border-r border-slate-100 text-emerald-800">${Number(qd.all_items || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(qd.uc_visits || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1.5 text-right num-font font-bold text-sky-800 border-r border-slate-200 bg-sky-50/20">${Number(qd.uc_items || 0).toLocaleString()}</td>`
+          );
+        }
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/40 transition">
+            <td class="py-2 px-2.5 font-bold text-slate-800 border-r border-slate-200 hdc-sticky-col-1 truncate" style="max-width:260px;" title="${u.hospcode}: ${u.name}">
+              <span class="num-font text-emerald-700 font-bold">${u.hospcode}:</span> ${u.name}
+            </td>
+            ${cells.join('')}
+          </tr>
+        `;
+      }).join('');
+
+      // Total row matching HDC exact numbers
+      let totCells = [];
+      // Full Year Totals
+      totCells.push(
+        `<td class="py-2.5 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-yellow-300 bg-emerald-950/70">${Number(distFullYear.all_visits || 0).toLocaleString()}</td>`,
+        `<td class="py-2.5 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(distFullYear.all_items || 0).toLocaleString()}</td>`,
+        `<td class="py-2.5 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-200">${Number(distFullYear.uc_visits || 0).toLocaleString()}</td>`,
+        `<td class="py-2.5 px-1.5 text-right num-font font-black border-r border-emerald-700 text-sky-300">${Number(distFullYear.uc_items || 0).toLocaleString()}</td>`
+      );
+
+      // Quarterly Totals
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = distQuarters[`q${qi}`] || {};
+        totCells.push(
+          `<td class="py-2.5 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white">${Number(qd.all_visits || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-emerald-200">${Number(qd.all_items || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1.5 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(qd.uc_visits || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1.5 text-right num-font font-bold border-r border-emerald-700 text-sky-100">${Number(qd.uc_items || 0).toLocaleString()}</td>`
+        );
+      }
+
+      tfootHtml = `
+        <tfoot class="bg-[#033b20] text-white font-bold text-[10.5px] border-t-2 border-emerald-400">
+          <tr>
+            <td class="py-2.5 px-2.5 border-r border-emerald-700/80 hdc-sticky-col-1 font-black text-white">รวม</td>
+            ${totCells.join('')}
+          </tr>
+        </tfoot>
+      `;
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -5678,16 +6668,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isNhsoService = (currentIndicatorId === 'nhso_service');
       const isTtmAgeSex = (currentIndicatorId === 'ttm_age_sex');
       const isTtmEd = (currentIndicatorId === 'ttm_ed');
+      const isTtmCases = (currentIndicatorId === 'ttm_cases');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTtmEd) {
+      if (isTtmCases) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.remove('hidden');
+        renderTtmCasesPanel();
+      } else if (isTtmEd) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
         renderTtmEdPanel();
       } else if (isTtmAgeSex) {
@@ -5697,6 +6699,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
         renderTtmAgeSexPanel();
       } else if (isTTM4) {
@@ -5706,6 +6709,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -5714,6 +6718,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
@@ -5723,6 +6728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
         renderNhsoServicePanel();
       } else {
@@ -5733,6 +6739,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -6022,6 +7029,15 @@ console.log("Saraphi Records:", saraphiData);`;
       renderTtmEdPanel();
     });
   }
+
+  const ttmCasesSearchInput = document.getElementById('ttm-cases-table-search');
+  if (ttmCasesSearchInput) {
+    ttmCasesSearchInput.addEventListener('input', (e) => {
+      ttmCasesSearchQuery = e.target.value;
+      renderTtmCasesPanel();
+    });
+  }
+
 
   // Explorer filters
   document.getElementById('catalog-search')?.addEventListener('input', renderExplorerCatalog);

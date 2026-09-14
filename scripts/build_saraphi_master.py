@@ -562,41 +562,158 @@ for y in years:
         "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 20.0, "units": unit_data
     }
 
-# 1.5 s_ttm2
+# 1.5 s_ttm2 (OPD ปริมาณการจ่ายยาสมุนไพร)
 master["indicators"]["ttm_cases"] = {
-    "code": "",
-    "name": "OPD ปริมาณการจ่ายยาสมุนไพร (จำนวนครั้ง/คน)",
+    "code": "ttm_cases",
+    "name": "OPD ปริมาณการจ่ายยาสมุนไพร",
     "table": "s_ttm2",
+    "report_id": "65a9f9496401d91402b3cb38805bb4d6",
     "domain": "ttm",
     "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-    "desc": "จำนวนผู้ป่วยและจำนวนครั้งที่ได้รับยาสมุนไพร",
-    "target": 1.2,
-    "unit": "ครั้ง/คน",
-    "num_label": "ครั้งการจ่ายยาสมุนไพร",
-    "den_label": "ผู้ป่วยที่ได้รับยา (คน)",
+    "desc": "ปริมาณการจ่ายยาสมุนไพรในผู้ป่วยนอก จำแนกจ่ายยาทุกสิทธิ และสิทธิ UC (ครั้ง/รายการ) ทั้งปีงบประมาณและรายไตรมาส",
+    "target": 1.15,
+    "unit": "รายการ/ครั้ง",
+    "num_label": "จำนวนครั้งจ่ายยาทุกสิทธิ (ครั้ง)",
+    "den_label": "จำนวนรายการจ่ายยาทุกสิทธิ (รายการ)",
     "years": {}
 }
+
+# Official HDC unit ordering for s_ttm2
+HDC_TTM2_ORDER = [
+    '06014', '06015', '06016', '06017', '06018', '06020', '06021',
+    '06022', '06023', '06024', '11135', '13994', '14461', '99758'
+]
+
 for y in years:
     rows = load_json(f"s_ttm2_{y}.json")
     unit_data = []
-    tot_num = 0.0; tot_den = 0.0
+    date_com = ""
+
+    # Map rows by hospcode
+    rows_by_hcode = {}
     for r in rows:
         hcode = r.get('hospcode')
+        if hcode:
+            rows_by_hcode[hcode] = r
+            if not date_com and r.get('date_com'):
+                date_com = str(r.get('date_com'))
+
+    # Process in HDC canonical order
+    for hcode in HDC_TTM2_ORDER:
         if hcode in SARAPHI_UNITS:
-            num = sum(int(clean_num(r.get(f'result2q{q}') or 0)) for q in range(1, 5))
-            den = sum(int(clean_num(r.get(f'result1q{q}') or 0)) for q in range(1, 5))
-            rate = round((num / den), 2) if den > 0 else 0.0
-            tot_num += num; tot_den += den
-            unit_data.append({
+            r = rows_by_hcode.get(hcode, {})
+            all_vs = sum(int(clean_num(r.get(f'result1q{q}') or 0)) for q in range(1, 5))
+            all_it = sum(int(clean_num(r.get(f'result2q{q}') or 0)) for q in range(1, 5))
+            uc_vs = sum(int(clean_num(r.get(f'result3q{q}') or 0)) for q in range(1, 5))
+            uc_it = sum(int(clean_num(r.get(f'result4q{q}') or 0)) for q in range(1, 5))
+
+            item_ratio_all = round(all_it / all_vs, 2) if all_vs > 0 else 0.0
+            item_ratio_uc = round(uc_it / uc_vs, 2) if uc_vs > 0 else 0.0
+            uc_share_vs = round((uc_vs / all_vs) * 100, 2) if all_vs > 0 else 0.0
+            uc_share_it = round((uc_it / all_it) * 100, 2) if all_it > 0 else 0.0
+
+            quarters = {}
+            for q in range(1, 5):
+                q_all_vs = int(clean_num(r.get(f'result1q{q}') or 0))
+                q_all_it = int(clean_num(r.get(f'result2q{q}') or 0))
+                q_uc_vs = int(clean_num(r.get(f'result3q{q}') or 0))
+                q_uc_it = int(clean_num(r.get(f'result4q{q}') or 0))
+                quarters[f'q{q}'] = {
+                    "all_visits": q_all_vs,
+                    "all_items": q_all_it,
+                    "uc_visits": q_uc_vs,
+                    "uc_items": q_uc_it,
+                    "item_ratio_all": round(q_all_it / q_all_vs, 2) if q_all_vs > 0 else 0.0,
+                    "item_ratio_uc": round(q_uc_it / q_uc_vs, 2) if q_uc_vs > 0 else 0.0,
+                    "uc_share_vs": round((q_uc_vs / q_all_vs) * 100, 2) if q_all_vs > 0 else 0.0,
+                    "uc_share_it": round((q_uc_it / q_all_it) * 100, 2) if q_all_it > 0 else 0.0
+                }
+
+            unit_entry = {
                 "hospcode": hcode,
                 "name": SARAPHI_UNITS[hcode]["name"],
                 "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
-                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 1.2
-            })
-    dist_rate = round((tot_num / tot_den), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+                "num": int(all_vs),
+                "den": int(all_it),
+                "rate": item_ratio_all,
+                "pass": True,
+                "all_visits": int(all_vs),
+                "all_items": int(all_it),
+                "uc_visits": int(uc_vs),
+                "uc_items": int(uc_it),
+                "item_ratio_all": item_ratio_all,
+                "item_ratio_uc": item_ratio_uc,
+                "uc_share_vs": uc_share_vs,
+                "uc_share_it": uc_share_it,
+                "full_year": {
+                    "all_visits": int(all_vs),
+                    "all_items": int(all_it),
+                    "uc_visits": int(uc_vs),
+                    "uc_items": int(uc_it),
+                    "item_ratio_all": item_ratio_all,
+                    "item_ratio_uc": item_ratio_uc,
+                    "uc_share_vs": uc_share_vs,
+                    "uc_share_it": uc_share_it
+                },
+                "quarters": quarters
+            }
+            unit_data.append(unit_entry)
+
+    dist_all_vs = sum(u["all_visits"] for u in unit_data)
+    dist_all_it = sum(u["all_items"] for u in unit_data)
+    dist_uc_vs = sum(u["uc_visits"] for u in unit_data)
+    dist_uc_it = sum(u["uc_items"] for u in unit_data)
+    dist_ratio_all = round(dist_all_it / dist_all_vs, 2) if dist_all_vs > 0 else 0.0
+    dist_ratio_uc = round(dist_uc_it / dist_uc_vs, 2) if dist_uc_vs > 0 else 0.0
+    dist_uc_share_vs = round((dist_uc_vs / dist_all_vs) * 100, 2) if dist_all_vs > 0 else 0.0
+    dist_uc_share_it = round((dist_uc_it / dist_all_it) * 100, 2) if dist_all_it > 0 else 0.0
+
+    dist_quarters = {}
+    for q in range(1, 5):
+        q_key = f'q{q}'
+        q_av = sum(u["quarters"][q_key]["all_visits"] for u in unit_data)
+        q_ai = sum(u["quarters"][q_key]["all_items"] for u in unit_data)
+        q_uv = sum(u["quarters"][q_key]["uc_visits"] for u in unit_data)
+        q_ui = sum(u["quarters"][q_key]["uc_items"] for u in unit_data)
+        dist_quarters[q_key] = {
+            "all_visits": q_av,
+            "all_items": q_ai,
+            "uc_visits": q_uv,
+            "uc_items": q_ui,
+            "item_ratio_all": round(q_ai / q_av, 2) if q_av > 0 else 0.0,
+            "item_ratio_uc": round(q_ui / q_uv, 2) if q_uv > 0 else 0.0,
+            "uc_share_vs": round((q_uv / q_av) * 100, 2) if q_av > 0 else 0.0,
+            "uc_share_it": round((q_ui / q_ai) * 100, 2) if q_ai > 0 else 0.0
+        }
+
     master["indicators"]["ttm_cases"]["years"][y] = {
-        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 1.2, "units": unit_data
+        "num": int(dist_all_vs),
+        "den": int(dist_all_it),
+        "rate": dist_ratio_all,
+        "pass": True,
+        "date_com": date_com,
+        "all_visits": int(dist_all_vs),
+        "all_items": int(dist_all_it),
+        "uc_visits": int(dist_uc_vs),
+        "uc_items": int(dist_uc_it),
+        "item_ratio_all": dist_ratio_all,
+        "item_ratio_uc": dist_ratio_uc,
+        "uc_share_vs": dist_uc_share_vs,
+        "uc_share_it": dist_uc_share_it,
+        "summary": {
+            "full_year": {
+                "all_visits": int(dist_all_vs),
+                "all_items": int(dist_all_it),
+                "uc_visits": int(dist_uc_vs),
+                "uc_items": int(dist_uc_it),
+                "item_ratio_all": dist_ratio_all,
+                "item_ratio_uc": dist_ratio_uc,
+                "uc_share_vs": dist_uc_share_vs,
+                "uc_share_it": dist_uc_share_it
+            },
+            "quarters": dist_quarters
+        },
+        "units": unit_data
     }
 
 # 1.6 s_common_diseases_thai_drug
