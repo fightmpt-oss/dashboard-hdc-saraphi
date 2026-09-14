@@ -6665,6 +6665,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // TTM COMMON DISEASES & HERBAL DRUG (s_common_diseases_thai_drug)
   // =========================================================
   window.switchTtmCommonView = function(view) {
+    if (view === 'quarter') view = 'hdc_full';
     currentTtmCommonView = view;
     renderTtmCommonPanel();
   };
@@ -6709,13 +6710,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     let csvContent = '\uFEFF';
 
     if (currentTtmCommonView === 'hdc_full') {
-      csvContent += `ตารางเปรียบเทียบมาตรฐาน HDC 1:1 การสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย อำเภอสารภี (ปี 2568 vs 2569)\n`;
+      csvContent += `ตารางเปรียบเทียบมาตรฐาน HDC การสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย อำเภอสารภี (ปี 2568 vs 2569 รวมปีงบประมาณ)\n`;
       csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,' +
         '2568 ได้รับการวินิจฉัย (คน),2568 ได้รับการวินิจฉัย (ครั้ง),2568 สั่งจ่ายยาสมุนไพร (คน),2568 สั่งจ่ายยาสมุนไพร (ครั้ง),2568 ร้อยละ (ครั้ง),' +
         '2569 ได้รับการวินิจฉัย (คน),2569 ได้รับการวินิจฉัย (ครั้ง),2569 สั่งจ่ายยาสมุนไพร (คน),2569 สั่งจ่ายยาสมุนไพร (ครั้ง),2569 ร้อยละ (ครั้ง),' +
-        'ร้อยละเพิ่มขึ้น (%),' +
-        '2568 Q1 วินิจฉัย (คน),2568 Q1 วินิจฉัย (ครั้ง),2568 Q1 สั่งจ่าย (คน),2568 Q1 สั่งจ่าย (ครั้ง),2568 Q1 ร้อยละ,' +
-        '2569 Q1 วินิจฉัย (คน),2569 Q1 วินิจฉัย (ครั้ง),2569 Q1 สั่งจ่าย (คน),2569 Q1 สั่งจ่าย (ครั้ง),2569 Q1 ร้อยละ\n';
+        'ร้อยละเพิ่มขึ้น (%)\n';
 
       const u68Map = {};
       (y68.units || []).forEach(u => { u68Map[u.hospcode] = u; });
@@ -6726,25 +6725,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const uName = (u69.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u69.name);
         const uSub = (u69.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u69.subdistrict);
 
-        const q68 = (u68.quarters && u68.quarters.q1) || {};
-        const q69 = (u69.quarters && u69.quarters.q1) || {};
-
         csvContent += `"${u69.hospcode}","${uName}","${uSub}",` +
           `${u68.diag_person || 0},${u68.diag_times || 0},${u68.drug_person || 0},${u68.drug_times || 0},${(u68.rate || 0).toFixed(2)},` +
           `${u69.diag_person || 0},${u69.diag_times || 0},${u69.drug_person || 0},${u69.drug_times || 0},${(u69.rate || 0).toFixed(2)},` +
-          `${(u69.growth || 0).toFixed(2)},` +
-          `${q68.diag_person || 0},${q68.diag_times || 0},${q68.drug_person || 0},${q68.drug_times || 0},${(q68.rate || 0).toFixed(2)},` +
-          `${q69.diag_person || 0},${q69.diag_times || 0},${q69.drug_person || 0},${q69.drug_times || 0},${(q69.rate || 0).toFixed(2)}\n`;
+          `${(u69.growth || 0).toFixed(2)}\n`;
       });
 
-      const q68Dist = (y68.quarters && y68.quarters.q1) || {};
-      const q69Dist = (y69.quarters && y69.quarters.q1) || {};
       csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",` +
         `${y68.diag_person || 0},${y68.diag_times || 0},${y68.drug_person || 0},${y68.drug_times || 0},${(y68.rate || 0).toFixed(2)},` +
         `${y69.diag_person || 0},${y69.diag_times || 0},${y69.drug_person || 0},${y69.drug_times || 0},${(y69.rate || 0).toFixed(2)},` +
-        `${(y69.growth || 0).toFixed(2)},` +
-        `${q68Dist.diag_person || 0},${q68Dist.diag_times || 0},${q68Dist.drug_person || 0},${q68Dist.drug_times || 0},${(q68Dist.rate || 0).toFixed(2)},` +
-        `${q69Dist.diag_person || 0},${q69Dist.diag_times || 0},${q69Dist.drug_person || 0},${q69Dist.drug_times || 0},${(q69Dist.rate || 0).toFixed(2)}\n`;
+        `${(y69.growth || 0).toFixed(2)}\n`;
 
     } else if (currentTtmCommonView === 'single_year') {
       csvContent += `ตารางการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย อำเภอสารภี ปีงบประมาณ ${yr}\n`;
@@ -6760,35 +6750,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const distPass = (yrData.rate >= 20.0) ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์';
       csvContent += `"total","-","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${yrData.diag_person || 0},${yrData.diag_times || 0},${yrData.drug_person || 0},${yrData.drug_times || 0},${(yrData.rate || 0).toFixed(2)},${(yrData.rate_person || 0).toFixed(2)},"${distPass}"\n`;
-
-    } else if (currentTtmCommonView === 'quarter') {
-      csvContent += `ตารางการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย รายไตรมาส อำเภอสารภี ปีงบประมาณ ${yr}\n`;
-      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ทั้งปี วินิจฉัย(ครั้ง),ทั้งปี สั่งจ่าย(ครั้ง),ทั้งปี ร้อยละ(%),' +
-        'Q1 วินิจฉัย(ครั้ง),Q1 สั่งจ่าย(ครั้ง),Q1 ร้อยละ(%),' +
-        'Q2 วินิจฉัย(ครั้ง),Q2 สั่งจ่าย(ครั้ง),Q2 ร้อยละ(%),' +
-        'Q3 วินิจฉัย(ครั้ง),Q3 สั่งจ่าย(ครั้ง),Q3 ร้อยละ(%),' +
-        'Q4 วินิจฉัย(ครั้ง),Q4 สั่งจ่าย(ครั้ง),Q4 ร้อยละ(%)\n';
-
-      units.forEach(u => {
-        const meta = SARAPHI_UNITS_MAP[u.hospcode];
-        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
-        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
-        const q = u.quarters || {};
-        let line = `"${u.hospcode}","${uName}","${uSub}",${u.diag_times || 0},${u.drug_times || 0},${(u.rate || 0).toFixed(2)},`;
-        for (let qi = 1; qi <= 4; qi++) {
-          const qd = q[`q${qi}`] || {};
-          line += `${qd.diag_times || 0},${qd.drug_times || 0},${(qd.rate || 0).toFixed(2)}${qi === 4 ? '' : ','}`;
-        }
-        csvContent += line + '\n';
-      });
-
-      const qDist = yrData.quarters || {};
-      let totLine = `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${yrData.diag_times || 0},${yrData.drug_times || 0},${(yrData.rate || 0).toFixed(2)},`;
-      for (let qi = 1; qi <= 4; qi++) {
-        const qd = qDist[`q${qi}`] || {};
-        totLine += `${qd.diag_times || 0},${qd.drug_times || 0},${(qd.rate || 0).toFixed(2)}${qi === 4 ? '' : ','}`;
-      }
-      csvContent += totLine + '\n';
     }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -6810,7 +6771,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yr = currentTtmCommonYear || currentYear || '2569';
 
     // 1. Sync View Mode Buttons
-    ['hdc_full', 'single_year', 'quarter'].forEach(v => {
+    ['hdc_full', 'single_year'].forEach(v => {
       const btn = document.getElementById(`btn-ttm-common-view-${v}`);
       if (btn) {
         if (v === currentTtmCommonView) {
@@ -7208,8 +7169,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2568 (รวมปีงบประมาณ)</th>
             <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2569 (รวมปีงบประมาณ)</th>
             <th rowspan="3" class="py-2 px-2 border-r border-emerald-700 min-w-[95px]">ร้อยละเพิ่มขึ้น</th>
-            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2568 (ไตรมาสที่ 1)</th>
-            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2569 (ไตรมาสที่ 1)</th>
             <th rowspan="3" class="py-2 px-2 border-emerald-700 min-w-[80px]">การกระทำ</th>
           </tr>
           <tr class="bg-emerald-700 text-white text-center font-semibold text-[11px]">
@@ -7221,14 +7180,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
             <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A2)</th>
             <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C2)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
-            <!-- 2568 Q1 -->
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B1)</th>
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A1)</th>
-            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C1)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
-            <!-- 2569 Q1 -->
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
-            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A2)</th>
-            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C2)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
           </tr>
           <tr class="bg-emerald-600 text-white text-center font-medium text-[10.5px]">
             <!-- 2568 Full Sub -->
@@ -7237,16 +7188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
             <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
             <!-- 2569 Full Sub -->
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <!-- 2568 Q1 Sub -->
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
-            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
-            <!-- 2569 Q1 Sub -->
             <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
             <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
             <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
@@ -7264,8 +7205,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isSelected = (currentUnit === u69.hospcode);
         const rowBg = isSelected ? 'bg-amber-50/90 font-medium' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60 hover:bg-emerald-50/40');
 
-        const q68 = (u68.quarters && u68.quarters.q1) || {};
-        const q69 = (u69.quarters && u69.quarters.q1) || {};
         const growth = Number(u69.growth || 0);
         const growthClass = growth >= 0 ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold';
         const growthSign = growth >= 0 ? '+' : '';
@@ -7289,18 +7228,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800 bg-emerald-50/60">${(u69.rate || 0).toFixed(2)}</td>
             <!-- Growth % -->
             <td class="py-2 px-2 text-right border-r border-slate-200 font-mono ${growthClass} bg-slate-50/50">${growthSign}${growth.toFixed(2)}</td>
-            <!-- 2568 Q1 -->
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600 font-semibold">${(q68.rate || 0).toFixed(2)}</td>
-            <!-- 2569 Q1 -->
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-800 font-semibold bg-emerald-50/30">${(q69.rate || 0).toFixed(2)}</td>
             <!-- Action -->
             <td class="py-2 px-2 text-center">
               <button type="button" onclick="window.selectTtmCommonHospital('${u69.hospcode}')" class="px-2 py-1 text-[10.5px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition shadow-2xs">
@@ -7311,8 +7238,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
       });
 
-      const q68Dist = (y68.quarters && y68.quarters.q1) || {};
-      const q69Dist = (y69.quarters && y69.quarters.q1) || {};
       const distGrowth = Number(y69.growth || 0);
       const distGrowthClass = distGrowth >= 0 ? 'text-emerald-300 font-black' : 'text-rose-300 font-black';
       const distGrowthSign = distGrowth >= 0 ? '+' : '';
@@ -7335,18 +7260,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black bg-emerald-900/80 text-emerald-200">${(y69.rate || 0).toFixed(2)}</td>
             <!-- Growth % -->
             <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono ${distGrowthClass}">${distGrowthSign}${distGrowth.toFixed(2)}</td>
-            <!-- 2568 Q1 -->
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-200">${(q68Dist.rate || 0).toFixed(2)}</td>
-            <!-- 2569 Q1 -->
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.diag_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.drug_person || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-200 bg-emerald-950">${(q69Dist.rate || 0).toFixed(2)}</td>
             <!-- Action -->
             <td class="py-2.5 px-2 text-center text-slate-400">-</td>
           </tr>
@@ -7440,113 +7353,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tfoot>
       `;
 
-    } else if (currentTtmCommonView === 'quarter') {
-      theadHtml = `
-        <thead>
-          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
-            <th rowspan="2" class="py-2.5 px-3 text-center min-w-[60px] border-r border-emerald-700">รหัส</th>
-            <th rowspan="2" class="py-2.5 px-3 text-left min-w-[180px] border-r border-emerald-700">ชื่อหน่วยบริการ</th>
-            <th rowspan="2" class="py-2.5 px-3 text-left min-w-[90px] border-r border-emerald-700">ตำบล</th>
-            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700 bg-emerald-900">รวมทั้งปี (${yr})</th>
-            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 1</th>
-            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 2</th>
-            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 3</th>
-            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 4</th>
-            <th rowspan="2" class="py-2.5 px-3 text-center min-w-[80px]">การกระทำ</th>
-          </tr>
-          <tr class="bg-emerald-700 text-white text-center font-semibold text-[11px]">
-            <!-- Full Year -->
-            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย(ครั้ง)</th>
-            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย(ครั้ง)</th>
-            <th class="py-1 px-2 border-r border-emerald-600 bg-emerald-950 font-bold">ร้อยละ</th>
-            <!-- Q1 -->
-            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
-            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
-            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
-            <!-- Q2 -->
-            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
-            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
-            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
-            <!-- Q3 -->
-            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
-            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
-            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
-            <!-- Q4 -->
-            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
-            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
-            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
-          </tr>
-        </thead>
-      `;
-
-      let filteredQ = [...(yrData.units || [])];
-      if (ttmCommonSearchQuery) {
-        const q = ttmCommonSearchQuery.toLowerCase().trim();
-        filteredQ = filteredQ.filter(u =>
-          u.name.toLowerCase().includes(q) ||
-          u.hospcode.includes(q) ||
-          (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
-        );
-      }
-
-      filteredQ.forEach((u, idx) => {
-        const meta = SARAPHI_UNITS_MAP[u.hospcode];
-        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
-        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
-        const q = u.quarters || {};
-        const rowBg = (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60') + ' hover:bg-emerald-50/40';
-
-        let qCols = '';
-        for (let qi = 1; qi <= 4; qi++) {
-          const qd = q[`q${qi}`] || {};
-          qCols += `
-            <td class="py-2 px-2 text-right font-mono text-slate-600 border-r border-slate-200">${(qd.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right font-mono text-emerald-700 border-r border-slate-200">${(qd.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right font-mono font-bold text-slate-800 bg-slate-50/40 border-r border-slate-200">${(qd.rate || 0).toFixed(2)}%</td>
-          `;
-        }
-
-        tbodyHtml += `
-          <tr class="${rowBg} border-b border-slate-100 text-xs transition">
-            <td class="py-2 px-3 text-center font-mono text-slate-600 border-r border-slate-200">${u.hospcode}</td>
-            <td class="py-2 px-3 text-left font-bold text-slate-800 border-r border-slate-200">${uName}</td>
-            <td class="py-2 px-3 text-left text-slate-600 border-r border-slate-200">${uSub}</td>
-            <td class="py-2 px-2 text-right font-mono font-medium text-slate-900 border-r border-slate-200">${(u.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right font-mono font-medium text-emerald-800 border-r border-slate-200">${(u.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2 px-2 text-right font-mono font-bold text-emerald-700 bg-emerald-50/60 border-r border-slate-200">${(u.rate || 0).toFixed(2)}%</td>
-            ${qCols}
-            <td class="py-2 px-3 text-center">
-              <button type="button" onclick="window.selectTtmCommonHospital('${u.hospcode}')" class="px-2 py-1 text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition">
-                ดู รพ.สต.
-              </button>
-            </td>
-          </tr>
-        `;
-      });
-
-      const qDist = yrData.quarters || {};
-      let distQCols = '';
-      for (let qi = 1; qi <= 4; qi++) {
-        const qd = qDist[`q${qi}`] || {};
-        distQCols += `
-          <td class="py-2.5 px-2 text-right font-mono font-black border-r border-slate-700">${(qd.diag_times || 0).toLocaleString()}</td>
-          <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(qd.drug_times || 0).toLocaleString()}</td>
-          <td class="py-2.5 px-2 text-right font-mono font-black text-slate-200 bg-slate-700/60 border-r border-slate-700">${(qd.rate || 0).toFixed(2)}%</td>
-        `;
-      }
-
-      tfootHtml = `
-        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
-          <tr>
-            <td colspan="3" class="py-2.5 px-4 text-left font-black border-r border-slate-700">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
-            <td class="py-2.5 px-2 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_times || 0).toLocaleString()}</td>
-            <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-200 bg-emerald-900 border-r border-slate-700">${(yrData.rate || 0).toFixed(2)}%</td>
-            ${distQCols}
-            <td class="py-2.5 px-3 text-center text-slate-400">-</td>
-          </tr>
-        </tfoot>
-      `;
     }
 
     tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
