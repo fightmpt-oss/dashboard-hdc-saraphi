@@ -11033,415 +11033,2189 @@
     },
     "ttm_common_dis": {
       "code": "",
-      "name": "การใช้ยาสมุนไพรในกลุ่มโรคพบบ่อย (Common Diseases)",
+      "name": "ร้อยละของผู้ป่วยที่ได้รับการวินิจฉัยโรค Common Diseases and Symptoms และได้รับยาสมุนไพรเพิ่มขึ้น",
       "table": "s_common_diseases_thai_drug",
       "domain": "ttm",
       "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-      "desc": "ร้อยละของผู้ป่วยโรคพบบ่อยที่ได้รับยาสมุนไพร (ทางเดินหายใจ, กล้ามเนื้อ ฯลฯ)",
+      "desc": "ร้อยละของผู้ป่วยโรคพบบ่อย (Common Diseases) ที่ได้รับยาสมุนไพร และอัตราการเติบโตเปรียบเทียบกับปีงบประมาณก่อนหน้า (HDC)",
       "target": 20.0,
       "unit": "%",
-      "num_label": "ได้รับยาสมุนไพร (คน)",
-      "den_label": "ผู้ป่วยโรคพบบ่อย (คน)",
+      "num_label": "วินิจฉัยและสั่งจ่ายยาสมุนไพร (ครั้ง)",
+      "den_label": "ได้รับการวินิจฉัย (ครั้ง)",
       "years": {
         "2567": {
+          "diag_person": 11832,
+          "diag_times": 19150,
+          "drug_person": 2630,
+          "drug_times": 3425,
           "num": 3425,
           "den": 19150,
           "rate": 17.89,
+          "rate_person": 22.23,
           "pass": false,
+          "growth": 0.0,
+          "quarters": {
+            "q1": {
+              "diag_person": 4208,
+              "diag_times": 5160,
+              "drug_person": 909,
+              "drug_times": 994,
+              "rate": 19.26
+            },
+            "q2": {
+              "diag_person": 4111,
+              "diag_times": 5115,
+              "drug_person": 836,
+              "drug_times": 915,
+              "rate": 17.89
+            },
+            "q3": {
+              "diag_person": 3435,
+              "diag_times": 4151,
+              "drug_person": 612,
+              "drug_times": 690,
+              "rate": 16.62
+            },
+            "q4": {
+              "diag_person": 3791,
+              "diag_times": 4724,
+              "drug_person": 723,
+              "drug_times": 826,
+              "rate": 17.49
+            }
+          },
           "units": [
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
+              "type": "รพ.สต.",
+              "diag_person": 177,
+              "diag_times": 306,
+              "drug_person": 94,
+              "drug_times": 163,
+              "rate": 53.27,
+              "rate_person": 53.11,
               "num": 163,
               "den": 306,
-              "rate": 53.27,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 77,
+                  "diag_times": 83,
+                  "drug_person": 46,
+                  "drug_times": 48,
+                  "rate": 57.83
+                },
+                "q2": {
+                  "diag_person": 70,
+                  "diag_times": 89,
+                  "drug_person": 37,
+                  "drug_times": 49,
+                  "rate": 55.06
+                },
+                "q3": {
+                  "diag_person": 52,
+                  "diag_times": 56,
+                  "drug_person": 27,
+                  "drug_times": 28,
+                  "rate": 50.0
+                },
+                "q4": {
+                  "diag_person": 65,
+                  "diag_times": 78,
+                  "drug_person": 32,
+                  "drug_times": 38,
+                  "rate": 48.72
+                }
+              }
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
+              "type": "รพ.สต.",
+              "diag_person": 246,
+              "diag_times": 408,
+              "drug_person": 105,
+              "drug_times": 129,
+              "rate": 31.62,
+              "rate_person": 42.68,
               "num": 129,
               "den": 408,
-              "rate": 31.62,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 95,
+                  "diag_times": 115,
+                  "drug_person": 35,
+                  "drug_times": 37,
+                  "rate": 32.17
+                },
+                "q2": {
+                  "diag_person": 91,
+                  "diag_times": 121,
+                  "drug_person": 34,
+                  "drug_times": 39,
+                  "rate": 32.23
+                },
+                "q3": {
+                  "diag_person": 55,
+                  "diag_times": 61,
+                  "drug_person": 20,
+                  "drug_times": 22,
+                  "rate": 36.07
+                },
+                "q4": {
+                  "diag_person": 93,
+                  "diag_times": 111,
+                  "drug_person": 29,
+                  "drug_times": 31,
+                  "rate": 27.93
+                }
+              }
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา",
               "subdistrict": "สันทราย",
+              "type": "รพ.สต.",
+              "diag_person": 525,
+              "diag_times": 1140,
+              "drug_person": 202,
+              "drug_times": 340,
+              "rate": 29.82,
+              "rate_person": 38.48,
               "num": 340,
               "den": 1140,
-              "rate": 29.82,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 234,
+                  "diag_times": 310,
+                  "drug_person": 67,
+                  "drug_times": 87,
+                  "rate": 28.06
+                },
+                "q2": {
+                  "diag_person": 217,
+                  "diag_times": 305,
+                  "drug_person": 70,
+                  "drug_times": 80,
+                  "rate": 26.23
+                },
+                "q3": {
+                  "diag_person": 171,
+                  "diag_times": 243,
+                  "drug_person": 67,
+                  "drug_times": 83,
+                  "rate": 34.16
+                },
+                "q4": {
+                  "diag_person": 202,
+                  "diag_times": 282,
+                  "drug_person": 73,
+                  "drug_times": 90,
+                  "rate": 31.91
+                }
+              }
             },
             {
               "hospcode": "06020",
               "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง",
               "subdistrict": "ท่ากว้าง",
+              "type": "รพ.สต.",
+              "diag_person": 633,
+              "diag_times": 1402,
+              "drug_person": 273,
+              "drug_times": 393,
+              "rate": 28.03,
+              "rate_person": 43.13,
               "num": 393,
               "den": 1402,
-              "rate": 28.03,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 283,
+                  "diag_times": 379,
+                  "drug_person": 95,
+                  "drug_times": 107,
+                  "rate": 28.23
+                },
+                "q2": {
+                  "diag_person": 250,
+                  "diag_times": 353,
+                  "drug_person": 78,
+                  "drug_times": 92,
+                  "rate": 26.06
+                },
+                "q3": {
+                  "diag_person": 227,
+                  "diag_times": 317,
+                  "drug_person": 83,
+                  "drug_times": 95,
+                  "rate": 29.97
+                },
+                "q4": {
+                  "diag_person": 250,
+                  "diag_times": 353,
+                  "drug_person": 81,
+                  "drug_times": 99,
+                  "rate": 28.05
+                }
+              }
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
+              "type": "รพ.สต.",
+              "diag_person": 386,
+              "diag_times": 563,
+              "drug_person": 132,
+              "drug_times": 141,
+              "rate": 25.04,
+              "rate_person": 34.2,
               "num": 141,
               "den": 563,
-              "rate": 25.04,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 178,
+                  "diag_times": 203,
+                  "drug_person": 60,
+                  "drug_times": 61,
+                  "rate": 30.05
+                },
+                "q2": {
+                  "diag_person": 131,
+                  "diag_times": 157,
+                  "drug_person": 49,
+                  "drug_times": 53,
+                  "rate": 33.76
+                },
+                "q3": {
+                  "diag_person": 95,
+                  "diag_times": 103,
+                  "drug_person": 17,
+                  "drug_times": 17,
+                  "rate": 16.5
+                },
+                "q4": {
+                  "diag_person": 85,
+                  "diag_times": 100,
+                  "drug_person": 10,
+                  "drug_times": 10,
+                  "rate": 10.0
+                }
+              }
             },
             {
               "hospcode": "99758",
               "name": "ศสม.สารภี",
+              "full_name": "ศูนย์สุขภาพชุมชนตำบลสารภี",
               "subdistrict": "สารภี",
+              "type": "ศสม.",
+              "diag_person": 52,
+              "diag_times": 86,
+              "drug_person": 15,
+              "drug_times": 19,
+              "rate": 22.09,
+              "rate_person": 28.85,
               "num": 19,
               "den": 86,
-              "rate": 22.09,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 15,
+                  "diag_times": 19,
+                  "drug_person": 4,
+                  "drug_times": 4,
+                  "rate": 21.05
+                },
+                "q2": {
+                  "diag_person": 12,
+                  "diag_times": 15,
+                  "drug_person": 3,
+                  "drug_times": 3,
+                  "rate": 20.0
+                },
+                "q3": {
+                  "diag_person": 27,
+                  "diag_times": 36,
+                  "drug_person": 9,
+                  "drug_times": 9,
+                  "rate": 25.0
+                },
+                "q4": {
+                  "diag_person": 15,
+                  "diag_times": 16,
+                  "drug_person": 2,
+                  "drug_times": 3,
+                  "rate": 18.75
+                }
+              }
             },
             {
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านพญาชมภู",
               "subdistrict": "ชมภู",
+              "type": "รพ.สต.",
+              "diag_person": 180,
+              "diag_times": 293,
+              "drug_person": 50,
+              "drug_times": 60,
+              "rate": 20.48,
+              "rate_person": 27.78,
               "num": 60,
               "den": 293,
-              "rate": 20.48,
-              "pass": true
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 64,
+                  "diag_times": 79,
+                  "drug_person": 13,
+                  "drug_times": 13,
+                  "rate": 16.46
+                },
+                "q2": {
+                  "diag_person": 63,
+                  "diag_times": 79,
+                  "drug_person": 14,
+                  "drug_times": 14,
+                  "rate": 17.72
+                },
+                "q3": {
+                  "diag_person": 55,
+                  "diag_times": 69,
+                  "drug_person": 14,
+                  "drug_times": 16,
+                  "rate": 23.19
+                },
+                "q4": {
+                  "diag_person": 56,
+                  "diag_times": 66,
+                  "drug_person": 17,
+                  "drug_times": 17,
+                  "rate": 25.76
+                }
+              }
             },
             {
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
+              "type": "รพ.สต.",
+              "diag_person": 331,
+              "diag_times": 554,
+              "drug_person": 87,
+              "drug_times": 109,
+              "rate": 19.68,
+              "rate_person": 26.28,
               "num": 109,
               "den": 554,
-              "rate": 19.68,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 119,
+                  "diag_times": 143,
+                  "drug_person": 34,
+                  "drug_times": 38,
+                  "rate": 26.57
+                },
+                "q2": {
+                  "diag_person": 131,
+                  "diag_times": 162,
+                  "drug_person": 27,
+                  "drug_times": 30,
+                  "rate": 18.52
+                },
+                "q3": {
+                  "diag_person": 93,
+                  "diag_times": 106,
+                  "drug_person": 19,
+                  "drug_times": 22,
+                  "rate": 20.75
+                },
+                "q4": {
+                  "diag_person": 120,
+                  "diag_times": 143,
+                  "drug_person": 18,
+                  "drug_times": 19,
+                  "rate": 13.29
+                }
+              }
             },
             {
               "hospcode": "06017",
               "name": "รพ.สต.บ้านหัวดง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง",
               "subdistrict": "ขัวมุง",
+              "type": "รพ.สต.",
+              "diag_person": 274,
+              "diag_times": 387,
+              "drug_person": 64,
+              "drug_times": 72,
+              "rate": 18.6,
+              "rate_person": 23.36,
               "num": 72,
               "den": 387,
-              "rate": 18.6,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 81,
+                  "diag_times": 88,
+                  "drug_person": 14,
+                  "drug_times": 14,
+                  "rate": 15.91
+                },
+                "q2": {
+                  "diag_person": 98,
+                  "diag_times": 117,
+                  "drug_person": 18,
+                  "drug_times": 18,
+                  "rate": 15.38
+                },
+                "q3": {
+                  "diag_person": 74,
+                  "diag_times": 83,
+                  "drug_person": 16,
+                  "drug_times": 17,
+                  "rate": 20.48
+                },
+                "q4": {
+                  "diag_person": 85,
+                  "diag_times": 99,
+                  "drug_person": 22,
+                  "drug_times": 23,
+                  "rate": 23.23
+                }
+              }
             },
             {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
+              "type": "รพ.สต.",
+              "diag_person": 495,
+              "diag_times": 831,
+              "drug_person": 131,
+              "drug_times": 152,
+              "rate": 18.29,
+              "rate_person": 26.46,
               "num": 152,
               "den": 831,
-              "rate": 18.29,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 171,
+                  "diag_times": 204,
+                  "drug_person": 39,
+                  "drug_times": 41,
+                  "rate": 20.1
+                },
+                "q2": {
+                  "diag_person": 234,
+                  "diag_times": 302,
+                  "drug_person": 58,
+                  "drug_times": 59,
+                  "rate": 19.54
+                },
+                "q3": {
+                  "diag_person": 34,
+                  "diag_times": 34,
+                  "drug_person": 7,
+                  "drug_times": 7,
+                  "rate": 20.59
+                },
+                "q4": {
+                  "diag_person": 213,
+                  "diag_times": 291,
+                  "drug_person": 41,
+                  "drug_times": 45,
+                  "rate": 15.46
+                }
+              }
             },
             {
               "hospcode": "06022",
               "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านบวกครกเหนือ",
               "subdistrict": "ท่าวังตาล",
+              "type": "รพ.สต.",
+              "diag_person": 554,
+              "diag_times": 896,
+              "drug_person": 120,
+              "drug_times": 159,
+              "rate": 17.75,
+              "rate_person": 21.66,
               "num": 159,
               "den": 896,
-              "rate": 17.75,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 181,
+                  "diag_times": 225,
+                  "drug_person": 25,
+                  "drug_times": 28,
+                  "rate": 12.44
+                },
+                "q2": {
+                  "diag_person": 209,
+                  "diag_times": 251,
+                  "drug_person": 41,
+                  "drug_times": 46,
+                  "rate": 18.33
+                },
+                "q3": {
+                  "diag_person": 139,
+                  "diag_times": 167,
+                  "drug_person": 29,
+                  "drug_times": 36,
+                  "rate": 21.56
+                },
+                "q4": {
+                  "diag_person": 200,
+                  "diag_times": 253,
+                  "drug_person": 40,
+                  "drug_times": 49,
+                  "rate": 19.37
+                }
+              }
             },
             {
               "hospcode": "11135",
               "name": "โรงพยาบาลสารภี",
+              "full_name": "โรงพยาบาลสารภี (แม่ข่าย)",
               "subdistrict": "สารภี",
+              "type": "รพช.",
+              "diag_person": 6802,
+              "diag_times": 10134,
+              "drug_person": 1170,
+              "drug_times": 1433,
+              "rate": 14.14,
+              "rate_person": 17.2,
               "num": 1433,
               "den": 10134,
-              "rate": 14.14,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 2281,
+                  "diag_times": 2692,
+                  "drug_person": 412,
+                  "drug_times": 446,
+                  "rate": 16.57
+                },
+                "q2": {
+                  "diag_person": 2123,
+                  "diag_times": 2520,
+                  "drug_person": 340,
+                  "drug_times": 362,
+                  "rate": 14.37
+                },
+                "q3": {
+                  "diag_person": 2087,
+                  "diag_times": 2458,
+                  "drug_person": 260,
+                  "drug_times": 283,
+                  "rate": 11.51
+                },
+                "q4": {
+                  "diag_person": 2030,
+                  "diag_times": 2464,
+                  "drug_person": 306,
+                  "drug_times": 342,
+                  "rate": 13.88
+                }
+              }
             },
             {
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 674,
+              "diag_times": 1232,
+              "drug_person": 122,
+              "drug_times": 160,
+              "rate": 12.99,
+              "rate_person": 18.1,
               "num": 160,
               "den": 1232,
-              "rate": 12.99,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 243,
+                  "diag_times": 367,
+                  "drug_person": 42,
+                  "drug_times": 43,
+                  "rate": 11.72
+                },
+                "q2": {
+                  "diag_person": 302,
+                  "diag_times": 402,
+                  "drug_person": 54,
+                  "drug_times": 56,
+                  "rate": 13.93
+                },
+                "q3": {
+                  "diag_person": 188,
+                  "diag_times": 221,
+                  "drug_person": 32,
+                  "drug_times": 36,
+                  "rate": 16.29
+                },
+                "q4": {
+                  "diag_person": 200,
+                  "diag_times": 242,
+                  "drug_person": 22,
+                  "drug_times": 25,
+                  "rate": 10.33
+                }
+              }
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 503,
+              "diag_times": 918,
+              "drug_person": 65,
+              "drug_times": 95,
+              "rate": 10.35,
+              "rate_person": 12.92,
               "num": 95,
               "den": 918,
-              "rate": 10.35,
-              "pass": false
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 186,
+                  "diag_times": 253,
+                  "drug_person": 23,
+                  "drug_times": 27,
+                  "rate": 10.67
+                },
+                "q2": {
+                  "diag_person": 180,
+                  "diag_times": 242,
+                  "drug_person": 13,
+                  "drug_times": 14,
+                  "rate": 5.79
+                },
+                "q3": {
+                  "diag_person": 138,
+                  "diag_times": 197,
+                  "drug_person": 12,
+                  "drug_times": 19,
+                  "rate": 9.64
+                },
+                "q4": {
+                  "diag_person": 177,
+                  "diag_times": 226,
+                  "drug_person": 30,
+                  "drug_times": 35,
+                  "rate": 15.49
+                }
+              }
             }
           ]
         },
         "2568": {
-          "num": 2067,
-          "den": 13031,
-          "rate": 15.86,
+          "diag_person": 11361,
+          "diag_times": 19338,
+          "drug_person": 2386,
+          "drug_times": 3281,
+          "num": 3281,
+          "den": 19338,
+          "rate": 16.97,
+          "rate_person": 21.0,
           "pass": false,
+          "growth": 0.0,
+          "quarters": {
+            "q1": {
+              "diag_person": 3780,
+              "diag_times": 4692,
+              "drug_person": 797,
+              "drug_times": 902,
+              "rate": 19.22
+            },
+            "q2": {
+              "diag_person": 4108,
+              "diag_times": 5263,
+              "drug_person": 810,
+              "drug_times": 928,
+              "rate": 17.63
+            },
+            "q3": {
+              "diag_person": 2477,
+              "diag_times": 3076,
+              "drug_person": 223,
+              "drug_times": 237,
+              "rate": 7.7
+            },
+            "q4": {
+              "diag_person": 0,
+              "diag_times": 0,
+              "drug_person": 0,
+              "drug_times": 0,
+              "rate": 0.0
+            }
+          },
           "units": [
             {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 138,
-              "den": 423,
-              "rate": 32.62,
-              "pass": true
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 198,
-              "den": 609,
-              "rate": 32.51,
-              "pass": true
-            },
-            {
-              "hospcode": "06021",
-              "name": "รพ.สต.บ้านสันต้นกอก",
-              "subdistrict": "ดอนแก้ว",
-              "num": 104,
-              "den": 330,
-              "rate": 31.52,
-              "pass": true
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "type": "รพ.สต.",
+              "diag_person": 256,
+              "diag_times": 386,
+              "drug_person": 131,
+              "drug_times": 164,
+              "rate": 42.49,
+              "rate_person": 51.17,
+              "num": 164,
+              "den": 386,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 76,
+                  "diag_times": 82,
+                  "drug_person": 32,
+                  "drug_times": 32,
+                  "rate": 39.02
+                },
+                "q2": {
+                  "diag_person": 76,
+                  "diag_times": 84,
+                  "drug_person": 24,
+                  "drug_times": 25,
+                  "rate": 29.76
+                },
+                "q3": {
+                  "diag_person": 85,
+                  "diag_times": 97,
+                  "drug_person": 13,
+                  "drug_times": 13,
+                  "rate": 13.4
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
-              "num": 95,
-              "den": 305,
-              "rate": 31.15,
-              "pass": true
+              "type": "รพ.สต.",
+              "diag_person": 277,
+              "diag_times": 420,
+              "drug_person": 115,
+              "drug_times": 143,
+              "rate": 34.05,
+              "rate_person": 41.52,
+              "num": 143,
+              "den": 420,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 134,
+                  "diag_times": 153,
+                  "drug_person": 36,
+                  "drug_times": 39,
+                  "rate": 25.49
+                },
+                "q2": {
+                  "diag_person": 91,
+                  "diag_times": 108,
+                  "drug_person": 39,
+                  "drug_times": 42,
+                  "rate": 38.89
+                },
+                "q3": {
+                  "diag_person": 40,
+                  "diag_times": 44,
+                  "drug_person": 14,
+                  "drug_times": 14,
+                  "rate": 31.82
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "06024",
-              "name": "รพ.สต.บ้านศรีคำชมภู",
-              "subdistrict": "ป่าบง",
-              "num": 70,
-              "den": 263,
-              "rate": 26.62,
-              "pass": true
+              "hospcode": "06021",
+              "name": "รพ.สต.บ้านสันต้นกอก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก",
+              "subdistrict": "ดอนแก้ว",
+              "type": "รพ.สต.",
+              "diag_person": 344,
+              "diag_times": 466,
+              "drug_person": 116,
+              "drug_times": 139,
+              "rate": 29.83,
+              "rate_person": 33.72,
+              "num": 139,
+              "den": 466,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 159,
+                  "diag_times": 179,
+                  "drug_person": 62,
+                  "drug_times": 64,
+                  "rate": 35.75
+                },
+                "q2": {
+                  "diag_person": 108,
+                  "diag_times": 124,
+                  "drug_person": 32,
+                  "drug_times": 35,
+                  "rate": 28.23
+                },
+                "q3": {
+                  "diag_person": 26,
+                  "diag_times": 27,
+                  "drug_person": 4,
+                  "drug_times": 5,
+                  "rate": 18.52
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "06017",
-              "name": "รพ.สต.บ้านหัวดง",
-              "subdistrict": "ขัวมุง",
-              "num": 53,
-              "den": 221,
-              "rate": 23.98,
-              "pass": true
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "type": "รพ.สต.",
+              "diag_person": 488,
+              "diag_times": 980,
+              "drug_person": 186,
+              "drug_times": 292,
+              "rate": 29.8,
+              "rate_person": 38.11,
+              "num": 292,
+              "den": 980,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 181,
+                  "diag_times": 243,
+                  "drug_person": 77,
+                  "drug_times": 91,
+                  "rate": 37.45
+                },
+                "q2": {
+                  "diag_person": 204,
+                  "diag_times": 281,
+                  "drug_person": 71,
+                  "drug_times": 88,
+                  "rate": 31.32
+                },
+                "q3": {
+                  "diag_person": 75,
+                  "diag_times": 85,
+                  "drug_person": 19,
+                  "drug_times": 19,
+                  "rate": 22.35
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "06022",
-              "name": "รพ.สต.บ้านบวกครกเหนือ",
-              "subdistrict": "ท่าวังตาล",
-              "num": 121,
-              "den": 552,
-              "rate": 21.92,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 79,
-              "den": 405,
-              "rate": 19.51,
-              "pass": false
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "type": "รพ.สต.",
+              "diag_person": 325,
+              "diag_times": 657,
+              "drug_person": 126,
+              "drug_times": 194,
+              "rate": 29.53,
+              "rate_person": 38.77,
+              "num": 194,
+              "den": 657,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 111,
+                  "diag_times": 149,
+                  "drug_person": 53,
+                  "drug_times": 63,
+                  "rate": 42.28
+                },
+                "q2": {
+                  "diag_person": 188,
+                  "diag_times": 224,
+                  "drug_person": 51,
+                  "drug_times": 60,
+                  "rate": 26.79
+                },
+                "q3": {
+                  "diag_person": 44,
+                  "diag_times": 50,
+                  "drug_person": 15,
+                  "drug_times": 15,
+                  "rate": 30.0
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
               "hospcode": "06020",
               "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง",
               "subdistrict": "ท่ากว้าง",
-              "num": 208,
-              "den": 1142,
-              "rate": 18.21,
-              "pass": false
+              "type": "รพ.สต.",
+              "diag_person": 579,
+              "diag_times": 1510,
+              "drug_person": 228,
+              "drug_times": 383,
+              "rate": 25.36,
+              "rate_person": 39.38,
+              "num": 383,
+              "den": 1510,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 264,
+                  "diag_times": 416,
+                  "drug_person": 91,
+                  "drug_times": 112,
+                  "rate": 26.92
+                },
+                "q2": {
+                  "diag_person": 265,
+                  "diag_times": 403,
+                  "drug_person": 84,
+                  "drug_times": 96,
+                  "rate": 23.82
+                },
+                "q3": {
+                  "diag_person": 210,
+                  "diag_times": 323,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "99758",
-              "name": "ศสม.สารภี",
-              "subdistrict": "สารภี",
-              "num": 12,
-              "den": 83,
-              "rate": 14.46,
-              "pass": false
+              "hospcode": "06017",
+              "name": "รพ.สต.บ้านหัวดง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง",
+              "subdistrict": "ขัวมุง",
+              "type": "รพ.สต.",
+              "diag_person": 233,
+              "diag_times": 326,
+              "drug_person": 66,
+              "drug_times": 72,
+              "rate": 22.09,
+              "rate_person": 28.33,
+              "num": 72,
+              "den": 326,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 90,
+                  "diag_times": 99,
+                  "drug_person": 22,
+                  "drug_times": 22,
+                  "rate": 22.22
+                },
+                "q2": {
+                  "diag_person": 77,
+                  "diag_times": 90,
+                  "drug_person": 25,
+                  "drug_times": 28,
+                  "rate": 31.11
+                },
+                "q3": {
+                  "diag_person": 30,
+                  "diag_times": 32,
+                  "drug_person": 3,
+                  "drug_times": 3,
+                  "rate": 9.38
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "06014",
-              "name": "รพ.สต.บ้านยางเนิ้ง",
-              "subdistrict": "ยางเนิ้ง",
-              "num": 135,
-              "den": 1054,
-              "rate": 12.81,
-              "pass": false
+              "hospcode": "06022",
+              "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านบวกครกเหนือ",
+              "subdistrict": "ท่าวังตาล",
+              "type": "รพ.สต.",
+              "diag_person": 497,
+              "diag_times": 783,
+              "drug_person": 119,
+              "drug_times": 168,
+              "rate": 21.46,
+              "rate_person": 23.94,
+              "num": 168,
+              "den": 783,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 181,
+                  "diag_times": 220,
+                  "drug_person": 35,
+                  "drug_times": 46,
+                  "rate": 20.91
+                },
+                "q2": {
+                  "diag_person": 190,
+                  "diag_times": 229,
+                  "drug_person": 59,
+                  "drug_times": 65,
+                  "rate": 28.38
+                },
+                "q3": {
+                  "diag_person": 94,
+                  "diag_times": 103,
+                  "drug_person": 9,
+                  "drug_times": 10,
+                  "rate": 9.71
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
-              "hospcode": "06018",
-              "name": "รพ.สต.บ้านหนองแฝก",
-              "subdistrict": "หนองแฝก",
-              "num": 118,
-              "den": 942,
-              "rate": 12.53,
-              "pass": false
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 381,
+              "diag_times": 569,
+              "drug_person": 90,
+              "drug_times": 116,
+              "rate": 20.39,
+              "rate_person": 23.62,
+              "num": 116,
+              "den": 569,
+              "pass": true,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 151,
+                  "diag_times": 172,
+                  "drug_person": 19,
+                  "drug_times": 20,
+                  "rate": 11.63
+                },
+                "q2": {
+                  "diag_person": 153,
+                  "diag_times": 190,
+                  "drug_person": 40,
+                  "drug_times": 50,
+                  "rate": 26.32
+                },
+                "q3": {
+                  "diag_person": 41,
+                  "diag_times": 43,
+                  "drug_person": 9,
+                  "drug_times": 9,
+                  "rate": 20.93
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านพญาชมภู",
               "subdistrict": "ชมภู",
-              "num": 22,
-              "den": 178,
-              "rate": 12.36,
-              "pass": false
+              "type": "รพ.สต.",
+              "diag_person": 209,
+              "diag_times": 350,
+              "drug_person": 46,
+              "drug_times": 68,
+              "rate": 19.43,
+              "rate_person": 22.01,
+              "num": 68,
+              "den": 350,
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 63,
+                  "diag_times": 77,
+                  "drug_person": 7,
+                  "drug_times": 8,
+                  "rate": 10.39
+                },
+                "q2": {
+                  "diag_person": 54,
+                  "diag_times": 70,
+                  "drug_person": 12,
+                  "drug_times": 14,
+                  "rate": 20.0
+                },
+                "q3": {
+                  "diag_person": 29,
+                  "diag_times": 31,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            {
+              "hospcode": "06018",
+              "name": "รพ.สต.บ้านหนองแฝก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองแฝก",
+              "subdistrict": "หนองแฝก",
+              "type": "รพ.สต.",
+              "diag_person": 656,
+              "diag_times": 1255,
+              "drug_person": 170,
+              "drug_times": 211,
+              "rate": 16.81,
+              "rate_person": 25.91,
+              "num": 211,
+              "den": 1255,
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 336,
+                  "diag_times": 424,
+                  "drug_person": 63,
+                  "drug_times": 66,
+                  "rate": 15.57
+                },
+                "q2": {
+                  "diag_person": 213,
+                  "diag_times": 286,
+                  "drug_person": 49,
+                  "drug_times": 52,
+                  "rate": 18.18
+                },
+                "q3": {
+                  "diag_person": 181,
+                  "diag_times": 232,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            {
+              "hospcode": "99758",
+              "name": "ศสม.สารภี",
+              "full_name": "ศูนย์สุขภาพชุมชนตำบลสารภี",
+              "subdistrict": "สารภี",
+              "type": "ศสม.",
+              "diag_person": 55,
+              "diag_times": 119,
+              "drug_person": 15,
+              "drug_times": 19,
+              "rate": 15.97,
+              "rate_person": 27.27,
+              "num": 19,
+              "den": 119,
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 21,
+                  "diag_times": 25,
+                  "drug_person": 4,
+                  "drug_times": 4,
+                  "rate": 16.0
+                },
+                "q2": {
+                  "diag_person": 17,
+                  "diag_times": 18,
+                  "drug_person": 3,
+                  "drug_times": 3,
+                  "rate": 16.67
+                },
+                "q3": {
+                  "diag_person": 24,
+                  "diag_times": 40,
+                  "drug_person": 4,
+                  "drug_times": 5,
+                  "rate": 12.5
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            {
+              "hospcode": "06014",
+              "name": "รพ.สต.บ้านยางเนิ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านยางเนิ้ง",
+              "subdistrict": "ยางเนิ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 610,
+              "diag_times": 1320,
+              "drug_person": 129,
+              "drug_times": 206,
+              "rate": 15.61,
+              "rate_person": 21.15,
+              "num": 206,
+              "den": 1320,
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 254,
+                  "diag_times": 347,
+                  "drug_person": 41,
+                  "drug_times": 50,
+                  "rate": 14.41
+                },
+                "q2": {
+                  "diag_person": 255,
+                  "diag_times": 406,
+                  "drug_person": 49,
+                  "drug_times": 68,
+                  "rate": 16.75
+                },
+                "q3": {
+                  "diag_person": 184,
+                  "diag_times": 301,
+                  "drug_person": 17,
+                  "drug_times": 17,
+                  "rate": 5.65
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             },
             {
               "hospcode": "11135",
               "name": "โรงพยาบาลสารภี",
+              "full_name": "โรงพยาบาลสารภี (แม่ข่าย)",
               "subdistrict": "สารภี",
-              "num": 714,
-              "den": 6524,
-              "rate": 10.94,
-              "pass": false
+              "type": "รพช.",
+              "diag_person": 6451,
+              "diag_times": 10197,
+              "drug_person": 849,
+              "drug_times": 1106,
+              "rate": 10.85,
+              "rate_person": 13.16,
+              "num": 1106,
+              "den": 10197,
+              "pass": false,
+              "growth": 0.0,
+              "quarters": {
+                "q1": {
+                  "diag_person": 1759,
+                  "diag_times": 2106,
+                  "drug_person": 255,
+                  "drug_times": 285,
+                  "rate": 13.53
+                },
+                "q2": {
+                  "diag_person": 2217,
+                  "diag_times": 2750,
+                  "drug_person": 272,
+                  "drug_times": 302,
+                  "rate": 10.98
+                },
+                "q3": {
+                  "diag_person": 1414,
+                  "diag_times": 1668,
+                  "drug_person": 116,
+                  "drug_times": 127,
+                  "rate": 7.61
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              }
             }
           ]
         },
         "2569": {
-          "num": 4066,
-          "den": 19009,
-          "rate": 21.39,
+          "diag_person": 10741,
+          "diag_times": 19259,
+          "drug_person": 2868,
+          "drug_times": 4206,
+          "num": 4206,
+          "den": 19259,
+          "rate": 21.84,
+          "rate_person": 26.7,
           "pass": true,
+          "growth": 28.72,
+          "quarters": {
+            "q1": {
+              "diag_person": 4171,
+              "diag_times": 5439,
+              "drug_person": 870,
+              "drug_times": 974,
+              "rate": 17.91
+            },
+            "q2": {
+              "diag_person": 4030,
+              "diag_times": 5289,
+              "drug_person": 956,
+              "drug_times": 1086,
+              "rate": 20.53
+            },
+            "q3": {
+              "diag_person": 3846,
+              "diag_times": 5168,
+              "drug_person": 1038,
+              "drug_times": 1222,
+              "rate": 23.65
+            },
+            "q4": {
+              "diag_person": 2593,
+              "diag_times": 3363,
+              "drug_person": 781,
+              "drug_times": 924,
+              "rate": 27.48
+            }
+          },
           "units": [
             {
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
-              "num": 936,
-              "den": 1371,
-              "rate": 68.27,
-              "pass": true
+              "type": "รพ.สต.",
+              "diag_person": 694,
+              "diag_times": 1538,
+              "drug_person": 584,
+              "drug_times": 1068,
+              "rate": 69.44,
+              "rate_person": 84.15,
+              "num": 1068,
+              "den": 1538,
+              "pass": true,
+              "growth": 135.17,
+              "quarters": {
+                "q1": {
+                  "diag_person": 194,
+                  "diag_times": 242,
+                  "drug_person": 73,
+                  "drug_times": 80,
+                  "rate": 33.06
+                },
+                "q2": {
+                  "diag_person": 199,
+                  "diag_times": 276,
+                  "drug_person": 118,
+                  "drug_times": 138,
+                  "rate": 50.0
+                },
+                "q3": {
+                  "diag_person": 395,
+                  "diag_times": 505,
+                  "drug_person": 358,
+                  "drug_times": 435,
+                  "rate": 86.14
+                },
+                "q4": {
+                  "diag_person": 390,
+                  "diag_times": 515,
+                  "drug_person": 335,
+                  "drug_times": 415,
+                  "rate": 80.58
+                }
+              },
+              "rate_prev": 29.53,
+              "diag_person_prev": 325,
+              "diag_times_prev": 657,
+              "drug_person_prev": 126,
+              "drug_times_prev": 194
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
+              "type": "รพ.สต.",
+              "diag_person": 162,
+              "diag_times": 287,
+              "drug_person": 95,
+              "drug_times": 130,
+              "rate": 45.3,
+              "rate_person": 58.64,
               "num": 130,
               "den": 287,
-              "rate": 45.3,
-              "pass": true
+              "pass": true,
+              "growth": 33.04,
+              "quarters": {
+                "q1": {
+                  "diag_person": 75,
+                  "diag_times": 93,
+                  "drug_person": 41,
+                  "drug_times": 46,
+                  "rate": 49.46
+                },
+                "q2": {
+                  "diag_person": 58,
+                  "diag_times": 77,
+                  "drug_person": 31,
+                  "drug_times": 34,
+                  "rate": 44.16
+                },
+                "q3": {
+                  "diag_person": 59,
+                  "diag_times": 76,
+                  "drug_person": 23,
+                  "drug_times": 24,
+                  "rate": 31.58
+                },
+                "q4": {
+                  "diag_person": 32,
+                  "diag_times": 41,
+                  "drug_person": 20,
+                  "drug_times": 26,
+                  "rate": 63.41
+                }
+              },
+              "rate_prev": 34.05,
+              "diag_person_prev": 277,
+              "diag_times_prev": 420,
+              "drug_person_prev": 115,
+              "drug_times_prev": 143
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
+              "type": "รพ.สต.",
+              "diag_person": 344,
+              "diag_times": 490,
+              "drug_person": 150,
+              "drug_times": 187,
+              "rate": 38.16,
+              "rate_person": 43.6,
               "num": 187,
-              "den": 488,
-              "rate": 38.32,
-              "pass": true
+              "den": 490,
+              "pass": true,
+              "growth": 27.94,
+              "quarters": {
+                "q1": {
+                  "diag_person": 122,
+                  "diag_times": 143,
+                  "drug_person": 38,
+                  "drug_times": 46,
+                  "rate": 32.17
+                },
+                "q2": {
+                  "diag_person": 126,
+                  "diag_times": 141,
+                  "drug_person": 61,
+                  "drug_times": 64,
+                  "rate": 45.39
+                },
+                "q3": {
+                  "diag_person": 106,
+                  "diag_times": 116,
+                  "drug_person": 54,
+                  "drug_times": 58,
+                  "rate": 50.0
+                },
+                "q4": {
+                  "diag_person": 80,
+                  "diag_times": 90,
+                  "drug_person": 18,
+                  "drug_times": 19,
+                  "rate": 21.11
+                }
+              },
+              "rate_prev": 29.83,
+              "diag_person_prev": 344,
+              "diag_times_prev": 466,
+              "drug_person_prev": 116,
+              "drug_times_prev": 139
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา",
               "subdistrict": "สันทราย",
-              "num": 337,
-              "den": 917,
-              "rate": 36.75,
-              "pass": true
+              "type": "รพ.สต.",
+              "diag_person": 437,
+              "diag_times": 919,
+              "drug_person": 204,
+              "drug_times": 342,
+              "rate": 37.21,
+              "rate_person": 46.68,
+              "num": 342,
+              "den": 919,
+              "pass": true,
+              "growth": 24.9,
+              "quarters": {
+                "q1": {
+                  "diag_person": 170,
+                  "diag_times": 239,
+                  "drug_person": 62,
+                  "drug_times": 80,
+                  "rate": 33.47
+                },
+                "q2": {
+                  "diag_person": 199,
+                  "diag_times": 271,
+                  "drug_person": 87,
+                  "drug_times": 104,
+                  "rate": 38.38
+                },
+                "q3": {
+                  "diag_person": 153,
+                  "diag_times": 200,
+                  "drug_person": 62,
+                  "drug_times": 79,
+                  "rate": 39.5
+                },
+                "q4": {
+                  "diag_person": 154,
+                  "diag_times": 209,
+                  "drug_person": 64,
+                  "drug_times": 79,
+                  "rate": 37.8
+                }
+              },
+              "rate_prev": 29.8,
+              "diag_person_prev": 488,
+              "diag_times_prev": 980,
+              "drug_person_prev": 186,
+              "drug_times_prev": 292
             },
             {
               "hospcode": "06017",
               "name": "รพ.สต.บ้านหัวดง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง",
               "subdistrict": "ขัวมุง",
+              "type": "รพ.สต.",
+              "diag_person": 241,
+              "diag_times": 328,
+              "drug_person": 92,
+              "drug_times": 115,
+              "rate": 35.06,
+              "rate_person": 38.17,
               "num": 115,
               "den": 328,
-              "rate": 35.06,
-              "pass": true
-            },
-            {
-              "hospcode": "14461",
-              "name": "รพ.สต.บ้านหนองผึ้ง",
-              "subdistrict": "หนองผึ้ง",
-              "num": 156,
-              "den": 578,
-              "rate": 26.99,
-              "pass": true
+              "pass": true,
+              "growth": 58.75,
+              "quarters": {
+                "q1": {
+                  "diag_person": 77,
+                  "diag_times": 89,
+                  "drug_person": 30,
+                  "drug_times": 32,
+                  "rate": 35.96
+                },
+                "q2": {
+                  "diag_person": 84,
+                  "diag_times": 96,
+                  "drug_person": 36,
+                  "drug_times": 39,
+                  "rate": 40.62
+                },
+                "q3": {
+                  "diag_person": 79,
+                  "diag_times": 86,
+                  "drug_person": 27,
+                  "drug_times": 28,
+                  "rate": 32.56
+                },
+                "q4": {
+                  "diag_person": 54,
+                  "diag_times": 57,
+                  "drug_person": 15,
+                  "drug_times": 16,
+                  "rate": 28.07
+                }
+              },
+              "rate_prev": 22.09,
+              "diag_person_prev": 233,
+              "diag_times_prev": 326,
+              "drug_person_prev": 66,
+              "drug_times_prev": 72
             },
             {
               "hospcode": "06020",
               "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง",
               "subdistrict": "ท่ากว้าง",
+              "type": "รพ.สต.",
+              "diag_person": 544,
+              "diag_times": 1328,
+              "drug_person": 197,
+              "drug_times": 357,
+              "rate": 26.88,
+              "rate_person": 36.21,
               "num": 357,
               "den": 1328,
-              "rate": 26.88,
-              "pass": true
+              "pass": true,
+              "growth": 5.99,
+              "quarters": {
+                "q1": {
+                  "diag_person": 246,
+                  "diag_times": 403,
+                  "drug_person": 84,
+                  "drug_times": 96,
+                  "rate": 23.82
+                },
+                "q2": {
+                  "diag_person": 239,
+                  "diag_times": 342,
+                  "drug_person": 85,
+                  "drug_times": 108,
+                  "rate": 31.58
+                },
+                "q3": {
+                  "diag_person": 229,
+                  "diag_times": 334,
+                  "drug_person": 62,
+                  "drug_times": 80,
+                  "rate": 23.95
+                },
+                "q4": {
+                  "diag_person": 183,
+                  "diag_times": 249,
+                  "drug_person": 57,
+                  "drug_times": 73,
+                  "rate": 29.32
+                }
+              },
+              "rate_prev": 25.36,
+              "diag_person_prev": 579,
+              "diag_times_prev": 1510,
+              "drug_person_prev": 228,
+              "drug_times_prev": 383
             },
             {
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านพญาชมภู",
               "subdistrict": "ชมภู",
+              "type": "รพ.สต.",
+              "diag_person": 261,
+              "diag_times": 441,
+              "drug_person": 79,
+              "drug_times": 111,
+              "rate": 25.17,
+              "rate_person": 30.27,
               "num": 111,
-              "den": 433,
-              "rate": 25.64,
-              "pass": true
+              "den": 441,
+              "pass": true,
+              "growth": 29.55,
+              "quarters": {
+                "q1": {
+                  "diag_person": 79,
+                  "diag_times": 104,
+                  "drug_person": 19,
+                  "drug_times": 22,
+                  "rate": 21.15
+                },
+                "q2": {
+                  "diag_person": 84,
+                  "diag_times": 98,
+                  "drug_person": 37,
+                  "drug_times": 39,
+                  "rate": 39.8
+                },
+                "q3": {
+                  "diag_person": 111,
+                  "diag_times": 139,
+                  "drug_person": 22,
+                  "drug_times": 27,
+                  "rate": 19.42
+                },
+                "q4": {
+                  "diag_person": 80,
+                  "diag_times": 100,
+                  "drug_person": 18,
+                  "drug_times": 23,
+                  "rate": 23.0
+                }
+              },
+              "rate_prev": 19.43,
+              "diag_person_prev": 209,
+              "diag_times_prev": 350,
+              "drug_person_prev": 46,
+              "drug_times_prev": 68
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
-              "num": 106,
-              "den": 435,
-              "rate": 24.37,
-              "pass": true
+              "type": "รพ.สต.",
+              "diag_person": 278,
+              "diag_times": 437,
+              "drug_person": 87,
+              "drug_times": 107,
+              "rate": 24.49,
+              "rate_person": 31.29,
+              "num": 107,
+              "den": 437,
+              "pass": true,
+              "growth": -42.37,
+              "quarters": {
+                "q1": {
+                  "diag_person": 117,
+                  "diag_times": 143,
+                  "drug_person": 38,
+                  "drug_times": 43,
+                  "rate": 30.07
+                },
+                "q2": {
+                  "diag_person": 102,
+                  "diag_times": 125,
+                  "drug_person": 26,
+                  "drug_times": 27,
+                  "rate": 21.6
+                },
+                "q3": {
+                  "diag_person": 71,
+                  "diag_times": 76,
+                  "drug_person": 15,
+                  "drug_times": 17,
+                  "rate": 22.37
+                },
+                "q4": {
+                  "diag_person": 85,
+                  "diag_times": 93,
+                  "drug_person": 19,
+                  "drug_times": 20,
+                  "rate": 21.51
+                }
+              },
+              "rate_prev": 42.49,
+              "diag_person_prev": 256,
+              "diag_times_prev": 386,
+              "drug_person_prev": 131,
+              "drug_times_prev": 164
+            },
+            {
+              "hospcode": "14461",
+              "name": "รพ.สต.บ้านหนองผึ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองผึ้ง",
+              "subdistrict": "หนองผึ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 413,
+              "diag_times": 647,
+              "drug_person": 119,
+              "drug_times": 158,
+              "rate": 24.42,
+              "rate_person": 28.81,
+              "num": 158,
+              "den": 647,
+              "pass": true,
+              "growth": 19.79,
+              "quarters": {
+                "q1": {
+                  "diag_person": 164,
+                  "diag_times": 197,
+                  "drug_person": 57,
+                  "drug_times": 64,
+                  "rate": 32.49
+                },
+                "q2": {
+                  "diag_person": 135,
+                  "diag_times": 171,
+                  "drug_person": 24,
+                  "drug_times": 26,
+                  "rate": 15.2
+                },
+                "q3": {
+                  "diag_person": 102,
+                  "diag_times": 127,
+                  "drug_person": 19,
+                  "drug_times": 21,
+                  "rate": 16.54
+                },
+                "q4": {
+                  "diag_person": 132,
+                  "diag_times": 152,
+                  "drug_person": 39,
+                  "drug_times": 47,
+                  "rate": 30.92
+                }
+              },
+              "rate_prev": 20.39,
+              "diag_person_prev": 381,
+              "diag_times_prev": 569,
+              "drug_person_prev": 90,
+              "drug_times_prev": 116
             },
             {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
+              "type": "รพ.สต.",
+              "diag_person": 608,
+              "diag_times": 1343,
+              "drug_person": 223,
+              "drug_times": 318,
+              "rate": 23.68,
+              "rate_person": 36.68,
               "num": 318,
               "den": 1343,
-              "rate": 23.68,
-              "pass": true
+              "pass": true,
+              "growth": 40.84,
+              "quarters": {
+                "q1": {
+                  "diag_person": 267,
+                  "diag_times": 352,
+                  "drug_person": 38,
+                  "drug_times": 42,
+                  "rate": 11.93
+                },
+                "q2": {
+                  "diag_person": 285,
+                  "diag_times": 410,
+                  "drug_person": 101,
+                  "drug_times": 118,
+                  "rate": 28.78
+                },
+                "q3": {
+                  "diag_person": 278,
+                  "diag_times": 361,
+                  "drug_person": 96,
+                  "drug_times": 108,
+                  "rate": 29.92
+                },
+                "q4": {
+                  "diag_person": 194,
+                  "diag_times": 220,
+                  "drug_person": 48,
+                  "drug_times": 50,
+                  "rate": 22.73
+                }
+              },
+              "rate_prev": 16.81,
+              "diag_person_prev": 656,
+              "diag_times_prev": 1255,
+              "drug_person_prev": 170,
+              "drug_times_prev": 211
             },
             {
               "hospcode": "06022",
               "name": "รพ.สต.บ้านบวกครกเหนือ",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านบวกครกเหนือ",
               "subdistrict": "ท่าวังตาล",
+              "type": "รพ.สต.",
+              "diag_person": 465,
+              "diag_times": 714,
+              "drug_person": 112,
+              "drug_times": 146,
+              "rate": 20.45,
+              "rate_person": 24.09,
               "num": 146,
               "den": 714,
-              "rate": 20.45,
-              "pass": true
+              "pass": true,
+              "growth": -4.7,
+              "quarters": {
+                "q1": {
+                  "diag_person": 193,
+                  "diag_times": 215,
+                  "drug_person": 49,
+                  "drug_times": 51,
+                  "rate": 23.72
+                },
+                "q2": {
+                  "diag_person": 183,
+                  "diag_times": 212,
+                  "drug_person": 38,
+                  "drug_times": 45,
+                  "rate": 21.23
+                },
+                "q3": {
+                  "diag_person": 129,
+                  "diag_times": 148,
+                  "drug_person": 29,
+                  "drug_times": 32,
+                  "rate": 21.62
+                },
+                "q4": {
+                  "diag_person": 123,
+                  "diag_times": 139,
+                  "drug_person": 17,
+                  "drug_times": 18,
+                  "rate": 12.95
+                }
+              },
+              "rate_prev": 21.46,
+              "diag_person_prev": 497,
+              "diag_times_prev": 783,
+              "drug_person_prev": 119,
+              "drug_times_prev": 168
             },
             {
               "hospcode": "11135",
               "name": "โรงพยาบาลสารภี",
+              "full_name": "โรงพยาบาลสารภี (แม่ข่าย)",
               "subdistrict": "สารภี",
+              "type": "รพช.",
+              "diag_person": 5465,
+              "diag_times": 8624,
+              "drug_person": 808,
+              "drug_times": 1007,
+              "rate": 11.68,
+              "rate_person": 14.78,
               "num": 1007,
               "den": 8624,
-              "rate": 11.68,
-              "pass": false
+              "pass": false,
+              "growth": 7.66,
+              "quarters": {
+                "q1": {
+                  "diag_person": 2081,
+                  "diag_times": 2523,
+                  "drug_person": 288,
+                  "drug_times": 309,
+                  "rate": 12.25
+                },
+                "q2": {
+                  "diag_person": 2090,
+                  "diag_times": 2719,
+                  "drug_person": 270,
+                  "drug_times": 299,
+                  "rate": 11.0
+                },
+                "q3": {
+                  "diag_person": 1866,
+                  "diag_times": 2529,
+                  "drug_person": 249,
+                  "drug_times": 288,
+                  "rate": 11.39
+                },
+                "q4": {
+                  "diag_person": 756,
+                  "diag_times": 853,
+                  "drug_person": 105,
+                  "drug_times": 111,
+                  "rate": 13.01
+                }
+              },
+              "rate_prev": 10.85,
+              "diag_person_prev": 6451,
+              "diag_times_prev": 10197,
+              "drug_person_prev": 849,
+              "drug_times_prev": 1106
             },
             {
               "hospcode": "99758",
               "name": "ศสม.สารภี",
+              "full_name": "ศูนย์สุขภาพชุมชนตำบลสารภี",
               "subdistrict": "สารภี",
+              "type": "ศสม.",
+              "diag_person": 26,
+              "diag_times": 64,
+              "drug_person": 5,
+              "drug_times": 6,
+              "rate": 9.38,
+              "rate_person": 19.23,
               "num": 6,
               "den": 64,
-              "rate": 9.38,
-              "pass": false
+              "pass": false,
+              "growth": -41.28,
+              "quarters": {
+                "q1": {
+                  "diag_person": 18,
+                  "diag_times": 27,
+                  "drug_person": 3,
+                  "drug_times": 3,
+                  "rate": 11.11
+                },
+                "q2": {
+                  "diag_person": 13,
+                  "diag_times": 16,
+                  "drug_person": 2,
+                  "drug_times": 2,
+                  "rate": 12.5
+                },
+                "q3": {
+                  "diag_person": 10,
+                  "diag_times": 21,
+                  "drug_person": 1,
+                  "drug_times": 1,
+                  "rate": 4.76
+                },
+                "q4": {
+                  "diag_person": 0,
+                  "diag_times": 0,
+                  "drug_person": 0,
+                  "drug_times": 0,
+                  "rate": 0.0
+                }
+              },
+              "rate_prev": 15.97,
+              "diag_person_prev": 55,
+              "diag_times_prev": 119,
+              "drug_person_prev": 15,
+              "drug_times_prev": 19
             },
             {
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
+              "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
+              "type": "รพ.สต.",
+              "diag_person": 803,
+              "diag_times": 2099,
+              "drug_person": 113,
+              "drug_times": 154,
+              "rate": 7.34,
+              "rate_person": 14.07,
               "num": 154,
               "den": 2099,
-              "rate": 7.34,
-              "pass": false
+              "pass": false,
+              "growth": -52.99,
+              "quarters": {
+                "q1": {
+                  "diag_person": 368,
+                  "diag_times": 669,
+                  "drug_person": 50,
+                  "drug_times": 60,
+                  "rate": 8.97
+                },
+                "q2": {
+                  "diag_person": 233,
+                  "diag_times": 335,
+                  "drug_person": 40,
+                  "drug_times": 43,
+                  "rate": 12.84
+                },
+                "q3": {
+                  "diag_person": 258,
+                  "diag_times": 450,
+                  "drug_person": 21,
+                  "drug_times": 24,
+                  "rate": 5.33
+                },
+                "q4": {
+                  "diag_person": 330,
+                  "diag_times": 645,
+                  "drug_person": 26,
+                  "drug_times": 27,
+                  "rate": 4.19
+                }
+              },
+              "rate_prev": 15.61,
+              "diag_person_prev": 610,
+              "diag_times_prev": 1320,
+              "drug_person_prev": 129,
+              "drug_times_prev": 206
             }
           ]
         }

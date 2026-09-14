@@ -50,11 +50,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ttmAgeSexPanel = document.getElementById('ttm-age-sex-panel');
   const ttmEdPanel = document.getElementById('ttm-ed-panel');
   const ttmCasesPanel = document.getElementById('ttm-cases-panel');
+  const ttmCommonPanel = document.getElementById('ttm-common-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
+
+  let currentTtmCommonView = 'hdc_full';
+  let currentTtmCommonYear = '2569';
+  let currentTtmCommonChartMode = 'compare_rates';
+  let ttmCommonSearchQuery = '';
+  let ttmCommonChartInstance = null;
 
   let currentTtmCasesView = 'full';
   let currentTtmCasesYear = '2569';
@@ -6645,6 +6652,902 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // =========================================================
+  // TTM COMMON DISEASES & HERBAL DRUG (s_common_diseases_thai_drug)
+  // =========================================================
+  window.switchTtmCommonView = function(view) {
+    currentTtmCommonView = view;
+    renderTtmCommonPanel();
+  };
+
+  window.switchTtmCommonYear = function(yr) {
+    currentTtmCommonYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    renderTtmCommonPanel();
+  };
+
+  window.switchTtmCommonChartMode = function(mode) {
+    currentTtmCommonChartMode = mode;
+    renderTtmCommonPanel();
+  };
+
+  window.selectTtmCommonHospital = function(hospcode) {
+    currentUnit = hospcode;
+    if (unitSelect) unitSelect.value = hospcode;
+    updateDashboardView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.exportTtmCommonCsv = function() {
+    const yr = currentTtmCommonYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['ttm_common_dis'];
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const y68 = ind?.years?.['2568'] || {};
+    const y69 = ind?.years?.['2569'] || {};
+
+    let csvContent = '\uFEFF';
+
+    if (currentTtmCommonView === 'hdc_full') {
+      csvContent += `ตารางเปรียบเทียบมาตรฐาน HDC 1:1 การสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย อำเภอสารภี (ปี 2568 vs 2569)\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,' +
+        '2568 ได้รับการวินิจฉัย (คน),2568 ได้รับการวินิจฉัย (ครั้ง),2568 สั่งจ่ายยาสมุนไพร (คน),2568 สั่งจ่ายยาสมุนไพร (ครั้ง),2568 ร้อยละ (ครั้ง),' +
+        '2569 ได้รับการวินิจฉัย (คน),2569 ได้รับการวินิจฉัย (ครั้ง),2569 สั่งจ่ายยาสมุนไพร (คน),2569 สั่งจ่ายยาสมุนไพร (ครั้ง),2569 ร้อยละ (ครั้ง),' +
+        'ร้อยละเพิ่มขึ้น (%),' +
+        '2568 Q1 วินิจฉัย (คน),2568 Q1 วินิจฉัย (ครั้ง),2568 Q1 สั่งจ่าย (คน),2568 Q1 สั่งจ่าย (ครั้ง),2568 Q1 ร้อยละ,' +
+        '2569 Q1 วินิจฉัย (คน),2569 Q1 วินิจฉัย (ครั้ง),2569 Q1 สั่งจ่าย (คน),2569 Q1 สั่งจ่าย (ครั้ง),2569 Q1 ร้อยละ\n';
+
+      const u68Map = {};
+      (y68.units || []).forEach(u => { u68Map[u.hospcode] = u; });
+
+      (y69.units || []).forEach(u69 => {
+        const u68 = u68Map[u69.hospcode] || {};
+        const meta = SARAPHI_UNITS_MAP[u69.hospcode];
+        const uName = (u69.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u69.name);
+        const uSub = (u69.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u69.subdistrict);
+
+        const q68 = (u68.quarters && u68.quarters.q1) || {};
+        const q69 = (u69.quarters && u69.quarters.q1) || {};
+
+        csvContent += `"${u69.hospcode}","${uName}","${uSub}",` +
+          `${u68.diag_person || 0},${u68.diag_times || 0},${u68.drug_person || 0},${u68.drug_times || 0},${(u68.rate || 0).toFixed(2)},` +
+          `${u69.diag_person || 0},${u69.diag_times || 0},${u69.drug_person || 0},${u69.drug_times || 0},${(u69.rate || 0).toFixed(2)},` +
+          `${(u69.growth || 0).toFixed(2)},` +
+          `${q68.diag_person || 0},${q68.diag_times || 0},${q68.drug_person || 0},${q68.drug_times || 0},${(q68.rate || 0).toFixed(2)},` +
+          `${q69.diag_person || 0},${q69.diag_times || 0},${q69.drug_person || 0},${q69.drug_times || 0},${(q69.rate || 0).toFixed(2)}\n`;
+      });
+
+      const q68Dist = (y68.quarters && y68.quarters.q1) || {};
+      const q69Dist = (y69.quarters && y69.quarters.q1) || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",` +
+        `${y68.diag_person || 0},${y68.diag_times || 0},${y68.drug_person || 0},${y68.drug_times || 0},${(y68.rate || 0).toFixed(2)},` +
+        `${y69.diag_person || 0},${y69.diag_times || 0},${y69.drug_person || 0},${y69.drug_times || 0},${(y69.rate || 0).toFixed(2)},` +
+        `${(y69.growth || 0).toFixed(2)},` +
+        `${q68Dist.diag_person || 0},${q68Dist.diag_times || 0},${q68Dist.drug_person || 0},${q68Dist.drug_times || 0},${(q68Dist.rate || 0).toFixed(2)},` +
+        `${q69Dist.diag_person || 0},${q69Dist.diag_times || 0},${q69Dist.drug_person || 0},${q69Dist.drug_times || 0},${(q69Dist.rate || 0).toFixed(2)}\n`;
+
+    } else if (currentTtmCommonView === 'single_year') {
+      csvContent += `ตารางการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'อันดับ,รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ได้รับการวินิจฉัย (คน),ได้รับการวินิจฉัย (ครั้ง),สั่งจ่ายยาสมุนไพร (คน),สั่งจ่ายยาสมุนไพร (ครั้ง),ร้อยละจ่ายยาต่อครั้ง (%),ร้อยละจ่ายยาต่อคน (%),สถานะ\n';
+
+      units.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const isPass = (u.rate >= 20.0) ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์';
+        csvContent += `${idx + 1},"${u.hospcode}","${uName}","${uSub}",${u.diag_person || 0},${u.diag_times || 0},${u.drug_person || 0},${u.drug_times || 0},${(u.rate || 0).toFixed(2)},${(u.rate_person || 0).toFixed(2)},"${isPass}"\n`;
+      });
+
+      const distPass = (yrData.rate >= 20.0) ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์';
+      csvContent += `"total","-","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${yrData.diag_person || 0},${yrData.diag_times || 0},${yrData.drug_person || 0},${yrData.drug_times || 0},${(yrData.rate || 0).toFixed(2)},${(yrData.rate_person || 0).toFixed(2)},"${distPass}"\n`;
+
+    } else if (currentTtmCommonView === 'quarter') {
+      csvContent += `ตารางการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย รายไตรมาส อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ทั้งปี วินิจฉัย(ครั้ง),ทั้งปี สั่งจ่าย(ครั้ง),ทั้งปี ร้อยละ(%),' +
+        'Q1 วินิจฉัย(ครั้ง),Q1 สั่งจ่าย(ครั้ง),Q1 ร้อยละ(%),' +
+        'Q2 วินิจฉัย(ครั้ง),Q2 สั่งจ่าย(ครั้ง),Q2 ร้อยละ(%),' +
+        'Q3 วินิจฉัย(ครั้ง),Q3 สั่งจ่าย(ครั้ง),Q3 ร้อยละ(%),' +
+        'Q4 วินิจฉัย(ครั้ง),Q4 สั่งจ่าย(ครั้ง),Q4 ร้อยละ(%)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const q = u.quarters || {};
+        let line = `"${u.hospcode}","${uName}","${uSub}",${u.diag_times || 0},${u.drug_times || 0},${(u.rate || 0).toFixed(2)},`;
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          line += `${qd.diag_times || 0},${qd.drug_times || 0},${(qd.rate || 0).toFixed(2)}${qi === 4 ? '' : ','}`;
+        }
+        csvContent += line + '\n';
+      });
+
+      const qDist = yrData.quarters || {};
+      let totLine = `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${yrData.diag_times || 0},${yrData.drug_times || 0},${(yrData.rate || 0).toFixed(2)},`;
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = qDist[`q${qi}`] || {};
+        totLine += `${qd.diag_times || 0},${qd.drug_times || 0},${(qd.rate || 0).toFixed(2)}${qi === 4 ? '' : ','}`;
+      }
+      csvContent += totLine + '\n';
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_s_common_diseases_Saraphi_${yr}_${currentTtmCommonView}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function renderTtmCommonPanel() {
+    if (currentIndicatorId !== 'ttm_common_dis') {
+      if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+      return;
+    }
+    if (ttmCommonPanel) ttmCommonPanel.classList.remove('hidden');
+
+    const yr = currentTtmCommonYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['hdc_full', 'single_year', 'quarter'].forEach(v => {
+      const btn = document.getElementById(`btn-ttm-common-view-${v}`);
+      if (btn) {
+        if (v === currentTtmCommonView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ttm-common-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Sync Chart Mode Buttons
+    [
+      { mode: 'compare_rates', id: 'btn-ttm-common-chart-compare' },
+      { mode: 'growth_bar', id: 'btn-ttm-common-chart-growth' },
+      { mode: 'quarter_trend', id: 'btn-ttm-common-chart-trend' }
+    ].forEach(c => {
+      const btn = document.getElementById(c.id);
+      if (btn) {
+        if (c.mode === currentTtmCommonChartMode) {
+          btn.className = 'px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // Data references
+    const ind = masterData?.indicators?.['ttm_common_dis'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const y68 = ind?.years?.['2568'] || {};
+    const y69 = ind?.years?.['2569'] || {};
+
+    // 4. Update 4 Bento KPI Cards
+    let kpiDiagPerson = yrData.diag_person || 0;
+    let kpiDiagTimes = yrData.diag_times || 0;
+    let kpiDrugPerson = yrData.drug_person || 0;
+    let kpiDrugTimes = yrData.drug_times || 0;
+    let kpiRate = yrData.rate || 0;
+    let kpiGrowth = yrData.growth || 0;
+
+    if (currentUnit !== 'all') {
+      const u = units.find(x => x.hospcode === currentUnit);
+      if (u) {
+        kpiDiagPerson = u.diag_person || 0;
+        kpiDiagTimes = u.diag_times || 0;
+        kpiDrugPerson = u.drug_person || 0;
+        kpiDrugTimes = u.drug_times || 0;
+        kpiRate = u.rate || 0;
+        kpiGrowth = u.growth || 0;
+      }
+    }
+
+    const elDiagPerson = document.getElementById('ttm-common-kpi-diag-person');
+    const elDiagTimes = document.getElementById('ttm-common-kpi-diag-times');
+    const elDrugPerson = document.getElementById('ttm-common-kpi-drug-person');
+    const elDrugTimes = document.getElementById('ttm-common-kpi-drug-times');
+    const elRate = document.getElementById('ttm-common-kpi-rate');
+    const elRateBadge = document.getElementById('ttm-common-kpi-rate-badge');
+    const elRateSub = document.getElementById('ttm-common-kpi-rate-sub');
+    const elGrowth = document.getElementById('ttm-common-kpi-growth');
+    const elGrowthStatus = document.getElementById('ttm-common-kpi-growth-status');
+    const elGrowthDesc = document.getElementById('ttm-common-kpi-growth-desc');
+
+    if (elDiagPerson) elDiagPerson.textContent = Number(kpiDiagPerson).toLocaleString();
+    if (elDiagTimes) elDiagTimes.textContent = `${Number(kpiDiagTimes).toLocaleString()} ครั้ง`;
+    if (elDrugPerson) elDrugPerson.textContent = Number(kpiDrugPerson).toLocaleString();
+    if (elDrugTimes) elDrugTimes.textContent = `${Number(kpiDrugTimes).toLocaleString()} ครั้ง`;
+    if (elRate) elRate.textContent = `${Number(kpiRate).toFixed(2)}%`;
+    if (elRateBadge) {
+      if (kpiRate >= 20.0) {
+        elRateBadge.className = 'px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800';
+        elRateBadge.textContent = 'ผ่านเกณฑ์';
+      } else {
+        elRateBadge.className = 'px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-800';
+        elRateBadge.textContent = 'ต่ำกว่าเกณฑ์';
+      }
+    }
+    if (elRateSub) {
+      elRateSub.textContent = `จำนวนครั้ง (${Number(kpiDrugTimes).toLocaleString()} / ${Number(kpiDiagTimes).toLocaleString()})`;
+    }
+    if (elGrowth) {
+      const sign = kpiGrowth >= 0 ? '+' : '';
+      elGrowth.textContent = `${sign}${Number(kpiGrowth).toFixed(2)}%`;
+      elGrowth.className = `text-2xl font-black ${kpiGrowth >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+    }
+    if (elGrowthStatus) {
+      const sign = kpiGrowth >= 0 ? '+' : '';
+      elGrowthStatus.textContent = `${sign}${Number(kpiGrowth).toFixed(2)}%`;
+      elGrowthStatus.className = `font-bold ${kpiGrowth >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+    }
+    if (elGrowthDesc) {
+      elGrowthDesc.textContent = (currentUnit === 'all')
+        ? 'เปรียบเทียบปี 2568 vs 2569 (รวมอำเภอ)'
+        : `เปรียบเทียบปี 2568 vs 2569 (${SARAPHI_UNITS_MAP[currentUnit]?.short || currentUnit})`;
+    }
+
+    // 5. Render Chart
+    renderTtmCommonChart(units, yr);
+
+    // 6. Render Table
+    renderTtmCommonTable(units, yr);
+  }
+
+  function renderTtmCommonChart(units, yr) {
+    const canvas = document.getElementById('ttmCommonChart');
+    if (!canvas) return;
+
+    if (ttmCommonChartInstance) {
+      ttmCommonChartInstance.destroy();
+      ttmCommonChartInstance = null;
+    }
+
+    const ind = masterData?.indicators?.['ttm_common_dis'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const y68 = ind?.years?.['2568'] || {};
+    const y69 = ind?.years?.['2569'] || {};
+    const u68Map = {};
+    (y68.units || []).forEach(u => { u68Map[u.hospcode] = u; });
+
+    const chartTitle = document.getElementById('ttm-common-chart-title');
+    const chartSub = document.getElementById('ttm-common-chart-subtitle');
+
+    // Filter units if query
+    let filtered = [...units];
+    if (ttmCommonSearchQuery) {
+      const q = ttmCommonSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter(u =>
+        u.name.toLowerCase().includes(q) ||
+        u.hospcode.includes(q) ||
+        (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort by 2569 rate descending for readability
+    filtered.sort((a, b) => (b.rate || 0) - (a.rate || 0));
+
+    if (currentTtmCommonChartMode === 'compare_rates') {
+      if (chartTitle) {
+        chartTitle.innerHTML = '<i class="fa-solid fa-chart-column text-emerald-600"></i> เปรียบเทียบร้อยละการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย (ปี 2568 vs 2569)';
+      }
+      if (chartSub) {
+        chartSub.textContent = 'เปรียบเทียบระหว่างปีงบประมาณ 2568 และ 2569 จำแนกรายหน่วยบริการ พร้อมเส้นเป้าหมาย 20%';
+      }
+
+      const labels = filtered.map(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        return (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.short : u.name);
+      });
+      const data68 = filtered.map(u => {
+        const prev = u68Map[u.hospcode];
+        return prev ? Number(prev.rate || 0) : 0;
+      });
+      const data69 = filtered.map(u => Number(u.rate || 0));
+
+      ttmCommonChartInstance = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'ปีงบประมาณ 2568 (%)',
+              data: data68,
+              backgroundColor: 'rgba(148, 163, 184, 0.75)',
+              borderColor: '#94a3b8',
+              borderWidth: 1,
+              borderRadius: 6
+            },
+            {
+              label: 'ปีงบประมาณ 2569 (%)',
+              data: data69,
+              backgroundColor: 'rgba(5, 150, 105, 0.85)',
+              borderColor: '#059669',
+              borderWidth: 1,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { family: "'IBM Plex Sans Thai', sans-serif", size: 12, weight: 'bold' } }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 11 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: v => `${v}%`,
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 11 }
+              },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            }
+          }
+        }
+      });
+
+    } else if (currentTtmCommonChartMode === 'growth_bar') {
+      if (chartTitle) {
+        chartTitle.innerHTML = '<i class="fa-solid fa-arrow-trend-up text-emerald-600"></i> อัตราการเติบโตเพิ่มขึ้นของการจ่ายยาสมุนไพร (% Growth)';
+      }
+      if (chartSub) {
+        chartSub.textContent = 'อัตราการเปลี่ยนแปลงร้อยละการจ่ายยาสมุนไพร ปี 2569 เทียบกับ ปี 2568 ((C2 - C1) / C1 * 100)';
+      }
+
+      // Sort by growth descending
+      const sortedByGrowth = [...filtered].sort((a, b) => (b.growth || 0) - (a.growth || 0));
+      const labels = sortedByGrowth.map(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        return (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.short : u.name);
+      });
+      const dataGrowth = sortedByGrowth.map(u => Number(u.growth || 0));
+      const bgColors = dataGrowth.map(v => v >= 0 ? 'rgba(5, 150, 105, 0.85)' : 'rgba(225, 29, 72, 0.85)');
+      const borderColors = dataGrowth.map(v => v >= 0 ? '#059669' : '#e11d48');
+
+      ttmCommonChartInstance = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'ร้อยละเพิ่มขึ้น (%)',
+            data: dataGrowth,
+            backgroundColor: bgColors,
+            borderColor: borderColors,
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` อัตราเติบโต: ${ctx.parsed.x >= 0 ? '+' : ''}${ctx.parsed.x.toFixed(2)}%`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                callback: v => `${v >= 0 ? '+' : ''}${v}%`,
+                font: { family: "'IBM Plex Sans Thai', sans-serif", size: 11 }
+              },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            },
+            y: {
+              ticks: { font: { family: "'IBM Plex Sans Thai', sans-serif", size: 11 } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+    } else if (currentTtmCommonChartMode === 'quarter_trend') {
+      if (chartTitle) {
+        chartTitle.innerHTML = '<i class="fa-solid fa-chart-line text-emerald-600"></i> ร้อยละการสั่งจ่ายยาสมุนไพรในกลุ่มโรคพบบ่อย รายไตรมาส';
+      }
+      if (chartSub) {
+        chartSub.textContent = `แนวโน้มรายไตรมาส ปีงบประมาณ ${yr} จำแนก 4 ไตรมาส`;
+      }
+
+      const qDist = (yrData.quarters) || {};
+      const qLabels = ['ไตรมาสที่ 1 (ต.ค.-ธ.ค.)', 'ไตรมาสที่ 2 (ม.ค.-มี.ค.)', 'ไตรมาสที่ 3 (เม.ย.-มิ.ย.)', 'ไตรมาสที่ 4 (ก.ค.-ก.ย.)'];
+      const qRates = [1, 2, 3, 4].map(qi => Number(qDist[`q${qi}`]?.rate || 0));
+      const qDrugTimes = [1, 2, 3, 4].map(qi => Number(qDist[`q${qi}`]?.drug_times || 0));
+      const qDiagTimes = [1, 2, 3, 4].map(qi => Number(qDist[`q${qi}`]?.diag_times || 0));
+
+      ttmCommonChartInstance = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: qLabels,
+          datasets: [
+            {
+              type: 'line',
+              label: 'ร้อยละการจ่ายยา (%)',
+              data: qRates,
+              borderColor: '#059669',
+              backgroundColor: 'rgba(5, 150, 105, 0.15)',
+              borderWidth: 3,
+              tension: 0.3,
+              fill: true,
+              yAxisID: 'y'
+            },
+            {
+              type: 'bar',
+              label: 'สั่งจ่ายยาสมุนไพร (ครั้ง)',
+              data: qDrugTimes,
+              backgroundColor: 'rgba(16, 185, 129, 0.7)',
+              borderRadius: 6,
+              yAxisID: 'y1'
+            },
+            {
+              type: 'bar',
+              label: 'ได้รับการวินิจฉัย (ครั้ง)',
+              data: qDiagTimes,
+              backgroundColor: 'rgba(148, 163, 184, 0.5)',
+              borderRadius: 6,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { family: "'IBM Plex Sans Thai', sans-serif", size: 12, weight: 'bold' } }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { font: { family: "'IBM Plex Sans Thai', sans-serif", size: 11 } },
+              grid: { display: false }
+            },
+            y: {
+              position: 'left',
+              beginAtZero: true,
+              ticks: { callback: v => `${v}%` },
+              title: { display: true, text: 'ร้อยละ (%)' }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grid: { display: false },
+              title: { display: true, text: 'จำนวนครั้ง' }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function renderTtmCommonTable(units, yr) {
+    const tableEl = document.getElementById('ttm-common-matrix-table');
+    if (!tableEl) return;
+
+    const ind = masterData?.indicators?.['ttm_common_dis'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const y68 = ind?.years?.['2568'] || {};
+    const y69 = ind?.years?.['2569'] || {};
+    const u68Map = {};
+    (y68.units || []).forEach(u => { u68Map[u.hospcode] = u; });
+
+    let filtered = [...(y69.units || [])];
+    if (ttmCommonSearchQuery) {
+      const q = ttmCommonSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter(u =>
+        u.name.toLowerCase().includes(q) ||
+        u.hospcode.includes(q) ||
+        (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+      );
+    }
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+    let tfootHtml = '';
+
+    if (currentTtmCommonView === 'hdc_full') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
+            <th rowspan="3" class="py-2.5 px-3 text-left sticky left-0 z-20 bg-emerald-800 min-w-[210px] border-r border-emerald-700">หน่วยบริการ</th>
+            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2568 (รวมปีงบประมาณ)</th>
+            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2569 (รวมปีงบประมาณ)</th>
+            <th rowspan="3" class="py-2 px-2 border-r border-emerald-700 min-w-[95px]">ร้อยละเพิ่มขึ้น</th>
+            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2568 (ไตรมาสที่ 1)</th>
+            <th colspan="5" class="py-2 px-2 border-r border-b border-emerald-700">ปีงบประมาณ 2569 (ไตรมาสที่ 1)</th>
+            <th rowspan="3" class="py-2 px-2 border-emerald-700 min-w-[80px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-emerald-700 text-white text-center font-semibold text-[11px]">
+            <!-- 2568 Full -->
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B1)</th>
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A1)</th>
+            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C1)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+            <!-- 2569 Full -->
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A2)</th>
+            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C2)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+            <!-- 2568 Q1 -->
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B1)</th>
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A1)</th>
+            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C1)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+            <!-- 2569 Q1 -->
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">ได้รับการวินิจฉัย (B2)</th>
+            <th colspan="2" class="py-1.5 px-2 border-r border-b border-emerald-600">วินิจฉัยและมีการสั่งจ่ายยาสมุนไพร (A2)</th>
+            <th rowspan="2" class="py-1.5 px-2 border-r border-emerald-600 font-bold">ร้อยละ (C2)<br><span class="font-normal text-[10px] text-emerald-200">ครั้ง</span></th>
+          </tr>
+          <tr class="bg-emerald-600 text-white text-center font-medium text-[10.5px]">
+            <!-- 2568 Full Sub -->
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <!-- 2569 Full Sub -->
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <!-- 2568 Q1 Sub -->
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <!-- 2569 Q1 Sub -->
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">คน</th>
+            <th class="py-1 px-1.5 border-r border-emerald-500">ครั้ง</th>
+          </tr>
+        </thead>
+      `;
+
+      filtered.forEach((u69, idx) => {
+        const u68 = u68Map[u69.hospcode] || {};
+        const meta = SARAPHI_UNITS_MAP[u69.hospcode];
+        const uName = (u69.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u69.name);
+        const uFull = (u69.hospcode === '06023') ? 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา' : (meta ? meta.name : u69.name);
+        const uSub = (u69.hospcode === '06023') ? 'ตำบลสันทราย' : `ตำบล${meta ? meta.subdistrict : u69.subdistrict}`;
+        const isSelected = (currentUnit === u69.hospcode);
+        const rowBg = isSelected ? 'bg-amber-50/90 font-medium' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60 hover:bg-emerald-50/40');
+
+        const q68 = (u68.quarters && u68.quarters.q1) || {};
+        const q69 = (u69.quarters && u69.quarters.q1) || {};
+        const growth = Number(u69.growth || 0);
+        const growthClass = growth >= 0 ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold';
+        const growthSign = growth >= 0 ? '+' : '';
+
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-100 text-[11px] transition">
+            <td class="py-2 px-3 text-left sticky left-0 z-10 bg-inherit border-r border-slate-200">
+              <div class="font-bold text-slate-800">${u69.hospcode}:${uFull} ${uSub}</div>
+            </td>
+            <!-- 2568 Full -->
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono">${(u68.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-slate-900">${(u68.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-emerald-800">${(u68.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-emerald-900">${(u68.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800 bg-slate-50/50">${(u68.rate || 0).toFixed(2)}</td>
+            <!-- 2569 Full -->
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono">${(u69.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-slate-900">${(u69.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-emerald-800">${(u69.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-medium text-emerald-900">${(u69.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800 bg-emerald-50/60">${(u69.rate || 0).toFixed(2)}</td>
+            <!-- Growth % -->
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono ${growthClass} bg-slate-50/50">${growthSign}${growth.toFixed(2)}</td>
+            <!-- 2568 Q1 -->
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-500">${(q68.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600 font-semibold">${(q68.rate || 0).toFixed(2)}</td>
+            <!-- 2569 Q1 -->
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-600">${(q69.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right border-r border-slate-200 font-mono text-slate-800 font-semibold bg-emerald-50/30">${(q69.rate || 0).toFixed(2)}</td>
+            <!-- Action -->
+            <td class="py-2 px-2 text-center">
+              <button type="button" onclick="window.selectTtmCommonHospital('${u69.hospcode}')" class="px-2 py-1 text-[10.5px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition shadow-2xs">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const q68Dist = (y68.quarters && y68.quarters.q1) || {};
+      const q69Dist = (y69.quarters && y69.quarters.q1) || {};
+      const distGrowth = Number(y69.growth || 0);
+      const distGrowthClass = distGrowth >= 0 ? 'text-emerald-300 font-black' : 'text-rose-300 font-black';
+      const distGrowthSign = distGrowth >= 0 ? '+' : '';
+
+      tfootHtml = `
+        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
+          <tr>
+            <td class="py-2.5 px-3 text-left sticky left-0 z-10 bg-slate-800 font-black border-r border-slate-700">รวม</td>
+            <!-- 2568 Full -->
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y68.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y68.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y68.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y68.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black bg-slate-700/60">${(y68.rate || 0).toFixed(2)}</td>
+            <!-- 2569 Full -->
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y69.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black">${(y69.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y69.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black text-emerald-300">${(y69.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono font-black bg-emerald-900/80 text-emerald-200">${(y69.rate || 0).toFixed(2)}</td>
+            <!-- Growth % -->
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono ${distGrowthClass}">${distGrowthSign}${distGrowth.toFixed(2)}</td>
+            <!-- 2568 Q1 -->
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q68Dist.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-200">${(q68Dist.rate || 0).toFixed(2)}</td>
+            <!-- 2569 Q1 -->
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-300">${(q69Dist.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right border-r border-slate-700 font-mono text-slate-200 bg-emerald-950">${(q69Dist.rate || 0).toFixed(2)}</td>
+            <!-- Action -->
+            <td class="py-2.5 px-2 text-center text-slate-400">-</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmCommonView === 'single_year') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
+            <th class="py-2.5 px-3 text-center min-w-[50px] border-r border-emerald-700">อันดับ</th>
+            <th class="py-2.5 px-3 text-center min-w-[60px] border-r border-emerald-700">รหัส</th>
+            <th class="py-2.5 px-3 text-left min-w-[180px] border-r border-emerald-700">ชื่อหน่วยบริการ</th>
+            <th class="py-2.5 px-3 text-left min-w-[100px] border-r border-emerald-700">ตำบล</th>
+            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">ได้รับการวินิจฉัย (คน)</th>
+            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700">ได้รับการวินิจฉัย (ครั้ง)</th>
+            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (คน)</th>
+            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700">สั่งจ่ายยาสมุนไพร (ครั้ง)</th>
+            <th class="py-2.5 px-3 text-right min-w-[110px] border-r border-emerald-700 bg-emerald-900">ร้อยละจ่ายยาต่อครั้ง (C)</th>
+            <th class="py-2.5 px-3 text-right min-w-[100px] border-r border-emerald-700">ร้อยละต่อคน</th>
+            <th class="py-2.5 px-3 text-center min-w-[80px] border-r border-emerald-700">สถานะ</th>
+            <th class="py-2.5 px-3 text-center min-w-[80px]">การกระทำ</th>
+          </tr>
+        </thead>
+      `;
+
+      // Sort by rate descending
+      const singleList = [...(yrData.units || [])];
+      let filteredSingle = singleList;
+      if (ttmCommonSearchQuery) {
+        const q = ttmCommonSearchQuery.toLowerCase().trim();
+        filteredSingle = filteredSingle.filter(u =>
+          u.name.toLowerCase().includes(q) ||
+          u.hospcode.includes(q) ||
+          (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+        );
+      }
+      filteredSingle.sort((a, b) => (b.rate || 0) - (a.rate || 0));
+
+      filteredSingle.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const isPass = (u.rate >= 20.0);
+        const rowBg = (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60') + ' hover:bg-emerald-50/40';
+
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-100 text-xs transition">
+            <td class="py-2 px-3 text-center font-bold text-slate-500 border-r border-slate-200">${idx + 1}</td>
+            <td class="py-2 px-3 text-center font-mono text-slate-600 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 text-left font-bold text-slate-800 border-r border-slate-200">${uName}</td>
+            <td class="py-2 px-3 text-left text-slate-600 border-r border-slate-200">${uSub}</td>
+            <td class="py-2 px-3 text-right font-mono text-slate-700 border-r border-slate-200">${(u.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-3 text-right font-mono font-medium text-slate-900 border-r border-slate-200">${(u.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-3 text-right font-mono text-emerald-700 border-r border-slate-200">${(u.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2 px-3 text-right font-mono font-medium text-emerald-800 border-r border-slate-200">${(u.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700 bg-emerald-50/60 border-r border-slate-200">${(u.rate || 0).toFixed(2)}%</td>
+            <td class="py-2 px-3 text-right font-mono text-slate-600 border-r border-slate-200">${(u.rate_person || 0).toFixed(2)}%</td>
+            <td class="py-2 px-3 text-center border-r border-slate-200">
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${isPass ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${isPass ? 'ผ่าน' : 'ไม่ผ่าน'}
+              </span>
+            </td>
+            <td class="py-2 px-3 text-center">
+              <button type="button" onclick="window.selectTtmCommonHospital('${u.hospcode}')" class="px-2 py-1 text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const distPass = (yrData.rate >= 20.0);
+      tfootHtml = `
+        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
+          <tr>
+            <td colspan="4" class="py-2.5 px-4 text-left font-black border-r border-slate-700">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_person || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-200 bg-emerald-900 border-r border-slate-700">${(yrData.rate || 0).toFixed(2)}%</td>
+            <td class="py-2.5 px-3 text-right font-mono font-black border-r border-slate-700">${(yrData.rate_person || 0).toFixed(2)}%</td>
+            <td class="py-2.5 px-3 text-center border-r border-slate-700">
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${distPass ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
+                ${distPass ? 'ผ่าน' : 'ไม่ผ่าน'}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-center text-slate-400">-</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmCommonView === 'quarter') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-800 text-white text-center font-bold text-xs">
+            <th rowspan="2" class="py-2.5 px-3 text-center min-w-[60px] border-r border-emerald-700">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left min-w-[180px] border-r border-emerald-700">ชื่อหน่วยบริการ</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left min-w-[90px] border-r border-emerald-700">ตำบล</th>
+            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700 bg-emerald-900">รวมทั้งปี (${yr})</th>
+            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 1</th>
+            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 2</th>
+            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 3</th>
+            <th colspan="3" class="py-1.5 px-2 border-r border-b border-emerald-700">ไตรมาสที่ 4</th>
+            <th rowspan="2" class="py-2.5 px-3 text-center min-w-[80px]">การกระทำ</th>
+          </tr>
+          <tr class="bg-emerald-700 text-white text-center font-semibold text-[11px]">
+            <!-- Full Year -->
+            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย(ครั้ง)</th>
+            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย(ครั้ง)</th>
+            <th class="py-1 px-2 border-r border-emerald-600 bg-emerald-950 font-bold">ร้อยละ</th>
+            <!-- Q1 -->
+            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
+            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
+            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
+            <!-- Q2 -->
+            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
+            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
+            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
+            <!-- Q3 -->
+            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
+            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
+            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
+            <!-- Q4 -->
+            <th class="py-1 px-2 border-r border-emerald-600">วินิจฉัย</th>
+            <th class="py-1 px-2 border-r border-emerald-600">สั่งจ่าย</th>
+            <th class="py-1 px-2 border-r border-emerald-600 font-bold">ร้อยละ</th>
+          </tr>
+        </thead>
+      `;
+
+      let filteredQ = [...(yrData.units || [])];
+      if (ttmCommonSearchQuery) {
+        const q = ttmCommonSearchQuery.toLowerCase().trim();
+        filteredQ = filteredQ.filter(u =>
+          u.name.toLowerCase().includes(q) ||
+          u.hospcode.includes(q) ||
+          (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+        );
+      }
+
+      filteredQ.forEach((u, idx) => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const q = u.quarters || {};
+        const rowBg = (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60') + ' hover:bg-emerald-50/40';
+
+        let qCols = '';
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          qCols += `
+            <td class="py-2 px-2 text-right font-mono text-slate-600 border-r border-slate-200">${(qd.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right font-mono text-emerald-700 border-r border-slate-200">${(qd.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right font-mono font-bold text-slate-800 bg-slate-50/40 border-r border-slate-200">${(qd.rate || 0).toFixed(2)}%</td>
+          `;
+        }
+
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-100 text-xs transition">
+            <td class="py-2 px-3 text-center font-mono text-slate-600 border-r border-slate-200">${u.hospcode}</td>
+            <td class="py-2 px-3 text-left font-bold text-slate-800 border-r border-slate-200">${uName}</td>
+            <td class="py-2 px-3 text-left text-slate-600 border-r border-slate-200">${uSub}</td>
+            <td class="py-2 px-2 text-right font-mono font-medium text-slate-900 border-r border-slate-200">${(u.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right font-mono font-medium text-emerald-800 border-r border-slate-200">${(u.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2 px-2 text-right font-mono font-bold text-emerald-700 bg-emerald-50/60 border-r border-slate-200">${(u.rate || 0).toFixed(2)}%</td>
+            ${qCols}
+            <td class="py-2 px-3 text-center">
+              <button type="button" onclick="window.selectTtmCommonHospital('${u.hospcode}')" class="px-2 py-1 text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg border border-emerald-200 transition">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const qDist = yrData.quarters || {};
+      let distQCols = '';
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = qDist[`q${qi}`] || {};
+        distQCols += `
+          <td class="py-2.5 px-2 text-right font-mono font-black border-r border-slate-700">${(qd.diag_times || 0).toLocaleString()}</td>
+          <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(qd.drug_times || 0).toLocaleString()}</td>
+          <td class="py-2.5 px-2 text-right font-mono font-black text-slate-200 bg-slate-700/60 border-r border-slate-700">${(qd.rate || 0).toFixed(2)}%</td>
+        `;
+      }
+
+      tfootHtml = `
+        <tfoot class="bg-slate-800 text-white font-bold text-xs border-t-2 border-emerald-500">
+          <tr>
+            <td colspan="3" class="py-2.5 px-4 text-left font-black border-r border-slate-700">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</td>
+            <td class="py-2.5 px-2 text-right font-mono font-black border-r border-slate-700">${(yrData.diag_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-300 border-r border-slate-700">${(yrData.drug_times || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right font-mono font-black text-emerald-200 bg-emerald-900 border-r border-slate-700">${(yrData.rate || 0).toFixed(2)}%</td>
+            ${distQCols}
+            <td class="py-2.5 px-3 text-center text-slate-400">-</td>
+          </tr>
+        </tfoot>
+      `;
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -6669,10 +7572,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isTtmAgeSex = (currentIndicatorId === 'ttm_age_sex');
       const isTtmEd = (currentIndicatorId === 'ttm_ed');
       const isTtmCases = (currentIndicatorId === 'ttm_cases');
+      const isTtmCommon = (currentIndicatorId === 'ttm_common_dis');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTtmCases) {
+      if (isTtmCommon) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+        if (ttmCommonPanel) ttmCommonPanel.classList.remove('hidden');
+        renderTtmCommonPanel();
+      } else if (isTtmCases) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -6683,6 +7599,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.remove('hidden');
         renderTtmCasesPanel();
       } else if (isTtmEd) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -6693,6 +7610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
         renderTtmEdPanel();
       } else if (isTtmAgeSex) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -6703,6 +7621,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
         renderTtmAgeSexPanel();
       } else if (isTTM4) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
@@ -6712,6 +7631,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -6722,6 +7642,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -6740,6 +7661,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -7035,6 +7957,14 @@ console.log("Saraphi Records:", saraphiData);`;
     ttmCasesSearchInput.addEventListener('input', (e) => {
       ttmCasesSearchQuery = e.target.value;
       renderTtmCasesPanel();
+    });
+  }
+
+  const ttmCommonSearchInput = document.getElementById('ttm-common-table-search');
+  if (ttmCommonSearchInput) {
+    ttmCommonSearchInput.addEventListener('input', (e) => {
+      ttmCommonSearchQuery = e.target.value;
+      renderTtmCommonPanel();
     });
   }
 

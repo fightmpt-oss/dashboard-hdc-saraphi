@@ -716,42 +716,136 @@ for y in years:
         "units": unit_data
     }
 
-# 1.6 s_common_diseases_thai_drug
+# 1.6 s_common_diseases_thai_drug (ร้อยละของผู้ป่วยที่ได้รับการวินิจฉัยโรค Common Diseases and Symptoms และได้รับยาสมุนไพรเพิ่มขึ้น)
 master["indicators"]["ttm_common_dis"] = {
     "code": "",
-    "name": "การใช้ยาสมุนไพรในกลุ่มโรคพบบ่อย (Common Diseases)",
+    "name": "ร้อยละของผู้ป่วยที่ได้รับการวินิจฉัยโรค Common Diseases and Symptoms และได้รับยาสมุนไพรเพิ่มขึ้น",
     "table": "s_common_diseases_thai_drug",
     "domain": "ttm",
     "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-    "desc": "ร้อยละของผู้ป่วยโรคพบบ่อยที่ได้รับยาสมุนไพร (ทางเดินหายใจ, กล้ามเนื้อ ฯลฯ)",
+    "desc": "ร้อยละของผู้ป่วยโรคพบบ่อย (Common Diseases) ที่ได้รับยาสมุนไพร และอัตราการเติบโตเปรียบเทียบกับปีงบประมาณก่อนหน้า (HDC)",
     "target": 20.0,
     "unit": "%",
-    "num_label": "ได้รับยาสมุนไพร (คน)",
-    "den_label": "ผู้ป่วยโรคพบบ่อย (คน)",
+    "num_label": "วินิจฉัยและสั่งจ่ายยาสมุนไพร (ครั้ง)",
+    "den_label": "ได้รับการวินิจฉัย (ครั้ง)",
     "years": {}
 }
+
 for y in years:
     rows = load_json(f"s_common_diseases_thai_drug_{y}.json")
     unit_data = []
-    tot_num = 0.0; tot_den = 0.0
+    tot_b_person = 0; tot_b_times = 0
+    tot_a_person = 0; tot_a_times = 0
+    dist_quarters = {f"q{qi}": {"diag_person": 0, "diag_times": 0, "drug_person": 0, "drug_times": 0, "rate": 0.0} for qi in range(1, 5)}
+    
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = int(clean_num(r.get('times_year') or 0))
-            den = int(clean_num(r.get('times_year_diag') or 0))
-            rate = round((num / den * 100), 2) if den > 0 else 0.0
-            tot_num += num; tot_den += den
+            bp = int(clean_num(r.get('person_year_diag') or 0))
+            bt = int(clean_num(r.get('times_year_diag') or 0))
+            ap = int(clean_num(r.get('person_year') or 0))
+            at = int(clean_num(r.get('times_year') or 0))
+            
+            rate_times = round((at / bt * 100), 2) if bt > 0 else 0.0
+            rate_person = round((ap / bp * 100), 2) if bp > 0 else 0.0
+            
+            tot_b_person += bp; tot_b_times += bt
+            tot_a_person += ap; tot_a_times += at
+            
+            u_quarters = {}
+            for qi in range(1, 5):
+                qp_diag = int(clean_num(r.get(f'person_q_{qi}_diag') or 0))
+                qt_diag = int(clean_num(r.get(f'times_q_{qi}_diag') or 0))
+                qp_drug = int(clean_num(r.get(f'person_q_{qi}') or 0))
+                qt_drug = int(clean_num(r.get(f'times_q_{qi}') or 0))
+                q_rate = round((qt_drug / qt_diag * 100), 2) if qt_diag > 0 else 0.0
+                
+                u_quarters[f"q{qi}"] = {
+                    "diag_person": qp_diag,
+                    "diag_times": qt_diag,
+                    "drug_person": qp_drug,
+                    "drug_times": qt_drug,
+                    "rate": q_rate
+                }
+                dist_quarters[f"q{qi}"]["diag_person"] += qp_diag
+                dist_quarters[f"q{qi}"]["diag_times"] += qt_diag
+                dist_quarters[f"q{qi}"]["drug_person"] += qp_drug
+                dist_quarters[f"q{qi}"]["drug_times"] += qt_drug
+
+            u_name = "รพ.สต.บ้านป่าสา" if hcode == '06023' else SARAPHI_UNITS[hcode]["name"]
+            u_full = "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา" if hcode == '06023' else SARAPHI_UNITS[hcode]["full_name"]
+            u_sub = "สันทราย" if hcode == '06023' else SARAPHI_UNITS[hcode]["subdistrict"]
+
             unit_data.append({
                 "hospcode": hcode,
-                "name": SARAPHI_UNITS[hcode]["name"],
-                "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
-                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 20.0
+                "name": u_name,
+                "full_name": u_full,
+                "subdistrict": u_sub,
+                "type": SARAPHI_UNITS[hcode]["type"],
+                "diag_person": bp,
+                "diag_times": bt,
+                "drug_person": ap,
+                "drug_times": at,
+                "rate": rate_times,
+                "rate_person": rate_person,
+                "num": at,
+                "den": bt,
+                "pass": rate_times >= 20.0,
+                "growth": 0.0,
+                "quarters": u_quarters
             })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+
+    dist_rate = round((tot_a_times / tot_b_times * 100), 2) if tot_b_times > 0 else 0.0
+    dist_rate_person = round((tot_a_person / tot_b_person * 100), 2) if tot_b_person > 0 else 0.0
+    
+    for qi in range(1, 5):
+        q_bt = dist_quarters[f"q{qi}"]["diag_times"]
+        q_at = dist_quarters[f"q{qi}"]["drug_times"]
+        dist_quarters[f"q{qi}"]["rate"] = round((q_at / q_bt * 100), 2) if q_bt > 0 else 0.0
+
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["ttm_common_dis"]["years"][y] = {
-        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 20.0, "units": unit_data
+        "diag_person": tot_b_person,
+        "diag_times": tot_b_times,
+        "drug_person": tot_a_person,
+        "drug_times": tot_a_times,
+        "num": tot_a_times,
+        "den": tot_b_times,
+        "rate": dist_rate,
+        "rate_person": dist_rate_person,
+        "pass": dist_rate >= 20.0,
+        "growth": 0.0,
+        "quarters": dist_quarters,
+        "units": unit_data
     }
+
+# Compute Growth % comparing 2569 to 2568
+if "2568" in master["indicators"]["ttm_common_dis"]["years"] and "2569" in master["indicators"]["ttm_common_dis"]["years"]:
+    y68 = master["indicators"]["ttm_common_dis"]["years"]["2568"]
+    y69 = master["indicators"]["ttm_common_dis"]["years"]["2569"]
+    
+    # District growth
+    # Use exact float calculation for HDC parity: (4206/19259 - 3281/19338) / (3281/19338) * 100 = 28.72%
+    r68 = (y68["drug_times"] / y68["diag_times"] * 100) if y68["diag_times"] > 0 else 0.0
+    r69 = (y69["drug_times"] / y69["diag_times"] * 100) if y69["diag_times"] > 0 else 0.0
+    dist_growth = round(((r69 - r68) / r68 * 100), 2) if r68 > 0 else 0.0
+    y69["growth"] = dist_growth
+
+    # Unit growth
+    u68_map = {u["hospcode"]: u for u in y68["units"]}
+    for u69 in y69["units"]:
+        u68 = u68_map.get(u69["hospcode"])
+        if u68:
+            ur68 = (u68["drug_times"] / u68["diag_times"] * 100) if u68["diag_times"] > 0 else 0.0
+            ur69 = (u69["drug_times"] / u69["diag_times"] * 100) if u69["diag_times"] > 0 else 0.0
+            u_growth = round(((ur69 - ur68) / ur68 * 100), 2) if ur68 > 0 else 0.0
+            u69["growth"] = u_growth
+            u69["rate_prev"] = round(ur68, 2)
+            u69["diag_person_prev"] = u68["diag_person"]
+            u69["diag_times_prev"] = u68["diag_times"]
+            u69["drug_person_prev"] = u68["drug_person"]
+            u69["drug_times_prev"] = u68["drug_times"]
+
 
 # 1.7 s_ttm3
 master["indicators"]["ttm_age_sex"] = {
