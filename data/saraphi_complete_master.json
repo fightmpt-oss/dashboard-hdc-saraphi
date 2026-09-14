@@ -515,11 +515,11 @@
     },
     "ttm_ed": {
       "code": "",
-      "name": "การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ED)",
+      "name": "OPD-การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ttm10)",
       "table": "s_ttm10",
       "domain": "ttm",
       "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-      "desc": "สัดส่วนการจ่ายยาสมุนไพรในบัญชียาหลักแห่งชาติ (ED Ratio)",
+      "desc": "สัดส่วนการจ่ายยาสมุนไพรในบัญชียาหลักแห่งชาติ (ED Ratio) จำแนก ED, NON-ED, OTHER, รวมทุกสิทธิ และ สิทธิ UC (คน/ครั้ง)",
       "target": 80.0,
       "unit": "%",
       "num_label": "ในบัญชียาหลัก (ครั้ง)",
@@ -530,6 +530,145 @@
           "den": 14352,
           "rate": 63.22,
           "pass": false,
+          "ed_rate_vs": 63.22,
+          "ed_rate_pt": 65.65,
+          "non_ed_rate_vs": 46.55,
+          "other_rate_vs": 1.74,
+          "uc_ratio_vs": 77.05,
+          "summary": {
+            "full_year": {
+              "ed": {
+                "pt_all": 6855,
+                "vs_all": 9074,
+                "pt_uc": 5512,
+                "vs_uc": 7367
+              },
+              "non_ed": {
+                "pt_all": 5005,
+                "vs_all": 6681,
+                "pt_uc": 3580,
+                "vs_uc": 4719
+              },
+              "other": {
+                "pt_all": 207,
+                "vs_all": 250,
+                "pt_uc": 158,
+                "vs_uc": 200
+              },
+              "total": {
+                "pt_all": 10441,
+                "vs_all": 14352,
+                "pt_uc": 8058,
+                "vs_uc": 11058
+              }
+            },
+            "quarters": {
+              "q1": {
+                "ed": {
+                  "pt_all": 1783,
+                  "vs_all": 2215,
+                  "pt_uc": 1443,
+                  "vs_uc": 1817
+                },
+                "non_ed": {
+                  "pt_all": 1495,
+                  "vs_all": 1893,
+                  "pt_uc": 1094,
+                  "vs_uc": 1357
+                },
+                "other": {
+                  "pt_all": 91,
+                  "vs_all": 121,
+                  "pt_uc": 75,
+                  "vs_uc": 105
+                },
+                "total": {
+                  "pt_all": 2789,
+                  "vs_all": 3602,
+                  "pt_uc": 2173,
+                  "vs_uc": 2786
+                }
+              },
+              "q2": {
+                "ed": {
+                  "pt_all": 1922,
+                  "vs_all": 2625,
+                  "pt_uc": 1581,
+                  "vs_uc": 2190
+                },
+                "non_ed": {
+                  "pt_all": 1488,
+                  "vs_all": 1986,
+                  "pt_uc": 1072,
+                  "vs_uc": 1409
+                },
+                "other": {
+                  "pt_all": 64,
+                  "vs_all": 71,
+                  "pt_uc": 48,
+                  "vs_uc": 54
+                },
+                "total": {
+                  "pt_all": 2912,
+                  "vs_all": 4089,
+                  "pt_uc": 2263,
+                  "vs_uc": 3191
+                }
+              },
+              "q3": {
+                "ed": {
+                  "pt_all": 1519,
+                  "vs_all": 2001,
+                  "pt_uc": 1195,
+                  "vs_uc": 1592
+                },
+                "non_ed": {
+                  "pt_all": 946,
+                  "vs_all": 1298,
+                  "pt_uc": 656,
+                  "vs_uc": 908
+                },
+                "other": {
+                  "pt_all": 25,
+                  "vs_all": 29,
+                  "pt_uc": 11,
+                  "vs_uc": 15
+                },
+                "total": {
+                  "pt_all": 2254,
+                  "vs_all": 3107,
+                  "pt_uc": 1708,
+                  "vs_uc": 2371
+                }
+              },
+              "q4": {
+                "ed": {
+                  "pt_all": 1631,
+                  "vs_all": 2233,
+                  "pt_uc": 1293,
+                  "vs_uc": 1768
+                },
+                "non_ed": {
+                  "pt_all": 1076,
+                  "vs_all": 1504,
+                  "pt_uc": 758,
+                  "vs_uc": 1045
+                },
+                "other": {
+                  "pt_all": 27,
+                  "vs_all": 29,
+                  "pt_uc": 24,
+                  "vs_uc": 26
+                },
+                "total": {
+                  "pt_all": 2486,
+                  "vs_all": 3554,
+                  "pt_uc": 1914,
+                  "vs_uc": 2710
+                }
+              }
+            }
+          },
           "units": [
             {
               "hospcode": "06014",
@@ -538,7 +677,144 @@
               "num": 464,
               "den": 465,
               "rate": 99.78,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 99.78,
+              "ed_rate_pt": 100.0,
+              "non_ed_rate_vs": 36.77,
+              "other_rate_vs": 2.58,
+              "uc_ratio_vs": 85.38,
+              "full_year": {
+                "ed": {
+                  "pt_all": 404,
+                  "vs_all": 464,
+                  "pt_uc": 341,
+                  "vs_uc": 396
+                },
+                "non_ed": {
+                  "pt_all": 157,
+                  "vs_all": 171,
+                  "pt_uc": 131,
+                  "vs_uc": 144
+                },
+                "other": {
+                  "pt_all": 10,
+                  "vs_all": 12,
+                  "pt_uc": 9,
+                  "vs_uc": 11
+                },
+                "total": {
+                  "pt_all": 404,
+                  "vs_all": 465,
+                  "pt_uc": 341,
+                  "vs_uc": 397
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 116,
+                    "vs_all": 136,
+                    "pt_uc": 100,
+                    "vs_uc": 119
+                  },
+                  "non_ed": {
+                    "pt_all": 66,
+                    "vs_all": 74,
+                    "pt_uc": 57,
+                    "vs_uc": 65
+                  },
+                  "other": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 116,
+                    "vs_all": 136,
+                    "pt_uc": 100,
+                    "vs_uc": 119
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 151,
+                    "vs_all": 168,
+                    "pt_uc": 127,
+                    "vs_uc": 143
+                  },
+                  "non_ed": {
+                    "pt_all": 76,
+                    "vs_all": 82,
+                    "pt_uc": 62,
+                    "vs_uc": 67
+                  },
+                  "other": {
+                    "pt_all": 7,
+                    "vs_all": 9,
+                    "pt_uc": 7,
+                    "vs_uc": 9
+                  },
+                  "total": {
+                    "pt_all": 151,
+                    "vs_all": 168,
+                    "pt_uc": 127,
+                    "vs_uc": 143
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 77,
+                    "vs_all": 92,
+                    "pt_uc": 63,
+                    "vs_uc": 75
+                  },
+                  "non_ed": {
+                    "pt_all": 14,
+                    "vs_all": 14,
+                    "pt_uc": 11,
+                    "vs_uc": 11
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 77,
+                    "vs_all": 92,
+                    "pt_uc": 63,
+                    "vs_uc": 75
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 60,
+                    "vs_all": 68,
+                    "pt_uc": 51,
+                    "vs_uc": 59
+                  },
+                  "non_ed": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 60,
+                    "vs_all": 69,
+                    "pt_uc": 51,
+                    "vs_uc": 60
+                  }
+                }
+              }
             },
             {
               "hospcode": "06023",
@@ -547,7 +823,144 @@
               "num": 499,
               "den": 510,
               "rate": 97.84,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 97.84,
+              "ed_rate_pt": 97.51,
+              "non_ed_rate_vs": 3.73,
+              "other_rate_vs": 21.96,
+              "uc_ratio_vs": 93.33,
+              "full_year": {
+                "ed": {
+                  "pt_all": 391,
+                  "vs_all": 499,
+                  "pt_uc": 361,
+                  "vs_uc": 468
+                },
+                "non_ed": {
+                  "pt_all": 18,
+                  "vs_all": 19,
+                  "pt_uc": 13,
+                  "vs_uc": 14
+                },
+                "other": {
+                  "pt_all": 85,
+                  "vs_all": 112,
+                  "pt_uc": 77,
+                  "vs_uc": 104
+                },
+                "total": {
+                  "pt_all": 401,
+                  "vs_all": 510,
+                  "pt_uc": 368,
+                  "vs_uc": 476
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 92,
+                    "vs_all": 123,
+                    "pt_uc": 82,
+                    "vs_uc": 113
+                  },
+                  "non_ed": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "other": {
+                    "pt_all": 66,
+                    "vs_all": 92,
+                    "pt_uc": 59,
+                    "vs_uc": 85
+                  },
+                  "total": {
+                    "pt_all": 93,
+                    "vs_all": 124,
+                    "pt_uc": 83,
+                    "vs_uc": 114
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 102,
+                    "vs_all": 126,
+                    "pt_uc": 94,
+                    "vs_uc": 117
+                  },
+                  "non_ed": {
+                    "pt_all": 4,
+                    "vs_all": 5,
+                    "pt_uc": 3,
+                    "vs_uc": 4
+                  },
+                  "other": {
+                    "pt_all": 19,
+                    "vs_all": 20,
+                    "pt_uc": 18,
+                    "vs_uc": 19
+                  },
+                  "total": {
+                    "pt_all": 102,
+                    "vs_all": 127,
+                    "pt_uc": 94,
+                    "vs_uc": 118
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 96,
+                    "vs_all": 117,
+                    "pt_uc": 92,
+                    "vs_uc": 113
+                  },
+                  "non_ed": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 99,
+                    "vs_all": 120,
+                    "pt_uc": 93,
+                    "vs_uc": 114
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 101,
+                    "vs_all": 133,
+                    "pt_uc": 93,
+                    "vs_uc": 125
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 5,
+                    "vs_uc": 5
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 107,
+                    "vs_all": 139,
+                    "pt_uc": 98,
+                    "vs_uc": 130
+                  }
+                }
+              }
             },
             {
               "hospcode": "99758",
@@ -556,7 +969,144 @@
               "num": 68,
               "den": 70,
               "rate": 97.14,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 97.14,
+              "ed_rate_pt": 96.72,
+              "non_ed_rate_vs": 4.29,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 85.71,
+              "full_year": {
+                "ed": {
+                  "pt_all": 59,
+                  "vs_all": 68,
+                  "pt_uc": 51,
+                  "vs_uc": 58
+                },
+                "non_ed": {
+                  "pt_all": 3,
+                  "vs_all": 3,
+                  "pt_uc": 3,
+                  "vs_uc": 3
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 61,
+                  "vs_all": 70,
+                  "pt_uc": 53,
+                  "vs_uc": 60
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 25,
+                    "vs_all": 30,
+                    "pt_uc": 22,
+                    "vs_uc": 26
+                  },
+                  "non_ed": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 27,
+                    "vs_all": 32,
+                    "pt_uc": 24,
+                    "vs_uc": 28
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 20,
+                    "vs_all": 23,
+                    "pt_uc": 17,
+                    "vs_uc": 19
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 20,
+                    "vs_all": 23,
+                    "pt_uc": 17,
+                    "vs_uc": 19
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 5,
+                    "vs_all": 6,
+                    "pt_uc": 3,
+                    "vs_uc": 4
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 5,
+                    "vs_all": 6,
+                    "pt_uc": 3,
+                    "vs_uc": 4
+                  }
+                }
+              }
             },
             {
               "hospcode": "06024",
@@ -565,7 +1115,144 @@
               "num": 2014,
               "den": 2118,
               "rate": 95.09,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 95.09,
+              "ed_rate_pt": 97.05,
+              "non_ed_rate_vs": 15.82,
+              "other_rate_vs": 0.05,
+              "uc_ratio_vs": 99.81,
+              "full_year": {
+                "ed": {
+                  "pt_all": 1185,
+                  "vs_all": 2014,
+                  "pt_uc": 1181,
+                  "vs_uc": 2010
+                },
+                "non_ed": {
+                  "pt_all": 245,
+                  "vs_all": 335,
+                  "pt_uc": 245,
+                  "vs_uc": 335
+                },
+                "other": {
+                  "pt_all": 1,
+                  "vs_all": 1,
+                  "pt_uc": 1,
+                  "vs_uc": 1
+                },
+                "total": {
+                  "pt_all": 1221,
+                  "vs_all": 2118,
+                  "pt_uc": 1217,
+                  "vs_uc": 2114
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 287,
+                    "vs_all": 445,
+                    "pt_uc": 287,
+                    "vs_uc": 445
+                  },
+                  "non_ed": {
+                    "pt_all": 94,
+                    "vs_all": 137,
+                    "pt_uc": 94,
+                    "vs_uc": 137
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 303,
+                    "vs_all": 480,
+                    "pt_uc": 303,
+                    "vs_uc": 480
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 302,
+                    "vs_all": 584,
+                    "pt_uc": 300,
+                    "vs_uc": 582
+                  },
+                  "non_ed": {
+                    "pt_all": 99,
+                    "vs_all": 135,
+                    "pt_uc": 99,
+                    "vs_uc": 135
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 311,
+                    "vs_all": 611,
+                    "pt_uc": 309,
+                    "vs_uc": 609
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 302,
+                    "vs_all": 472,
+                    "pt_uc": 301,
+                    "vs_uc": 471
+                  },
+                  "non_ed": {
+                    "pt_all": 33,
+                    "vs_all": 37,
+                    "pt_uc": 33,
+                    "vs_uc": 37
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 306,
+                    "vs_all": 488,
+                    "pt_uc": 305,
+                    "vs_uc": 487
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 294,
+                    "vs_all": 513,
+                    "pt_uc": 293,
+                    "vs_uc": 512
+                  },
+                  "non_ed": {
+                    "pt_all": 19,
+                    "vs_all": 26,
+                    "pt_uc": 19,
+                    "vs_uc": 26
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 301,
+                    "vs_all": 539,
+                    "pt_uc": 300,
+                    "vs_uc": 538
+                  }
+                }
+              }
             },
             {
               "hospcode": "06022",
@@ -574,7 +1261,144 @@
               "num": 843,
               "den": 887,
               "rate": 95.04,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 95.04,
+              "ed_rate_pt": 95.3,
+              "non_ed_rate_vs": 22.44,
+              "other_rate_vs": 0.9,
+              "uc_ratio_vs": 81.17,
+              "full_year": {
+                "ed": {
+                  "pt_all": 608,
+                  "vs_all": 843,
+                  "pt_uc": 496,
+                  "vs_uc": 679
+                },
+                "non_ed": {
+                  "pt_all": 145,
+                  "vs_all": 199,
+                  "pt_uc": 128,
+                  "vs_uc": 179
+                },
+                "other": {
+                  "pt_all": 7,
+                  "vs_all": 8,
+                  "pt_uc": 4,
+                  "vs_uc": 5
+                },
+                "total": {
+                  "pt_all": 638,
+                  "vs_all": 887,
+                  "pt_uc": 524,
+                  "vs_uc": 720
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 65,
+                    "vs_all": 79,
+                    "pt_uc": 54,
+                    "vs_uc": 68
+                  },
+                  "non_ed": {
+                    "pt_all": 52,
+                    "vs_all": 69,
+                    "pt_uc": 45,
+                    "vs_uc": 62
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 72,
+                    "vs_all": 89,
+                    "pt_uc": 61,
+                    "vs_uc": 78
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 295,
+                    "vs_all": 399,
+                    "pt_uc": 270,
+                    "vs_uc": 364
+                  },
+                  "non_ed": {
+                    "pt_all": 74,
+                    "vs_all": 107,
+                    "pt_uc": 65,
+                    "vs_uc": 95
+                  },
+                  "other": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 303,
+                    "vs_all": 414,
+                    "pt_uc": 276,
+                    "vs_uc": 376
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 87,
+                    "vs_all": 143,
+                    "pt_uc": 54,
+                    "vs_uc": 92
+                  },
+                  "non_ed": {
+                    "pt_all": 10,
+                    "vs_all": 13,
+                    "pt_uc": 9,
+                    "vs_uc": 12
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 94,
+                    "vs_all": 151,
+                    "pt_uc": 61,
+                    "vs_uc": 100
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 161,
+                    "vs_all": 222,
+                    "pt_uc": 118,
+                    "vs_uc": 155
+                  },
+                  "non_ed": {
+                    "pt_all": 9,
+                    "vs_all": 10,
+                    "pt_uc": 9,
+                    "vs_uc": 10
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 3,
+                    "pt_uc": 2,
+                    "vs_uc": 3
+                  },
+                  "total": {
+                    "pt_all": 169,
+                    "vs_all": 233,
+                    "pt_uc": 126,
+                    "vs_uc": 166
+                  }
+                }
+              }
             },
             {
               "hospcode": "06017",
@@ -583,7 +1407,144 @@
               "num": 100,
               "den": 131,
               "rate": 76.34,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 76.34,
+              "ed_rate_pt": 76.38,
+              "non_ed_rate_vs": 23.66,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 83.97,
+              "full_year": {
+                "ed": {
+                  "pt_all": 97,
+                  "vs_all": 100,
+                  "pt_uc": 79,
+                  "vs_uc": 82
+                },
+                "non_ed": {
+                  "pt_all": 30,
+                  "vs_all": 31,
+                  "pt_uc": 27,
+                  "vs_uc": 28
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 127,
+                  "vs_all": 131,
+                  "pt_uc": 106,
+                  "vs_uc": 110
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 24,
+                    "vs_all": 24,
+                    "pt_uc": 20,
+                    "vs_uc": 20
+                  },
+                  "non_ed": {
+                    "pt_all": 7,
+                    "vs_all": 7,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 31,
+                    "vs_all": 31,
+                    "pt_uc": 26,
+                    "vs_uc": 26
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 27,
+                    "vs_all": 29,
+                    "pt_uc": 22,
+                    "vs_uc": 24
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 33,
+                    "vs_all": 35,
+                    "pt_uc": 28,
+                    "vs_uc": 30
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 20,
+                    "vs_all": 21,
+                    "pt_uc": 15,
+                    "vs_uc": 16
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 26,
+                    "vs_all": 27,
+                    "pt_uc": 21,
+                    "vs_uc": 22
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 26,
+                    "vs_all": 26,
+                    "pt_uc": 22,
+                    "vs_uc": 22
+                  },
+                  "non_ed": {
+                    "pt_all": 11,
+                    "vs_all": 12,
+                    "pt_uc": 9,
+                    "vs_uc": 10
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 37,
+                    "vs_all": 38,
+                    "pt_uc": 31,
+                    "vs_uc": 32
+                  }
+                }
+              }
             },
             {
               "hospcode": "06015",
@@ -592,7 +1553,144 @@
               "num": 286,
               "den": 410,
               "rate": 69.76,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 69.76,
+              "ed_rate_pt": 62.9,
+              "non_ed_rate_vs": 26.1,
+              "other_rate_vs": 11.22,
+              "uc_ratio_vs": 64.39,
+              "full_year": {
+                "ed": {
+                  "pt_all": 178,
+                  "vs_all": 286,
+                  "pt_uc": 124,
+                  "vs_uc": 160
+                },
+                "non_ed": {
+                  "pt_all": 102,
+                  "vs_all": 107,
+                  "pt_uc": 82,
+                  "vs_uc": 86
+                },
+                "other": {
+                  "pt_all": 38,
+                  "vs_all": 46,
+                  "pt_uc": 31,
+                  "vs_uc": 38
+                },
+                "total": {
+                  "pt_all": 283,
+                  "vs_all": 410,
+                  "pt_uc": 210,
+                  "vs_uc": 264
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 12,
+                    "vs_all": 12,
+                    "pt_uc": 11,
+                    "vs_uc": 11
+                  },
+                  "non_ed": {
+                    "pt_all": 27,
+                    "vs_all": 28,
+                    "pt_uc": 21,
+                    "vs_uc": 22
+                  },
+                  "other": {
+                    "pt_all": 7,
+                    "vs_all": 10,
+                    "pt_uc": 7,
+                    "vs_uc": 10
+                  },
+                  "total": {
+                    "pt_all": 41,
+                    "vs_all": 47,
+                    "pt_uc": 34,
+                    "vs_uc": 40
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 61,
+                    "vs_all": 92,
+                    "pt_uc": 44,
+                    "vs_uc": 55
+                  },
+                  "non_ed": {
+                    "pt_all": 33,
+                    "vs_all": 34,
+                    "pt_uc": 28,
+                    "vs_uc": 28
+                  },
+                  "other": {
+                    "pt_all": 15,
+                    "vs_all": 19,
+                    "pt_uc": 11,
+                    "vs_uc": 14
+                  },
+                  "total": {
+                    "pt_all": 90,
+                    "vs_all": 128,
+                    "pt_uc": 69,
+                    "vs_uc": 86
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 36,
+                    "vs_all": 54,
+                    "pt_uc": 26,
+                    "vs_uc": 32
+                  },
+                  "non_ed": {
+                    "pt_all": 21,
+                    "vs_all": 24,
+                    "pt_uc": 20,
+                    "vs_uc": 23
+                  },
+                  "other": {
+                    "pt_all": 4,
+                    "vs_all": 5,
+                    "pt_uc": 3,
+                    "vs_uc": 4
+                  },
+                  "total": {
+                    "pt_all": 56,
+                    "vs_all": 78,
+                    "pt_uc": 45,
+                    "vs_uc": 55
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 69,
+                    "vs_all": 128,
+                    "pt_uc": 43,
+                    "vs_uc": 62
+                  },
+                  "non_ed": {
+                    "pt_all": 21,
+                    "vs_all": 21,
+                    "pt_uc": 13,
+                    "vs_uc": 13
+                  },
+                  "other": {
+                    "pt_all": 12,
+                    "vs_all": 12,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "total": {
+                    "pt_all": 96,
+                    "vs_all": 157,
+                    "pt_uc": 62,
+                    "vs_uc": 83
+                  }
+                }
+              }
             },
             {
               "hospcode": "06016",
@@ -601,7 +1699,144 @@
               "num": 157,
               "den": 279,
               "rate": 56.27,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 56.27,
+              "ed_rate_pt": 61.9,
+              "non_ed_rate_vs": 72.04,
+              "other_rate_vs": 4.66,
+              "uc_ratio_vs": 85.66,
+              "full_year": {
+                "ed": {
+                  "pt_all": 143,
+                  "vs_all": 157,
+                  "pt_uc": 117,
+                  "vs_uc": 131
+                },
+                "non_ed": {
+                  "pt_all": 164,
+                  "vs_all": 201,
+                  "pt_uc": 139,
+                  "vs_uc": 173
+                },
+                "other": {
+                  "pt_all": 13,
+                  "vs_all": 13,
+                  "pt_uc": 8,
+                  "vs_uc": 8
+                },
+                "total": {
+                  "pt_all": 231,
+                  "vs_all": 279,
+                  "pt_uc": 194,
+                  "vs_uc": 239
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 54,
+                    "vs_all": 61,
+                    "pt_uc": 43,
+                    "vs_uc": 50
+                  },
+                  "non_ed": {
+                    "pt_all": 51,
+                    "vs_all": 60,
+                    "pt_uc": 43,
+                    "vs_uc": 52
+                  },
+                  "other": {
+                    "pt_all": 8,
+                    "vs_all": 8,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "total": {
+                    "pt_all": 63,
+                    "vs_all": 73,
+                    "pt_uc": 51,
+                    "vs_uc": 61
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 28,
+                    "vs_all": 33,
+                    "pt_uc": 25,
+                    "vs_uc": 30
+                  },
+                  "non_ed": {
+                    "pt_all": 46,
+                    "vs_all": 57,
+                    "pt_uc": 41,
+                    "vs_uc": 52
+                  },
+                  "other": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "total": {
+                    "pt_all": 60,
+                    "vs_all": 78,
+                    "pt_uc": 52,
+                    "vs_uc": 70
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 37,
+                    "vs_all": 38,
+                    "pt_uc": 28,
+                    "vs_uc": 29
+                  },
+                  "non_ed": {
+                    "pt_all": 37,
+                    "vs_all": 44,
+                    "pt_uc": 29,
+                    "vs_uc": 34
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 62,
+                    "vs_all": 70,
+                    "pt_uc": 51,
+                    "vs_uc": 57
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 24,
+                    "vs_all": 25,
+                    "pt_uc": 21,
+                    "vs_uc": 22
+                  },
+                  "non_ed": {
+                    "pt_all": 30,
+                    "vs_all": 40,
+                    "pt_uc": 26,
+                    "vs_uc": 35
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 46,
+                    "vs_all": 58,
+                    "pt_uc": 40,
+                    "vs_uc": 51
+                  }
+                }
+              }
             },
             {
               "hospcode": "06021",
@@ -610,7 +1845,144 @@
               "num": 305,
               "den": 553,
               "rate": 55.15,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 55.15,
+              "ed_rate_pt": 55.53,
+              "non_ed_rate_vs": 45.39,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 96.2,
+              "full_year": {
+                "ed": {
+                  "pt_all": 291,
+                  "vs_all": 305,
+                  "pt_uc": 283,
+                  "vs_uc": 296
+                },
+                "non_ed": {
+                  "pt_all": 247,
+                  "vs_all": 251,
+                  "pt_uc": 234,
+                  "vs_uc": 238
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 524,
+                  "vs_all": 553,
+                  "pt_uc": 504,
+                  "vs_uc": 532
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 193,
+                    "vs_all": 198,
+                    "pt_uc": 191,
+                    "vs_uc": 195
+                  },
+                  "non_ed": {
+                    "pt_all": 151,
+                    "vs_all": 153,
+                    "pt_uc": 149,
+                    "vs_uc": 151
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 338,
+                    "vs_all": 350,
+                    "pt_uc": 334,
+                    "vs_uc": 345
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 65,
+                    "vs_all": 71,
+                    "pt_uc": 63,
+                    "vs_uc": 69
+                  },
+                  "non_ed": {
+                    "pt_all": 64,
+                    "vs_all": 65,
+                    "pt_uc": 57,
+                    "vs_uc": 58
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 124,
+                    "vs_all": 135,
+                    "pt_uc": 116,
+                    "vs_uc": 127
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 16,
+                    "vs_all": 17,
+                    "pt_uc": 15,
+                    "vs_uc": 16
+                  },
+                  "non_ed": {
+                    "pt_all": 16,
+                    "vs_all": 16,
+                    "pt_uc": 13,
+                    "vs_uc": 13
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 30,
+                    "vs_all": 32,
+                    "pt_uc": 26,
+                    "vs_uc": 28
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 17,
+                    "vs_all": 19,
+                    "pt_uc": 14,
+                    "vs_uc": 16
+                  },
+                  "non_ed": {
+                    "pt_all": 16,
+                    "vs_all": 17,
+                    "pt_uc": 15,
+                    "vs_uc": 16
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 32,
+                    "vs_all": 36,
+                    "pt_uc": 28,
+                    "vs_uc": 32
+                  }
+                }
+              }
             },
             {
               "hospcode": "11135",
@@ -619,7 +1991,144 @@
               "num": 3200,
               "den": 5853,
               "rate": 54.67,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 54.67,
+              "ed_rate_pt": 54.72,
+              "non_ed_rate_vs": 56.13,
+              "other_rate_vs": 0.5,
+              "uc_ratio_vs": 67.25,
+              "full_year": {
+                "ed": {
+                  "pt_all": 2581,
+                  "vs_all": 3200,
+                  "pt_uc": 1745,
+                  "vs_uc": 2172
+                },
+                "non_ed": {
+                  "pt_all": 2793,
+                  "vs_all": 3285,
+                  "pt_uc": 1818,
+                  "vs_uc": 2120
+                },
+                "other": {
+                  "pt_all": 27,
+                  "vs_all": 29,
+                  "pt_uc": 7,
+                  "vs_uc": 9
+                },
+                "total": {
+                  "pt_all": 4717,
+                  "vs_all": 5853,
+                  "pt_uc": 3187,
+                  "vs_uc": 3936
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 691,
+                    "vs_all": 849,
+                    "pt_uc": 459,
+                    "vs_uc": 568
+                  },
+                  "non_ed": {
+                    "pt_all": 816,
+                    "vs_all": 967,
+                    "pt_uc": 518,
+                    "vs_uc": 605
+                  },
+                  "other": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 1292,
+                    "vs_all": 1611,
+                    "pt_uc": 852,
+                    "vs_uc": 1055
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 633,
+                    "vs_all": 795,
+                    "pt_uc": 420,
+                    "vs_uc": 531
+                  },
+                  "non_ed": {
+                    "pt_all": 731,
+                    "vs_all": 861,
+                    "pt_uc": 465,
+                    "vs_uc": 552
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "total": {
+                    "pt_all": 1192,
+                    "vs_all": 1491,
+                    "pt_uc": 786,
+                    "vs_uc": 991
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 611,
+                    "vs_all": 747,
+                    "pt_uc": 416,
+                    "vs_uc": 511
+                  },
+                  "non_ed": {
+                    "pt_all": 550,
+                    "vs_all": 642,
+                    "pt_uc": 361,
+                    "vs_uc": 418
+                  },
+                  "other": {
+                    "pt_all": 11,
+                    "vs_all": 13,
+                    "pt_uc": 2,
+                    "vs_uc": 4
+                  },
+                  "total": {
+                    "pt_all": 1048,
+                    "vs_all": 1280,
+                    "pt_uc": 715,
+                    "vs_uc": 868
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 646,
+                    "vs_all": 809,
+                    "pt_uc": 450,
+                    "vs_uc": 562
+                  },
+                  "non_ed": {
+                    "pt_all": 696,
+                    "vs_all": 815,
+                    "pt_uc": 474,
+                    "vs_uc": 545
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 1185,
+                    "vs_all": 1471,
+                    "pt_uc": 834,
+                    "vs_uc": 1022
+                  }
+                }
+              }
             },
             {
               "hospcode": "06018",
@@ -628,7 +2137,144 @@
               "num": 351,
               "den": 854,
               "rate": 41.1,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 41.1,
+              "ed_rate_pt": 47.53,
+              "non_ed_rate_vs": 68.97,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 67.21,
+              "full_year": {
+                "ed": {
+                  "pt_all": 308,
+                  "vs_all": 351,
+                  "pt_uc": 250,
+                  "vs_uc": 284
+                },
+                "non_ed": {
+                  "pt_all": 441,
+                  "vs_all": 589,
+                  "pt_uc": 275,
+                  "vs_uc": 353
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 648,
+                  "vs_all": 854,
+                  "pt_uc": 450,
+                  "vs_uc": 574
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 69,
+                    "vs_all": 75,
+                    "pt_uc": 57,
+                    "vs_uc": 60
+                  },
+                  "non_ed": {
+                    "pt_all": 67,
+                    "vs_all": 79,
+                    "pt_uc": 45,
+                    "vs_uc": 52
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 120,
+                    "vs_all": 144,
+                    "pt_uc": 92,
+                    "vs_uc": 108
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 113,
+                    "vs_all": 130,
+                    "pt_uc": 95,
+                    "vs_uc": 111
+                  },
+                  "non_ed": {
+                    "pt_all": 197,
+                    "vs_all": 263,
+                    "pt_uc": 129,
+                    "vs_uc": 164
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 264,
+                    "vs_all": 354,
+                    "pt_uc": 186,
+                    "vs_uc": 245
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 60,
+                    "vs_all": 71,
+                    "pt_uc": 46,
+                    "vs_uc": 54
+                  },
+                  "non_ed": {
+                    "pt_all": 94,
+                    "vs_all": 126,
+                    "pt_uc": 56,
+                    "vs_uc": 76
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 133,
+                    "vs_all": 173,
+                    "pt_uc": 86,
+                    "vs_uc": 111
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 66,
+                    "vs_all": 75,
+                    "pt_uc": 52,
+                    "vs_uc": 59
+                  },
+                  "non_ed": {
+                    "pt_all": 83,
+                    "vs_all": 121,
+                    "pt_uc": 45,
+                    "vs_uc": 61
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 131,
+                    "vs_all": 183,
+                    "pt_uc": 86,
+                    "vs_uc": 110
+                  }
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -637,7 +2283,144 @@
               "num": 693,
               "den": 1807,
               "rate": 38.35,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 38.35,
+              "ed_rate_pt": 62.43,
+              "non_ed_rate_vs": 64.64,
+              "other_rate_vs": 0.11,
+              "uc_ratio_vs": 72.77,
+              "full_year": {
+                "ed": {
+                  "pt_all": 525,
+                  "vs_all": 693,
+                  "pt_uc": 427,
+                  "vs_uc": 569
+                },
+                "non_ed": {
+                  "pt_all": 394,
+                  "vs_all": 1168,
+                  "pt_uc": 276,
+                  "vs_uc": 791
+                },
+                "other": {
+                  "pt_all": 2,
+                  "vs_all": 2,
+                  "pt_uc": 2,
+                  "vs_uc": 2
+                },
+                "total": {
+                  "pt_all": 841,
+                  "vs_all": 1807,
+                  "pt_uc": 638,
+                  "vs_uc": 1315
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 143,
+                    "vs_all": 170,
+                    "pt_uc": 108,
+                    "vs_uc": 132
+                  },
+                  "non_ed": {
+                    "pt_all": 75,
+                    "vs_all": 215,
+                    "pt_uc": 46,
+                    "vs_uc": 125
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 200,
+                    "vs_all": 374,
+                    "pt_uc": 140,
+                    "vs_uc": 247
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 123,
+                    "vs_all": 176,
+                    "pt_uc": 103,
+                    "vs_uc": 146
+                  },
+                  "non_ed": {
+                    "pt_all": 95,
+                    "vs_all": 290,
+                    "pt_uc": 67,
+                    "vs_uc": 181
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 195,
+                    "vs_all": 443,
+                    "pt_uc": 150,
+                    "vs_uc": 309
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 134,
+                    "vs_all": 178,
+                    "pt_uc": 109,
+                    "vs_uc": 148
+                  },
+                  "non_ed": {
+                    "pt_all": 118,
+                    "vs_all": 320,
+                    "pt_uc": 83,
+                    "vs_uc": 234
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 234,
+                    "vs_all": 490,
+                    "pt_uc": 176,
+                    "vs_uc": 374
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 125,
+                    "vs_all": 169,
+                    "pt_uc": 107,
+                    "vs_uc": 143
+                  },
+                  "non_ed": {
+                    "pt_all": 106,
+                    "vs_all": 343,
+                    "pt_uc": 80,
+                    "vs_uc": 251
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 212,
+                    "vs_all": 500,
+                    "pt_uc": 172,
+                    "vs_uc": 385
+                  }
+                }
+              }
             },
             {
               "hospcode": "14461",
@@ -646,7 +2429,144 @@
               "num": 59,
               "den": 212,
               "rate": 27.83,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 27.83,
+              "ed_rate_pt": 29.82,
+              "non_ed_rate_vs": 72.64,
+              "other_rate_vs": 9.91,
+              "uc_ratio_vs": 68.4,
+              "full_year": {
+                "ed": {
+                  "pt_all": 51,
+                  "vs_all": 59,
+                  "pt_uc": 31,
+                  "vs_uc": 35
+                },
+                "non_ed": {
+                  "pt_all": 123,
+                  "vs_all": 154,
+                  "pt_uc": 86,
+                  "vs_uc": 109
+                },
+                "other": {
+                  "pt_all": 20,
+                  "vs_all": 21,
+                  "pt_uc": 15,
+                  "vs_uc": 16
+                },
+                "total": {
+                  "pt_all": 171,
+                  "vs_all": 212,
+                  "pt_uc": 117,
+                  "vs_uc": 145
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 7,
+                    "vs_all": 8,
+                    "pt_uc": 4,
+                    "vs_uc": 5
+                  },
+                  "non_ed": {
+                    "pt_all": 39,
+                    "vs_all": 47,
+                    "pt_uc": 26,
+                    "vs_uc": 29
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 46,
+                    "vs_all": 56,
+                    "pt_uc": 31,
+                    "vs_uc": 35
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "non_ed": {
+                    "pt_all": 24,
+                    "vs_all": 30,
+                    "pt_uc": 18,
+                    "vs_uc": 24
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 31,
+                    "vs_all": 37,
+                    "pt_uc": 22,
+                    "vs_uc": 28
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 12,
+                    "vs_all": 16,
+                    "pt_uc": 8,
+                    "vs_uc": 10
+                  },
+                  "non_ed": {
+                    "pt_all": 21,
+                    "vs_all": 30,
+                    "pt_uc": 16,
+                    "vs_uc": 25
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 5,
+                    "vs_uc": 5
+                  },
+                  "total": {
+                    "pt_all": 38,
+                    "vs_all": 50,
+                    "pt_uc": 26,
+                    "vs_uc": 36
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 26,
+                    "vs_all": 29,
+                    "pt_uc": 16,
+                    "vs_uc": 17
+                  },
+                  "non_ed": {
+                    "pt_all": 39,
+                    "vs_all": 47,
+                    "pt_uc": 26,
+                    "vs_uc": 31
+                  },
+                  "other": {
+                    "pt_all": 8,
+                    "vs_all": 9,
+                    "pt_uc": 8,
+                    "vs_uc": 9
+                  },
+                  "total": {
+                    "pt_all": 56,
+                    "vs_all": 69,
+                    "pt_uc": 38,
+                    "vs_uc": 46
+                  }
+                }
+              }
             },
             {
               "hospcode": "13994",
@@ -655,7 +2575,144 @@
               "num": 35,
               "den": 203,
               "rate": 17.24,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 17.24,
+              "ed_rate_pt": 19.54,
+              "non_ed_rate_vs": 82.76,
+              "other_rate_vs": 2.96,
+              "uc_ratio_vs": 86.7,
+              "full_year": {
+                "ed": {
+                  "pt_all": 34,
+                  "vs_all": 35,
+                  "pt_uc": 26,
+                  "vs_uc": 27
+                },
+                "non_ed": {
+                  "pt_all": 143,
+                  "vs_all": 168,
+                  "pt_uc": 123,
+                  "vs_uc": 146
+                },
+                "other": {
+                  "pt_all": 4,
+                  "vs_all": 6,
+                  "pt_uc": 4,
+                  "vs_uc": 6
+                },
+                "total": {
+                  "pt_all": 174,
+                  "vs_all": 203,
+                  "pt_uc": 149,
+                  "vs_uc": 176
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 5,
+                    "vs_uc": 5
+                  },
+                  "non_ed": {
+                    "pt_all": 42,
+                    "vs_all": 49,
+                    "pt_uc": 37,
+                    "vs_uc": 44
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 2,
+                    "pt_uc": 1,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 47,
+                    "vs_all": 55,
+                    "pt_uc": 42,
+                    "vs_uc": 50
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 7,
+                    "vs_all": 7,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "non_ed": {
+                    "pt_all": 39,
+                    "vs_all": 51,
+                    "pt_uc": 32,
+                    "vs_uc": 43
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 47,
+                    "vs_all": 59,
+                    "pt_uc": 39,
+                    "vs_uc": 50
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 11,
+                    "vs_all": 12,
+                    "pt_uc": 5,
+                    "vs_uc": 6
+                  },
+                  "non_ed": {
+                    "pt_all": 23,
+                    "vs_all": 23,
+                    "pt_uc": 18,
+                    "vs_uc": 18
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 2,
+                    "pt_uc": 1,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 31,
+                    "vs_all": 33,
+                    "pt_uc": 23,
+                    "vs_uc": 25
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 11,
+                    "vs_all": 11,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "non_ed": {
+                    "pt_all": 39,
+                    "vs_all": 45,
+                    "pt_uc": 36,
+                    "vs_uc": 41
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 49,
+                    "vs_all": 56,
+                    "pt_uc": 45,
+                    "vs_uc": 51
+                  }
+                }
+              }
             }
           ]
         },
@@ -664,6 +2721,145 @@
           "den": 13878,
           "rate": 75.43,
           "pass": false,
+          "ed_rate_vs": 75.43,
+          "ed_rate_pt": 74.78,
+          "non_ed_rate_vs": 34.81,
+          "other_rate_vs": 8.71,
+          "uc_ratio_vs": 80.49,
+          "summary": {
+            "full_year": {
+              "ed": {
+                "pt_all": 7979,
+                "vs_all": 10468,
+                "pt_uc": 6685,
+                "vs_uc": 8676
+              },
+              "non_ed": {
+                "pt_all": 3879,
+                "vs_all": 4831,
+                "pt_uc": 3029,
+                "vs_uc": 3794
+              },
+              "other": {
+                "pt_all": 1091,
+                "vs_all": 1209,
+                "pt_uc": 849,
+                "vs_uc": 952
+              },
+              "total": {
+                "pt_all": 10670,
+                "vs_all": 13878,
+                "pt_uc": 8645,
+                "vs_uc": 11170
+              }
+            },
+            "quarters": {
+              "q1": {
+                "ed": {
+                  "pt_all": 2124,
+                  "vs_all": 2765,
+                  "pt_uc": 1782,
+                  "vs_uc": 2264
+                },
+                "non_ed": {
+                  "pt_all": 1319,
+                  "vs_all": 1625,
+                  "pt_uc": 1019,
+                  "vs_uc": 1239
+                },
+                "other": {
+                  "pt_all": 113,
+                  "vs_all": 123,
+                  "pt_uc": 97,
+                  "vs_uc": 107
+                },
+                "total": {
+                  "pt_all": 2832,
+                  "vs_all": 3637,
+                  "pt_uc": 2292,
+                  "vs_uc": 2886
+                }
+              },
+              "q2": {
+                "ed": {
+                  "pt_all": 2071,
+                  "vs_all": 2715,
+                  "pt_uc": 1746,
+                  "vs_uc": 2251
+                },
+                "non_ed": {
+                  "pt_all": 1198,
+                  "vs_all": 1403,
+                  "pt_uc": 909,
+                  "vs_uc": 1055
+                },
+                "other": {
+                  "pt_all": 280,
+                  "vs_all": 304,
+                  "pt_uc": 222,
+                  "vs_uc": 242
+                },
+                "total": {
+                  "pt_all": 2923,
+                  "vs_all": 3766,
+                  "pt_uc": 2356,
+                  "vs_uc": 2992
+                }
+              },
+              "q3": {
+                "ed": {
+                  "pt_all": 1870,
+                  "vs_all": 2446,
+                  "pt_uc": 1547,
+                  "vs_uc": 2015
+                },
+                "non_ed": {
+                  "pt_all": 515,
+                  "vs_all": 665,
+                  "pt_uc": 418,
+                  "vs_uc": 549
+                },
+                "other": {
+                  "pt_all": 506,
+                  "vs_all": 573,
+                  "pt_uc": 374,
+                  "vs_uc": 431
+                },
+                "total": {
+                  "pt_all": 2440,
+                  "vs_all": 3184,
+                  "pt_uc": 1960,
+                  "vs_uc": 2560
+                }
+              },
+              "q4": {
+                "ed": {
+                  "pt_all": 1914,
+                  "vs_all": 2542,
+                  "pt_uc": 1610,
+                  "vs_uc": 2146
+                },
+                "non_ed": {
+                  "pt_all": 847,
+                  "vs_all": 1138,
+                  "pt_uc": 683,
+                  "vs_uc": 951
+                },
+                "other": {
+                  "pt_all": 192,
+                  "vs_all": 209,
+                  "pt_uc": 156,
+                  "vs_uc": 172
+                },
+                "total": {
+                  "pt_all": 2475,
+                  "vs_all": 3291,
+                  "pt_uc": 2037,
+                  "vs_uc": 2732
+                }
+              }
+            }
+          },
           "units": [
             {
               "hospcode": "99758",
@@ -672,7 +2868,144 @@
               "num": 46,
               "den": 46,
               "rate": 100.0,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 100.0,
+              "ed_rate_pt": 100.0,
+              "non_ed_rate_vs": 0.0,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 89.13,
+              "full_year": {
+                "ed": {
+                  "pt_all": 42,
+                  "vs_all": 46,
+                  "pt_uc": 37,
+                  "vs_uc": 41
+                },
+                "non_ed": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 42,
+                  "vs_all": 46,
+                  "pt_uc": 37,
+                  "vs_uc": 41
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 12,
+                    "vs_all": 13,
+                    "pt_uc": 11,
+                    "vs_uc": 12
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 12,
+                    "vs_all": 13,
+                    "pt_uc": 11,
+                    "vs_uc": 12
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 18,
+                    "vs_all": 20,
+                    "pt_uc": 14,
+                    "vs_uc": 16
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 18,
+                    "vs_all": 20,
+                    "pt_uc": 14,
+                    "vs_uc": 16
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 6,
+                    "vs_all": 7,
+                    "pt_uc": 6,
+                    "vs_uc": 7
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 6,
+                    "vs_all": 7,
+                    "pt_uc": 6,
+                    "vs_uc": 7
+                  }
+                }
+              }
             },
             {
               "hospcode": "13994",
@@ -681,7 +3014,144 @@
               "num": 198,
               "den": 201,
               "rate": 98.51,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 98.51,
+              "ed_rate_pt": 98.92,
+              "non_ed_rate_vs": 45.27,
+              "other_rate_vs": 1.99,
+              "uc_ratio_vs": 85.07,
+              "full_year": {
+                "ed": {
+                  "pt_all": 183,
+                  "vs_all": 198,
+                  "pt_uc": 154,
+                  "vs_uc": 168
+                },
+                "non_ed": {
+                  "pt_all": 88,
+                  "vs_all": 91,
+                  "pt_uc": 70,
+                  "vs_uc": 73
+                },
+                "other": {
+                  "pt_all": 4,
+                  "vs_all": 4,
+                  "pt_uc": 4,
+                  "vs_uc": 4
+                },
+                "total": {
+                  "pt_all": 185,
+                  "vs_all": 201,
+                  "pt_uc": 156,
+                  "vs_uc": 171
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 50,
+                    "vs_all": 54,
+                    "pt_uc": 38,
+                    "vs_uc": 42
+                  },
+                  "non_ed": {
+                    "pt_all": 46,
+                    "vs_all": 49,
+                    "pt_uc": 36,
+                    "vs_uc": 39
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 51,
+                    "vs_all": 55,
+                    "pt_uc": 39,
+                    "vs_uc": 43
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 50,
+                    "vs_all": 54,
+                    "pt_uc": 42,
+                    "vs_uc": 46
+                  },
+                  "non_ed": {
+                    "pt_all": 42,
+                    "vs_all": 42,
+                    "pt_uc": 34,
+                    "vs_uc": 34
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 50,
+                    "vs_all": 55,
+                    "pt_uc": 42,
+                    "vs_uc": 47
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 40,
+                    "vs_all": 43,
+                    "pt_uc": 35,
+                    "vs_uc": 37
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 41,
+                    "vs_all": 44,
+                    "pt_uc": 36,
+                    "vs_uc": 38
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 43,
+                    "vs_all": 47,
+                    "pt_uc": 39,
+                    "vs_uc": 43
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 43,
+                    "vs_all": 47,
+                    "pt_uc": 39,
+                    "vs_uc": 43
+                  }
+                }
+              }
             },
             {
               "hospcode": "06022",
@@ -690,7 +3160,144 @@
               "num": 2230,
               "den": 2266,
               "rate": 98.41,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 98.41,
+              "ed_rate_pt": 99.0,
+              "non_ed_rate_vs": 1.72,
+              "other_rate_vs": 0.35,
+              "uc_ratio_vs": 89.54,
+              "full_year": {
+                "ed": {
+                  "pt_all": 1789,
+                  "vs_all": 2230,
+                  "pt_uc": 1623,
+                  "vs_uc": 1997
+                },
+                "non_ed": {
+                  "pt_all": 26,
+                  "vs_all": 39,
+                  "pt_uc": 23,
+                  "vs_uc": 36
+                },
+                "other": {
+                  "pt_all": 8,
+                  "vs_all": 8,
+                  "pt_uc": 6,
+                  "vs_uc": 6
+                },
+                "total": {
+                  "pt_all": 1807,
+                  "vs_all": 2266,
+                  "pt_uc": 1639,
+                  "vs_uc": 2029
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 441,
+                    "vs_all": 586,
+                    "pt_uc": 398,
+                    "vs_uc": 516
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 445,
+                    "vs_all": 590,
+                    "pt_uc": 402,
+                    "vs_uc": 520
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 481,
+                    "vs_all": 632,
+                    "pt_uc": 427,
+                    "vs_uc": 551
+                  },
+                  "non_ed": {
+                    "pt_all": 10,
+                    "vs_all": 16,
+                    "pt_uc": 10,
+                    "vs_uc": 16
+                  },
+                  "other": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "total": {
+                    "pt_all": 486,
+                    "vs_all": 645,
+                    "pt_uc": 432,
+                    "vs_uc": 564
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 450,
+                    "vs_all": 535,
+                    "pt_uc": 412,
+                    "vs_uc": 490
+                  },
+                  "non_ed": {
+                    "pt_all": 3,
+                    "vs_all": 6,
+                    "pt_uc": 3,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 455,
+                    "vs_all": 544,
+                    "pt_uc": 416,
+                    "vs_uc": 498
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 417,
+                    "vs_all": 477,
+                    "pt_uc": 386,
+                    "vs_uc": 440
+                  },
+                  "non_ed": {
+                    "pt_all": 7,
+                    "vs_all": 11,
+                    "pt_uc": 4,
+                    "vs_uc": 8
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 421,
+                    "vs_all": 487,
+                    "pt_uc": 389,
+                    "vs_uc": 447
+                  }
+                }
+              }
             },
             {
               "hospcode": "06014",
@@ -699,7 +3306,144 @@
               "num": 389,
               "den": 398,
               "rate": 97.74,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 97.74,
+              "ed_rate_pt": 97.74,
+              "non_ed_rate_vs": 7.54,
+              "other_rate_vs": 1.26,
+              "uc_ratio_vs": 84.42,
+              "full_year": {
+                "ed": {
+                  "pt_all": 303,
+                  "vs_all": 389,
+                  "pt_uc": 252,
+                  "vs_uc": 327
+                },
+                "non_ed": {
+                  "pt_all": 28,
+                  "vs_all": 30,
+                  "pt_uc": 25,
+                  "vs_uc": 26
+                },
+                "other": {
+                  "pt_all": 4,
+                  "vs_all": 5,
+                  "pt_uc": 3,
+                  "vs_uc": 4
+                },
+                "total": {
+                  "pt_all": 310,
+                  "vs_all": 398,
+                  "pt_uc": 259,
+                  "vs_uc": 336
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 71,
+                    "vs_all": 90,
+                    "pt_uc": 55,
+                    "vs_uc": 70
+                  },
+                  "non_ed": {
+                    "pt_all": 5,
+                    "vs_all": 7,
+                    "pt_uc": 4,
+                    "vs_uc": 5
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 3,
+                    "pt_uc": 1,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 71,
+                    "vs_all": 90,
+                    "pt_uc": 55,
+                    "vs_uc": 70
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 76,
+                    "vs_all": 103,
+                    "pt_uc": 68,
+                    "vs_uc": 93
+                  },
+                  "non_ed": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 76,
+                    "vs_all": 103,
+                    "pt_uc": 68,
+                    "vs_uc": 93
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 79,
+                    "vs_all": 99,
+                    "pt_uc": 62,
+                    "vs_uc": 78
+                  },
+                  "non_ed": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 79,
+                    "vs_all": 99,
+                    "pt_uc": 62,
+                    "vs_uc": 78
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 77,
+                    "vs_all": 97,
+                    "pt_uc": 67,
+                    "vs_uc": 86
+                  },
+                  "non_ed": {
+                    "pt_all": 15,
+                    "vs_all": 15,
+                    "pt_uc": 14,
+                    "vs_uc": 14
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 84,
+                    "vs_all": 106,
+                    "pt_uc": 74,
+                    "vs_uc": 95
+                  }
+                }
+              }
             },
             {
               "hospcode": "06024",
@@ -708,7 +3452,144 @@
               "num": 1311,
               "den": 1352,
               "rate": 96.97,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 96.97,
+              "ed_rate_pt": 98.95,
+              "non_ed_rate_vs": 71.3,
+              "other_rate_vs": 8.58,
+              "uc_ratio_vs": 99.93,
+              "full_year": {
+                "ed": {
+                  "pt_all": 850,
+                  "vs_all": 1311,
+                  "pt_uc": 849,
+                  "vs_uc": 1310
+                },
+                "non_ed": {
+                  "pt_all": 633,
+                  "vs_all": 964,
+                  "pt_uc": 632,
+                  "vs_uc": 963
+                },
+                "other": {
+                  "pt_all": 110,
+                  "vs_all": 116,
+                  "pt_uc": 110,
+                  "vs_uc": 116
+                },
+                "total": {
+                  "pt_all": 859,
+                  "vs_all": 1352,
+                  "pt_uc": 858,
+                  "vs_uc": 1351
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 203,
+                    "vs_all": 249,
+                    "pt_uc": 203,
+                    "vs_uc": 249
+                  },
+                  "non_ed": {
+                    "pt_all": 140,
+                    "vs_all": 166,
+                    "pt_uc": 140,
+                    "vs_uc": 166
+                  },
+                  "other": {
+                    "pt_all": 37,
+                    "vs_all": 40,
+                    "pt_uc": 37,
+                    "vs_uc": 40
+                  },
+                  "total": {
+                    "pt_all": 207,
+                    "vs_all": 271,
+                    "pt_uc": 207,
+                    "vs_uc": 271
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 164,
+                    "vs_all": 224,
+                    "pt_uc": 164,
+                    "vs_uc": 224
+                  },
+                  "non_ed": {
+                    "pt_all": 115,
+                    "vs_all": 164,
+                    "pt_uc": 115,
+                    "vs_uc": 164
+                  },
+                  "other": {
+                    "pt_all": 24,
+                    "vs_all": 24,
+                    "pt_uc": 24,
+                    "vs_uc": 24
+                  },
+                  "total": {
+                    "pt_all": 164,
+                    "vs_all": 224,
+                    "pt_uc": 164,
+                    "vs_uc": 224
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 195,
+                    "vs_all": 331,
+                    "pt_uc": 194,
+                    "vs_uc": 330
+                  },
+                  "non_ed": {
+                    "pt_all": 154,
+                    "vs_all": 242,
+                    "pt_uc": 153,
+                    "vs_uc": 241
+                  },
+                  "other": {
+                    "pt_all": 23,
+                    "vs_all": 26,
+                    "pt_uc": 23,
+                    "vs_uc": 26
+                  },
+                  "total": {
+                    "pt_all": 197,
+                    "vs_all": 344,
+                    "pt_uc": 196,
+                    "vs_uc": 343
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 288,
+                    "vs_all": 507,
+                    "pt_uc": 288,
+                    "vs_uc": 507
+                  },
+                  "non_ed": {
+                    "pt_all": 224,
+                    "vs_all": 392,
+                    "pt_uc": 224,
+                    "vs_uc": 392
+                  },
+                  "other": {
+                    "pt_all": 26,
+                    "vs_all": 26,
+                    "pt_uc": 26,
+                    "vs_uc": 26
+                  },
+                  "total": {
+                    "pt_all": 291,
+                    "vs_all": 513,
+                    "pt_uc": 291,
+                    "vs_uc": 513
+                  }
+                }
+              }
             },
             {
               "hospcode": "06023",
@@ -717,7 +3598,144 @@
               "num": 460,
               "den": 481,
               "rate": 95.63,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 95.63,
+              "ed_rate_pt": 95.71,
+              "non_ed_rate_vs": 8.52,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 91.48,
+              "full_year": {
+                "ed": {
+                  "pt_all": 357,
+                  "vs_all": 460,
+                  "pt_uc": 319,
+                  "vs_uc": 421
+                },
+                "non_ed": {
+                  "pt_all": 35,
+                  "vs_all": 41,
+                  "pt_uc": 30,
+                  "vs_uc": 36
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 373,
+                  "vs_all": 481,
+                  "pt_uc": 333,
+                  "vs_uc": 440
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 103,
+                    "vs_all": 134,
+                    "pt_uc": 90,
+                    "vs_uc": 121
+                  },
+                  "non_ed": {
+                    "pt_all": 4,
+                    "vs_all": 6,
+                    "pt_uc": 3,
+                    "vs_uc": 5
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 103,
+                    "vs_all": 134,
+                    "pt_uc": 90,
+                    "vs_uc": 121
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 111,
+                    "vs_all": 148,
+                    "pt_uc": 103,
+                    "vs_uc": 139
+                  },
+                  "non_ed": {
+                    "pt_all": 8,
+                    "vs_all": 11,
+                    "pt_uc": 7,
+                    "vs_uc": 10
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 112,
+                    "vs_all": 149,
+                    "pt_uc": 104,
+                    "vs_uc": 140
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 77,
+                    "vs_all": 97,
+                    "pt_uc": 69,
+                    "vs_uc": 89
+                  },
+                  "non_ed": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 8,
+                    "vs_uc": 8
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 81,
+                    "vs_all": 103,
+                    "pt_uc": 72,
+                    "vs_uc": 94
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 66,
+                    "vs_all": 81,
+                    "pt_uc": 57,
+                    "vs_uc": 72
+                  },
+                  "non_ed": {
+                    "pt_all": 14,
+                    "vs_all": 15,
+                    "pt_uc": 12,
+                    "vs_uc": 13
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 77,
+                    "vs_all": 95,
+                    "pt_uc": 67,
+                    "vs_uc": 85
+                  }
+                }
+              }
             },
             {
               "hospcode": "06017",
@@ -726,7 +3744,144 @@
               "num": 114,
               "den": 128,
               "rate": 89.06,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 89.06,
+              "ed_rate_pt": 89.26,
+              "non_ed_rate_vs": 16.41,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 77.34,
+              "full_year": {
+                "ed": {
+                  "pt_all": 108,
+                  "vs_all": 114,
+                  "pt_uc": 81,
+                  "vs_uc": 86
+                },
+                "non_ed": {
+                  "pt_all": 21,
+                  "vs_all": 21,
+                  "pt_uc": 16,
+                  "vs_uc": 16
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 121,
+                  "vs_all": 128,
+                  "pt_uc": 93,
+                  "vs_uc": 99
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 36,
+                    "vs_all": 38,
+                    "pt_uc": 26,
+                    "vs_uc": 28
+                  },
+                  "non_ed": {
+                    "pt_all": 4,
+                    "vs_all": 4,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 38,
+                    "vs_all": 40,
+                    "pt_uc": 28,
+                    "vs_uc": 30
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 38,
+                    "vs_all": 42,
+                    "pt_uc": 31,
+                    "vs_uc": 34
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 6,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 42,
+                    "vs_all": 46,
+                    "pt_uc": 34,
+                    "vs_uc": 37
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 23,
+                    "vs_all": 23,
+                    "pt_uc": 14,
+                    "vs_uc": 14
+                  },
+                  "non_ed": {
+                    "pt_all": 4,
+                    "vs_all": 4,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 25,
+                    "vs_all": 25,
+                    "pt_uc": 16,
+                    "vs_uc": 16
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 11,
+                    "vs_all": 11,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "non_ed": {
+                    "pt_all": 7,
+                    "vs_all": 7,
+                    "pt_uc": 6,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 16,
+                    "vs_all": 17,
+                    "pt_uc": 15,
+                    "vs_uc": 16
+                  }
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -735,7 +3890,144 @@
               "num": 750,
               "den": 869,
               "rate": 86.31,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 86.31,
+              "ed_rate_pt": 86.53,
+              "non_ed_rate_vs": 49.94,
+              "other_rate_vs": 5.64,
+              "uc_ratio_vs": 83.89,
+              "full_year": {
+                "ed": {
+                  "pt_all": 501,
+                  "vs_all": 750,
+                  "pt_uc": 413,
+                  "vs_uc": 622
+                },
+                "non_ed": {
+                  "pt_all": 279,
+                  "vs_all": 434,
+                  "pt_uc": 230,
+                  "vs_uc": 352
+                },
+                "other": {
+                  "pt_all": 46,
+                  "vs_all": 49,
+                  "pt_uc": 45,
+                  "vs_uc": 48
+                },
+                "total": {
+                  "pt_all": 579,
+                  "vs_all": 869,
+                  "pt_uc": 484,
+                  "vs_uc": 729
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 182,
+                    "vs_all": 338,
+                    "pt_uc": 151,
+                    "vs_uc": 277
+                  },
+                  "non_ed": {
+                    "pt_all": 123,
+                    "vs_all": 240,
+                    "pt_uc": 101,
+                    "vs_uc": 192
+                  },
+                  "other": {
+                    "pt_all": 14,
+                    "vs_all": 17,
+                    "pt_uc": 14,
+                    "vs_uc": 17
+                  },
+                  "total": {
+                    "pt_all": 190,
+                    "vs_all": 353,
+                    "pt_uc": 159,
+                    "vs_uc": 292
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 144,
+                    "vs_all": 180,
+                    "pt_uc": 119,
+                    "vs_uc": 151
+                  },
+                  "non_ed": {
+                    "pt_all": 52,
+                    "vs_all": 61,
+                    "pt_uc": 43,
+                    "vs_uc": 50
+                  },
+                  "other": {
+                    "pt_all": 12,
+                    "vs_all": 12,
+                    "pt_uc": 11,
+                    "vs_uc": 11
+                  },
+                  "total": {
+                    "pt_all": 156,
+                    "vs_all": 197,
+                    "pt_uc": 130,
+                    "vs_uc": 166
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 93,
+                    "vs_all": 121,
+                    "pt_uc": 74,
+                    "vs_uc": 96
+                  },
+                  "non_ed": {
+                    "pt_all": 59,
+                    "vs_all": 80,
+                    "pt_uc": 51,
+                    "vs_uc": 69
+                  },
+                  "other": {
+                    "pt_all": 11,
+                    "vs_all": 11,
+                    "pt_uc": 11,
+                    "vs_uc": 11
+                  },
+                  "total": {
+                    "pt_all": 126,
+                    "vs_all": 170,
+                    "pt_uc": 106,
+                    "vs_uc": 143
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 82,
+                    "vs_all": 111,
+                    "pt_uc": 69,
+                    "vs_uc": 98
+                  },
+                  "non_ed": {
+                    "pt_all": 45,
+                    "vs_all": 53,
+                    "pt_uc": 35,
+                    "vs_uc": 41
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  },
+                  "total": {
+                    "pt_all": 107,
+                    "vs_all": 149,
+                    "pt_uc": 89,
+                    "vs_uc": 128
+                  }
+                }
+              }
             },
             {
               "hospcode": "06021",
@@ -744,7 +4036,144 @@
               "num": 433,
               "den": 534,
               "rate": 81.09,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 81.09,
+              "ed_rate_pt": 82.18,
+              "non_ed_rate_vs": 38.58,
+              "other_rate_vs": 9.18,
+              "uc_ratio_vs": 97.38,
+              "full_year": {
+                "ed": {
+                  "pt_all": 415,
+                  "vs_all": 433,
+                  "pt_uc": 408,
+                  "vs_uc": 426
+                },
+                "non_ed": {
+                  "pt_all": 199,
+                  "vs_all": 206,
+                  "pt_uc": 191,
+                  "vs_uc": 197
+                },
+                "other": {
+                  "pt_all": 47,
+                  "vs_all": 49,
+                  "pt_uc": 47,
+                  "vs_uc": 49
+                },
+                "total": {
+                  "pt_all": 505,
+                  "vs_all": 534,
+                  "pt_uc": 492,
+                  "vs_uc": 520
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 248,
+                    "vs_all": 251,
+                    "pt_uc": 245,
+                    "vs_uc": 248
+                  },
+                  "non_ed": {
+                    "pt_all": 110,
+                    "vs_all": 114,
+                    "pt_uc": 106,
+                    "vs_uc": 109
+                  },
+                  "other": {
+                    "pt_all": 25,
+                    "vs_all": 25,
+                    "pt_uc": 25,
+                    "vs_uc": 25
+                  },
+                  "total": {
+                    "pt_all": 290,
+                    "vs_all": 297,
+                    "pt_uc": 284,
+                    "vs_uc": 290
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 130,
+                    "vs_all": 137,
+                    "pt_uc": 129,
+                    "vs_uc": 136
+                  },
+                  "non_ed": {
+                    "pt_all": 65,
+                    "vs_all": 67,
+                    "pt_uc": 63,
+                    "vs_uc": 65
+                  },
+                  "other": {
+                    "pt_all": 15,
+                    "vs_all": 15,
+                    "pt_uc": 15,
+                    "vs_uc": 15
+                  },
+                  "total": {
+                    "pt_all": 154,
+                    "vs_all": 164,
+                    "pt_uc": 152,
+                    "vs_uc": 162
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 16,
+                    "vs_all": 19,
+                    "pt_uc": 15,
+                    "vs_uc": 18
+                  },
+                  "non_ed": {
+                    "pt_all": 14,
+                    "vs_all": 14,
+                    "pt_uc": 13,
+                    "vs_uc": 13
+                  },
+                  "other": {
+                    "pt_all": 5,
+                    "vs_all": 7,
+                    "pt_uc": 5,
+                    "vs_uc": 7
+                  },
+                  "total": {
+                    "pt_all": 33,
+                    "vs_all": 39,
+                    "pt_uc": 31,
+                    "vs_uc": 37
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 21,
+                    "vs_all": 26,
+                    "pt_uc": 19,
+                    "vs_uc": 24
+                  },
+                  "non_ed": {
+                    "pt_all": 10,
+                    "vs_all": 11,
+                    "pt_uc": 9,
+                    "vs_uc": 10
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 28,
+                    "vs_all": 34,
+                    "pt_uc": 25,
+                    "vs_uc": 31
+                  }
+                }
+              }
             },
             {
               "hospcode": "06018",
@@ -753,7 +4182,144 @@
               "num": 953,
               "den": 1205,
               "rate": 79.09,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 79.09,
+              "ed_rate_pt": 79.56,
+              "non_ed_rate_vs": 40.0,
+              "other_rate_vs": 13.36,
+              "uc_ratio_vs": 77.26,
+              "full_year": {
+                "ed": {
+                  "pt_all": 619,
+                  "vs_all": 953,
+                  "pt_uc": 470,
+                  "vs_uc": 742
+                },
+                "non_ed": {
+                  "pt_all": 385,
+                  "vs_all": 482,
+                  "pt_uc": 281,
+                  "vs_uc": 353
+                },
+                "other": {
+                  "pt_all": 132,
+                  "vs_all": 161,
+                  "pt_uc": 118,
+                  "vs_uc": 144
+                },
+                "total": {
+                  "pt_all": 778,
+                  "vs_all": 1205,
+                  "pt_uc": 586,
+                  "vs_uc": 931
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 159,
+                    "vs_all": 197,
+                    "pt_uc": 113,
+                    "vs_uc": 144
+                  },
+                  "non_ed": {
+                    "pt_all": 129,
+                    "vs_all": 161,
+                    "pt_uc": 89,
+                    "vs_uc": 114
+                  },
+                  "other": {
+                    "pt_all": 7,
+                    "vs_all": 7,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "total": {
+                    "pt_all": 169,
+                    "vs_all": 210,
+                    "pt_uc": 116,
+                    "vs_uc": 149
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 192,
+                    "vs_all": 313,
+                    "pt_uc": 158,
+                    "vs_uc": 262
+                  },
+                  "non_ed": {
+                    "pt_all": 100,
+                    "vs_all": 123,
+                    "pt_uc": 78,
+                    "vs_uc": 95
+                  },
+                  "other": {
+                    "pt_all": 39,
+                    "vs_all": 47,
+                    "pt_uc": 36,
+                    "vs_uc": 42
+                  },
+                  "total": {
+                    "pt_all": 207,
+                    "vs_all": 338,
+                    "pt_uc": 167,
+                    "vs_uc": 277
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 136,
+                    "vs_all": 236,
+                    "pt_uc": 100,
+                    "vs_uc": 179
+                  },
+                  "non_ed": {
+                    "pt_all": 69,
+                    "vs_all": 84,
+                    "pt_uc": 48,
+                    "vs_uc": 57
+                  },
+                  "other": {
+                    "pt_all": 50,
+                    "vs_all": 62,
+                    "pt_uc": 44,
+                    "vs_uc": 55
+                  },
+                  "total": {
+                    "pt_all": 197,
+                    "vs_all": 334,
+                    "pt_uc": 146,
+                    "vs_uc": 252
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 132,
+                    "vs_all": 207,
+                    "pt_uc": 99,
+                    "vs_uc": 157
+                  },
+                  "non_ed": {
+                    "pt_all": 87,
+                    "vs_all": 114,
+                    "pt_uc": 66,
+                    "vs_uc": 87
+                  },
+                  "other": {
+                    "pt_all": 36,
+                    "vs_all": 45,
+                    "pt_uc": 34,
+                    "vs_uc": 43
+                  },
+                  "total": {
+                    "pt_all": 205,
+                    "vs_all": 323,
+                    "pt_uc": 157,
+                    "vs_uc": 253
+                  }
+                }
+              }
             },
             {
               "hospcode": "06015",
@@ -762,7 +4328,144 @@
               "num": 471,
               "den": 625,
               "rate": 75.36,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 75.36,
+              "ed_rate_pt": 66.47,
+              "non_ed_rate_vs": 15.2,
+              "other_rate_vs": 13.6,
+              "uc_ratio_vs": 50.08,
+              "full_year": {
+                "ed": {
+                  "pt_all": 222,
+                  "vs_all": 471,
+                  "pt_uc": 134,
+                  "vs_uc": 189
+                },
+                "non_ed": {
+                  "pt_all": 81,
+                  "vs_all": 95,
+                  "pt_uc": 61,
+                  "vs_uc": 68
+                },
+                "other": {
+                  "pt_all": 70,
+                  "vs_all": 85,
+                  "pt_uc": 59,
+                  "vs_uc": 74
+                },
+                "total": {
+                  "pt_all": 334,
+                  "vs_all": 625,
+                  "pt_uc": 224,
+                  "vs_uc": 313
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 63,
+                    "vs_all": 141,
+                    "pt_uc": 42,
+                    "vs_uc": 60
+                  },
+                  "non_ed": {
+                    "pt_all": 13,
+                    "vs_all": 17,
+                    "pt_uc": 8,
+                    "vs_uc": 8
+                  },
+                  "other": {
+                    "pt_all": 19,
+                    "vs_all": 22,
+                    "pt_uc": 13,
+                    "vs_uc": 16
+                  },
+                  "total": {
+                    "pt_all": 84,
+                    "vs_all": 170,
+                    "pt_uc": 56,
+                    "vs_uc": 79
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 62,
+                    "vs_all": 137,
+                    "pt_uc": 38,
+                    "vs_uc": 55
+                  },
+                  "non_ed": {
+                    "pt_all": 19,
+                    "vs_all": 19,
+                    "pt_uc": 15,
+                    "vs_uc": 15
+                  },
+                  "other": {
+                    "pt_all": 17,
+                    "vs_all": 24,
+                    "pt_uc": 16,
+                    "vs_uc": 23
+                  },
+                  "total": {
+                    "pt_all": 90,
+                    "vs_all": 174,
+                    "pt_uc": 61,
+                    "vs_uc": 87
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 42,
+                    "vs_all": 98,
+                    "pt_uc": 24,
+                    "vs_uc": 37
+                  },
+                  "non_ed": {
+                    "pt_all": 20,
+                    "vs_all": 24,
+                    "pt_uc": 15,
+                    "vs_uc": 17
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 7,
+                    "vs_uc": 7
+                  },
+                  "total": {
+                    "pt_all": 62,
+                    "vs_all": 124,
+                    "pt_uc": 38,
+                    "vs_uc": 55
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 55,
+                    "vs_all": 95,
+                    "pt_uc": 30,
+                    "vs_uc": 37
+                  },
+                  "non_ed": {
+                    "pt_all": 29,
+                    "vs_all": 35,
+                    "pt_uc": 23,
+                    "vs_uc": 28
+                  },
+                  "other": {
+                    "pt_all": 25,
+                    "vs_all": 30,
+                    "pt_uc": 23,
+                    "vs_uc": 28
+                  },
+                  "total": {
+                    "pt_all": 98,
+                    "vs_all": 157,
+                    "pt_uc": 69,
+                    "vs_uc": 92
+                  }
+                }
+              }
             },
             {
               "hospcode": "06016",
@@ -771,7 +4474,144 @@
               "num": 325,
               "den": 468,
               "rate": 69.44,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 69.44,
+              "ed_rate_pt": 72.32,
+              "non_ed_rate_vs": 45.3,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 88.89,
+              "full_year": {
+                "ed": {
+                  "pt_all": 277,
+                  "vs_all": 325,
+                  "pt_uc": 247,
+                  "vs_uc": 292
+                },
+                "non_ed": {
+                  "pt_all": 185,
+                  "vs_all": 212,
+                  "pt_uc": 157,
+                  "vs_uc": 183
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 383,
+                  "vs_all": 468,
+                  "pt_uc": 336,
+                  "vs_uc": 416
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 79,
+                    "vs_all": 92,
+                    "pt_uc": 71,
+                    "vs_uc": 82
+                  },
+                  "non_ed": {
+                    "pt_all": 65,
+                    "vs_all": 70,
+                    "pt_uc": 59,
+                    "vs_uc": 64
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 111,
+                    "vs_all": 133,
+                    "pt_uc": 100,
+                    "vs_uc": 120
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 86,
+                    "vs_all": 97,
+                    "pt_uc": 73,
+                    "vs_uc": 84
+                  },
+                  "non_ed": {
+                    "pt_all": 61,
+                    "vs_all": 71,
+                    "pt_uc": 47,
+                    "vs_uc": 56
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 115,
+                    "vs_all": 139,
+                    "pt_uc": 94,
+                    "vs_uc": 116
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 72,
+                    "vs_all": 87,
+                    "pt_uc": 66,
+                    "vs_uc": 80
+                  },
+                  "non_ed": {
+                    "pt_all": 28,
+                    "vs_all": 33,
+                    "pt_uc": 24,
+                    "vs_uc": 29
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 90,
+                    "vs_all": 111,
+                    "pt_uc": 81,
+                    "vs_uc": 101
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 40,
+                    "vs_all": 49,
+                    "pt_uc": 37,
+                    "vs_uc": 46
+                  },
+                  "non_ed": {
+                    "pt_all": 31,
+                    "vs_all": 38,
+                    "pt_uc": 27,
+                    "vs_uc": 34
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 67,
+                    "vs_all": 85,
+                    "pt_uc": 61,
+                    "vs_uc": 79
+                  }
+                }
+              }
             },
             {
               "hospcode": "11135",
@@ -780,7 +4620,144 @@
               "num": 2720,
               "den": 5070,
               "rate": 53.65,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 53.65,
+              "ed_rate_pt": 53.58,
+              "non_ed_rate_vs": 40.26,
+              "other_rate_vs": 14.26,
+              "uc_ratio_vs": 71.81,
+              "full_year": {
+                "ed": {
+                  "pt_all": 2252,
+                  "vs_all": 2720,
+                  "pt_uc": 1655,
+                  "vs_uc": 2006
+                },
+                "non_ed": {
+                  "pt_all": 1779,
+                  "vs_all": 2041,
+                  "pt_uc": 1219,
+                  "vs_uc": 1377
+                },
+                "other": {
+                  "pt_all": 661,
+                  "vs_all": 723,
+                  "pt_uc": 456,
+                  "vs_uc": 506
+                },
+                "total": {
+                  "pt_all": 4203,
+                  "vs_all": 5070,
+                  "pt_uc": 3022,
+                  "vs_uc": 3641
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 472,
+                    "vs_all": 577,
+                    "pt_uc": 335,
+                    "vs_uc": 411
+                  },
+                  "non_ed": {
+                    "pt_all": 639,
+                    "vs_all": 740,
+                    "pt_uc": 439,
+                    "vs_uc": 497
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 1017,
+                    "vs_all": 1226,
+                    "pt_uc": 716,
+                    "vs_uc": 854
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 513,
+                    "vs_all": 621,
+                    "pt_uc": 378,
+                    "vs_uc": 457
+                  },
+                  "non_ed": {
+                    "pt_all": 650,
+                    "vs_all": 737,
+                    "pt_uc": 447,
+                    "vs_uc": 495
+                  },
+                  "other": {
+                    "pt_all": 167,
+                    "vs_all": 176,
+                    "pt_uc": 115,
+                    "vs_uc": 122
+                  },
+                  "total": {
+                    "pt_all": 1187,
+                    "vs_all": 1429,
+                    "pt_uc": 852,
+                    "vs_uc": 1015
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 610,
+                    "vs_all": 717,
+                    "pt_uc": 454,
+                    "vs_uc": 537
+                  },
+                  "non_ed": {
+                    "pt_all": 134,
+                    "vs_all": 148,
+                    "pt_uc": 87,
+                    "vs_uc": 93
+                  },
+                  "other": {
+                    "pt_all": 402,
+                    "vs_all": 452,
+                    "pt_uc": 280,
+                    "vs_uc": 321
+                  },
+                  "total": {
+                    "pt_all": 1002,
+                    "vs_all": 1190,
+                    "pt_uc": 725,
+                    "vs_uc": 866
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 657,
+                    "vs_all": 805,
+                    "pt_uc": 488,
+                    "vs_uc": 601
+                  },
+                  "non_ed": {
+                    "pt_all": 356,
+                    "vs_all": 416,
+                    "pt_uc": 246,
+                    "vs_uc": 292
+                  },
+                  "other": {
+                    "pt_all": 92,
+                    "vs_all": 95,
+                    "pt_uc": 61,
+                    "vs_uc": 63
+                  },
+                  "total": {
+                    "pt_all": 997,
+                    "vs_all": 1225,
+                    "pt_uc": 729,
+                    "vs_uc": 906
+                  }
+                }
+              }
             },
             {
               "hospcode": "14461",
@@ -789,15 +4766,291 @@
               "num": 68,
               "den": 235,
               "rate": 28.94,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 28.94,
+              "ed_rate_pt": 31.94,
+              "non_ed_rate_vs": 74.47,
+              "other_rate_vs": 3.83,
+              "uc_ratio_vs": 65.11,
+              "full_year": {
+                "ed": {
+                  "pt_all": 61,
+                  "vs_all": 68,
+                  "pt_uc": 43,
+                  "vs_uc": 49
+                },
+                "non_ed": {
+                  "pt_all": 140,
+                  "vs_all": 175,
+                  "pt_uc": 94,
+                  "vs_uc": 114
+                },
+                "other": {
+                  "pt_all": 9,
+                  "vs_all": 9,
+                  "pt_uc": 1,
+                  "vs_uc": 1
+                },
+                "total": {
+                  "pt_all": 191,
+                  "vs_all": 235,
+                  "pt_uc": 126,
+                  "vs_uc": 153
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 5,
+                    "vs_all": 5,
+                    "pt_uc": 4,
+                    "vs_uc": 4
+                  },
+                  "non_ed": {
+                    "pt_all": 35,
+                    "vs_all": 45,
+                    "pt_uc": 25,
+                    "vs_uc": 31
+                  },
+                  "other": {
+                    "pt_all": 7,
+                    "vs_all": 7,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 44,
+                    "vs_all": 55,
+                    "pt_uc": 29,
+                    "vs_uc": 35
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 18,
+                    "vs_all": 21,
+                    "pt_uc": 10,
+                    "vs_uc": 13
+                  },
+                  "non_ed": {
+                    "pt_all": 67,
+                    "vs_all": 83,
+                    "pt_uc": 43,
+                    "vs_uc": 48
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 78,
+                    "vs_all": 97,
+                    "pt_uc": 50,
+                    "vs_uc": 58
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 19,
+                    "vs_all": 20,
+                    "pt_uc": 14,
+                    "vs_uc": 14
+                  },
+                  "non_ed": {
+                    "pt_all": 16,
+                    "vs_all": 16,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 34,
+                    "vs_all": 37,
+                    "pt_uc": 21,
+                    "vs_uc": 23
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 19,
+                    "vs_all": 22,
+                    "pt_uc": 15,
+                    "vs_uc": 18
+                  },
+                  "non_ed": {
+                    "pt_all": 22,
+                    "vs_all": 31,
+                    "pt_uc": 17,
+                    "vs_uc": 26
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 35,
+                    "vs_all": 46,
+                    "pt_uc": 26,
+                    "vs_uc": 37
+                  }
+                }
+              }
             }
           ]
         },
         "2569": {
-          "num": 6660,
-          "den": 18260,
-          "rate": 36.47,
+          "num": 6695,
+          "den": 18449,
+          "rate": 36.29,
           "pass": false,
+          "ed_rate_vs": 36.29,
+          "ed_rate_pt": 39.62,
+          "non_ed_rate_vs": 63.81,
+          "other_rate_vs": 8.16,
+          "uc_ratio_vs": 81.26,
+          "summary": {
+            "full_year": {
+              "ed": {
+                "pt_all": 5516,
+                "vs_all": 6695,
+                "pt_uc": 4490,
+                "vs_uc": 5411
+              },
+              "non_ed": {
+                "pt_all": 8892,
+                "vs_all": 11773,
+                "pt_uc": 7211,
+                "vs_uc": 9592
+              },
+              "other": {
+                "pt_all": 1316,
+                "vs_all": 1505,
+                "pt_uc": 1023,
+                "vs_uc": 1141
+              },
+              "total": {
+                "pt_all": 13924,
+                "vs_all": 18449,
+                "pt_uc": 11337,
+                "vs_uc": 14991
+              }
+            },
+            "quarters": {
+              "q1": {
+                "ed": {
+                  "pt_all": 1426,
+                  "vs_all": 1717,
+                  "pt_uc": 1124,
+                  "vs_uc": 1354
+                },
+                "non_ed": {
+                  "pt_all": 1316,
+                  "vs_all": 1562,
+                  "pt_uc": 1049,
+                  "vs_uc": 1250
+                },
+                "other": {
+                  "pt_all": 177,
+                  "vs_all": 215,
+                  "pt_uc": 130,
+                  "vs_uc": 150
+                },
+                "total": {
+                  "pt_all": 2544,
+                  "vs_all": 3159,
+                  "pt_uc": 2032,
+                  "vs_uc": 2515
+                }
+              },
+              "q2": {
+                "ed": {
+                  "pt_all": 1490,
+                  "vs_all": 1768,
+                  "pt_uc": 1209,
+                  "vs_uc": 1418
+                },
+                "non_ed": {
+                  "pt_all": 1229,
+                  "vs_all": 1450,
+                  "pt_uc": 996,
+                  "vs_uc": 1181
+                },
+                "other": {
+                  "pt_all": 284,
+                  "vs_all": 329,
+                  "pt_uc": 218,
+                  "vs_uc": 244
+                },
+                "total": {
+                  "pt_all": 2565,
+                  "vs_all": 3200,
+                  "pt_uc": 2089,
+                  "vs_uc": 2589
+                }
+              },
+              "q3": {
+                "ed": {
+                  "pt_all": 1647,
+                  "vs_all": 2102,
+                  "pt_uc": 1340,
+                  "vs_uc": 1699
+                },
+                "non_ed": {
+                  "pt_all": 3623,
+                  "vs_all": 5829,
+                  "pt_uc": 2932,
+                  "vs_uc": 4747
+                },
+                "other": {
+                  "pt_all": 360,
+                  "vs_all": 419,
+                  "pt_uc": 273,
+                  "vs_uc": 307
+                },
+                "total": {
+                  "pt_all": 5006,
+                  "vs_all": 7793,
+                  "pt_uc": 4059,
+                  "vs_uc": 6317
+                }
+              },
+              "q4": {
+                "ed": {
+                  "pt_all": 953,
+                  "vs_all": 1108,
+                  "pt_uc": 817,
+                  "vs_uc": 940
+                },
+                "non_ed": {
+                  "pt_all": 2724,
+                  "vs_all": 2932,
+                  "pt_uc": 2234,
+                  "vs_uc": 2414
+                },
+                "other": {
+                  "pt_all": 495,
+                  "vs_all": 542,
+                  "pt_uc": 402,
+                  "vs_uc": 440
+                },
+                "total": {
+                  "pt_all": 3809,
+                  "vs_all": 4297,
+                  "pt_uc": 3157,
+                  "vs_uc": 3570
+                }
+              }
+            }
+          },
           "units": [
             {
               "hospcode": "99758",
@@ -806,7 +5059,144 @@
               "num": 45,
               "den": 45,
               "rate": 100.0,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 100.0,
+              "ed_rate_pt": 100.0,
+              "non_ed_rate_vs": 0.0,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 93.33,
+              "full_year": {
+                "ed": {
+                  "pt_all": 40,
+                  "vs_all": 45,
+                  "pt_uc": 38,
+                  "vs_uc": 42
+                },
+                "non_ed": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 40,
+                  "vs_all": 45,
+                  "pt_uc": 38,
+                  "vs_uc": 42
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 22,
+                    "vs_all": 25,
+                    "pt_uc": 21,
+                    "vs_uc": 23
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 22,
+                    "vs_all": 25,
+                    "pt_uc": 21,
+                    "vs_uc": 23
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 9,
+                    "vs_all": 11,
+                    "pt_uc": 8,
+                    "vs_uc": 10
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 9,
+                    "vs_all": 11,
+                    "pt_uc": 8,
+                    "vs_uc": 10
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "non_ed": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  }
+                }
+              }
             },
             {
               "hospcode": "06022",
@@ -815,7 +5205,144 @@
               "num": 607,
               "den": 685,
               "rate": 88.61,
-              "pass": true
+              "pass": true,
+              "ed_rate_vs": 88.61,
+              "ed_rate_pt": 87.03,
+              "non_ed_rate_vs": 6.72,
+              "other_rate_vs": 10.51,
+              "uc_ratio_vs": 80.88,
+              "full_year": {
+                "ed": {
+                  "pt_all": 436,
+                  "vs_all": 607,
+                  "pt_uc": 351,
+                  "vs_uc": 486
+                },
+                "non_ed": {
+                  "pt_all": 42,
+                  "vs_all": 46,
+                  "pt_uc": 32,
+                  "vs_uc": 35
+                },
+                "other": {
+                  "pt_all": 59,
+                  "vs_all": 72,
+                  "pt_uc": 54,
+                  "vs_uc": 63
+                },
+                "total": {
+                  "pt_all": 501,
+                  "vs_all": 685,
+                  "pt_uc": 409,
+                  "vs_uc": 554
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 128,
+                    "vs_all": 165,
+                    "pt_uc": 107,
+                    "vs_uc": 137
+                  },
+                  "non_ed": {
+                    "pt_all": 7,
+                    "vs_all": 8,
+                    "pt_uc": 7,
+                    "vs_uc": 8
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 134,
+                    "vs_all": 174,
+                    "pt_uc": 113,
+                    "vs_uc": 145
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 132,
+                    "vs_all": 183,
+                    "pt_uc": 96,
+                    "vs_uc": 133
+                  },
+                  "non_ed": {
+                    "pt_all": 6,
+                    "vs_all": 7,
+                    "pt_uc": 5,
+                    "vs_uc": 6
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 138,
+                    "vs_all": 190,
+                    "pt_uc": 101,
+                    "vs_uc": 139
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 110,
+                    "vs_all": 163,
+                    "pt_uc": 96,
+                    "vs_uc": 142
+                  },
+                  "non_ed": {
+                    "pt_all": 8,
+                    "vs_all": 9,
+                    "pt_uc": 7,
+                    "vs_uc": 8
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 10,
+                    "pt_uc": 8,
+                    "vs_uc": 9
+                  },
+                  "total": {
+                    "pt_all": 115,
+                    "vs_all": 172,
+                    "pt_uc": 100,
+                    "vs_uc": 149
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 66,
+                    "vs_all": 96,
+                    "pt_uc": 52,
+                    "vs_uc": 74
+                  },
+                  "non_ed": {
+                    "pt_all": 21,
+                    "vs_all": 22,
+                    "pt_uc": 13,
+                    "vs_uc": 13
+                  },
+                  "other": {
+                    "pt_all": 48,
+                    "vs_all": 60,
+                    "pt_uc": 45,
+                    "vs_uc": 53
+                  },
+                  "total": {
+                    "pt_all": 114,
+                    "vs_all": 149,
+                    "pt_uc": 95,
+                    "vs_uc": 121
+                  }
+                }
+              }
             },
             {
               "hospcode": "06018",
@@ -824,7 +5351,144 @@
               "num": 776,
               "den": 1065,
               "rate": 72.86,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 72.86,
+              "ed_rate_pt": 75.75,
+              "non_ed_rate_vs": 22.25,
+              "other_rate_vs": 18.87,
+              "uc_ratio_vs": 85.92,
+              "full_year": {
+                "ed": {
+                  "pt_all": 584,
+                  "vs_all": 776,
+                  "pt_uc": 501,
+                  "vs_uc": 676
+                },
+                "non_ed": {
+                  "pt_all": 192,
+                  "vs_all": 237,
+                  "pt_uc": 153,
+                  "vs_uc": 189
+                },
+                "other": {
+                  "pt_all": 178,
+                  "vs_all": 201,
+                  "pt_uc": 159,
+                  "vs_uc": 182
+                },
+                "total": {
+                  "pt_all": 771,
+                  "vs_all": 1065,
+                  "pt_uc": 654,
+                  "vs_uc": 915
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 125,
+                    "vs_all": 185,
+                    "pt_uc": 103,
+                    "vs_uc": 155
+                  },
+                  "non_ed": {
+                    "pt_all": 98,
+                    "vs_all": 122,
+                    "pt_uc": 80,
+                    "vs_uc": 101
+                  },
+                  "other": {
+                    "pt_all": 15,
+                    "vs_all": 22,
+                    "pt_uc": 15,
+                    "vs_uc": 22
+                  },
+                  "total": {
+                    "pt_all": 190,
+                    "vs_all": 279,
+                    "pt_uc": 157,
+                    "vs_uc": 235
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 174,
+                    "vs_all": 219,
+                    "pt_uc": 153,
+                    "vs_uc": 196
+                  },
+                  "non_ed": {
+                    "pt_all": 76,
+                    "vs_all": 89,
+                    "pt_uc": 61,
+                    "vs_uc": 71
+                  },
+                  "other": {
+                    "pt_all": 44,
+                    "vs_all": 47,
+                    "pt_uc": 36,
+                    "vs_uc": 39
+                  },
+                  "total": {
+                    "pt_all": 231,
+                    "vs_all": 313,
+                    "pt_uc": 198,
+                    "vs_uc": 272
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 201,
+                    "vs_all": 278,
+                    "pt_uc": 169,
+                    "vs_uc": 239
+                  },
+                  "non_ed": {
+                    "pt_all": 14,
+                    "vs_all": 19,
+                    "pt_uc": 9,
+                    "vs_uc": 14
+                  },
+                  "other": {
+                    "pt_all": 54,
+                    "vs_all": 61,
+                    "pt_uc": 48,
+                    "vs_uc": 55
+                  },
+                  "total": {
+                    "pt_all": 221,
+                    "vs_all": 320,
+                    "pt_uc": 182,
+                    "vs_uc": 271
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 84,
+                    "vs_all": 94,
+                    "pt_uc": 76,
+                    "vs_uc": 86
+                  },
+                  "non_ed": {
+                    "pt_all": 4,
+                    "vs_all": 7,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "other": {
+                    "pt_all": 65,
+                    "vs_all": 71,
+                    "pt_uc": 60,
+                    "vs_uc": 66
+                  },
+                  "total": {
+                    "pt_all": 129,
+                    "vs_all": 153,
+                    "pt_uc": 117,
+                    "vs_uc": 137
+                  }
+                }
+              }
             },
             {
               "hospcode": "06020",
@@ -833,34 +5497,582 @@
               "num": 470,
               "den": 659,
               "rate": 71.32,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 71.32,
+              "ed_rate_pt": 74.85,
+              "non_ed_rate_vs": 41.73,
+              "other_rate_vs": 16.39,
+              "uc_ratio_vs": 87.41,
+              "full_year": {
+                "ed": {
+                  "pt_all": 375,
+                  "vs_all": 470,
+                  "pt_uc": 327,
+                  "vs_uc": 413
+                },
+                "non_ed": {
+                  "pt_all": 224,
+                  "vs_all": 275,
+                  "pt_uc": 193,
+                  "vs_uc": 239
+                },
+                "other": {
+                  "pt_all": 98,
+                  "vs_all": 108,
+                  "pt_uc": 91,
+                  "vs_uc": 100
+                },
+                "total": {
+                  "pt_all": 501,
+                  "vs_all": 659,
+                  "pt_uc": 434,
+                  "vs_uc": 576
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 124,
+                    "vs_all": 148,
+                    "pt_uc": 105,
+                    "vs_uc": 126
+                  },
+                  "non_ed": {
+                    "pt_all": 64,
+                    "vs_all": 82,
+                    "pt_uc": 54,
+                    "vs_uc": 70
+                  },
+                  "other": {
+                    "pt_all": 10,
+                    "vs_all": 10,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "total": {
+                    "pt_all": 151,
+                    "vs_all": 194,
+                    "pt_uc": 129,
+                    "vs_uc": 166
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 106,
+                    "vs_all": 137,
+                    "pt_uc": 93,
+                    "vs_uc": 121
+                  },
+                  "non_ed": {
+                    "pt_all": 64,
+                    "vs_all": 79,
+                    "pt_uc": 57,
+                    "vs_uc": 70
+                  },
+                  "other": {
+                    "pt_all": 15,
+                    "vs_all": 17,
+                    "pt_uc": 15,
+                    "vs_uc": 17
+                  },
+                  "total": {
+                    "pt_all": 134,
+                    "vs_all": 180,
+                    "pt_uc": 119,
+                    "vs_uc": 160
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 77,
+                    "vs_all": 98,
+                    "pt_uc": 70,
+                    "vs_uc": 90
+                  },
+                  "non_ed": {
+                    "pt_all": 53,
+                    "vs_all": 64,
+                    "pt_uc": 46,
+                    "vs_uc": 56
+                  },
+                  "other": {
+                    "pt_all": 32,
+                    "vs_all": 36,
+                    "pt_uc": 30,
+                    "vs_uc": 34
+                  },
+                  "total": {
+                    "pt_all": 110,
+                    "vs_all": 150,
+                    "pt_uc": 97,
+                    "vs_uc": 135
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 68,
+                    "vs_all": 87,
+                    "pt_uc": 59,
+                    "vs_uc": 76
+                  },
+                  "non_ed": {
+                    "pt_all": 43,
+                    "vs_all": 50,
+                    "pt_uc": 36,
+                    "vs_uc": 43
+                  },
+                  "other": {
+                    "pt_all": 41,
+                    "vs_all": 45,
+                    "pt_uc": 36,
+                    "vs_uc": 39
+                  },
+                  "total": {
+                    "pt_all": 106,
+                    "vs_all": 135,
+                    "pt_uc": 89,
+                    "vs_uc": 115
+                  }
+                }
+              }
             },
             {
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
-              "num": 214,
-              "den": 331,
-              "rate": 64.65,
-              "pass": false
+              "num": 216,
+              "den": 335,
+              "rate": 64.48,
+              "pass": false,
+              "ed_rate_vs": 64.48,
+              "ed_rate_pt": 66.67,
+              "non_ed_rate_vs": 46.27,
+              "other_rate_vs": 0.6,
+              "uc_ratio_vs": 86.27,
+              "full_year": {
+                "ed": {
+                  "pt_all": 190,
+                  "vs_all": 216,
+                  "pt_uc": 161,
+                  "vs_uc": 183
+                },
+                "non_ed": {
+                  "pt_all": 133,
+                  "vs_all": 155,
+                  "pt_uc": 114,
+                  "vs_uc": 135
+                },
+                "other": {
+                  "pt_all": 2,
+                  "vs_all": 2,
+                  "pt_uc": 2,
+                  "vs_uc": 2
+                },
+                "total": {
+                  "pt_all": 285,
+                  "vs_all": 335,
+                  "pt_uc": 245,
+                  "vs_uc": 289
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 58,
+                    "vs_all": 69,
+                    "pt_uc": 47,
+                    "vs_uc": 57
+                  },
+                  "non_ed": {
+                    "pt_all": 46,
+                    "vs_all": 55,
+                    "pt_uc": 39,
+                    "vs_uc": 48
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 2,
+                    "vs_uc": 2
+                  },
+                  "total": {
+                    "pt_all": 85,
+                    "vs_all": 107,
+                    "pt_uc": 71,
+                    "vs_uc": 92
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 54,
+                    "vs_all": 59,
+                    "pt_uc": 47,
+                    "vs_uc": 51
+                  },
+                  "non_ed": {
+                    "pt_all": 40,
+                    "vs_all": 46,
+                    "pt_uc": 34,
+                    "vs_uc": 39
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 83,
+                    "vs_all": 94,
+                    "pt_uc": 72,
+                    "vs_uc": 81
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 31,
+                    "vs_all": 36,
+                    "pt_uc": 27,
+                    "vs_uc": 30
+                  },
+                  "non_ed": {
+                    "pt_all": 27,
+                    "vs_all": 30,
+                    "pt_uc": 22,
+                    "vs_uc": 25
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 53,
+                    "vs_all": 62,
+                    "pt_uc": 46,
+                    "vs_uc": 52
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 47,
+                    "vs_all": 52,
+                    "pt_uc": 40,
+                    "vs_uc": 45
+                  },
+                  "non_ed": {
+                    "pt_all": 20,
+                    "vs_all": 24,
+                    "pt_uc": 19,
+                    "vs_uc": 23
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 64,
+                    "vs_all": 72,
+                    "pt_uc": 56,
+                    "vs_uc": 64
+                  }
+                }
+              }
             },
             {
               "hospcode": "06021",
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 232,
-              "den": 384,
-              "rate": 60.42,
-              "pass": false
+              "den": 385,
+              "rate": 60.26,
+              "pass": false,
+              "ed_rate_vs": 60.26,
+              "ed_rate_pt": 61.56,
+              "non_ed_rate_vs": 37.92,
+              "other_rate_vs": 7.01,
+              "uc_ratio_vs": 96.36,
+              "full_year": {
+                "ed": {
+                  "pt_all": 213,
+                  "vs_all": 232,
+                  "pt_uc": 206,
+                  "vs_uc": 225
+                },
+                "non_ed": {
+                  "pt_all": 139,
+                  "vs_all": 146,
+                  "pt_uc": 131,
+                  "vs_uc": 138
+                },
+                "other": {
+                  "pt_all": 27,
+                  "vs_all": 27,
+                  "pt_uc": 27,
+                  "vs_uc": 27
+                },
+                "total": {
+                  "pt_all": 346,
+                  "vs_all": 385,
+                  "pt_uc": 332,
+                  "vs_uc": 371
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 39,
+                    "vs_all": 49,
+                    "pt_uc": 36,
+                    "vs_uc": 46
+                  },
+                  "non_ed": {
+                    "pt_all": 36,
+                    "vs_all": 40,
+                    "pt_uc": 34,
+                    "vs_uc": 38
+                  },
+                  "other": {
+                    "pt_all": 9,
+                    "vs_all": 9,
+                    "pt_uc": 9,
+                    "vs_uc": 9
+                  },
+                  "total": {
+                    "pt_all": 72,
+                    "vs_all": 89,
+                    "pt_uc": 68,
+                    "vs_uc": 85
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 78,
+                    "vs_all": 81,
+                    "pt_uc": 78,
+                    "vs_uc": 81
+                  },
+                  "non_ed": {
+                    "pt_all": 48,
+                    "vs_all": 49,
+                    "pt_uc": 45,
+                    "vs_uc": 46
+                  },
+                  "other": {
+                    "pt_all": 15,
+                    "vs_all": 15,
+                    "pt_uc": 15,
+                    "vs_uc": 15
+                  },
+                  "total": {
+                    "pt_all": 131,
+                    "vs_all": 140,
+                    "pt_uc": 128,
+                    "vs_uc": 137
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 69,
+                    "vs_all": 71,
+                    "pt_uc": 65,
+                    "vs_uc": 67
+                  },
+                  "non_ed": {
+                    "pt_all": 42,
+                    "vs_all": 44,
+                    "pt_uc": 42,
+                    "vs_uc": 44
+                  },
+                  "other": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "total": {
+                    "pt_all": 103,
+                    "vs_all": 112,
+                    "pt_uc": 99,
+                    "vs_uc": 108
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 27,
+                    "vs_all": 31,
+                    "pt_uc": 27,
+                    "vs_uc": 31
+                  },
+                  "non_ed": {
+                    "pt_all": 13,
+                    "vs_all": 13,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 40,
+                    "vs_all": 44,
+                    "pt_uc": 37,
+                    "vs_uc": 41
+                  }
+                }
+              }
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
-              "num": 320,
-              "den": 548,
-              "rate": 58.39,
-              "pass": false
+              "num": 321,
+              "den": 560,
+              "rate": 57.32,
+              "pass": false,
+              "ed_rate_vs": 57.32,
+              "ed_rate_pt": 60.82,
+              "non_ed_rate_vs": 41.79,
+              "other_rate_vs": 13.93,
+              "uc_ratio_vs": 91.96,
+              "full_year": {
+                "ed": {
+                  "pt_all": 267,
+                  "vs_all": 321,
+                  "pt_uc": 239,
+                  "vs_uc": 291
+                },
+                "non_ed": {
+                  "pt_all": 189,
+                  "vs_all": 234,
+                  "pt_uc": 176,
+                  "vs_uc": 218
+                },
+                "other": {
+                  "pt_all": 73,
+                  "vs_all": 78,
+                  "pt_uc": 71,
+                  "vs_uc": 76
+                },
+                "total": {
+                  "pt_all": 439,
+                  "vs_all": 560,
+                  "pt_uc": 399,
+                  "vs_uc": 515
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 62,
+                    "vs_all": 70,
+                    "pt_uc": 52,
+                    "vs_uc": 59
+                  },
+                  "non_ed": {
+                    "pt_all": 56,
+                    "vs_all": 69,
+                    "pt_uc": 51,
+                    "vs_uc": 64
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 102,
+                    "vs_all": 126,
+                    "pt_uc": 87,
+                    "vs_uc": 110
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 82,
+                    "vs_all": 99,
+                    "pt_uc": 76,
+                    "vs_uc": 93
+                  },
+                  "non_ed": {
+                    "pt_all": 55,
+                    "vs_all": 69,
+                    "pt_uc": 52,
+                    "vs_uc": 63
+                  },
+                  "other": {
+                    "pt_all": 16,
+                    "vs_all": 16,
+                    "pt_uc": 16,
+                    "vs_uc": 16
+                  },
+                  "total": {
+                    "pt_all": 122,
+                    "vs_all": 159,
+                    "pt_uc": 115,
+                    "vs_uc": 149
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 71,
+                    "vs_all": 90,
+                    "pt_uc": 62,
+                    "vs_uc": 80
+                  },
+                  "non_ed": {
+                    "pt_all": 43,
+                    "vs_all": 52,
+                    "pt_uc": 41,
+                    "vs_uc": 50
+                  },
+                  "other": {
+                    "pt_all": 27,
+                    "vs_all": 29,
+                    "pt_uc": 26,
+                    "vs_uc": 28
+                  },
+                  "total": {
+                    "pt_all": 115,
+                    "vs_all": 151,
+                    "pt_uc": 103,
+                    "vs_uc": 138
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 52,
+                    "vs_all": 62,
+                    "pt_uc": 49,
+                    "vs_uc": 59
+                  },
+                  "non_ed": {
+                    "pt_all": 35,
+                    "vs_all": 44,
+                    "pt_uc": 32,
+                    "vs_uc": 41
+                  },
+                  "other": {
+                    "pt_all": 29,
+                    "vs_all": 32,
+                    "pt_uc": 28,
+                    "vs_uc": 31
+                  },
+                  "total": {
+                    "pt_all": 100,
+                    "vs_all": 124,
+                    "pt_uc": 94,
+                    "vs_uc": 118
+                  }
+                }
+              }
             },
             {
               "hospcode": "06015",
@@ -869,25 +6081,290 @@
               "num": 276,
               "den": 548,
               "rate": 50.36,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 50.36,
+              "ed_rate_pt": 50.4,
+              "non_ed_rate_vs": 37.96,
+              "other_rate_vs": 34.49,
+              "uc_ratio_vs": 65.51,
+              "full_year": {
+                "ed": {
+                  "pt_all": 191,
+                  "vs_all": 276,
+                  "pt_uc": 120,
+                  "vs_uc": 147
+                },
+                "non_ed": {
+                  "pt_all": 178,
+                  "vs_all": 208,
+                  "pt_uc": 151,
+                  "vs_uc": 178
+                },
+                "other": {
+                  "pt_all": 147,
+                  "vs_all": 189,
+                  "pt_uc": 105,
+                  "vs_uc": 129
+                },
+                "total": {
+                  "pt_all": 379,
+                  "vs_all": 548,
+                  "pt_uc": 281,
+                  "vs_uc": 359
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 50,
+                    "vs_all": 72,
+                    "pt_uc": 28,
+                    "vs_uc": 36
+                  },
+                  "non_ed": {
+                    "pt_all": 43,
+                    "vs_all": 52,
+                    "pt_uc": 33,
+                    "vs_uc": 39
+                  },
+                  "other": {
+                    "pt_all": 52,
+                    "vs_all": 61,
+                    "pt_uc": 39,
+                    "vs_uc": 47
+                  },
+                  "total": {
+                    "pt_all": 98,
+                    "vs_all": 132,
+                    "pt_uc": 68,
+                    "vs_uc": 83
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 63,
+                    "vs_all": 76,
+                    "pt_uc": 42,
+                    "vs_uc": 45
+                  },
+                  "non_ed": {
+                    "pt_all": 73,
+                    "vs_all": 82,
+                    "pt_uc": 61,
+                    "vs_uc": 70
+                  },
+                  "other": {
+                    "pt_all": 58,
+                    "vs_all": 73,
+                    "pt_uc": 44,
+                    "vs_uc": 54
+                  },
+                  "total": {
+                    "pt_all": 132,
+                    "vs_all": 171,
+                    "pt_uc": 101,
+                    "vs_uc": 123
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 42,
+                    "vs_all": 67,
+                    "pt_uc": 26,
+                    "vs_uc": 34
+                  },
+                  "non_ed": {
+                    "pt_all": 41,
+                    "vs_all": 50,
+                    "pt_uc": 37,
+                    "vs_uc": 46
+                  },
+                  "other": {
+                    "pt_all": 27,
+                    "vs_all": 45,
+                    "pt_uc": 17,
+                    "vs_uc": 23
+                  },
+                  "total": {
+                    "pt_all": 92,
+                    "vs_all": 154,
+                    "pt_uc": 70,
+                    "vs_uc": 97
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 36,
+                    "vs_all": 61,
+                    "pt_uc": 24,
+                    "vs_uc": 32
+                  },
+                  "non_ed": {
+                    "pt_all": 21,
+                    "vs_all": 24,
+                    "pt_uc": 20,
+                    "vs_uc": 23
+                  },
+                  "other": {
+                    "pt_all": 10,
+                    "vs_all": 10,
+                    "pt_uc": 5,
+                    "vs_uc": 5
+                  },
+                  "total": {
+                    "pt_all": 57,
+                    "vs_all": 91,
+                    "pt_uc": 42,
+                    "vs_uc": 56
+                  }
+                }
+              }
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 128,
-              "den": 296,
-              "rate": 43.24,
-              "pass": false
-            },
-            {
-              "hospcode": "06016",
-              "name": "รพ.สต.บ้านศรีสองเมือง",
-              "subdistrict": "ไชยสถาน",
-              "num": 538,
-              "den": 1247,
-              "rate": 43.14,
-              "pass": false
+              "num": 143,
+              "den": 331,
+              "rate": 43.2,
+              "pass": false,
+              "ed_rate_vs": 43.2,
+              "ed_rate_pt": 46.39,
+              "non_ed_rate_vs": 73.11,
+              "other_rate_vs": 1.21,
+              "uc_ratio_vs": 66.47,
+              "full_year": {
+                "ed": {
+                  "pt_all": 135,
+                  "vs_all": 143,
+                  "pt_uc": 87,
+                  "vs_uc": 90
+                },
+                "non_ed": {
+                  "pt_all": 217,
+                  "vs_all": 242,
+                  "pt_uc": 148,
+                  "vs_uc": 164
+                },
+                "other": {
+                  "pt_all": 4,
+                  "vs_all": 4,
+                  "pt_uc": 2,
+                  "vs_uc": 2
+                },
+                "total": {
+                  "pt_all": 291,
+                  "vs_all": 331,
+                  "pt_uc": 193,
+                  "vs_uc": 220
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 58,
+                    "vs_all": 60,
+                    "pt_uc": 41,
+                    "vs_uc": 43
+                  },
+                  "non_ed": {
+                    "pt_all": 85,
+                    "vs_all": 96,
+                    "pt_uc": 61,
+                    "vs_uc": 69
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 114,
+                    "vs_all": 131,
+                    "pt_uc": 80,
+                    "vs_uc": 94
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 28,
+                    "vs_all": 31,
+                    "pt_uc": 18,
+                    "vs_uc": 19
+                  },
+                  "non_ed": {
+                    "pt_all": 57,
+                    "vs_all": 65,
+                    "pt_uc": 46,
+                    "vs_uc": 51
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 74,
+                    "vs_all": 88,
+                    "pt_uc": 56,
+                    "vs_uc": 66
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 21,
+                    "vs_all": 22,
+                    "pt_uc": 17,
+                    "vs_uc": 17
+                  },
+                  "non_ed": {
+                    "pt_all": 31,
+                    "vs_all": 32,
+                    "pt_uc": 26,
+                    "vs_uc": 27
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 42,
+                    "vs_all": 44,
+                    "pt_uc": 35,
+                    "vs_uc": 36
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 28,
+                    "vs_all": 30,
+                    "pt_uc": 11,
+                    "vs_uc": 11
+                  },
+                  "non_ed": {
+                    "pt_all": 44,
+                    "vs_all": 49,
+                    "pt_uc": 15,
+                    "vs_uc": 17
+                  },
+                  "other": {
+                    "pt_all": 2,
+                    "vs_all": 2,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 61,
+                    "vs_all": 68,
+                    "pt_uc": 22,
+                    "vs_uc": 24
+                  }
+                }
+              }
             },
             {
               "hospcode": "06017",
@@ -896,7 +6373,290 @@
               "num": 180,
               "den": 427,
               "rate": 42.15,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 42.15,
+              "ed_rate_pt": 44.22,
+              "non_ed_rate_vs": 61.12,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 92.04,
+              "full_year": {
+                "ed": {
+                  "pt_all": 176,
+                  "vs_all": 180,
+                  "pt_uc": 158,
+                  "vs_uc": 162
+                },
+                "non_ed": {
+                  "pt_all": 241,
+                  "vs_all": 261,
+                  "pt_uc": 222,
+                  "vs_uc": 239
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 398,
+                  "vs_all": 427,
+                  "pt_uc": 367,
+                  "vs_uc": 393
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 14,
+                    "vs_all": 15,
+                    "pt_uc": 10,
+                    "vs_uc": 11
+                  },
+                  "non_ed": {
+                    "pt_all": 34,
+                    "vs_all": 38,
+                    "pt_uc": 28,
+                    "vs_uc": 30
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 42,
+                    "vs_all": 49,
+                    "pt_uc": 34,
+                    "vs_uc": 39
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 27,
+                    "vs_all": 28,
+                    "pt_uc": 25,
+                    "vs_uc": 26
+                  },
+                  "non_ed": {
+                    "pt_all": 41,
+                    "vs_all": 45,
+                    "pt_uc": 36,
+                    "vs_uc": 40
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 62,
+                    "vs_all": 69,
+                    "pt_uc": 55,
+                    "vs_uc": 62
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 90,
+                    "vs_all": 90,
+                    "pt_uc": 85,
+                    "vs_uc": 85
+                  },
+                  "non_ed": {
+                    "pt_all": 103,
+                    "vs_all": 113,
+                    "pt_uc": 99,
+                    "vs_uc": 109
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 190,
+                    "vs_all": 201,
+                    "pt_uc": 182,
+                    "vs_uc": 193
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 45,
+                    "vs_all": 47,
+                    "pt_uc": 38,
+                    "vs_uc": 40
+                  },
+                  "non_ed": {
+                    "pt_all": 63,
+                    "vs_all": 65,
+                    "pt_uc": 59,
+                    "vs_uc": 60
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 104,
+                    "vs_all": 108,
+                    "pt_uc": 96,
+                    "vs_uc": 99
+                  }
+                }
+              }
+            },
+            {
+              "hospcode": "06016",
+              "name": "รพ.สต.บ้านศรีสองเมือง",
+              "subdistrict": "ไชยสถาน",
+              "num": 555,
+              "den": 1383,
+              "rate": 40.13,
+              "pass": false,
+              "ed_rate_vs": 40.13,
+              "ed_rate_pt": 45.92,
+              "non_ed_rate_vs": 74.69,
+              "other_rate_vs": 0.0,
+              "uc_ratio_vs": 88.79,
+              "full_year": {
+                "ed": {
+                  "pt_all": 495,
+                  "vs_all": 555,
+                  "pt_uc": 447,
+                  "vs_uc": 500
+                },
+                "non_ed": {
+                  "pt_all": 825,
+                  "vs_all": 1033,
+                  "pt_uc": 711,
+                  "vs_uc": 896
+                },
+                "other": {
+                  "pt_all": 0,
+                  "vs_all": 0,
+                  "pt_uc": 0,
+                  "vs_uc": 0
+                },
+                "total": {
+                  "pt_all": 1078,
+                  "vs_all": 1383,
+                  "pt_uc": 951,
+                  "vs_uc": 1228
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 103,
+                    "vs_all": 114,
+                    "pt_uc": 98,
+                    "vs_uc": 109
+                  },
+                  "non_ed": {
+                    "pt_all": 52,
+                    "vs_all": 65,
+                    "pt_uc": 43,
+                    "vs_uc": 56
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 142,
+                    "vs_all": 171,
+                    "pt_uc": 131,
+                    "vs_uc": 159
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 57,
+                    "vs_all": 60,
+                    "pt_uc": 53,
+                    "vs_uc": 56
+                  },
+                  "non_ed": {
+                    "pt_all": 131,
+                    "vs_all": 154,
+                    "pt_uc": 98,
+                    "vs_uc": 118
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 175,
+                    "vs_all": 205,
+                    "pt_uc": 139,
+                    "vs_uc": 166
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 157,
+                    "vs_all": 186,
+                    "pt_uc": 131,
+                    "vs_uc": 153
+                  },
+                  "non_ed": {
+                    "pt_all": 372,
+                    "vs_all": 474,
+                    "pt_uc": 324,
+                    "vs_uc": 411
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 385,
+                    "vs_all": 504,
+                    "pt_uc": 335,
+                    "vs_uc": 436
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 178,
+                    "vs_all": 195,
+                    "pt_uc": 165,
+                    "vs_uc": 182
+                  },
+                  "non_ed": {
+                    "pt_all": 270,
+                    "vs_all": 340,
+                    "pt_uc": 246,
+                    "vs_uc": 311
+                  },
+                  "other": {
+                    "pt_all": 0,
+                    "vs_all": 0,
+                    "pt_uc": 0,
+                    "vs_uc": 0
+                  },
+                  "total": {
+                    "pt_all": 376,
+                    "vs_all": 503,
+                    "pt_uc": 346,
+                    "vs_uc": 467
+                  }
+                }
+              }
             },
             {
               "hospcode": "13994",
@@ -905,7 +6665,144 @@
               "num": 67,
               "den": 206,
               "rate": 32.52,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 32.52,
+              "ed_rate_pt": 34.1,
+              "non_ed_rate_vs": 68.93,
+              "other_rate_vs": 2.91,
+              "uc_ratio_vs": 86.41,
+              "full_year": {
+                "ed": {
+                  "pt_all": 59,
+                  "vs_all": 67,
+                  "pt_uc": 54,
+                  "vs_uc": 61
+                },
+                "non_ed": {
+                  "pt_all": 124,
+                  "vs_all": 142,
+                  "pt_uc": 103,
+                  "vs_uc": 119
+                },
+                "other": {
+                  "pt_all": 6,
+                  "vs_all": 6,
+                  "pt_uc": 6,
+                  "vs_uc": 6
+                },
+                "total": {
+                  "pt_all": 173,
+                  "vs_all": 206,
+                  "pt_uc": 148,
+                  "vs_uc": 178
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 16,
+                    "vs_all": 19,
+                    "pt_uc": 13,
+                    "vs_uc": 16
+                  },
+                  "non_ed": {
+                    "pt_all": 44,
+                    "vs_all": 49,
+                    "pt_uc": 37,
+                    "vs_uc": 42
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 57,
+                    "vs_all": 66,
+                    "pt_uc": 48,
+                    "vs_uc": 57
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 13,
+                    "vs_all": 14,
+                    "pt_uc": 12,
+                    "vs_uc": 13
+                  },
+                  "non_ed": {
+                    "pt_all": 34,
+                    "vs_all": 40,
+                    "pt_uc": 29,
+                    "vs_uc": 33
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 42,
+                    "vs_all": 53,
+                    "pt_uc": 36,
+                    "vs_uc": 45
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 19,
+                    "vs_all": 22,
+                    "pt_uc": 18,
+                    "vs_uc": 20
+                  },
+                  "non_ed": {
+                    "pt_all": 27,
+                    "vs_all": 30,
+                    "pt_uc": 23,
+                    "vs_uc": 26
+                  },
+                  "other": {
+                    "pt_all": 3,
+                    "vs_all": 3,
+                    "pt_uc": 3,
+                    "vs_uc": 3
+                  },
+                  "total": {
+                    "pt_all": 45,
+                    "vs_all": 52,
+                    "pt_uc": 40,
+                    "vs_uc": 46
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 11,
+                    "vs_all": 12,
+                    "pt_uc": 11,
+                    "vs_uc": 12
+                  },
+                  "non_ed": {
+                    "pt_all": 19,
+                    "vs_all": 23,
+                    "pt_uc": 14,
+                    "vs_uc": 18
+                  },
+                  "other": {
+                    "pt_all": 1,
+                    "vs_all": 1,
+                    "pt_uc": 1,
+                    "vs_uc": 1
+                  },
+                  "total": {
+                    "pt_all": 29,
+                    "vs_all": 35,
+                    "pt_uc": 24,
+                    "vs_uc": 30
+                  }
+                }
+              }
             },
             {
               "hospcode": "11135",
@@ -914,16 +6811,290 @@
               "num": 2603,
               "den": 10843,
               "rate": 24.01,
-              "pass": false
+              "pass": false,
+              "ed_rate_vs": 24.01,
+              "ed_rate_pt": 27.21,
+              "non_ed_rate_vs": 74.42,
+              "other_rate_vs": 7.02,
+              "uc_ratio_vs": 77.28,
+              "full_year": {
+                "ed": {
+                  "pt_all": 2167,
+                  "vs_all": 2603,
+                  "pt_uc": 1616,
+                  "vs_uc": 1934
+                },
+                "non_ed": {
+                  "pt_all": 5820,
+                  "vs_all": 8069,
+                  "pt_uc": 4514,
+                  "vs_uc": 6322
+                },
+                "other": {
+                  "pt_all": 667,
+                  "vs_all": 761,
+                  "pt_uc": 451,
+                  "vs_uc": 497
+                },
+                "total": {
+                  "pt_all": 7964,
+                  "vs_all": 10843,
+                  "pt_uc": 6134,
+                  "vs_uc": 8380
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 596,
+                    "vs_all": 691,
+                    "pt_uc": 433,
+                    "vs_uc": 502
+                  },
+                  "non_ed": {
+                    "pt_all": 561,
+                    "vs_all": 635,
+                    "pt_uc": 394,
+                    "vs_uc": 436
+                  },
+                  "other": {
+                    "pt_all": 76,
+                    "vs_all": 98,
+                    "pt_uc": 43,
+                    "vs_uc": 48
+                  },
+                  "total": {
+                    "pt_all": 1116,
+                    "vs_all": 1326,
+                    "pt_uc": 808,
+                    "vs_uc": 939
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 622,
+                    "vs_all": 721,
+                    "pt_uc": 464,
+                    "vs_uc": 526
+                  },
+                  "non_ed": {
+                    "pt_all": 429,
+                    "vs_all": 506,
+                    "pt_uc": 299,
+                    "vs_uc": 357
+                  },
+                  "other": {
+                    "pt_all": 117,
+                    "vs_all": 142,
+                    "pt_uc": 73,
+                    "vs_uc": 84
+                  },
+                  "total": {
+                    "pt_all": 1016,
+                    "vs_all": 1245,
+                    "pt_uc": 747,
+                    "vs_uc": 899
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 711,
+                    "vs_all": 928,
+                    "pt_uc": 526,
+                    "vs_uc": 691
+                  },
+                  "non_ed": {
+                    "pt_all": 2753,
+                    "vs_all": 4764,
+                    "pt_uc": 2147,
+                    "vs_uc": 3783
+                  },
+                  "other": {
+                    "pt_all": 192,
+                    "vs_all": 218,
+                    "pt_uc": 125,
+                    "vs_uc": 138
+                  },
+                  "total": {
+                    "pt_all": 3374,
+                    "vs_all": 5659,
+                    "pt_uc": 2609,
+                    "vs_uc": 4444
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 238,
+                    "vs_all": 263,
+                    "pt_uc": 193,
+                    "vs_uc": 215
+                  },
+                  "non_ed": {
+                    "pt_all": 2077,
+                    "vs_all": 2164,
+                    "pt_uc": 1674,
+                    "vs_uc": 1746
+                  },
+                  "other": {
+                    "pt_all": 282,
+                    "vs_all": 303,
+                    "pt_uc": 210,
+                    "vs_uc": 227
+                  },
+                  "total": {
+                    "pt_all": 2458,
+                    "vs_all": 2613,
+                    "pt_uc": 1970,
+                    "vs_uc": 2098
+                  }
+                }
+              }
             },
             {
               "hospcode": "06024",
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
               "num": 204,
-              "den": 976,
-              "rate": 20.9,
-              "pass": false
+              "den": 977,
+              "rate": 20.88,
+              "pass": false,
+              "ed_rate_vs": 20.88,
+              "ed_rate_pt": 24.8,
+              "non_ed_rate_vs": 74.21,
+              "other_rate_vs": 5.83,
+              "uc_ratio_vs": 99.39,
+              "full_year": {
+                "ed": {
+                  "pt_all": 188,
+                  "vs_all": 204,
+                  "pt_uc": 185,
+                  "vs_uc": 201
+                },
+                "non_ed": {
+                  "pt_all": 568,
+                  "vs_all": 725,
+                  "pt_uc": 563,
+                  "vs_uc": 720
+                },
+                "other": {
+                  "pt_all": 55,
+                  "vs_all": 57,
+                  "pt_uc": 55,
+                  "vs_uc": 57
+                },
+                "total": {
+                  "pt_all": 758,
+                  "vs_all": 977,
+                  "pt_uc": 752,
+                  "vs_uc": 971
+                }
+              },
+              "quarters": {
+                "q1": {
+                  "ed": {
+                    "pt_all": 31,
+                    "vs_all": 35,
+                    "pt_uc": 30,
+                    "vs_uc": 34
+                  },
+                  "non_ed": {
+                    "pt_all": 190,
+                    "vs_all": 251,
+                    "pt_uc": 188,
+                    "vs_uc": 249
+                  },
+                  "other": {
+                    "pt_all": 10,
+                    "vs_all": 10,
+                    "pt_uc": 10,
+                    "vs_uc": 10
+                  },
+                  "total": {
+                    "pt_all": 219,
+                    "vs_all": 290,
+                    "pt_uc": 217,
+                    "vs_uc": 288
+                  }
+                },
+                "q2": {
+                  "ed": {
+                    "pt_all": 45,
+                    "vs_all": 49,
+                    "pt_uc": 44,
+                    "vs_uc": 48
+                  },
+                  "non_ed": {
+                    "pt_all": 175,
+                    "vs_all": 219,
+                    "pt_uc": 173,
+                    "vs_uc": 217
+                  },
+                  "other": {
+                    "pt_all": 16,
+                    "vs_all": 16,
+                    "pt_uc": 16,
+                    "vs_uc": 16
+                  },
+                  "total": {
+                    "pt_all": 216,
+                    "vs_all": 282,
+                    "pt_uc": 214,
+                    "vs_uc": 280
+                  }
+                },
+                "q3": {
+                  "ed": {
+                    "pt_all": 39,
+                    "vs_all": 42,
+                    "pt_uc": 39,
+                    "vs_uc": 42
+                  },
+                  "non_ed": {
+                    "pt_all": 109,
+                    "vs_all": 148,
+                    "pt_uc": 109,
+                    "vs_uc": 148
+                  },
+                  "other": {
+                    "pt_all": 12,
+                    "vs_all": 13,
+                    "pt_uc": 12,
+                    "vs_uc": 13
+                  },
+                  "total": {
+                    "pt_all": 152,
+                    "vs_all": 203,
+                    "pt_uc": 152,
+                    "vs_uc": 203
+                  }
+                },
+                "q4": {
+                  "ed": {
+                    "pt_all": 73,
+                    "vs_all": 78,
+                    "pt_uc": 72,
+                    "vs_uc": 77
+                  },
+                  "non_ed": {
+                    "pt_all": 94,
+                    "vs_all": 107,
+                    "pt_uc": 93,
+                    "vs_uc": 106
+                  },
+                  "other": {
+                    "pt_all": 17,
+                    "vs_all": 18,
+                    "pt_uc": 17,
+                    "vs_uc": 18
+                  },
+                  "total": {
+                    "pt_all": 171,
+                    "vs_all": 202,
+                    "pt_uc": 169,
+                    "vs_uc": 200
+                  }
+                }
+              }
             }
           ]
         }

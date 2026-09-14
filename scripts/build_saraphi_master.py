@@ -346,11 +346,11 @@ for y in years:
 # 1.2 s_ttm10
 master["indicators"]["ttm_ed"] = {
     "code": "",
-    "name": "การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ED)",
+    "name": "OPD-การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ttm10)",
     "table": "s_ttm10",
     "domain": "ttm",
     "domain_label": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
-    "desc": "สัดส่วนการจ่ายยาสมุนไพรในบัญชียาหลักแห่งชาติ (ED Ratio)",
+    "desc": "สัดส่วนการจ่ายยาสมุนไพรในบัญชียาหลักแห่งชาติ (ED Ratio) จำแนก ED, NON-ED, OTHER, รวมทุกสิทธิ และ สิทธิ UC (คน/ครั้ง)",
     "target": 80.0,
     "unit": "%",
     "num_label": "ในบัญชียาหลัก (ครั้ง)",
@@ -360,24 +360,132 @@ master["indicators"]["ttm_ed"] = {
 for y in years:
     rows = load_json(f"s_ttm10_{y}.json")
     unit_data = []
-    tot_num = 0.0; tot_den = 0.0
+
+    # District accumulators
+    dist_ed_summary = {
+        "full_year": {
+            "ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+            "non_ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+            "other": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+            "total": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0}
+        },
+        "quarters": {
+            f"q{q}": {
+                "ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "non_ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "other": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "total": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0}
+            } for q in range(1, 5)
+        }
+    }
+
     for r in rows:
         hcode = r.get('hospcode')
         if hcode in SARAPHI_UNITS:
-            num = sum(int(clean_num(r.get(f'ed_vs_q{q}') or 0)) for q in range(1, 5))
-            den = sum(int(clean_num(r.get(f'total_vs_q{q}') or 0)) for q in range(1, 5))
-            rate = round((num / den * 100), 2) if den > 0 else 0.0
-            tot_num += num; tot_den += den
+            unit_quarters = {}
+            unit_full_year = {
+                "ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "non_ed": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "other": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0},
+                "total": {"pt_all": 0, "vs_all": 0, "pt_uc": 0, "vs_uc": 0}
+            }
+
+            for q in range(1, 5):
+                ed_pt = int(clean_num(r.get(f'ed_pt_q{q}') or 0))
+                ed_vs = int(clean_num(r.get(f'ed_vs_q{q}') or 0))
+                ed_pt_uc = int(clean_num(r.get(f'ed_pt_uc_q{q}') or 0))
+                ed_vs_uc = int(clean_num(r.get(f'ed_vs_uc_q{q}') or 0))
+
+                non_ed_pt = int(clean_num(r.get(f'non_ed_pt_q{q}') or 0))
+                non_ed_vs = int(clean_num(r.get(f'non_ed_vs_q{q}') or 0))
+                non_ed_pt_uc = int(clean_num(r.get(f'non_ed_pt_uc_q{q}') or 0))
+                non_ed_vs_uc = int(clean_num(r.get(f'non_ed_vs_uc_q{q}') or 0))
+
+                other_pt = int(clean_num(r.get(f'other_pt_q{q}') or 0))
+                other_vs = int(clean_num(r.get(f'other_vs_q{q}') or 0))
+                other_pt_uc = int(clean_num(r.get(f'other_pt_uc_q{q}') or 0))
+                other_vs_uc = int(clean_num(r.get(f'other_vs_uc_q{q}') or 0))
+
+                tot_pt = int(clean_num(r.get(f'total_pt_q{q}') or 0))
+                tot_vs = int(clean_num(r.get(f'total_vs_q{q}') or 0))
+                tot_pt_uc = int(clean_num(r.get(f'total_pt_uc_q{q}') or 0))
+                tot_vs_uc = int(clean_num(r.get(f'total_vs_uc_q{q}') or 0))
+
+                q_dict = {
+                    "ed": {"pt_all": ed_pt, "vs_all": ed_vs, "pt_uc": ed_pt_uc, "vs_uc": ed_vs_uc},
+                    "non_ed": {"pt_all": non_ed_pt, "vs_all": non_ed_vs, "pt_uc": non_ed_pt_uc, "vs_uc": non_ed_vs_uc},
+                    "other": {"pt_all": other_pt, "vs_all": other_vs, "pt_uc": other_pt_uc, "vs_uc": other_vs_uc},
+                    "total": {"pt_all": tot_pt, "vs_all": tot_vs, "pt_uc": tot_pt_uc, "vs_uc": tot_vs_uc}
+                }
+                unit_quarters[f"q{q}"] = q_dict
+
+                for cat in ["ed", "non_ed", "other", "total"]:
+                    for m in ["pt_all", "vs_all", "pt_uc", "vs_uc"]:
+                        unit_full_year[cat][m] += q_dict[cat][m]
+                        dist_ed_summary["quarters"][f"q{q}"][cat][m] += q_dict[cat][m]
+                        dist_ed_summary["full_year"][cat][m] += q_dict[cat][m]
+
+            tot_vs_all = unit_full_year["total"]["vs_all"]
+            ed_vs_all = unit_full_year["ed"]["vs_all"]
+            non_ed_vs_all = unit_full_year["non_ed"]["vs_all"]
+            other_vs_all = unit_full_year["other"]["vs_all"]
+
+            tot_pt_all = unit_full_year["total"]["pt_all"]
+            ed_pt_all = unit_full_year["ed"]["pt_all"]
+
+            ed_rate_vs = round((ed_vs_all / tot_vs_all * 100), 2) if tot_vs_all > 0 else 0.0
+            ed_rate_pt = round((ed_pt_all / tot_pt_all * 100), 2) if tot_pt_all > 0 else 0.0
+            non_ed_rate_vs = round((non_ed_vs_all / tot_vs_all * 100), 2) if tot_vs_all > 0 else 0.0
+            other_rate_vs = round((other_vs_all / tot_vs_all * 100), 2) if tot_vs_all > 0 else 0.0
+            uc_ratio_vs = round((unit_full_year["total"]["vs_uc"] / tot_vs_all * 100), 2) if tot_vs_all > 0 else 0.0
+
+            clean_unit_name = SARAPHI_UNITS[hcode]["name"]
+            if hcode == '06023':
+                clean_unit_name = 'รพ.สต.บ้านป่าสา'
+
             unit_data.append({
                 "hospcode": hcode,
-                "name": SARAPHI_UNITS[hcode]["name"],
+                "name": clean_unit_name,
                 "subdistrict": SARAPHI_UNITS[hcode]["subdistrict"],
-                "num": int(num), "den": int(den), "rate": rate, "pass": rate >= 80.0
+                "num": int(ed_vs_all),
+                "den": int(tot_vs_all),
+                "rate": ed_rate_vs,
+                "pass": ed_rate_vs >= 80.0,
+                "ed_rate_vs": ed_rate_vs,
+                "ed_rate_pt": ed_rate_pt,
+                "non_ed_rate_vs": non_ed_rate_vs,
+                "other_rate_vs": other_rate_vs,
+                "uc_ratio_vs": uc_ratio_vs,
+                "full_year": unit_full_year,
+                "quarters": unit_quarters
             })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+
+    dist_tot_vs = dist_ed_summary["full_year"]["total"]["vs_all"]
+    dist_ed_vs = dist_ed_summary["full_year"]["ed"]["vs_all"]
+    dist_non_ed_vs = dist_ed_summary["full_year"]["non_ed"]["vs_all"]
+    dist_other_vs = dist_ed_summary["full_year"]["other"]["vs_all"]
+    dist_tot_pt = dist_ed_summary["full_year"]["total"]["pt_all"]
+    dist_ed_pt = dist_ed_summary["full_year"]["ed"]["pt_all"]
+
+    dist_ed_rate_vs = round((dist_ed_vs / dist_tot_vs * 100), 2) if dist_tot_vs > 0 else 0.0
+    dist_ed_rate_pt = round((dist_ed_pt / dist_tot_pt * 100), 2) if dist_tot_pt > 0 else 0.0
+    dist_non_ed_rate_vs = round((dist_non_ed_vs / dist_tot_vs * 100), 2) if dist_tot_vs > 0 else 0.0
+    dist_other_rate_vs = round((dist_other_vs / dist_tot_vs * 100), 2) if dist_tot_vs > 0 else 0.0
+    dist_uc_ratio_vs = round((dist_ed_summary["full_year"]["total"]["vs_uc"] / dist_tot_vs * 100), 2) if dist_tot_vs > 0 else 0.0
+
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["ttm_ed"]["years"][y] = {
-        "num": int(tot_num), "den": int(tot_den), "rate": dist_rate, "pass": dist_rate >= 80.0, "units": unit_data
+        "num": int(dist_ed_vs),
+        "den": int(dist_tot_vs),
+        "rate": dist_ed_rate_vs,
+        "pass": dist_ed_rate_vs >= 80.0,
+        "ed_rate_vs": dist_ed_rate_vs,
+        "ed_rate_pt": dist_ed_rate_pt,
+        "non_ed_rate_vs": dist_non_ed_rate_vs,
+        "other_rate_vs": dist_other_rate_vs,
+        "uc_ratio_vs": dist_uc_ratio_vs,
+        "summary": dist_ed_summary,
+        "units": unit_data
     }
 
 # 1.3 s_ttm32

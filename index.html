@@ -851,6 +851,254 @@
 
       </div>
 
+      <!-- SPECIAL PANEL FOR TTM ED DRUG BREAKDOWN (Shows when ttm_ed is active) -->
+      <div id="ttm-ed-panel" class="hidden space-y-4">
+
+        <!-- Filter Bar: View Mode Switcher + Metric Selector + Year Selector -->
+        <div class="glass-card rounded-2xl p-4 bg-white flex flex-col xl:flex-row xl:items-center justify-between gap-4 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-slate-400"></i> มุมมองตาราง:
+            </span>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold flex-wrap gap-1" id="ttm-ed-view-buttons">
+              <button type="button" onclick="window.switchTtmEdView('full_year')" id="btn-ttm-ed-view-full_year" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">
+                <i class="fa-solid fa-pills text-[11px] mr-1"></i> รวมทั้งปี (ED / NON-ED / OTHER)
+              </button>
+              <button type="button" onclick="window.switchTtmEdView('uc')" id="btn-ttm-ed-view-uc" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-id-card text-[11px] mr-1"></i> เปรียบเทียบสิทธิ (ทั้งหมด vs UC)
+              </button>
+              <button type="button" onclick="window.switchTtmEdView('quarter')" id="btn-ttm-ed-view-quarter" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-calendar-days text-[11px] mr-1"></i> ตารางรายไตรมาส (Q1 - Q4)
+              </button>
+              <button type="button" onclick="window.switchTtmEdView('full')" id="btn-ttm-ed-view-full" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-table-columns text-[11px] mr-1"></i> ตารางเต็มตามแบบ HDC
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 flex-wrap">
+            <!-- Metric Toggle: Visits vs Patients -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline-block">หน่วยกราฟ:</span>
+              <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                <button type="button" onclick="window.switchTtmEdMetric('vs')" id="btn-ttm-ed-metric-vs" class="px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs">
+                  จำนวนครั้ง (Visits)
+                </button>
+                <button type="button" onclick="window.switchTtmEdMetric('pt')" id="btn-ttm-ed-metric-pt" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                  จำนวนคน (Patients)
+                </button>
+              </div>
+            </div>
+
+            <!-- Year Selector -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline-block">ปีงบประมาณ:</span>
+              <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                <button type="button" onclick="window.switchTtmEdYear('2569')" id="btn-ttm-ed-yr-2569" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">2569</button>
+                <button type="button" onclick="window.switchTtmEdYear('2568')" id="btn-ttm-ed-yr-2568" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">2568</button>
+                <button type="button" onclick="window.switchTtmEdYear('2567')" id="btn-ttm-ed-yr-2567" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">2567</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Bento KPI Cards for TTM ED -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <!-- Card 1: จ่ายยาสมุนไพรทั้งหมด -->
+          <div class="glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-base">
+                  <i class="fa-solid fa-mortar-pestle"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">จ่ายสมุนไพรทั้งหมด</h4>
+                  <p class="text-[11px] text-slate-400">Total Herbal Prescriptions</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800" id="ttm-ed-card1-badge">HDC s_ttm10</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-black text-slate-900 num-font" id="ttm-ed-stat-total-vs">-</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center justify-between">
+                <span>จำนวนคน: <strong class="text-slate-700 num-font" id="ttm-ed-stat-total-pt">-</strong> คน</span>
+                <span class="text-emerald-700 font-semibold" id="ttm-ed-stat-uc-share">สิทธิ UC -%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: ยาในบัญชียาหลักแห่งชาติ (ED) -->
+          <div class="glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 font-bold text-base">
+                  <i class="fa-solid fa-book-medical"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">ในบัญชียาหลัก (ED)</h4>
+                  <p class="text-[11px] text-slate-400">Essential Herbal Drugs</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800" id="ttm-ed-card2-share">36.3%</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-black text-teal-700 num-font" id="ttm-ed-stat-ed-vs">-</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center justify-between" id="ttm-ed-stat-ed-detail">
+                <span>จำนวนคน: <strong class="text-teal-800 num-font" id="ttm-ed-stat-ed-pt">-</strong> คน</span>
+                <span class="text-slate-500 text-[11px]">เกณฑ์กระทรวง: 80%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: ยานอกบัญชียาหลัก (NON ED) & อื่นๆ -->
+          <div class="glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 font-bold text-base">
+                  <i class="fa-solid fa-prescription-bottle"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">นอกบัญชียาหลัก (NON ED)</h4>
+                  <p class="text-[11px] text-slate-400">Non-Essential & Other Drugs</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" id="ttm-ed-card3-share">63.8%</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-black text-amber-600 num-font" id="ttm-ed-stat-noned-vs">-</span>
+                <span class="text-xs font-bold text-slate-500">ครั้ง</span>
+              </div>
+              <div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center justify-between" id="ttm-ed-stat-noned-detail">
+                <span>จำนวนคน: <strong class="text-amber-700 num-font" id="ttm-ed-stat-noned-pt">-</strong> คน</span>
+                <span class="text-slate-400 text-[11px]">อื่นๆ: <span id="ttm-ed-stat-other-vs">-</span> ครั้ง</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Top ED Ratio Performer -->
+          <div class="glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-base">
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="ttm-ed-card4-title">สัดส่วน ED สูงสุด</h4>
+                  <p class="text-[11px] text-slate-400">Highest ED Proportion</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800" id="ttm-ed-card4-badge">อันดับ 1</span>
+            </div>
+            <div>
+              <div class="text-sm sm:text-base font-bold text-slate-800 truncate" id="ttm-ed-stat-top-name">-</div>
+              <div class="text-xs font-medium text-slate-500 mt-1 flex items-center justify-between">
+                <span id="ttm-ed-card4-sublabel">สัดส่วนในบัญชี:</span>
+                <strong class="text-indigo-600 num-font text-sm font-bold" id="ttm-ed-stat-top-val">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Chart Section: Stacked Bar + Donut / Trend Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left Chart: Stacked Bar (ED vs NON-ED vs OTHER per hospital) -->
+          <div class="lg:col-span-7 glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-column text-emerald-600"></i>
+                  <span id="ttm-ed-chart1-title">เปรียบเทียบสัดส่วน ED vs NON-ED vs OTHER รายหน่วยบริการ</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5" id="ttm-ed-chart1-subtitle">จำแนกตาม 14 สถานบริการในอำเภอสารภี</p>
+              </div>
+              <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+                <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-[#10b981]"></span> ในบัญชี (ED)</span>
+                <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-[#f59e0b]"></span> นอกบัญชี (NON-ED)</span>
+                <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-[#8b5cf6]"></span> อื่นๆ (OTHER)</span>
+              </div>
+            </div>
+            <div class="w-full flex-1" style="min-height: 380px;">
+              <canvas id="ttmEdStackedBarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Right Chart: Donut or Quarterly Trend -->
+          <div class="lg:col-span-5 glass-card rounded-2xl p-5 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-pie text-teal-600"></i>
+                  <span id="ttm-ed-chart2-title">สัดส่วนประเภทยาและสิทธิการรักษา</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5" id="ttm-ed-chart2-subtitle">สัดส่วนภาพรวมและแนวโน้ม</p>
+              </div>
+              <div class="inline-flex bg-slate-100 p-1 rounded-lg text-[11px] font-semibold">
+                <button type="button" onclick="window.switchTtmEdChart2Mode('donut')" id="btn-ttm-ed-chart2-donut" class="px-2 py-1 rounded-md bg-white text-emerald-700 shadow-xs font-bold transition">ประเภทยา</button>
+                <button type="button" onclick="window.switchTtmEdChart2Mode('scheme')" id="btn-ttm-ed-chart2-scheme" class="px-2 py-1 rounded-md text-slate-500 hover:text-slate-800 transition bg-transparent">สิทธิ UC</button>
+                <button type="button" onclick="window.switchTtmEdChart2Mode('trend')" id="btn-ttm-ed-chart2-trend" class="px-2 py-1 rounded-md text-slate-500 hover:text-slate-800 transition bg-transparent">รายไตรมาส</button>
+              </div>
+            </div>
+            <div class="w-full flex-1 flex items-center justify-center" style="min-height: 380px;">
+              <canvas id="ttmEdDonutChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- HDC Authentic Matrix Table Container -->
+        <div class="glass-card rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+          <!-- Table Header / Control Strip -->
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/50">
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-table text-emerald-600"></i>
+                <span id="ttm-ed-table-heading">ตารางข้อมูลการจ่ายยาสมุนไพรจำแนกตามบัญชียาหลักแห่งชาติ (HDC Matrix Table)</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5" id="ttm-ed-table-subheading">
+                แสดงผลงาน 14 หน่วยบริการ อำเภอสารภี แยก ED, NON ED, OTHER, ทั้งหมด และ สิทธิ UC (คน/ครั้ง)
+              </p>
+            </div>
+
+            <!-- Search + Export Action -->
+            <div class="flex items-center gap-2 w-full md:w-auto">
+              <div class="relative flex-1 md:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="ttm-ed-table-search" placeholder="ค้นหา รพ.สต. หรือ ตำบล..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition">
+              </div>
+              <button type="button" onclick="window.exportTtmEdCsv()" class="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl shadow-xs shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+                <i class="fa-solid fa-file-excel text-[11px]"></i>
+                <span>ส่งออก CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Body with Horizontal Scrolling & Sticky Columns -->
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-xs text-left text-slate-600 border-collapse hdc-matrix-table" id="ttm-ed-matrix-table">
+              <!-- Dynamically populated via renderTtmEdPanel() -->
+            </table>
+          </div>
+
+          <!-- Table Footer Note -->
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11.5px] text-slate-500">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-emerald-600"></i>
+              <span>กดปุ่ม <strong>"ดู รพ.สต."</strong> ในแต่ละแถว เพื่อสลับแดชบอร์ดด้านบนไปยังหน่วยบริการนั้นทันที</span>
+            </div>
+            <div>
+              <span>แหล่งข้อมูล: HDC Open Data กระทรวงสาธารณสุข (ตาราง <code>s_ttm10</code>)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- SPECIAL PANEL FOR NHSO SERVICE BREAKDOWN (Shows when nhso_service is active) -->
       <div id="nhso-service-panel" class="hidden space-y-4">
 

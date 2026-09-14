@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nhsoErrorPanel = document.getElementById('nhso-error-panel');
   const nhsoServicePanel = document.getElementById('nhso-service-panel');
   const ttmAgeSexPanel = document.getElementById('ttm-age-sex-panel');
+  const ttmEdPanel = document.getElementById('ttm-ed-panel');
   const tableBody = document.getElementById('unit-table-body');
   const tableFoot = document.getElementById('unit-table-foot');
   const tableSearch = document.getElementById('table-search');
@@ -66,6 +67,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   let ttmAgePyramidChartInstance = null;
   let ttmAgeDonutChartInstance = null;
   let ttmAgeSearchQuery = '';
+
+  let currentTtmEdView = 'full_year';
+  let currentTtmEdYear = '2569';
+  let currentTtmEdMetric = 'vs';
+  let currentTtmEdChart2Mode = 'donut';
+  let ttmEdStackedBarChartInstance = null;
+  let ttmEdDonutChartInstance = null;
+  let ttmEdSearchQuery = '';
 
   // Load Data with Cache-Busting
   let nhsoMasterData = null;
@@ -1262,6 +1271,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('ind-target-text').textContent = 'ชดเชยตามผลงาน: 1 Point = 1 บาท (6 บริการหัตถการ)';
     } else if (ind.id === 'ttm_age_sex') {
       document.getElementById('ind-target-text').textContent = 'รายงานจำแนก 5 กลุ่มอายุและเพศ (คน/ครั้ง)';
+    } else if (ind.id === 'ttm_ed') {
+      document.getElementById('ind-target-text').textContent = 'เกณฑ์กระทรวงสาธารณสุข: สัดส่วนการใช้ยาในบัญชียาหลักแห่งชาติ (ED) ≥ 80%';
     } else {
       document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
     }
@@ -1294,6 +1305,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       rateEl.textContent = `${Number(totPt).toLocaleString()} คน`;
       badgeEl.className = 'badge-neutral px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
       badgeEl.textContent = 'จำแนกอายุ & เพศ';
+    } else if (ind.id === 'ttm_ed') {
+      const edRate = (currentUnit === 'all')
+        ? (yData?.ed_rate_vs || yData?.rate || 0)
+        : ((yData?.units?.find(item => item.hospcode === currentUnit)?.ed_rate_vs) || 0);
+      const edVs = (currentUnit === 'all')
+        ? (yData?.num || yData?.summary?.full_year?.ed?.vs_all || 0)
+        : ((yData?.units?.find(item => item.hospcode === currentUnit)?.num) || 0);
+      rateEl.textContent = `${Number(edRate).toFixed(1)}% (${Number(edVs).toLocaleString()} ครั้ง)`;
+      if (edRate >= 80.0) {
+        badgeEl.className = 'badge-pass px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+        badgeEl.textContent = '✓ ผ่านเกณฑ์ (≥ 80%)';
+        rateEl.className = 'text-2xl font-black text-emerald-600 num-font';
+      } else {
+        badgeEl.className = 'badge-fail px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs';
+        badgeEl.textContent = '✕ ต่ำกว่าเกณฑ์ (< 80%)';
+        rateEl.className = 'text-2xl font-black text-rose-600 num-font';
+      }
     } else {
       rateEl.textContent = `${Number(rate).toLocaleString()} ${ind.unit}`;
       if (ind.target === 0) {
@@ -4314,6 +4342,1319 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+
+  // ==========================================
+  // TTM ED DRUG BREAKDOWN (s_ttm10)
+  // ==========================================
+  window.switchTtmEdView = function(view) {
+    currentTtmEdView = view;
+    renderTtmEdPanel();
+  };
+
+  window.switchTtmEdYear = function(yr) {
+    currentTtmEdYear = yr;
+    currentYear = yr;
+    if (yearButtons) {
+      yearButtons.forEach(b => {
+        if (b.dataset.year === yr) {
+          b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.remove('text-slate-600');
+        } else {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        }
+      });
+    }
+    renderTtmEdPanel();
+  };
+
+  window.switchTtmEdMetric = function(metric) {
+    currentTtmEdMetric = metric;
+    renderTtmEdPanel();
+  };
+
+  window.switchTtmEdChart2Mode = function(mode) {
+    currentTtmEdChart2Mode = mode;
+    renderTtmEdPanel();
+  };
+
+  window.selectTtmEdHospital = function(hospcode) {
+    currentUnit = hospcode;
+    if (unitSelect) unitSelect.value = hospcode;
+    updateDashboardView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.exportTtmEdCsv = function() {
+    const yr = currentTtmEdYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['ttm_ed'];
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const distSummary = yrData.summary || {};
+    const fullYr = distSummary.full_year || {};
+    const qtr = distSummary.quarters || {};
+
+    let csvContent = '\uFEFF';
+
+    if (currentTtmEdView === 'full_year') {
+      csvContent += `ตารางการจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ED) สรุปทั้งปีงบประมาณ อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ED ทั้งหมด (คน),ED ทั้งหมด (ครั้ง),ED UC (คน),ED UC (ครั้ง),NON-ED ทั้งหมด (คน),NON-ED ทั้งหมด (ครั้ง),NON-ED UC (คน),NON-ED UC (ครั้ง),OTHER ทั้งหมด (คน),OTHER ทั้งหมด (ครั้ง),OTHER UC (คน),OTHER UC (ครั้ง),บริการทั้งหมด (คน),บริการทั้งหมด (ครั้ง),บริการทั้งหมด UC (คน),บริการทั้งหมด UC (ครั้ง),สัดส่วน ED (%),สัดส่วน UC (%)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const fy = u.full_year || {};
+        const ed = fy.ed || {};
+        const ned = fy.non_ed || {};
+        const oth = fy.other || {};
+        const tot = fy.total || {};
+
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${ed.pt_all || 0},${ed.vs_all || 0},${ed.pt_uc || 0},${ed.vs_uc || 0},${ned.pt_all || 0},${ned.vs_all || 0},${ned.pt_uc || 0},${ned.vs_uc || 0},${oth.pt_all || 0},${oth.vs_all || 0},${oth.pt_uc || 0},${oth.vs_uc || 0},${tot.pt_all || 0},${tot.vs_all || 0},${tot.pt_uc || 0},${tot.vs_uc || 0},${u.ed_rate_vs || 0},${u.uc_ratio_vs || 0}\n`;
+      });
+
+      const dEd = fullYr.ed || {};
+      const dNed = fullYr.non_ed || {};
+      const dOth = fullYr.other || {};
+      const dTot = fullYr.total || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${dEd.pt_all || 0},${dEd.vs_all || 0},${dEd.pt_uc || 0},${dEd.vs_uc || 0},${dNed.pt_all || 0},${dNed.vs_all || 0},${dNed.pt_uc || 0},${dNed.vs_uc || 0},${dOth.pt_all || 0},${dOth.vs_all || 0},${dOth.pt_uc || 0},${dOth.vs_uc || 0},${dTot.pt_all || 0},${dTot.vs_all || 0},${dTot.pt_uc || 0},${dTot.vs_uc || 0},${yrData.ed_rate_vs || 0},${yrData.uc_ratio_vs || 0}\n`;
+
+    } else if (currentTtmEdView === 'uc') {
+      csvContent += `ตารางเปรียบเทียบสิทธิการรักษา (ทั้งหมด vs สิทธิ UC) อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,ED ทั้งหมด (ครั้ง),ED UC (ครั้ง),ED UC (%),NON-ED ทั้งหมด (ครั้ง),NON-ED UC (ครั้ง),NON-ED UC (%),OTHER ทั้งหมด (ครั้ง),OTHER UC (ครั้ง),OTHER UC (%),บริการทั้งหมด (ครั้ง),บริการทั้งหมด UC (ครั้ง),สัดส่วน UC ทั้งหมด (%)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const fy = u.full_year || {};
+        const ed = fy.ed || {};
+        const ned = fy.non_ed || {};
+        const oth = fy.other || {};
+        const tot = fy.total || {};
+
+        const edUcPct = ed.vs_all > 0 ? ((ed.vs_uc / ed.vs_all) * 100).toFixed(1) : '0.0';
+        const nedUcPct = ned.vs_all > 0 ? ((ned.vs_uc / ned.vs_all) * 100).toFixed(1) : '0.0';
+        const othUcPct = oth.vs_all > 0 ? ((oth.vs_uc / oth.vs_all) * 100).toFixed(1) : '0.0';
+        const totUcPct = tot.vs_all > 0 ? ((tot.vs_uc / tot.vs_all) * 100).toFixed(1) : '0.0';
+
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${ed.vs_all || 0},${ed.vs_uc || 0},${edUcPct},${ned.vs_all || 0},${ned.vs_uc || 0},${nedUcPct},${oth.vs_all || 0},${oth.vs_uc || 0},${othUcPct},${tot.vs_all || 0},${tot.vs_uc || 0},${totUcPct}\n`;
+      });
+
+      const dEd = fullYr.ed || {};
+      const dNed = fullYr.non_ed || {};
+      const dOth = fullYr.other || {};
+      const dTot = fullYr.total || {};
+      const dEdUcPct = dEd.vs_all > 0 ? ((dEd.vs_uc / dEd.vs_all) * 100).toFixed(1) : '0.0';
+      const dNedUcPct = dNed.vs_all > 0 ? ((dNed.vs_uc / dNed.vs_all) * 100).toFixed(1) : '0.0';
+      const dOthUcPct = dOth.vs_all > 0 ? ((dOth.vs_uc / dOth.vs_all) * 100).toFixed(1) : '0.0';
+      const dTotUcPct = dTot.vs_all > 0 ? ((dTot.vs_uc / dTot.vs_all) * 100).toFixed(1) : '0.0';
+
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${dEd.vs_all || 0},${dEd.vs_uc || 0},${dEdUcPct},${dNed.vs_all || 0},${dNed.vs_uc || 0},${dNedUcPct},${dOth.vs_all || 0},${dOth.vs_uc || 0},${dOthUcPct},${dTot.vs_all || 0},${dTot.vs_uc || 0},${dTotUcPct}\n`;
+
+    } else if (currentTtmEdView === 'quarter') {
+      csvContent += `ตารางการจ่ายยาสมุนไพรจำแนกรายไตรมาส (Q1 - Q4) อำเภอสารภี ปี ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,ตำบล,Q1 ED(ครั้ง),Q1 NON-ED(ครั้ง),Q1 OTHER(ครั้ง),Q1 รวม(ครั้ง),Q2 ED(ครั้ง),Q2 NON-ED(ครั้ง),Q2 OTHER(ครั้ง),Q2 รวม(ครั้ง),Q3 ED(ครั้ง),Q3 NON-ED(ครั้ง),Q3 OTHER(ครั้ง),Q3 รวม(ครั้ง),Q4 ED(ครั้ง),Q4 NON-ED(ครั้ง),Q4 OTHER(ครั้ง),Q4 รวม(ครั้ง),รวมทั้งปี (ครั้ง)\n';
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const uSub = (u.hospcode === '06023') ? 'สันทราย' : (meta ? meta.subdistrict : u.subdistrict);
+        const q = u.quarters || {};
+        const q1 = q.q1 || {}; const q2 = q.q2 || {}; const q3 = q.q3 || {}; const q4 = q.q4 || {};
+
+        csvContent += `"${u.hospcode}","${uName}","${uSub}",${q1.ed?.vs_all || 0},${q1.non_ed?.vs_all || 0},${q1.other?.vs_all || 0},${q1.total?.vs_all || 0},${q2.ed?.vs_all || 0},${q2.non_ed?.vs_all || 0},${q2.other?.vs_all || 0},${q2.total?.vs_all || 0},${q3.ed?.vs_all || 0},${q3.non_ed?.vs_all || 0},${q3.other?.vs_all || 0},${q3.total?.vs_all || 0},${q4.ed?.vs_all || 0},${q4.non_ed?.vs_all || 0},${q4.other?.vs_all || 0},${q4.total?.vs_all || 0},${u.full_year?.total?.vs_all || 0}\n`;
+      });
+
+      const q1 = qtr.q1 || {}; const q2 = qtr.q2 || {}; const q3 = qtr.q3 || {}; const q4 = qtr.q4 || {};
+      csvContent += `"total","รวมทั้งอำเภอสารภี (14 หน่วยบริการ)","-",${q1.ed?.vs_all || 0},${q1.non_ed?.vs_all || 0},${q1.other?.vs_all || 0},${q1.total?.vs_all || 0},${q2.ed?.vs_all || 0},${q2.non_ed?.vs_all || 0},${q2.other?.vs_all || 0},${q2.total?.vs_all || 0},${q3.ed?.vs_all || 0},${q3.non_ed?.vs_all || 0},${q3.other?.vs_all || 0},${q3.total?.vs_all || 0},${q4.ed?.vs_all || 0},${q4.non_ed?.vs_all || 0},${q4.other?.vs_all || 0},${q4.total?.vs_all || 0},${fullYr.total?.vs_all || 0}\n`;
+
+    } else {
+      // Full HDC Matrix (1:1 with official spreadsheet)
+      csvContent += `ตารางมาตรฐาน HDC s_ttm10: OPD-การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ อำเภอสารภี ปีงบประมาณ ${yr}\n`;
+      csvContent += 'รหัสสถานบริการ,ชื่อสถานบริการ,รวมทั้งปี ED ทั้งหมด(คน),รวมทั้งปี ED ทั้งหมด(ครั้ง),รวมทั้งปี ED UC(คน),รวมทั้งปี ED UC(ครั้ง),รวมทั้งปี NON-ED ทั้งหมด(คน),รวมทั้งปี NON-ED ทั้งหมด(ครั้ง),รวมทั้งปี NON-ED UC(คน),รวมทั้งปี NON-ED UC(ครั้ง),รวมทั้งปี OTHER ทั้งหมด(คน),รวมทั้งปี OTHER ทั้งหมด(ครั้ง),รวมทั้งปี OTHER UC(คน),รวมทั้งปี OTHER UC(ครั้ง),รวมทั้งปี บริการทั้งหมด ทั้งหมด(คน),รวมทั้งปี บริการทั้งหมด ทั้งหมด(ครั้ง),รวมทั้งปี บริการทั้งหมด UC(คน),รวมทั้งปี บริการทั้งหมด UC(ครั้ง),';
+      for (let qi = 1; qi <= 4; qi++) {
+        csvContent += `Q${qi} ED ทั้งหมด(คน),Q${qi} ED ทั้งหมด(ครั้ง),Q${qi} ED UC(คน),Q${qi} ED UC(ครั้ง),Q${qi} NON-ED ทั้งหมด(คน),Q${qi} NON-ED ทั้งหมด(ครั้ง),Q${qi} NON-ED UC(คน),Q${qi} NON-ED UC(ครั้ง),Q${qi} OTHER ทั้งหมด(คน),Q${qi} OTHER ทั้งหมด(ครั้ง),Q${qi} OTHER UC(คน),Q${qi} OTHER UC(ครั้ง),Q${qi} บริการทั้งหมด ทั้งหมด(คน),Q${qi} บริการทั้งหมด ทั้งหมด(ครั้ง),Q${qi} บริการทั้งหมด UC(คน),Q${qi} บริการทั้งหมด UC(ครั้ง)${qi === 4 ? '\n' : ','}`;
+      }
+
+      units.forEach(u => {
+        const meta = SARAPHI_UNITS_MAP[u.hospcode];
+        const uName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+        const fy = u.full_year || {};
+        const q = u.quarters || {};
+
+        let row = [`"${u.hospcode}"`, `"${uName}"`];
+        ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+          const c = fy[cat] || {};
+          row.push(c.pt_all || 0, c.vs_all || 0, c.pt_uc || 0, c.vs_uc || 0);
+        });
+
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+            const c = qd[cat] || {};
+            row.push(c.pt_all || 0, c.vs_all || 0, c.pt_uc || 0, c.vs_uc || 0);
+          });
+        }
+        csvContent += row.join(',') + '\n';
+      });
+
+      // District Total Row
+      let totRow = ['"total"', '"รวมทั้งอำเภอสารภี (14 หน่วยบริการ)"'];
+      ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+        const c = fullYr[cat] || {};
+        totRow.push(c.pt_all || 0, c.vs_all || 0, c.pt_uc || 0, c.vs_uc || 0);
+      });
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = qtr[`q${qi}`] || {};
+        ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+          const c = qd[cat] || {};
+          totRow.push(c.pt_all || 0, c.vs_all || 0, c.pt_uc || 0, c.vs_uc || 0);
+        });
+      }
+      csvContent += totRow.join(',') + '\n';
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hdc_s_ttm10_saraphi_${yr}_${currentTtmEdView}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  function renderTtmEdPanel() {
+    if (currentIndicatorId !== 'ttm_ed') {
+      if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+      return;
+    }
+    if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
+
+    const yr = currentTtmEdYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['full_year', 'uc', 'quarter', 'full'].forEach(v => {
+      const btn = document.getElementById(`btn-ttm-ed-view-${v}`);
+      if (btn) {
+        if (v === currentTtmEdView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Filter Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ttm-ed-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Sync Metric Buttons
+    const btnVs = document.getElementById('btn-ttm-ed-metric-vs');
+    const btnPt = document.getElementById('btn-ttm-ed-metric-pt');
+    if (btnVs && btnPt) {
+      if (currentTtmEdMetric === 'vs') {
+        btnVs.className = 'px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs';
+        btnPt.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+      } else {
+        btnPt.className = 'px-2.5 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-xs';
+        btnVs.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+      }
+    }
+
+    // 4. Sync Chart 2 Mode Buttons
+    ['donut', 'scheme', 'trend'].forEach(m => {
+      const btn = document.getElementById(`btn-ttm-ed-chart2-${m}`);
+      if (btn) {
+        if (m === currentTtmEdChart2Mode) {
+          btn.className = 'px-2 py-1 rounded-md bg-white text-emerald-700 shadow-xs font-bold transition';
+        } else {
+          btn.className = 'px-2 py-1 rounded-md text-slate-500 hover:text-slate-800 transition bg-transparent';
+        }
+      }
+    });
+
+    // 5. Resolve Master Data
+    const ind = masterData?.indicators?.['ttm_ed'];
+    const yrData = ind?.years?.[yr] || {};
+    const distSummary = yrData.summary || {
+      full_year: {
+        ed: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+        non_ed: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+        other: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+        total: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 }
+      },
+      quarters: {
+        q1: { ed: {}, non_ed: {}, other: {}, total: {} },
+        q2: { ed: {}, non_ed: {}, other: {}, total: {} },
+        q3: { ed: {}, non_ed: {}, other: {}, total: {} },
+        q4: { ed: {}, non_ed: {}, other: {}, total: {} }
+      }
+    };
+    const distFullYear = distSummary.full_year || {};
+    const distQuarters = distSummary.quarters || {};
+    const rawUnits = yrData.units || [];
+
+    const unitsList = rawUnits.map(u => {
+      const meta = SARAPHI_UNITS_MAP[u.hospcode];
+      const cleanName = (u.hospcode === '06023') ? 'รพ.สต.บ้านป่าสา' : (meta ? meta.name : u.name);
+      const cleanShort = (u.hospcode === '06023') ? 'บ้านป่าสา' : (meta ? meta.short : (u.subdistrict || u.name));
+      const cleanSubdistrict = meta ? meta.subdistrict : (u.subdistrict || '');
+      return {
+        ...u,
+        name: cleanName,
+        short: cleanShort,
+        subdistrict: cleanSubdistrict,
+        full_year: u.full_year || {
+          ed: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+          non_ed: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+          other: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 },
+          total: { pt_all: 0, vs_all: 0, pt_uc: 0, vs_uc: 0 }
+        },
+        quarters: u.quarters || {}
+      };
+    });
+
+    const isDistrict = (currentUnit === 'all');
+    const selectedUnit = isDistrict ? null : unitsList.find(u => u.hospcode === currentUnit);
+    const activeFullYear = selectedUnit ? selectedUnit.full_year : distFullYear;
+    const activeQuarters = selectedUnit ? selectedUnit.quarters : distQuarters;
+
+    const totEd = activeFullYear.ed || {};
+    const totNed = activeFullYear.non_ed || {};
+    const totOth = activeFullYear.other || {};
+    const totAll = activeFullYear.total || {};
+
+    const totVs = totAll.vs_all || 0;
+    const totPt = totAll.pt_all || 0;
+    const ucVs = totAll.vs_uc || 0;
+    const ucPt = totAll.pt_uc || 0;
+    const ucRatio = totVs > 0 ? ((ucVs / totVs) * 100).toFixed(1) : '0.0';
+
+    const edVs = totEd.vs_all || 0;
+    const edPt = totEd.pt_all || 0;
+    const edRatio = totVs > 0 ? ((edVs / totVs) * 100).toFixed(1) : '0.0';
+
+    const nedVs = totNed.vs_all || 0;
+    const nedPt = totNed.pt_all || 0;
+    const nedRatio = totVs > 0 ? ((nedVs / totVs) * 100).toFixed(1) : '0.0';
+
+    const othVs = totOth.vs_all || 0;
+    const othPt = totOth.pt_all || 0;
+
+    // 6. Update 4 Bento Cards
+    const elCard1Badge = document.getElementById('ttm-ed-card1-badge');
+    const elTotalVs = document.getElementById('ttm-ed-stat-total-vs');
+    const elTotalPt = document.getElementById('ttm-ed-stat-total-pt');
+    const elUcShare = document.getElementById('ttm-ed-stat-uc-share');
+
+    if (elCard1Badge) elCard1Badge.textContent = isDistrict ? `HDC s_ttm10 (${yr})` : `${selectedUnit.short} (${yr})`;
+    if (elTotalVs) elTotalVs.textContent = Number(totVs).toLocaleString();
+    if (elTotalPt) elTotalPt.textContent = Number(totPt).toLocaleString();
+    if (elUcShare) elUcShare.textContent = `สิทธิ UC ${ucRatio}% (${Number(ucVs).toLocaleString()} ครั้ง)`;
+
+    // Card 2: ED
+    const elEdVs = document.getElementById('ttm-ed-stat-ed-vs');
+    const elEdPt = document.getElementById('ttm-ed-stat-ed-pt');
+    const elEdShare = document.getElementById('ttm-ed-card2-share');
+    if (elEdVs) elEdVs.textContent = Number(edVs).toLocaleString();
+    if (elEdPt) elEdPt.textContent = Number(edPt).toLocaleString();
+    if (elEdShare) {
+      elEdShare.textContent = `${edRatio}% (สัดส่วน ED)`;
+      elEdShare.className = Number(edRatio) >= 80.0
+        ? 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800'
+        : 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
+    }
+
+    // Card 3: NON ED & Other
+    const elNonEdVs = document.getElementById('ttm-ed-stat-noned-vs');
+    const elNonEdPt = document.getElementById('ttm-ed-stat-noned-pt');
+    const elNonEdShare = document.getElementById('ttm-ed-card3-share');
+    const elOtherVs = document.getElementById('ttm-ed-stat-other-vs');
+    if (elNonEdVs) elNonEdVs.textContent = Number(nedVs).toLocaleString();
+    if (elNonEdPt) elNonEdPt.textContent = Number(nedPt).toLocaleString();
+    if (elNonEdShare) elNonEdShare.textContent = `${nedRatio}% ของทั้งหมด`;
+    if (elOtherVs) elOtherVs.textContent = Number(othVs).toLocaleString();
+
+    // Card 4: Top ED Performer / Unit Position
+    const elCard4Title = document.getElementById('ttm-ed-card4-title');
+    const elCard4Badge = document.getElementById('ttm-ed-card4-badge');
+    const elTopName = document.getElementById('ttm-ed-stat-top-name');
+    const elTopVal = document.getElementById('ttm-ed-stat-top-val');
+    const elCard4Sub = document.getElementById('ttm-ed-card4-sublabel');
+
+    const sortedByEdRate = [...unitsList].sort((a, b) => (b.ed_rate_vs || 0) - (a.ed_rate_vs || 0));
+    const topUnit = sortedByEdRate[0];
+
+    if (isDistrict) {
+      if (elCard4Title) elCard4Title.textContent = 'หน่วยบริการสัดส่วน ED สูงสุด';
+      if (elCard4Badge) elCard4Badge.textContent = 'อันดับ 1 ในอำเภอ';
+      if (elTopName) elTopName.textContent = topUnit ? topUnit.name : '-';
+      if (elCard4Sub) elCard4Sub.textContent = 'สัดส่วนยาในบัญชี:';
+      if (elTopVal) {
+        const topRate = topUnit ? (topUnit.ed_rate_vs || 0) : 0;
+        const topEdVs = topUnit ? (topUnit.full_year?.ed?.vs_all || 0) : 0;
+        elTopVal.textContent = `${topRate}% (${Number(topEdVs).toLocaleString()} ครั้ง)`;
+      }
+    } else {
+      const uRank = sortedByEdRate.findIndex(u => u.hospcode === currentUnit) + 1;
+      if (elCard4Title) elCard4Title.textContent = 'ลำดับสัดส่วน ED ของหน่วยนี้';
+      if (elCard4Badge) elCard4Badge.textContent = selectedUnit ? `รหัส ${selectedUnit.hospcode}` : 'หน่วยบริการ';
+      if (elTopName) elTopName.textContent = selectedUnit ? selectedUnit.name : '-';
+      if (elCard4Sub) elCard4Sub.textContent = 'อันดับที่:';
+      if (elTopVal) {
+        const myRate = selectedUnit ? (selectedUnit.ed_rate_vs || 0) : 0;
+        elTopVal.textContent = `# ${uRank} จาก 14 แห่ง (${myRate}%)`;
+      }
+    }
+
+    // 7. Render Chart 1: Horizontal Stacked Bar (ED vs NON-ED vs OTHER per hospital)
+    const stackedCanvas = document.getElementById('ttmEdStackedBarChart');
+    const chart1Sub = document.getElementById('ttm-ed-chart1-subtitle');
+    if (chart1Sub) {
+      chart1Sub.textContent = currentTtmEdMetric === 'vs'
+        ? `แสดงจำนวนครั้งจ่ายยา (Visits) ปี ${yr}`
+        : `แสดงจำนวนผู้ป่วยรายคน (Patients) ปี ${yr}`;
+    }
+
+    if (stackedCanvas) {
+      if (ttmEdStackedBarChartInstance) {
+        ttmEdStackedBarChartInstance.destroy();
+        ttmEdStackedBarChartInstance = null;
+      }
+
+      const isMetricVs = (currentTtmEdMetric === 'vs');
+      // Sort hospitals by total for the chart
+      const chartUnits = [...unitsList].sort((a, b) => {
+        const aTot = isMetricVs ? (a.full_year?.total?.vs_all || 0) : (a.full_year?.total?.pt_all || 0);
+        const bTot = isMetricVs ? (b.full_year?.total?.vs_all || 0) : (b.full_year?.total?.pt_all || 0);
+        return bTot - aTot;
+      });
+
+      const labels = chartUnits.map(u => u.short);
+      const edData = chartUnits.map(u => isMetricVs ? (u.full_year?.ed?.vs_all || 0) : (u.full_year?.ed?.pt_all || 0));
+      const nonEdData = chartUnits.map(u => isMetricVs ? (u.full_year?.non_ed?.vs_all || 0) : (u.full_year?.non_ed?.pt_all || 0));
+      const otherData = chartUnits.map(u => isMetricVs ? (u.full_year?.other?.vs_all || 0) : (u.full_year?.other?.pt_all || 0));
+
+      const ctx1 = stackedCanvas.getContext('2d');
+      ttmEdStackedBarChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'ในบัญชี (ED)',
+              data: edData,
+              backgroundColor: '#10b981',
+              borderRadius: 4,
+              stack: 'stack0'
+            },
+            {
+              label: 'นอกบัญชี (NON-ED)',
+              data: nonEdData,
+              backgroundColor: '#f59e0b',
+              borderRadius: 4,
+              stack: 'stack0'
+            },
+            {
+              label: 'อื่นๆ (OTHER)',
+              data: otherData,
+              backgroundColor: '#8b5cf6',
+              borderRadius: 4,
+              stack: 'stack0'
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { left: 4, right: 16, top: 4, bottom: 4 } },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { color: 'rgba(226, 232, 240, 0.7)' },
+              ticks: {
+                font: { family: 'Prompt', size: 11 },
+                callback: function(v) { return Number(v).toLocaleString(); }
+              }
+            },
+            y: {
+              stacked: true,
+              grid: { display: false },
+              ticks: {
+                font: { family: 'Prompt', size: 11, weight: '500' },
+                color: function(ctx) {
+                  const idx = ctx.index;
+                  const u = chartUnits[idx];
+                  return (u && u.hospcode === currentUnit) ? '#059669' : '#334155';
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 12,
+                boxHeight: 12,
+                usePointStyle: true,
+                font: { family: 'Prompt', size: 11, weight: '600' }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { family: 'Prompt', size: 13, weight: 'bold' },
+              bodyFont: { family: 'Prompt', size: 12 },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw || 0;
+                  const idx = context.dataIndex;
+                  const u = chartUnits[idx];
+                  const uTot = isMetricVs ? (u.full_year?.total?.vs_all || 1) : (u.full_year?.total?.pt_all || 1);
+                  const pct = uTot > 0 ? ((val / uTot) * 100).toFixed(1) : '0.0';
+                  const unitWord = isMetricVs ? 'ครั้ง' : 'คน';
+                  return ` ${context.dataset.label}: ${Number(val).toLocaleString()} ${unitWord} (${pct}%)`;
+                },
+                afterBody: function(contexts) {
+                  const idx = contexts[0].dataIndex;
+                  const u = chartUnits[idx];
+                  const uTot = isMetricVs ? (u.full_year?.total?.vs_all || 0) : (u.full_year?.total?.pt_all || 0);
+                  const unitWord = isMetricVs ? 'ครั้ง' : 'คน';
+                  return `รวมทั้งหมด: ${Number(uTot).toLocaleString()} ${unitWord}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 8. Render Chart 2: Donut or Trend
+    const donutCanvas = document.getElementById('ttmEdDonutChart');
+    const chart2Title = document.getElementById('ttm-ed-chart2-title');
+    const chart2Subtitle = document.getElementById('ttm-ed-chart2-subtitle');
+
+    if (donutCanvas) {
+      if (ttmEdDonutChartInstance) {
+        ttmEdDonutChartInstance.destroy();
+        ttmEdDonutChartInstance = null;
+      }
+
+      const ctx2 = donutCanvas.getContext('2d');
+
+      if (currentTtmEdChart2Mode === 'donut') {
+        if (chart2Title) chart2Title.textContent = 'สัดส่วนประเภทยา (ED vs NON-ED vs OTHER)';
+        if (chart2Subtitle) chart2Subtitle.textContent = isDistrict ? `ภาพรวมทั้งอำเภอสารภี ปี ${yr}` : `ของ ${selectedUnit.short} ปี ${yr}`;
+
+        const pLabels = ['ในบัญชี (ED)', 'นอกบัญชี (NON-ED)', 'อื่นๆ (OTHER)'];
+        const pData = [edVs, nedVs, othVs];
+        const pColors = ['#10b981', '#f59e0b', '#8b5cf6'];
+
+        ttmEdDonutChartInstance = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: pLabels,
+            datasets: [{
+              data: pData,
+              backgroundColor: pColors,
+              borderWidth: 2,
+              borderColor: '#ffffff',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  usePointStyle: true,
+                  font: { family: 'Prompt', size: 11.5, weight: '500' },
+                  color: '#334155',
+                  generateLabels: function(chart) {
+                    const data = chart.data;
+                    return data.labels.map((label, i) => {
+                      const val = data.datasets[0].data[i] || 0;
+                      const pct = totVs > 0 ? ((val / totVs) * 100).toFixed(1) : '0.0';
+                      return {
+                        text: `${label} (${pct}%)`,
+                        fillStyle: pColors[i],
+                        strokeStyle: '#ffffff',
+                        lineWidth: 1,
+                        hidden: isNaN(val) || val === 0,
+                        index: i
+                      };
+                    });
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleFont: { family: 'Prompt', size: 13, weight: 'bold' },
+                bodyFont: { family: 'Prompt', size: 12 },
+                padding: 10,
+                cornerRadius: 8,
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const pct = totVs > 0 ? ((val / totVs) * 100).toFixed(1) : '0.0';
+                    return ` ${ctx.label}: ${Number(val).toLocaleString()} ครั้ง (${pct}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+
+      } else if (currentTtmEdChart2Mode === 'scheme') {
+        if (chart2Title) chart2Title.textContent = 'สัดส่วนสิทธิการรักษา (สิทธิ UC vs อื่นๆ)';
+        if (chart2Subtitle) chart2Subtitle.textContent = isDistrict ? `สิทธิหลักประกันสุขภาพถ้วนหน้า ปี ${yr}` : `สิทธิ UC ของ ${selectedUnit.short} ปี ${yr}`;
+
+        const otherSchemeVs = Math.max(0, totVs - ucVs);
+        const pLabels = ['สิทธิหลักประกันสุขภาพ (UC)', 'สิทธิอื่นๆ (ข้าราชการ/ปกส./จ่ายเอง)'];
+        const pData = [ucVs, otherSchemeVs];
+        const pColors = ['#0284c7', '#94a3b8'];
+
+        ttmEdDonutChartInstance = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: pLabels,
+            datasets: [{
+              data: pData,
+              backgroundColor: pColors,
+              borderWidth: 2,
+              borderColor: '#ffffff',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  usePointStyle: true,
+                  font: { family: 'Prompt', size: 11.5, weight: '500' },
+                  color: '#334155',
+                  generateLabels: function(chart) {
+                    const data = chart.data;
+                    return data.labels.map((label, i) => {
+                      const val = data.datasets[0].data[i] || 0;
+                      const pct = totVs > 0 ? ((val / totVs) * 100).toFixed(1) : '0.0';
+                      return {
+                        text: `${label} (${pct}%)`,
+                        fillStyle: pColors[i],
+                        strokeStyle: '#ffffff',
+                        lineWidth: 1,
+                        hidden: isNaN(val) || val === 0,
+                        index: i
+                      };
+                    });
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleFont: { family: 'Prompt', size: 13, weight: 'bold' },
+                bodyFont: { family: 'Prompt', size: 12 },
+                padding: 10,
+                cornerRadius: 8,
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const pct = totVs > 0 ? ((val / totVs) * 100).toFixed(1) : '0.0';
+                    return ` ${ctx.label}: ${Number(val).toLocaleString()} ครั้ง (${pct}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+
+      } else {
+        // Trend Mode: Q1 - Q4 Grouped Bar Chart
+        if (chart2Title) chart2Title.textContent = 'แนวโน้มการจ่ายยาสมุนไพรรายไตรมาส (Q1 - Q4)';
+        if (chart2Subtitle) chart2Subtitle.textContent = isDistrict ? `ภาพรวมอำเภอสารภี ปี ${yr}` : `ของ ${selectedUnit.short} ปี ${yr}`;
+
+        const qLabels = ['ไตรมาส 1 (ต.ค.-ธ.ค.)', 'ไตรมาส 2 (ม.ค.-มี.ค.)', 'ไตรมาส 3 (เม.ย.-มิ.ย.)', 'ไตรมาส 4 (ก.ค.-ก.ย.)'];
+        const qEd = [1, 2, 3, 4].map(q => activeQuarters[`q${q}`]?.ed?.vs_all || 0);
+        const qNed = [1, 2, 3, 4].map(q => activeQuarters[`q${q}`]?.non_ed?.vs_all || 0);
+        const qOth = [1, 2, 3, 4].map(q => activeQuarters[`q${q}`]?.other?.vs_all || 0);
+
+        ttmEdDonutChartInstance = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: qLabels,
+            datasets: [
+              {
+                label: 'ในบัญชี (ED)',
+                data: qEd,
+                backgroundColor: '#10b981',
+                borderRadius: 4
+              },
+              {
+                label: 'นอกบัญชี (NON-ED)',
+                data: qNed,
+                backgroundColor: '#f59e0b',
+                borderRadius: 4
+              },
+              {
+                label: 'อื่นๆ (OTHER)',
+                data: qOth,
+                backgroundColor: '#8b5cf6',
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10 } } },
+              y: {
+                grid: { color: 'rgba(226, 232, 240, 0.7)' },
+                ticks: {
+                  font: { family: 'Prompt', size: 10 },
+                  callback: function(v) { return Number(v).toLocaleString(); }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { family: 'Prompt', size: 11 } }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleFont: { family: 'Prompt', size: 12, weight: 'bold' },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: function(c) {
+                    return ` ${c.dataset.label}: ${Number(c.raw).toLocaleString()} ครั้ง`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 9. Render HDC Matrix Table
+    const tableEl = document.getElementById('ttm-ed-matrix-table');
+    if (!tableEl) return;
+
+    // Filter units by search query
+    const qLower = (ttmEdSearchQuery || '').trim().toLowerCase();
+    const filteredUnits = unitsList.filter(u => {
+      if (!qLower) return true;
+      return (u.name && u.name.toLowerCase().includes(qLower)) ||
+             (u.short && u.short.toLowerCase().includes(qLower)) ||
+             (u.hospcode && u.hospcode.includes(qLower)) ||
+             (u.subdistrict && u.subdistrict.toLowerCase().includes(qLower));
+    });
+
+    // Update table heading
+    const headEl = document.getElementById('ttm-ed-table-heading');
+    const subHeadEl = document.getElementById('ttm-ed-table-subheading');
+    if (headEl) {
+      if (currentTtmEdView === 'full_year') headEl.textContent = `ตารางสรุปผลงานทั้งปีงบประมาณ ${yr} (ED, NON-ED, OTHER, บริการทั้งหมด)`;
+      else if (currentTtmEdView === 'uc') headEl.textContent = `ตารางเปรียบเทียบสิทธิการรักษา ทั้งหมด vs สิทธิ UC ปีงบประมาณ ${yr}`;
+      else if (currentTtmEdView === 'quarter') headEl.textContent = `ตารางแจกแจงผลงานรายไตรมาส (Q1 - Q4) ปีงบประมาณ ${yr}`;
+      else headEl.textContent = `ตารางมาตรฐาน HDC s_ttm10: OPD-การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ 1:1 (${yr})`;
+    }
+    if (subHeadEl) {
+      subHeadEl.textContent = `แสดงข้อมูล 14 หน่วยบริการ อำเภอสารภี (พบ ${filteredUnits.length} แห่ง)`;
+    }
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+    let tfootHtml = '';
+
+    if (currentTtmEdView === 'full_year') {
+      // 1. FULL YEAR VIEW (ED, NON-ED, OTHER, TOTAL)
+      theadHtml = `
+        <thead class="bg-gradient-to-r from-[#047857] via-[#059669] to-[#065f46] text-white font-bold text-[11px] border-b border-emerald-800">
+          <tr>
+            <th rowspan="3" class="py-2.5 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="3" class="py-2.5 px-3 text-left border-r border-emerald-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="16" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-emerald-800/60">รวมทั้งปีงบประมาณ ${yr}</th>
+            <th rowspan="3" class="py-2.5 px-2 text-center border-r border-emerald-700/80 bg-teal-800/60">สัดส่วน ED (ครั้ง)</th>
+            <th rowspan="3" class="py-2.5 px-2 text-center border-r border-emerald-700/80 bg-sky-800/60">สัดส่วน UC (%)</th>
+            <th rowspan="3" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr>
+            <th colspan="4" class="py-1.5 px-1 text-center border-r border-emerald-700/80 bg-emerald-700/80 text-emerald-100">ED (ในบัญชียาหลัก)</th>
+            <th colspan="4" class="py-1.5 px-1 text-center border-r border-emerald-700/80 bg-amber-700/80 text-amber-100">NON ED (นอกบัญชียาหลัก)</th>
+            <th colspan="4" class="py-1.5 px-1 text-center border-r border-emerald-700/80 bg-purple-700/80 text-purple-100">OTHER (อื่นๆ)</th>
+            <th colspan="4" class="py-1.5 px-1 text-center border-r border-emerald-700/80 bg-slate-700/80 text-white">บริการทั้งหมด</th>
+          </tr>
+          <tr class="text-[10px] bg-emerald-900/60 text-emerald-100">
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">ครั้ง</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60 text-sky-200">UC คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-700/80 text-sky-200">UC ครั้ง</th>
+
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">ครั้ง</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60 text-amber-200">UC คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-700/80 text-amber-200">UC ครั้ง</th>
+
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">ครั้ง</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60 text-purple-200">UC คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-700/80 text-purple-200">UC ครั้ง</th>
+
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60">ครั้ง</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-800/60 text-sky-200">UC คน</th>
+            <th class="py-1 px-1 text-right border-r border-emerald-700/80 text-sky-200">UC ครั้ง</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+        const ed = fy.ed || {};
+        const ned = fy.non_ed || {};
+        const oth = fy.other || {};
+        const tot = fy.total || {};
+
+        const edRate = u.ed_rate_vs || 0;
+        const ucRatio = u.uc_ratio_vs || 0;
+        const passBadge = edRate >= 80.0
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">${edRate}%</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">${edRate}%</span>`;
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/40 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-700 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-900">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <!-- ED -->
+            <td class="py-2.5 px-1.5 text-right num-font font-semibold text-emerald-700 border-r border-slate-100">${Number(ed.pt_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-emerald-800 border-r border-slate-100">${Number(ed.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(ed.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-sky-800 border-r border-slate-200 bg-emerald-50/30">${Number(ed.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- NON-ED -->
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-100">${Number(ned.pt_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-amber-800 border-r border-slate-100">${Number(ned.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-600 border-r border-slate-100">${Number(ned.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-200 bg-amber-50/30">${Number(ned.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- OTHER -->
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-100">${Number(oth.pt_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-purple-800 border-r border-slate-100">${Number(oth.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-600 border-r border-slate-100">${Number(oth.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-200 bg-purple-50/30">${Number(oth.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- TOTAL -->
+            <td class="py-2.5 px-1.5 text-right num-font text-slate-700 border-r border-slate-100">${Number(tot.pt_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-black text-slate-900 border-r border-slate-100 bg-slate-50">${Number(tot.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-sky-700 border-r border-slate-100">${Number(tot.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-sky-800 border-r border-slate-200 bg-sky-50/40">${Number(tot.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- ED Ratio & UC Ratio -->
+            <td class="py-2.5 px-2 text-center border-r border-slate-100 font-bold">${passBadge}</td>
+            <td class="py-2.5 px-2 text-center border-r border-slate-100 num-font text-sky-700 font-semibold">${ucRatio}%</td>
+
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmEdHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // District Total
+      const dEd = distFullYear.ed || {};
+      const dNed = distFullYear.non_ed || {};
+      const dOth = distFullYear.other || {};
+      const dTot = distFullYear.total || {};
+
+      tfootHtml = `
+        <tfoot class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white font-bold text-[11px] border-t-2 border-emerald-500">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-emerald-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-emerald-300 font-normal">ข้อมูลระบบ HDC ราชการ</div>
+            </td>
+            <!-- ED -->
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-emerald-200">${Number(dEd.pt_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-emerald-700/50">${Number(dEd.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(dEd.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-sky-100">${Number(dEd.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- NON-ED -->
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-amber-200">${Number(dNed.pt_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-amber-700/50">${Number(dNed.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-amber-200">${Number(dNed.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-amber-100">${Number(dNed.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- OTHER -->
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-purple-200">${Number(dOth.pt_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-purple-700/50">${Number(dOth.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-purple-200">${Number(dOth.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-purple-100">${Number(dOth.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- TOTAL -->
+            <td class="py-3 px-1.5 text-right num-font font-bold border-r border-emerald-700/80 text-emerald-100">${Number(dTot.pt_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-yellow-300 bg-emerald-950/70">${Number(dTot.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(dTot.pt_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-sky-300">${Number(dTot.vs_uc || 0).toLocaleString()}</td>
+
+            <!-- ED Ratio & UC Ratio -->
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-yellow-300 num-font font-black">${yrData.ed_rate_vs || 0}%</td>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 text-sky-300 num-font font-black">${yrData.uc_ratio_vs || 0}%</td>
+            <td class="py-3 px-2 text-center text-emerald-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmEdView === 'uc') {
+      // 2. UC COMPARISON VIEW (ALL VS UC)
+      theadHtml = `
+        <thead class="bg-gradient-to-r from-[#0369a1] via-[#0284c7] to-[#075985] text-white font-bold text-[11px] border-b border-sky-800">
+          <tr>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-sky-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left border-r border-sky-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="3" class="py-1.5 px-2 text-center border-r border-sky-700/80 bg-emerald-800/70">ED (ในบัญชียาหลัก)</th>
+            <th colspan="3" class="py-1.5 px-2 text-center border-r border-sky-700/80 bg-amber-800/70">NON ED (นอกบัญชียาหลัก)</th>
+            <th colspan="3" class="py-1.5 px-2 text-center border-r border-sky-700/80 bg-purple-800/70">OTHER (อื่นๆ)</th>
+            <th colspan="3" class="py-1.5 px-2 text-center border-r border-sky-700/80 bg-slate-800/80">บริการจ่ายยาทั้งหมด</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr class="text-[10px] bg-sky-950/70 text-sky-100">
+            <th class="py-1 px-2 text-right border-r border-sky-800/60">ทั้งหมด (ครั้ง)</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/60 text-sky-200">สิทธิ UC (ครั้ง)</th>
+            <th class="py-1 px-2 text-center border-r border-sky-700/80 text-emerald-300">% UC</th>
+
+            <th class="py-1 px-2 text-right border-r border-sky-800/60">ทั้งหมด (ครั้ง)</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/60 text-amber-200">สิทธิ UC (ครั้ง)</th>
+            <th class="py-1 px-2 text-center border-r border-sky-700/80 text-amber-300">% UC</th>
+
+            <th class="py-1 px-2 text-right border-r border-sky-800/60">ทั้งหมด (ครั้ง)</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/60 text-purple-200">สิทธิ UC (ครั้ง)</th>
+            <th class="py-1 px-2 text-center border-r border-sky-700/80 text-purple-300">% UC</th>
+
+            <th class="py-1 px-2 text-right border-r border-sky-800/60">ทั้งหมด (ครั้ง)</th>
+            <th class="py-1 px-2 text-right border-r border-sky-800/60 text-sky-200">สิทธิ UC (ครั้ง)</th>
+            <th class="py-1 px-2 text-center border-r border-sky-700/80 text-yellow-300">% UC รวม</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#f0f9ff; border-left: 4px solid #0284c7;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+        const ed = fy.ed || {};
+        const ned = fy.non_ed || {};
+        const oth = fy.other || {};
+        const tot = fy.total || {};
+
+        const edUcPct = ed.vs_all > 0 ? ((ed.vs_uc / ed.vs_all) * 100).toFixed(1) : '0.0';
+        const nedUcPct = ned.vs_all > 0 ? ((ned.vs_uc / ned.vs_all) * 100).toFixed(1) : '0.0';
+        const othUcPct = oth.vs_all > 0 ? ((oth.vs_uc / oth.vs_all) * 100).toFixed(1) : '0.0';
+        const totUcPct = tot.vs_all > 0 ? ((tot.vs_uc / tot.vs_all) * 100).toFixed(1) : '0.0';
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-sky-50/40 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-700 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-900">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <!-- ED -->
+            <td class="py-2.5 px-2 text-right num-font font-bold text-emerald-800 border-r border-slate-100">${Number(ed.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font text-sky-800 border-r border-slate-100">${Number(ed.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font text-emerald-700 font-semibold border-r border-slate-200 bg-emerald-50/30">${edUcPct}%</td>
+
+            <!-- NON ED -->
+            <td class="py-2.5 px-2 text-right num-font font-bold text-amber-800 border-r border-slate-100">${Number(ned.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font text-amber-700 border-r border-slate-100">${Number(ned.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font text-amber-700 font-semibold border-r border-slate-200 bg-amber-50/30">${nedUcPct}%</td>
+
+            <!-- OTHER -->
+            <td class="py-2.5 px-2 text-right num-font font-bold text-purple-800 border-r border-slate-100">${Number(oth.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font text-purple-700 border-r border-slate-100">${Number(oth.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font text-purple-700 font-semibold border-r border-slate-200 bg-purple-50/30">${othUcPct}%</td>
+
+            <!-- TOTAL -->
+            <td class="py-2.5 px-2 text-right num-font font-black text-slate-900 border-r border-slate-100 bg-slate-50">${Number(tot.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-right num-font font-bold text-sky-800 border-r border-slate-100 bg-sky-50/30">${Number(tot.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center num-font font-black text-sky-700 border-r border-slate-100 bg-sky-100/50">${totUcPct}%</td>
+
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmEdHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-sky-600 text-white' : 'bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const dEd = distFullYear.ed || {};
+      const dNed = distFullYear.non_ed || {};
+      const dOth = distFullYear.other || {};
+      const dTot = distFullYear.total || {};
+      const dEdUcPct = dEd.vs_all > 0 ? ((dEd.vs_uc / dEd.vs_all) * 100).toFixed(1) : '0.0';
+      const dNedUcPct = dNed.vs_all > 0 ? ((dNed.vs_uc / dNed.vs_all) * 100).toFixed(1) : '0.0';
+      const dOthUcPct = dOth.vs_all > 0 ? ((dOth.vs_uc / dOth.vs_all) * 100).toFixed(1) : '0.0';
+      const dTotUcPct = dTot.vs_all > 0 ? ((dTot.vs_uc / dTot.vs_all) * 100).toFixed(1) : '0.0';
+
+      tfootHtml = `
+        <tfoot class="bg-gradient-to-r from-sky-950 via-sky-900 to-slate-900 text-white font-bold text-[11px] border-t-2 border-sky-500">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-sky-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-sky-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-sky-300 font-normal">เปรียบเทียบสิทธิ UC รายอำเภอ</div>
+            </td>
+            <!-- ED -->
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-emerald-200">${Number(dEd.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-sky-700/80 text-sky-200">${Number(dEd.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-emerald-300">${dEdUcPct}%</td>
+
+            <!-- NON-ED -->
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-amber-200">${Number(dNed.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-sky-700/80 text-amber-100">${Number(dNed.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-amber-300">${dNedUcPct}%</td>
+
+            <!-- OTHER -->
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-purple-200">${Number(dOth.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-bold border-r border-sky-700/80 text-purple-100">${Number(dOth.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-purple-300">${dOthUcPct}%</td>
+
+            <!-- TOTAL -->
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-yellow-300 bg-sky-950">${Number(dTot.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black border-r border-sky-700/80 text-sky-300">${Number(dTot.vs_uc || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center num-font font-black border-r border-sky-700/80 text-yellow-300 bg-sky-800/80">${dTotUcPct}%</td>
+
+            <td class="py-3 px-2 text-center text-sky-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else if (currentTtmEdView === 'quarter') {
+      // 3. QUARTER VIEW (Q1 - Q4)
+      theadHtml = `
+        <thead class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white font-bold text-[11px] border-b border-emerald-900">
+          <tr>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1">รหัส</th>
+            <th rowspan="2" class="py-2.5 px-3 text-left border-r border-emerald-700/80 hdc-sticky-col-2">หน่วยบริการ</th>
+            <th colspan="4" class="py-1.5 px-2 text-center border-r border-emerald-700/80 bg-emerald-700/70">ไตรมาส 1 (ต.ค.-ธ.ค.)</th>
+            <th colspan="4" class="py-1.5 px-2 text-center border-r border-emerald-700/80 bg-teal-700/70">ไตรมาส 2 (ม.ค.-มี.ค.)</th>
+            <th colspan="4" class="py-1.5 px-2 text-center border-r border-emerald-700/80 bg-cyan-700/70">ไตรมาส 3 (เม.ย.-มิ.ย.)</th>
+            <th colspan="4" class="py-1.5 px-2 text-center border-r border-emerald-700/80 bg-sky-700/70">ไตรมาส 4 (ก.ค.-ก.ย.)</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center border-r border-emerald-700/80 bg-emerald-950">รวมทั้งปี (ครั้ง)</th>
+            <th rowspan="2" class="py-2.5 px-2 text-center">จัดการ</th>
+          </tr>
+          <tr class="text-[10px] bg-emerald-950 text-emerald-100">
+            <!-- Q1 -->
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">NON-ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">OTHER</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/80 font-black text-white bg-emerald-800/60">รวม Q1</th>
+            <!-- Q2 -->
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">NON-ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">OTHER</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/80 font-black text-white bg-teal-800/60">รวม Q2</th>
+            <!-- Q3 -->
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">NON-ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">OTHER</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/80 font-black text-white bg-cyan-800/60">รวม Q3</th>
+            <!-- Q4 -->
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">NON-ED</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-800/60">OTHER</th>
+            <th class="py-1 px-1.5 text-right border-r border-emerald-700/80 font-black text-white bg-sky-800/60">รวม Q4</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const q = u.quarters || {};
+        const q1 = q.q1 || {}; const q2 = q.q2 || {}; const q3 = q.q3 || {}; const q4 = q.q4 || {};
+        const totFy = u.full_year?.total?.vs_all || 0;
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/40 transition">
+            <td class="py-2.5 px-2 text-center num-font font-bold text-slate-700 border-r border-slate-100 hdc-sticky-col-1">${u.hospcode}</td>
+            <td class="py-2.5 px-3 border-r border-slate-100 hdc-sticky-col-2">
+              <div class="font-bold text-slate-900">${u.name}</div>
+              <div class="text-[10px] text-slate-400">ต.${u.subdistrict}</div>
+            </td>
+            <!-- Q1 -->
+            <td class="py-2.5 px-1.5 text-right num-font text-emerald-700 border-r border-slate-100">${Number(q1.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-100">${Number(q1.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-100">${Number(q1.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-slate-900 border-r border-slate-200 bg-emerald-50/40">${Number(q1.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q2 -->
+            <td class="py-2.5 px-1.5 text-right num-font text-emerald-700 border-r border-slate-100">${Number(q2.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-100">${Number(q2.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-100">${Number(q2.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-slate-900 border-r border-slate-200 bg-teal-50/40">${Number(q2.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q3 -->
+            <td class="py-2.5 px-1.5 text-right num-font text-emerald-700 border-r border-slate-100">${Number(q3.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-100">${Number(q3.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-100">${Number(q3.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-slate-900 border-r border-slate-200 bg-cyan-50/40">${Number(q3.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q4 -->
+            <td class="py-2.5 px-1.5 text-right num-font text-emerald-700 border-r border-slate-100">${Number(q4.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-amber-700 border-r border-slate-100">${Number(q4.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font text-purple-700 border-r border-slate-100">${Number(q4.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-2.5 px-1.5 text-right num-font font-bold text-slate-900 border-r border-slate-200 bg-sky-50/40">${Number(q4.total?.vs_all || 0).toLocaleString()}</td>
+
+            <td class="py-2.5 px-2 text-right num-font font-black text-emerald-800 border-r border-slate-100 bg-emerald-50/70">${Number(totFy).toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-center">
+              <button type="button" onclick="window.selectTtmEdHospital('${u.hospcode}')" class="px-2 py-1 rounded text-[11px] font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800'} transition shadow-2xs">
+                ${isSelected ? 'เลือกอยู่' : 'ดู รพ.สต.'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const q1 = distQuarters.q1 || {}; const q2 = distQuarters.q2 || {}; const q3 = distQuarters.q3 || {}; const q4 = distQuarters.q4 || {};
+      const dTotFy = distFullYear.total?.vs_all || 0;
+
+      tfootHtml = `
+        <tfoot class="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-950 text-white font-bold text-[11px] border-t-2 border-emerald-500">
+          <tr>
+            <td class="py-3 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1 font-black">รวม</td>
+            <td class="py-3 px-3 border-r border-emerald-700/80 hdc-sticky-col-2">
+              <div class="font-black text-white">รวมทั้งอำเภอสารภี (14 หน่วยบริการ)</div>
+              <div class="text-[10px] text-emerald-300 font-normal">แจกแจงตามไตรมาส</div>
+            </td>
+            <!-- Q1 -->
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q1.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-amber-200">${Number(q1.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-purple-200">${Number(q1.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-emerald-800/60">${Number(q1.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q2 -->
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q2.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-amber-200">${Number(q2.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-purple-200">${Number(q2.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-teal-800/60">${Number(q2.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q3 -->
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q3.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-amber-200">${Number(q3.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-purple-200">${Number(q3.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-cyan-800/60">${Number(q3.total?.vs_all || 0).toLocaleString()}</td>
+
+            <!-- Q4 -->
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(q4.ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-amber-200">${Number(q4.non_ed?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font border-r border-emerald-700/80 text-purple-200">${Number(q4.other?.vs_all || 0).toLocaleString()}</td>
+            <td class="py-3 px-1.5 text-right num-font font-black border-r border-emerald-700/80 text-white bg-sky-800/60">${Number(q4.total?.vs_all || 0).toLocaleString()}</td>
+
+            <td class="py-3 px-2 text-right num-font font-black text-yellow-300 border-r border-emerald-700/80 bg-emerald-950">${Number(dTotFy).toLocaleString()}</td>
+            <td class="py-3 px-2 text-center text-emerald-300 font-normal text-[10px]">100%</td>
+          </tr>
+        </tfoot>
+      `;
+
+    } else {
+      // 4. FULL 1:1 HDC SPREADSHEET TABLE
+      theadHtml = `
+        <thead class="bg-[#056839] text-white font-bold text-[10.5px] border-b border-emerald-900">
+          <tr>
+            <th rowspan="3" class="py-2.5 px-2 text-center border-r border-emerald-700/80 hdc-sticky-col-1">หน่วยบริการ</th>
+            <th colspan="16" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#04522d]">รวมทั้งปีงบประมาณ</th>
+            <th colspan="16" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#065f46]">ไตรมาส 1</th>
+            <th colspan="16" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#047857]">ไตรมาส 2</th>
+            <th colspan="16" class="py-2 px-2 text-center border-r border-emerald-700/80 bg-[#059669]">ไตรมาส 3</th>
+            <th colspan="16" class="py-2 px-2 text-center bg-[#0d9488]">ไตรมาส 4</th>
+          </tr>
+          <tr class="text-[10px] bg-[#044d2a]">
+            <!-- Full Year Subheads -->
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">NON ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">OTHER</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">บริการทั้งหมด</th>
+
+            <!-- Q1 Subheads -->
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">NON ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">OTHER</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">บริการทั้งหมด</th>
+
+            <!-- Q2 Subheads -->
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">NON ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">OTHER</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">บริการทั้งหมด</th>
+
+            <!-- Q3 Subheads -->
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">NON ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">OTHER</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">บริการทั้งหมด</th>
+
+            <!-- Q4 Subheads -->
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">NON ED</th>
+            <th colspan="4" class="py-1 px-1 text-center border-r border-emerald-700/80">OTHER</th>
+            <th colspan="4" class="py-1 px-1 text-center">บริการทั้งหมด</th>
+          </tr>
+          <tr class="text-[9.5px] bg-[#033b20] text-emerald-100">
+            <!-- Repeats 5 times (Full Year, Q1, Q2, Q3, Q4) -->
+            ${[0, 1, 2, 3, 4].map(() => `
+              <th class="py-1 px-1 text-right border-r border-emerald-800">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800">ครั้ง</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800 text-sky-200">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-700 text-sky-200">ครั้ง</th>
+
+              <th class="py-1 px-1 text-right border-r border-emerald-800">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800">ครั้ง</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800 text-amber-200">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-700 text-amber-200">ครั้ง</th>
+
+              <th class="py-1 px-1 text-right border-r border-emerald-800">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800">ครั้ง</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800 text-purple-200">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-700 text-purple-200">ครั้ง</th>
+
+              <th class="py-1 px-1 text-right border-r border-emerald-800">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800">ครั้ง</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-800 text-sky-200">คน</th>
+              <th class="py-1 px-1 text-right border-r border-emerald-700 text-sky-200">ครั้ง</th>
+            `).join('')}
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml = filteredUnits.map((u, i) => {
+        const isSelected = (u.hospcode === currentUnit);
+        const rowBg = isSelected
+          ? 'background:#ecfdf5; border-left: 4px solid #10b981;'
+          : (i % 2 === 0 ? 'background:#ffffff;' : 'background:#f8fafc;');
+        const fy = u.full_year || {};
+        const q = u.quarters || {};
+
+        let cells = [];
+        // Full Year
+        ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+          const c = fy[cat] || {};
+          cells.push(
+            `<td class="py-2 px-1 text-right num-font border-r border-slate-100">${Number(c.pt_all || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1 text-right num-font font-bold border-r border-slate-100">${Number(c.vs_all || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1 text-right num-font text-sky-700 border-r border-slate-100">${Number(c.pt_uc || 0).toLocaleString()}</td>`,
+            `<td class="py-2 px-1 text-right num-font font-bold text-sky-800 border-r border-slate-200 bg-sky-50/20">${Number(c.vs_uc || 0).toLocaleString()}</td>`
+          );
+        });
+
+        // Q1 - Q4
+        for (let qi = 1; qi <= 4; qi++) {
+          const qd = q[`q${qi}`] || {};
+          ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+            const c = qd[cat] || {};
+            cells.push(
+              `<td class="py-2 px-1 text-right num-font border-r border-slate-100">${Number(c.pt_all || 0).toLocaleString()}</td>`,
+              `<td class="py-2 px-1 text-right num-font font-bold border-r border-slate-100">${Number(c.vs_all || 0).toLocaleString()}</td>`,
+              `<td class="py-2 px-1 text-right num-font text-sky-700 border-r border-slate-100">${Number(c.pt_uc || 0).toLocaleString()}</td>`,
+              `<td class="py-2 px-1 text-right num-font font-bold text-sky-800 border-r border-slate-200 bg-sky-50/20">${Number(c.vs_uc || 0).toLocaleString()}</td>`
+            );
+          });
+        }
+
+        return `
+          <tr style="${rowBg}" class="border-b border-slate-100 hover:bg-emerald-50/40 transition">
+            <td class="py-2 px-2 font-bold text-slate-800 border-r border-slate-200 hdc-sticky-col-1 truncate" style="max-width:240px;" title="${u.hospcode}: ${u.name}">
+              <span class="num-font text-emerald-700 font-bold">${u.hospcode}:</span> ${u.name}
+            </td>
+            ${cells.join('')}
+          </tr>
+        `;
+      }).join('');
+
+      // District Total Row
+      let totCells = [];
+      ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+        const c = distFullYear[cat] || {};
+        totCells.push(
+          `<td class="py-2.5 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(c.pt_all || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1 text-right num-font font-black border-r border-emerald-700/80 text-white bg-emerald-800/40">${Number(c.vs_all || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(c.pt_uc || 0).toLocaleString()}</td>`,
+          `<td class="py-2.5 px-1 text-right num-font font-bold border-r border-emerald-700 text-sky-100">${Number(c.vs_uc || 0).toLocaleString()}</td>`
+        );
+      });
+
+      for (let qi = 1; qi <= 4; qi++) {
+        const qd = distQuarters[`q${qi}`] || {};
+        ['ed', 'non_ed', 'other', 'total'].forEach(cat => {
+          const c = qd[cat] || {};
+          totCells.push(
+            `<td class="py-2.5 px-1 text-right num-font border-r border-emerald-700/80 text-emerald-200">${Number(c.pt_all || 0).toLocaleString()}</td>`,
+            `<td class="py-2.5 px-1 text-right num-font font-black border-r border-emerald-700/80 text-white bg-emerald-800/40">${Number(c.vs_all || 0).toLocaleString()}</td>`,
+            `<td class="py-2.5 px-1 text-right num-font border-r border-emerald-700/80 text-sky-200">${Number(c.pt_uc || 0).toLocaleString()}</td>`,
+            `<td class="py-2.5 px-1 text-right num-font font-bold border-r border-emerald-700 text-sky-100">${Number(c.vs_uc || 0).toLocaleString()}</td>`
+          );
+        });
+      }
+
+      tfootHtml = `
+        <tfoot class="bg-[#033b20] text-white font-bold text-[10.5px] border-t-2 border-emerald-400">
+          <tr>
+            <td class="py-2.5 px-2 border-r border-emerald-700/80 hdc-sticky-col-1 font-black text-white">รวม</td>
+            ${totCells.join('')}
+          </tr>
+        </tfoot>
+      `;
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>${tfootHtml}`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
   // 10. Update Everything on View Change
   function updateDashboardView() {
     if (currentDomain === 'explorer') {
@@ -4336,15 +5677,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isNhsoError = (currentIndicatorId === 'nhso_error_code');
       const isNhsoService = (currentIndicatorId === 'nhso_service');
       const isTtmAgeSex = (currentIndicatorId === 'ttm_age_sex');
+      const isTtmEd = (currentIndicatorId === 'ttm_ed');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTtmAgeSex) {
+      if (isTtmEd) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
+        renderTtmEdPanel();
+      } else if (isTtmAgeSex) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
         renderTtmAgeSexPanel();
       } else if (isTTM4) {
@@ -4353,6 +5705,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -4360,6 +5713,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
@@ -4368,6 +5722,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
         renderNhsoServicePanel();
       } else {
@@ -4377,6 +5732,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
         if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         renderTrendChart();
         renderRankingChart();
         renderDataTable();
@@ -4536,6 +5892,7 @@ console.log("Saraphi Records:", saraphiData);`;
         currentErrorYear = currentYear;
         currentProcedureYear = currentYear;
         currentTtmAgeYear = currentYear;
+        currentTtmEdYear = currentYear;
       }
       updateDashboardView();
     });
@@ -4655,6 +6012,14 @@ console.log("Saraphi Records:", saraphiData);`;
     ttmAgeSearchInput.addEventListener('input', (e) => {
       ttmAgeSearchQuery = e.target.value;
       renderTtmAgeSexPanel();
+    });
+  }
+
+  const ttmEdSearchInput = document.getElementById('ttm-ed-table-search');
+  if (ttmEdSearchInput) {
+    ttmEdSearchInput.addEventListener('input', (e) => {
+      ttmEdSearchQuery = e.target.value;
+      renderTtmEdPanel();
     });
   }
 
