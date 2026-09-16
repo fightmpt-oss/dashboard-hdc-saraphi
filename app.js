@@ -8356,6 +8356,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   // DM HBA1C (s_dm_hba1c / PCC-1) - HDC 1:1 CONTROLLER & RENDER FUNCTIONS
   // =========================================================================
 
+  window.selectDashboardUnit = function(hospcode) {
+    if (currentUnit === hospcode) {
+      currentUnit = 'all'; // Toggle back to all if clicked again
+    } else {
+      currentUnit = hospcode || 'all';
+    }
+    if (unitSelect) {
+      unitSelect.value = currentUnit;
+    }
+    updateDashboardView();
+  };
+
+  window.switchUnit = window.selectDashboardUnit;
+
   window.switchDmHba1cView = function(view) {
     currentDmHba1cView = view;
     renderDmHba1cPanel();
@@ -8479,16 +8493,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       b2: 0, a2: 0, rate2: 0, a4: 0, rate4: 0
     };
 
+    // Responsive metrics for Bento Cards when unit is selected
+    const isUnitSelected = (currentUnit !== 'all');
+    const selectedUnitData = isUnitSelected ? units.find(u => u.hospcode === currentUnit) : null;
+    const activeMetrics = selectedUnitData || hdcSum;
+
+    // Unit filter badge in alert banner
+    const unitBadge = document.getElementById('dm-hba1c-unit-badge');
+    if (unitBadge) {
+      if (isUnitSelected && selectedUnitData) {
+        unitBadge.classList.remove('hidden');
+        unitBadge.innerHTML = `
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500 text-white shadow-xs">
+            <i class="fa-solid fa-hospital"></i> กำลังดู: ${selectedUnitData.name} (ต.${selectedUnitData.subdistrict})
+            <button type="button" onclick="window.selectDashboardUnit('all')" class="ml-1 px-1.5 py-0.5 rounded bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10.5px] transition" title="คลิกเพื่อดูภาพรวมทั้งอำเภอ">
+              ดูภาพรวมทั้งหมด <i class="fa-solid fa-rotate-left text-[10px]"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        unitBadge.classList.add('hidden');
+        unitBadge.innerHTML = '';
+      }
+    }
+
     // 5. Update Bento KPI Metric Cards
     const kpiRate1 = document.getElementById('dm-hba1c-kpi-rate1');
-    if (kpiRate1) kpiRate1.textContent = `${(hdcSum.rate1 || 0).toFixed(2)}%`;
+    if (kpiRate1) kpiRate1.textContent = `${(activeMetrics.rate1 || 0).toFixed(2)}%`;
 
     const kpiA1B1 = document.getElementById('dm-hba1c-kpi-a1-b1');
-    if (kpiA1B1) kpiA1B1.textContent = `${(hdcSum.a1 || 0).toLocaleString()} / ${(hdcSum.b1 || 0).toLocaleString()} คน`;
+    if (kpiA1B1) kpiA1B1.textContent = `${(activeMetrics.a1 || 0).toLocaleString()} / ${(activeMetrics.b1 || 0).toLocaleString()} คน`;
 
     const kpiStatus1 = document.getElementById('dm-hba1c-kpi-status1');
     if (kpiStatus1) {
-      if ((hdcSum.rate1 || 0) >= 70.0) {
+      if ((activeMetrics.rate1 || 0) >= 70.0) {
         kpiStatus1.textContent = 'ผ่านเกณฑ์ HDC';
         kpiStatus1.className = 'px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
       } else {
@@ -8498,26 +8536,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const kpiRate3 = document.getElementById('dm-hba1c-kpi-rate3');
-    if (kpiRate3) kpiRate3.textContent = `${(hdcSum.rate3 || 0).toFixed(2)}%`;
+    if (kpiRate3) kpiRate3.textContent = `${(activeMetrics.rate3 || 0).toFixed(2)}%`;
 
     const kpiA3 = document.getElementById('dm-hba1c-kpi-a3');
-    if (kpiA3) kpiA3.textContent = `${(hdcSum.a3 || 0).toLocaleString()} คน`;
+    if (kpiA3) kpiA3.textContent = `${(activeMetrics.a3 || 0).toLocaleString()} คน`;
 
     const kpiA3Ratio = document.getElementById('dm-hba1c-kpi-a3-ratio');
     if (kpiA3Ratio) {
-      const pct = hdcSum.b1 > 0 ? ((hdcSum.a3 / hdcSum.b1) * 100).toFixed(2) : '0.00';
+      const pct = activeMetrics.b1 > 0 ? ((activeMetrics.a3 / activeMetrics.b1) * 100).toFixed(2) : '0.00';
       kpiA3Ratio.textContent = `(${pct}%)`;
     }
 
     const kpiRate2 = document.getElementById('dm-hba1c-kpi-rate2');
-    if (kpiRate2) kpiRate2.textContent = `${(hdcSum.rate2 || 0).toFixed(2)}%`;
+    if (kpiRate2) kpiRate2.textContent = `${(activeMetrics.rate2 || 0).toFixed(2)}%`;
 
     const kpiA2B2 = document.getElementById('dm-hba1c-kpi-a2-b2');
-    if (kpiA2B2) kpiA2B2.textContent = `${(hdcSum.a2 || 0).toLocaleString()} / ${(hdcSum.b2 || 0).toLocaleString()} คน`;
+    if (kpiA2B2) kpiA2B2.textContent = `${(activeMetrics.a2 || 0).toLocaleString()} / ${(activeMetrics.b2 || 0).toLocaleString()} คน`;
 
     const kpiStatus2 = document.getElementById('dm-hba1c-kpi-status2');
     if (kpiStatus2) {
-      if ((hdcSum.rate2 || 0) >= 70.0) {
+      if ((activeMetrics.rate2 || 0) >= 70.0) {
         kpiStatus2.textContent = 'ผ่านเกณฑ์ HDC';
         kpiStatus2.className = 'px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
       } else {
@@ -8527,27 +8565,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const kpiRate4 = document.getElementById('dm-hba1c-kpi-rate4');
-    if (kpiRate4) kpiRate4.textContent = `${(hdcSum.rate4 || 0).toFixed(2)}%`;
+    if (kpiRate4) kpiRate4.textContent = `${(activeMetrics.rate4 || 0).toFixed(2)}%`;
 
     const kpiA4 = document.getElementById('dm-hba1c-kpi-a4');
-    if (kpiA4) kpiA4.textContent = `${(hdcSum.a4 || 0).toLocaleString()} คน`;
+    if (kpiA4) kpiA4.textContent = `${(activeMetrics.a4 || 0).toLocaleString()} คน`;
 
     const kpiA4Ratio = document.getElementById('dm-hba1c-kpi-a4-ratio');
     if (kpiA4Ratio) {
-      const pct = hdcSum.b2 > 0 ? ((hdcSum.a4 / hdcSum.b2) * 100).toFixed(2) : '0.00';
+      const pct = activeMetrics.b2 > 0 ? ((activeMetrics.a4 / activeMetrics.b2) * 100).toFixed(2) : '0.00';
       kpiA4Ratio.textContent = `(${pct}%)`;
     }
 
     const kpiPassUnits = document.getElementById('dm-hba1c-kpi-units-pass');
     if (kpiPassUnits) {
-      const passCount = units.filter(u => (u.rate2 || 0) >= 70.0).length;
-      kpiPassUnits.textContent = `${passCount} / ${units.length} แห่ง`;
+      if (isUnitSelected && selectedUnitData) {
+        kpiPassUnits.textContent = selectedUnitData.rate2 >= 70.0 ? 'ผ่านเกณฑ์ (≥70%)' : 'ต่ำกว่าเกณฑ์ (<70%)';
+        kpiPassUnits.className = selectedUnitData.rate2 >= 70.0 ? 'font-bold text-emerald-700' : 'font-bold text-amber-700';
+      } else {
+        const passCount = units.filter(u => (u.rate2 || 0) >= 70.0).length;
+        kpiPassUnits.textContent = `${passCount} / ${units.length} แห่ง`;
+        kpiPassUnits.className = 'font-bold text-emerald-700';
+      }
     }
 
-    // 6. Render Dual HDC Charts (Sorted)
+    // 6. Render Dual HDC Charts (Sorted & Highlighted)
     renderDmHba1cCharts(units, hdcSum);
 
-    // 7. Render HDC Matrix Table (Sorted)
+    // 7. Render HDC Matrix Table (Sorted & Highlighted)
     renderDmHba1cTable(units, hdcSum, yr);
   }
 
@@ -8649,10 +8693,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     };
 
-    // Chart 1: ในเขตรับผิดชอบ
+    // Chart 1: ในเขตรับผิดชอบ (Highlight selected unit in amber #f59e0b)
     const ctx1 = canvasInArea.getContext('2d');
-    const bgColors1 = inAreaRates.map(v => v >= 70.0 ? '#86efac' : '#ffb07c');
-    const borderColors1 = inAreaRates.map(v => v >= 70.0 ? '#22c55e' : '#ea580c');
+    const bgColors1 = inAreaRates.map((v, idx) => {
+      if (idx === 0) return (v >= 70.0 ? '#86efac' : '#ffb07c'); // benchmark รวม
+      const u = chart1Units[idx - 1];
+      if (currentUnit !== 'all' && u && u.hospcode === currentUnit) {
+        return '#f59e0b'; // Highlight selected unit in vivid amber/yellow
+      }
+      return v >= 70.0 ? '#86efac' : '#ffb07c';
+    });
+    const borderColors1 = inAreaRates.map((v, idx) => {
+      if (idx === 0) return (v >= 70.0 ? '#22c55e' : '#ea580c');
+      const u = chart1Units[idx - 1];
+      if (currentUnit !== 'all' && u && u.hospcode === currentUnit) {
+        return '#b45309';
+      }
+      return v >= 70.0 ? '#22c55e' : '#ea580c';
+    });
+    const borderWidths1 = inAreaRates.map((v, idx) => {
+      if (idx > 0 && currentUnit !== 'all' && chart1Units[idx - 1]?.hospcode === currentUnit) {
+        return 2.5;
+      }
+      return 1;
+    });
 
     dmHba1cChartInAreaInstance = new Chart(ctx1, {
       type: 'bar',
@@ -8663,7 +8727,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           data: inAreaRates,
           backgroundColor: bgColors1,
           borderColor: borderColors1,
-          borderWidth: 1,
+          borderWidth: borderWidths1,
           borderRadius: 4,
           maxBarThickness: 28
         }]
@@ -8671,6 +8735,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const elIndex = elements[0].index;
+            if (elIndex === 0) {
+              window.selectDashboardUnit('all');
+            } else if (chart1Units[elIndex - 1]) {
+              window.selectDashboardUnit(chart1Units[elIndex - 1].hospcode);
+            }
+          }
+        },
         layout: {
           padding: { top: 22, left: 24, right: 10, bottom: 5 }
         },
@@ -8707,10 +8781,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       plugins: [target70Plugin, barValuePlugin]
     });
 
-    // Chart 2: ผู้มารับบริการ
+    // Chart 2: ผู้มารับบริการ (Highlight selected unit in amber #f59e0b)
     const ctx2 = canvasService.getContext('2d');
-    const bgColors2 = serviceRates.map(v => v >= 70.0 ? '#86efac' : '#ffb07c');
-    const borderColors2 = serviceRates.map(v => v >= 70.0 ? '#22c55e' : '#ea580c');
+    const bgColors2 = serviceRates.map((v, idx) => {
+      if (idx === 0) return (v >= 70.0 ? '#86efac' : '#ffb07c'); // benchmark รวม
+      const u = chart2Units[idx - 1];
+      if (currentUnit !== 'all' && u && u.hospcode === currentUnit) {
+        return '#f59e0b'; // Highlight selected unit in vivid amber/yellow
+      }
+      return v >= 70.0 ? '#86efac' : '#ffb07c';
+    });
+    const borderColors2 = serviceRates.map((v, idx) => {
+      if (idx === 0) return (v >= 70.0 ? '#22c55e' : '#ea580c');
+      const u = chart2Units[idx - 1];
+      if (currentUnit !== 'all' && u && u.hospcode === currentUnit) {
+        return '#b45309';
+      }
+      return v >= 70.0 ? '#22c55e' : '#ea580c';
+    });
+    const borderWidths2 = serviceRates.map((v, idx) => {
+      if (idx > 0 && currentUnit !== 'all' && chart2Units[idx - 1]?.hospcode === currentUnit) {
+        return 2.5;
+      }
+      return 1;
+    });
 
     dmHba1cChartServiceInstance = new Chart(ctx2, {
       type: 'bar',
@@ -8721,7 +8815,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           data: serviceRates,
           backgroundColor: bgColors2,
           borderColor: borderColors2,
-          borderWidth: 1,
+          borderWidth: borderWidths2,
           borderRadius: 4,
           maxBarThickness: 28
         }]
@@ -8729,6 +8823,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const elIndex = elements[0].index;
+            if (elIndex === 0) {
+              window.selectDashboardUnit('all');
+            } else if (chart2Units[elIndex - 1]) {
+              window.selectDashboardUnit(chart2Units[elIndex - 1].hospcode);
+            }
+          }
+        },
         layout: {
           padding: { top: 22, left: 24, right: 10, bottom: 5 }
         },
@@ -8890,7 +8994,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
           <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
-          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="window.selectDashboardUnit('all')">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
           <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
@@ -8909,46 +9013,66 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-indigo-800">${(hdcSum.a4 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate4 || 0).toFixed(2)}</td>
           <td class="p-2 text-center border-l border-emerald-200">
-            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+            <button type="button" onclick="window.selectDashboardUnit('all')" class="px-2 py-0.5 rounded ${currentUnit === 'all' ? 'bg-emerald-600 text-white font-extrabold shadow-2xs' : 'bg-emerald-200/70 hover:bg-emerald-600 hover:text-white text-emerald-900 font-bold'} text-[10.5px] transition">
+              ${currentUnit === 'all' ? 'ดูอยู่' : 'ยอดรวม'}
+            </button>
           </td>
         </tr>
       `;
 
       // Unit rows
       sortedUnits.forEach((u, idx) => {
-        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const isSelected = (currentUnit === u.hospcode);
+        const rowBg = isSelected
+          ? 'bg-amber-100/90 font-bold text-slate-900 border-y-2 border-amber-400 shadow-sm ring-1 ring-amber-400'
+          : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80');
+
+        const stickyCodeClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-600 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickyNameClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-900 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickySubClass = isSelected
+          ? 'bg-amber-100/80 text-amber-900 font-semibold border-r border-amber-300'
+          : 'text-slate-600 font-medium border-r border-slate-200';
+
         const rate1Pass = (u.rate1 || 0) >= 70.0;
         const rate2Pass = (u.rate2 || 0) >= 70.0;
 
+        const actionBtn = isSelected
+          ? `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition flex items-center justify-center gap-1 mx-auto" title="คลิกเพื่อยกเลิกการเลือก"><i class="fa-solid fa-check"></i> ดู รพ.สต.</button>`
+          : `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-2xs">ดู รพ.สต.</button>`;
+
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+            <td class="p-2.5 text-center sticky left-0 ${stickyCodeClass} font-mono z-10">
               ${u.hospcode}
             </td>
-            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
-              ${u.name}
+            <td class="p-2.5 sticky left-16 ${stickyNameClass} z-10">
+              <span class="cursor-pointer hover:text-emerald-700 hover:underline" onclick="window.selectDashboardUnit('${u.hospcode}')">${u.name}</span>
             </td>
-            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+            <td class="p-2.5 ${stickySubClass}">
               ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-800'}">
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold ${isSelected ? 'text-slate-900' : 'text-slate-700'}">${(u.a1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? (isSelected ? 'text-emerald-900 bg-emerald-100/80' : 'text-emerald-700 bg-emerald-50/70') : 'text-slate-800'}">
               ${(u.rate1 || 0).toFixed(2)}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a3 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate3 || 0).toFixed(2)}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b2 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a2 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-amber-700 bg-amber-50/50'}">
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold ${isSelected ? 'text-slate-900' : 'text-slate-700'}">${(u.a2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? (isSelected ? 'text-emerald-900 bg-emerald-100/80' : 'text-emerald-700 bg-emerald-50/70') : (isSelected ? 'text-amber-900 bg-amber-200/80' : 'text-amber-700 bg-amber-50/50')}">
               ${(u.rate2 || 0).toFixed(2)}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a4 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate4 || 0).toFixed(2)}</td>
             <td class="p-2 text-center">
-              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
-                ดู รพ.สต.
-              </button>
+              ${actionBtn}
             </td>
           </tr>
         `;
@@ -8989,7 +9113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
           <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
-          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="window.selectDashboardUnit('all')">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
           <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
@@ -9001,36 +9125,57 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-teal-800">${(hdcSum.a3 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate3 || 0).toFixed(2)}%</td>
           <td class="p-2 text-center border-l border-emerald-200">
-            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+            <button type="button" onclick="window.selectDashboardUnit('all')" class="px-2 py-0.5 rounded ${currentUnit === 'all' ? 'bg-emerald-600 text-white font-extrabold shadow-2xs' : 'bg-emerald-200/70 hover:bg-emerald-600 hover:text-white text-emerald-900 font-bold'} text-[10.5px] transition">
+              ${currentUnit === 'all' ? 'ดูอยู่' : 'ยอดรวม'}
+            </button>
           </td>
         </tr>
       `;
 
       sortedUnits.forEach((u, idx) => {
-        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const isSelected = (currentUnit === u.hospcode);
+        const rowBg = isSelected
+          ? 'bg-amber-100/90 font-bold text-slate-900 border-y-2 border-amber-400 shadow-sm ring-1 ring-amber-400'
+          : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80');
+
+        const stickyCodeClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-600 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickyNameClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-900 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickySubClass = isSelected
+          ? 'bg-amber-100/80 text-amber-900 font-semibold border-r border-amber-300'
+          : 'text-slate-600 font-medium border-r border-slate-200';
+
         const rate1Pass = (u.rate1 || 0) >= 70.0;
+
+        const actionBtn = isSelected
+          ? `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition flex items-center justify-center gap-1 mx-auto" title="คลิกเพื่อยกเลิกการเลือก"><i class="fa-solid fa-check"></i> ดู รพ.สต.</button>`
+          : `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-2xs">ดู รพ.สต.</button>`;
+
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+            <td class="p-2.5 text-center sticky left-0 ${stickyCodeClass} font-mono z-10">
               ${u.hospcode}
             </td>
-            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
-              ${u.name}
+            <td class="p-2.5 sticky left-16 ${stickyNameClass} z-10">
+              <span class="cursor-pointer hover:text-emerald-700 hover:underline" onclick="window.selectDashboardUnit('${u.hospcode}')">${u.name}</span>
             </td>
-            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+            <td class="p-2.5 ${stickySubClass}">
               ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-800'}">
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold ${isSelected ? 'text-slate-900' : 'text-slate-700'}">${(u.a1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? (isSelected ? 'text-emerald-900 bg-emerald-100/80' : 'text-emerald-700 bg-emerald-50/70') : 'text-slate-800'}">
               ${(u.rate1 || 0).toFixed(2)}%
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a3 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate3 || 0).toFixed(2)}%</td>
             <td class="p-2 text-center">
-              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
-                ดู รพ.สต.
-              </button>
+              ${actionBtn}
             </td>
           </tr>
         `;
@@ -9071,7 +9216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
           <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
-          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5 cursor-pointer hover:text-emerald-800" onclick="window.selectDashboardUnit('all')">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
           <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
@@ -9083,36 +9228,57 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-indigo-800">${(hdcSum.a4 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate4 || 0).toFixed(2)}%</td>
           <td class="p-2 text-center border-l border-emerald-200">
-            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+            <button type="button" onclick="window.selectDashboardUnit('all')" class="px-2 py-0.5 rounded ${currentUnit === 'all' ? 'bg-emerald-600 text-white font-extrabold shadow-2xs' : 'bg-emerald-200/70 hover:bg-emerald-600 hover:text-white text-emerald-900 font-bold'} text-[10.5px] transition">
+              ${currentUnit === 'all' ? 'ดูอยู่' : 'ยอดรวม'}
+            </button>
           </td>
         </tr>
       `;
 
       sortedUnits.forEach((u, idx) => {
-        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const isSelected = (currentUnit === u.hospcode);
+        const rowBg = isSelected
+          ? 'bg-amber-100/90 font-bold text-slate-900 border-y-2 border-amber-400 shadow-sm ring-1 ring-amber-400'
+          : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80');
+
+        const stickyCodeClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-600 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickyNameClass = isSelected
+          ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+          : 'bg-white text-slate-900 font-bold border-r border-slate-200 shadow-xs';
+
+        const stickySubClass = isSelected
+          ? 'bg-amber-100/80 text-amber-900 font-semibold border-r border-amber-300'
+          : 'text-slate-600 font-medium border-r border-slate-200';
+
         const rate2Pass = (u.rate2 || 0) >= 70.0;
+
+        const actionBtn = isSelected
+          ? `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition flex items-center justify-center gap-1 mx-auto" title="คลิกเพื่อยกเลิกการเลือก"><i class="fa-solid fa-check"></i> ดู รพ.สต.</button>`
+          : `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-2xs">ดู รพ.สต.</button>`;
+
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+            <td class="p-2.5 text-center sticky left-0 ${stickyCodeClass} font-mono z-10">
               ${u.hospcode}
             </td>
-            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
-              ${u.name}
+            <td class="p-2.5 sticky left-16 ${stickyNameClass} z-10">
+              <span class="cursor-pointer hover:text-emerald-700 hover:underline" onclick="window.selectDashboardUnit('${u.hospcode}')">${u.name}</span>
             </td>
-            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+            <td class="p-2.5 ${stickySubClass}">
               ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b2 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a2 || 0).toLocaleString()}</td>
-            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-amber-700 bg-amber-50/50'}">
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold ${isSelected ? 'text-slate-900' : 'text-slate-700'}">${(u.a2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? (isSelected ? 'text-emerald-900 bg-emerald-100/80' : 'text-emerald-700 bg-emerald-50/70') : (isSelected ? 'text-amber-900 bg-amber-200/80' : 'text-amber-700 bg-amber-50/50')}">
               ${(u.rate2 || 0).toFixed(2)}%
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a4 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate4 || 0).toFixed(2)}%</td>
             <td class="p-2 text-center">
-              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
-                ดู รพ.สต.
-              </button>
+              ${actionBtn}
             </td>
           </tr>
         `;
