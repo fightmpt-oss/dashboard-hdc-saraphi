@@ -1455,34 +1455,95 @@ master["indicators"]["pcc_dm_hba1c"] = {
     "table": "s_dm_hba1c",
     "domain": "pcc",
     "domain_label": "💰 งบ PCC (4 ตัวชี้วัด)",
-    "desc": "ร้อยละของผู้ป่วยโรคเบาหวานได้รับการตรวจ HbA1c อย่างน้อยปีละ 1 ครั้ง",
-    "target": 80.0,
+    "desc": "ร้อยละของผู้ป่วยโรคเบาหวานได้รับการตรวจ HbA1c อย่างน้อยปีละ 1 ครั้ง (เป้าหมาย HDC 70%)",
+    "target": 70.0,
     "unit": "%",
-    "num_label": "ตรวจ HbA1c (คน)",
-    "den_label": "ผู้ป่วยเบาหวาน (คน)",
+    "num_label": "ตรวจ HbA1c ในเขต (คน)",
+    "den_label": "ผู้ป่วยเบาหวานในเขต (คน)",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_dm_hba1c_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    unit_agg = {hc: {"b1": 0, "a1": 0, "a3": 0, "b2": 0, "a2": 0, "a4": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('hba1c') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["b1"] += int(clean_num(r.get('target')))
+            unit_agg[hc]["a1"] += int(clean_num(r.get('result')))
+            unit_agg[hc]["a3"] += int(clean_num(r.get('result_2')))
+            if r.get('target1') is not None:
+                unit_agg[hc]["b2"] += int(clean_num(r.get('target1')))
+            if r.get('result1') is not None:
+                unit_agg[hc]["a2"] += int(clean_num(r.get('result1')))
+            if r.get('result1_2') is not None:
+                unit_agg[hc]["a4"] += int(clean_num(r.get('result1_2')))
+
     unit_data = []
-    tot_num = 0; tot_den = 0
+    tot_b1, tot_a1, tot_a3 = 0, 0, 0
+    tot_b2, tot_a2, tot_a4 = 0, 0, 0
+
     for hc, d in unit_agg.items():
-        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
-        tot_num += d["num"]; tot_den += d["den"]
+        rate1 = round((d["a1"] / d["b1"] * 100), 2) if d["b1"] > 0 else 0.0
+        rate3 = round((d["a3"] / d["b1"] * 100), 2) if d["b1"] > 0 else 0.0
+        rate2 = round((d["a2"] / d["b2"] * 100), 2) if d["b2"] > 0 else 0.0
+        rate4 = round((d["a4"] / d["b2"] * 100), 2) if d["b2"] > 0 else 0.0
+
+        tot_b1 += d["b1"]; tot_a1 += d["a1"]; tot_a3 += d["a3"]
+        tot_b2 += d["b2"]; tot_a2 += d["a2"]; tot_a4 += d["a4"]
+
+        subd = SARAPHI_UNITS[hc]["subdistrict"]
+        if hc == '11135':
+            hdc_display_name = f"{hc}:โรงพยาบาลสารภี"
+        elif hc == '99758':
+            hdc_display_name = f"{hc}:ศูนย์สุขภาพชุมชนตำบลสารภี ตำบลสารภี"
+        else:
+            hdc_display_name = f"{hc}:{SARAPHI_UNITS[hc]['full_name']} ตำบล{subd}"
+
         unit_data.append({
-            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 80.0
+            "hospcode": hc,
+            "name": SARAPHI_UNITS[hc]["name"],
+            "full_name": SARAPHI_UNITS[hc]["full_name"],
+            "hdc_name": hdc_display_name,
+            "subdistrict": subd,
+            "b1": d["b1"],
+            "a1": d["a1"],
+            "rate1": rate1,
+            "a3": d["a3"],
+            "rate3": rate3,
+            "b2": d["b2"],
+            "a2": d["a2"],
+            "rate2": rate2,
+            "a4": d["a4"],
+            "rate4": rate4,
+            "num": d["a1"],
+            "den": d["b1"],
+            "rate": rate1,
+            "pass": rate1 >= 70.0
         })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+
+    dist_rate1 = round((tot_a1 / tot_b1 * 100), 2) if tot_b1 > 0 else 0.0
+    dist_rate3 = round((tot_a3 / tot_b1 * 100), 2) if tot_b1 > 0 else 0.0
+    dist_rate2 = round((tot_a2 / tot_b2 * 100), 2) if tot_b2 > 0 else 0.0
+    dist_rate4 = round((tot_a4 / tot_b2 * 100), 2) if tot_b2 > 0 else 0.0
+
     master["indicators"]["pcc_dm_hba1c"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 80.0, "units": unit_data
+        "num": tot_a1,
+        "den": tot_b1,
+        "rate": dist_rate1,
+        "pass": dist_rate1 >= 70.0,
+        "units": unit_data,
+        "hdc_summary": {
+            "b1": tot_b1,
+            "a1": tot_a1,
+            "rate1": dist_rate1,
+            "a3": tot_a3,
+            "rate3": dist_rate3,
+            "b2": tot_b2,
+            "a2": tot_a2,
+            "rate2": dist_rate2,
+            "a4": tot_a4,
+            "rate4": dist_rate4
+        }
     }
 
 # 2.2 DM ควบคุมได้ดี

@@ -57,6 +57,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const exportCsvBtn = document.getElementById('export-csv-btn');
   const tableExportBtn = document.getElementById('table-export-btn');
   const ttmMassagePanel = document.getElementById('ttm-massage-panel');
+  const dmHba1cPanel = document.getElementById('dm-hba1c-panel');
+
+  let currentDmHba1cView = 'hdc_full';
+  let currentDmHba1cYear = '2569';
+  let dmHba1cSearchQuery = '';
+  let dmHba1cChartInAreaInstance = null;
+  let dmHba1cChartServiceInstance = null;
 
   let currentTtmMassageView = 'hdc_full';
   let currentTtmMassageYear = '2569';
@@ -8343,6 +8350,596 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // =========================================================================
+  // DM HBA1C (s_dm_hba1c / PCC-1) - HDC 1:1 CONTROLLER & RENDER FUNCTIONS
+  // =========================================================================
+
+  window.switchDmHba1cView = function(view) {
+    currentDmHba1cView = view;
+    renderDmHba1cPanel();
+  };
+
+  window.switchDmHba1cYear = function(yr) {
+    currentDmHba1cYear = yr;
+    renderDmHba1cPanel();
+  };
+
+  window.exportDmHba1cCsv = function() {
+    const yr = currentDmHba1cYear || currentYear || '2569';
+    const ind = masterData?.indicators?.['pcc_dm_hba1c'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const sum = yrData.hdc_summary || {};
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Thai language Excel
+    csvContent += 'รหัส,หน่วยบริการ,ตำบล,' +
+      'ผู้ป่วยในเขต_B1,ตรวจในเขต1ครั้ง_A1,ร้อยละในเขต1ครั้ง_A1_B1,ตรวจในเขต2ครั้ง_A3,ร้อยละในเขต2ครั้ง_A3_B1,' +
+      'ผู้ป่วยรับบริการ_B2,ตรวจรับบริการ1ครั้ง_A2,ร้อยละรับบริการ1ครั้ง_A2_B2,ตรวจรับบริการ2ครั้ง_A4,ร้อยละรับบริการ2ครั้ง_A4_B2\n';
+
+    // Total district row
+    csvContent += `TOTAL,รวมอำเภอสารภี,สารภี,${sum.b1 || 0},${sum.a1 || 0},${sum.rate1 || 0},${sum.a3 || 0},${sum.rate3 || 0},${sum.b2 || 0},${sum.a2 || 0},${sum.rate2 || 0},${sum.a4 || 0},${sum.rate4 || 0}\n`;
+
+    units.forEach(u => {
+      const uName = `"${(u.hdc_name || u.name).replace(/"/g, '""')}"`;
+      csvContent += `${u.hospcode},${uName},${u.subdistrict || ''},` +
+        `${u.b1 || 0},${u.a1 || 0},${u.rate1 || 0},${u.a3 || 0},${u.rate3 || 0},` +
+        `${u.b2 || 0},${u.a2 || 0},${u.rate2 || 0},${u.a4 || 0},${u.rate4 || 0}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_s_dm_hba1c_Saraphi_${yr}_${currentDmHba1cView}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function renderDmHba1cPanel() {
+    if (currentIndicatorId !== 'pcc_dm_hba1c') {
+      if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+      return;
+    }
+    if (dmHba1cPanel) dmHba1cPanel.classList.remove('hidden');
+
+    const yr = currentDmHba1cYear || currentYear || '2569';
+
+    // 1. Sync View Mode Buttons
+    ['hdc_full', 'in_area', 'chronic_fu'].forEach(v => {
+      const btn = document.getElementById(`btn-dm-hba1c-view-${v}`);
+      if (btn) {
+        if (v === currentDmHba1cView) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-dm-hba1c-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 3. Retrieve Data
+    const ind = masterData?.indicators?.['pcc_dm_hba1c'] || {};
+    const yrData = ind?.years?.[yr] || {};
+    const units = yrData.units || [];
+    const hdcSum = yrData.hdc_summary || {
+      b1: yrData.den || 0,
+      a1: yrData.num || 0,
+      rate1: yrData.rate || 0,
+      a3: 0, rate3: 0,
+      b2: 0, a2: 0, rate2: 0, a4: 0, rate4: 0
+    };
+
+    // 4. Update Bento KPI Metric Cards
+    const kpiRate1 = document.getElementById('dm-hba1c-kpi-rate1');
+    if (kpiRate1) kpiRate1.textContent = `${(hdcSum.rate1 || 0).toFixed(2)}%`;
+
+    const kpiA1B1 = document.getElementById('dm-hba1c-kpi-a1-b1');
+    if (kpiA1B1) kpiA1B1.textContent = `${(hdcSum.a1 || 0).toLocaleString()} / ${(hdcSum.b1 || 0).toLocaleString()} คน`;
+
+    const kpiStatus1 = document.getElementById('dm-hba1c-kpi-status1');
+    if (kpiStatus1) {
+      if ((hdcSum.rate1 || 0) >= 70.0) {
+        kpiStatus1.textContent = 'ผ่านเกณฑ์ HDC';
+        kpiStatus1.className = 'px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
+      } else {
+        kpiStatus1.textContent = 'ต่ำกว่าเกณฑ์ 70%';
+        kpiStatus1.className = 'px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800';
+      }
+    }
+
+    const kpiRate3 = document.getElementById('dm-hba1c-kpi-rate3');
+    if (kpiRate3) kpiRate3.textContent = `${(hdcSum.rate3 || 0).toFixed(2)}%`;
+
+    const kpiA3 = document.getElementById('dm-hba1c-kpi-a3');
+    if (kpiA3) kpiA3.textContent = `${(hdcSum.a3 || 0).toLocaleString()} คน`;
+
+    const kpiA3Ratio = document.getElementById('dm-hba1c-kpi-a3-ratio');
+    if (kpiA3Ratio) {
+      const pct = hdcSum.b1 > 0 ? ((hdcSum.a3 / hdcSum.b1) * 100).toFixed(2) : '0.00';
+      kpiA3Ratio.textContent = `(${pct}%)`;
+    }
+
+    const kpiRate2 = document.getElementById('dm-hba1c-kpi-rate2');
+    if (kpiRate2) kpiRate2.textContent = `${(hdcSum.rate2 || 0).toFixed(2)}%`;
+
+    const kpiA2B2 = document.getElementById('dm-hba1c-kpi-a2-b2');
+    if (kpiA2B2) kpiA2B2.textContent = `${(hdcSum.a2 || 0).toLocaleString()} / ${(hdcSum.b2 || 0).toLocaleString()} คน`;
+
+    const kpiStatus2 = document.getElementById('dm-hba1c-kpi-status2');
+    if (kpiStatus2) {
+      if ((hdcSum.rate2 || 0) >= 70.0) {
+        kpiStatus2.textContent = 'ผ่านเกณฑ์ HDC';
+        kpiStatus2.className = 'px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
+      } else {
+        kpiStatus2.textContent = 'ต่ำกว่าเกณฑ์ 70%';
+        kpiStatus2.className = 'px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800';
+      }
+    }
+
+    const kpiRate4 = document.getElementById('dm-hba1c-kpi-rate4');
+    if (kpiRate4) kpiRate4.textContent = `${(hdcSum.rate4 || 0).toFixed(2)}%`;
+
+    const kpiA4 = document.getElementById('dm-hba1c-kpi-a4');
+    if (kpiA4) kpiA4.textContent = `${(hdcSum.a4 || 0).toLocaleString()} คน`;
+
+    const kpiA4Ratio = document.getElementById('dm-hba1c-kpi-a4-ratio');
+    if (kpiA4Ratio) {
+      const pct = hdcSum.b2 > 0 ? ((hdcSum.a4 / hdcSum.b2) * 100).toFixed(2) : '0.00';
+      kpiA4Ratio.textContent = `(${pct}%)`;
+    }
+
+    const kpiPassUnits = document.getElementById('dm-hba1c-kpi-units-pass');
+    if (kpiPassUnits) {
+      const passCount = units.filter(u => (u.rate2 || 0) >= 70.0).length;
+      kpiPassUnits.textContent = `${passCount} / ${units.length} แห่ง`;
+    }
+
+    // 5. Render Dual HDC Charts
+    renderDmHba1cCharts(units, hdcSum);
+
+    // 6. Render HDC Matrix Table
+    renderDmHba1cTable(units, hdcSum, yr);
+  }
+
+  function renderDmHba1cCharts(units, hdcSum) {
+    const canvasInArea = document.getElementById('dmHba1cChartInArea');
+    const canvasService = document.getElementById('dmHba1cChartService');
+    if (!canvasInArea || !canvasService) return;
+
+    // Destroy existing instances
+    if (dmHba1cChartInAreaInstance) {
+      dmHba1cChartInAreaInstance.destroy();
+      dmHba1cChartInAreaInstance = null;
+    }
+    if (dmHba1cChartServiceInstance) {
+      dmHba1cChartServiceInstance.destroy();
+      dmHba1cChartServiceInstance = null;
+    }
+
+    // Chart labels: 'รวม' followed by HDC names of the 14 units
+    const labels = ['รวม', ...units.map(u => {
+      const raw = u.hdc_name || `${u.hospcode}:${u.name}`;
+      return raw.length > 18 ? raw.substring(0, 16) + '...' : raw;
+    })];
+
+    const fullLabels = ['รวมอำเภอสารภี', ...units.map(u => u.hdc_name || `${u.hospcode}:${u.name}`)];
+
+    // Values
+    const inAreaRates = [hdcSum.rate1 || 0, ...units.map(u => u.rate1 || 0)];
+    const serviceRates = [hdcSum.rate2 || 0, ...units.map(u => u.rate2 || 0)];
+
+    // Target 70% threshold plugin
+    const target70Plugin = {
+      id: 'target70LinePlugin',
+      afterDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        const yScale = scales.y;
+        if (!yScale || !chartArea) return;
+        const yVal = yScale.getPixelForValue(70);
+        if (yVal >= chartArea.top && yVal <= chartArea.bottom) {
+          ctx.save();
+          // Dashed green line
+          ctx.strokeStyle = '#16a34a';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, yVal);
+          ctx.lineTo(chartArea.right, yVal);
+          ctx.stroke();
+
+          // Red label text on the left
+          ctx.fillStyle = '#dc2626';
+          ctx.font = 'bold 10px "Noto Sans Thai", sans-serif';
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('เป้าหมาย 70', chartArea.left - 4, yVal);
+          ctx.restore();
+        }
+      }
+    };
+
+    // Value on top of bars plugin
+    const barValuePlugin = {
+      id: 'barValueLabelsPlugin',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, i) => {
+          if (dataset.type === 'line') return;
+          const meta = chart.getDatasetMeta(i);
+          meta.data.forEach((bar, index) => {
+            const val = dataset.data[index];
+            if (val !== undefined && val !== null) {
+              ctx.save();
+              ctx.fillStyle = '#1e293b';
+              ctx.font = 'bold 9.5px "Noto Sans Thai", sans-serif';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText(val.toFixed(2) + '%', bar.x, bar.y - 3);
+              ctx.restore();
+            }
+          });
+        });
+      }
+    };
+
+    // Chart 1: ในเขตรับผิดชอบ
+    const ctx1 = canvasInArea.getContext('2d');
+    const bgColors1 = inAreaRates.map(v => v >= 70.0 ? '#86efac' : '#ffb07c');
+    const borderColors1 = inAreaRates.map(v => v >= 70.0 ? '#22c55e' : '#ea580c');
+
+    dmHba1cChartInAreaInstance = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'ร้อยละ [A1/B1]',
+          data: inAreaRates,
+          backgroundColor: bgColors1,
+          borderColor: borderColors1,
+          borderWidth: 1,
+          borderRadius: 4,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 22, left: 24, right: 10, bottom: 5 }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (ctx) => fullLabels[ctx[0].dataIndex],
+              label: (ctx) => `ร้อยละ: ${ctx.parsed.y.toFixed(2)}% (เป้าหมาย 70%)`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: Math.max(80, ...inAreaRates) > 75 ? Math.ceil(Math.max(80, ...inAreaRates) / 10) * 10 : 80,
+            ticks: {
+              stepSize: 20,
+              callback: (val) => val
+            },
+            grid: { color: '#f1f5f9' }
+          },
+          x: {
+            ticks: {
+              font: { size: 9.5 },
+              maxRotation: 45,
+              minRotation: 45,
+              autoSkip: false
+            },
+            grid: { display: false }
+          }
+        }
+      },
+      plugins: [target70Plugin, barValuePlugin]
+    });
+
+    // Chart 2: ผู้มารับบริการ
+    const ctx2 = canvasService.getContext('2d');
+    const bgColors2 = serviceRates.map(v => v >= 70.0 ? '#86efac' : '#ffb07c');
+    const borderColors2 = serviceRates.map(v => v >= 70.0 ? '#22c55e' : '#ea580c');
+
+    dmHba1cChartServiceInstance = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'ร้อยละ [A2/B2]',
+          data: serviceRates,
+          backgroundColor: bgColors2,
+          borderColor: borderColors2,
+          borderWidth: 1,
+          borderRadius: 4,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 22, left: 24, right: 10, bottom: 5 }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (ctx) => fullLabels[ctx[0].dataIndex],
+              label: (ctx) => `ร้อยละ: ${ctx.parsed.y.toFixed(2)}% (เป้าหมาย 70%)`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              stepSize: 25,
+              callback: (val) => val
+            },
+            grid: { color: '#f1f5f9' }
+          },
+          x: {
+            ticks: {
+              font: { size: 9.5 },
+              maxRotation: 45,
+              minRotation: 45,
+              autoSkip: false
+            },
+            grid: { display: false }
+          }
+        }
+      },
+      plugins: [target70Plugin, barValuePlugin]
+    });
+  }
+
+  function renderDmHba1cTable(units, hdcSum, yr) {
+    const tableEl = document.getElementById('dm-hba1c-matrix-table');
+    if (!tableEl) return;
+
+    const query = (dmHba1cSearchQuery || '').trim().toLowerCase();
+    const filteredUnits = query
+      ? units.filter(u =>
+          (u.hospcode && u.hospcode.toLowerCase().includes(query)) ||
+          (u.name && u.name.toLowerCase().includes(query)) ||
+          (u.full_name && u.full_name.toLowerCase().includes(query)) ||
+          (u.hdc_name && u.hdc_name.toLowerCase().includes(query)) ||
+          (u.subdistrict && u.subdistrict.toLowerCase().includes(query))
+        )
+      : units;
+
+    let theadHtml = '';
+    let tbodyHtml = '';
+
+    if (currentDmHba1cView === 'hdc_full') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
+            <th rowspan="2" class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px] shadow-xs">หน่วยบริการ</th>
+            <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-800/80">ผู้ป่วยที่อยู่ในเขตรับผิดชอบ Typearea 1,3</th>
+            <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-900/80">ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU</th>
+            <th rowspan="2" class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
+          </tr>
+          <tr class="bg-emerald-800 text-white text-[11px] font-semibold text-center border-b border-emerald-900">
+            <!-- Typearea 1,3 -->
+            <th class="p-2 border-l border-emerald-700 font-medium">จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B1)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A1)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 text-amber-200">ร้อยละ<br><span class="text-xs font-normal">[A1/B1] x 100</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A3)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ร้อยละ<br><span class="text-emerald-200 font-normal">[A3/B1] x 100</span></th>
+            <!-- ChronicFU -->
+            <th class="p-2 border-l border-emerald-700 font-medium">จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B2)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A2)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 text-amber-200">ร้อยละ<br><span class="text-xs font-normal">[A2/B2] x 100</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A4)</span></th>
+            <th class="p-2 border-l border-emerald-700 font-medium">ร้อยละ<br><span class="text-emerald-200 font-normal">[A4/B2] x 100</span></th>
+          </tr>
+        </thead>
+      `;
+
+      // Summary row for Total District
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
+          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+            <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b1 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-emerald-800">${(hdcSum.a1 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate1 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
+            ${(hdcSum.rate1 || 0).toFixed(2)}
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-teal-800">${(hdcSum.a3 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate3 || 0).toFixed(2)}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b2 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-blue-800">${(hdcSum.a2 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate2 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
+            ${(hdcSum.rate2 || 0).toFixed(2)}
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-indigo-800">${(hdcSum.a4 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate4 || 0).toFixed(2)}</td>
+          <td class="p-2 text-center border-l border-emerald-200">
+            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+          </td>
+        </tr>
+      `;
+
+      // Unit rows
+      filteredUnits.forEach((u, idx) => {
+        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const rate1Pass = (u.rate1 || 0) >= 70.0;
+        const rate2Pass = (u.rate2 || 0) >= 70.0;
+
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
+            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
+              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
+                ${u.hdc_name || `${u.hospcode}:${u.name}`}
+              </div>
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-800'}">
+              ${(u.rate1 || 0).toFixed(2)}
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a3 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate3 || 0).toFixed(2)}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-amber-700 bg-amber-50/50'}">
+              ${(u.rate2 || 0).toFixed(2)}
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a4 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate4 || 0).toFixed(2)}</td>
+            <td class="p-2 text-center">
+              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    } else if (currentDmHba1cView === 'in_area') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
+            <th class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px]">หน่วยบริการ</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B1)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A1)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A1/B1] x 100</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A3)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ร้อยละ [A3/B1] x 100</th>
+            <th class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
+          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+            <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b1 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-emerald-800">${(hdcSum.a1 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate1 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
+            ${(hdcSum.rate1 || 0).toFixed(2)}%
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-teal-800">${(hdcSum.a3 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate3 || 0).toFixed(2)}%</td>
+          <td class="p-2 text-center border-l border-emerald-200">
+            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+          </td>
+        </tr>
+      `;
+
+      filteredUnits.forEach((u, idx) => {
+        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const rate1Pass = (u.rate1 || 0) >= 70.0;
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
+            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
+              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
+                ${u.hdc_name || `${u.hospcode}:${u.name}`}
+              </div>
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate1Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-800'}">
+              ${(u.rate1 || 0).toFixed(2)}%
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a3 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate3 || 0).toFixed(2)}%</td>
+            <td class="p-2 text-center">
+              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    } else if (currentDmHba1cView === 'chronic_fu') {
+      theadHtml = `
+        <thead>
+          <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
+            <th class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px]">หน่วยบริการ</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B2)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A2)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A2/B2] x 100</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A4)</th>
+            <th class="p-2.5 border-l border-emerald-600 font-medium">ร้อยละ [A4/B2] x 100</th>
+            <th class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
+          </tr>
+        </thead>
+      `;
+
+      tbodyHtml += `
+        <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
+          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+            <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b2 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-blue-800">${(hdcSum.a2 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate2 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
+            ${(hdcSum.rate2 || 0).toFixed(2)}%
+          </td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-indigo-800">${(hdcSum.a4 || 0).toLocaleString()}</td>
+          <td class="p-2 text-right border-l border-emerald-200 font-mono text-slate-700">${(hdcSum.rate4 || 0).toFixed(2)}%</td>
+          <td class="p-2 text-center border-l border-emerald-200">
+            <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[10.5px] font-bold">ยอดรวม</span>
+          </td>
+        </tr>
+      `;
+
+      filteredUnits.forEach((u, idx) => {
+        const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
+        const rate2Pass = (u.rate2 || 0) >= 70.0;
+        tbodyHtml += `
+          <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
+            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
+              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
+                ${u.hdc_name || `${u.hospcode}:${u.name}`}
+              </div>
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a2 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono font-bold ${rate2Pass ? 'text-emerald-700 bg-emerald-50/70' : 'text-amber-700 bg-amber-50/50'}">
+              ${(u.rate2 || 0).toFixed(2)}%
+            </td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.a4 || 0).toLocaleString()}</td>
+            <td class="p-2 text-right border-r border-slate-200 font-mono text-slate-600">${(u.rate4 || 0).toFixed(2)}%</td>
+            <td class="p-2 text-center">
+              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-2xs">
+                ดู รพ.สต.
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
 
   // 10. Update Everything on View Change
   function updateDashboardView() {
@@ -8370,10 +8967,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isTtmCases = (currentIndicatorId === 'ttm_cases');
       const isTtmCommon = (currentIndicatorId === 'ttm_common_dis');
       const isTtmMassage = (currentIndicatorId === 'ttm_massage');
+      const isDmHba1c = (currentIndicatorId === 'pcc_dm_hba1c');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
-      if (isTtmMassage) {
+      if (isDmHba1c) {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -8383,9 +8981,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+        if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
+        if (dmHba1cPanel) dmHba1cPanel.classList.remove('hidden');
+        renderDmHba1cPanel();
+      } else if (isTtmMassage) {
+        if (standardChartsSection) standardChartsSection.classList.add('hidden');
+        if (standardTableSection) standardTableSection.classList.add('hidden');
+        if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+        if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+        if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+        if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+        if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+        if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+        if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.remove('hidden');
         renderTtmMassagePanel();
       } else if (isTtmCommon) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
@@ -8398,6 +9011,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCommonPanel) ttmCommonPanel.classList.remove('hidden');
         renderTtmCommonPanel();
       } else if (isTtmCases) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8410,6 +9024,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.remove('hidden');
         renderTtmCasesPanel();
       } else if (isTtmEd) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8422,6 +9037,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmEdPanel) ttmEdPanel.classList.remove('hidden');
         renderTtmEdPanel();
       } else if (isTtmAgeSex) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8434,6 +9050,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.remove('hidden');
         renderTtmAgeSexPanel();
       } else if (isTTM4) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8445,6 +9062,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
         renderTopHerbsPanel();
       } else if (isNhsoError) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8457,6 +9075,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoErrorPanel) nhsoErrorPanel.classList.remove('hidden');
         renderNhsoErrorPanel();
       } else if (isNhsoService) {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
@@ -8469,6 +9088,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nhsoServicePanel) nhsoServicePanel.classList.remove('hidden');
         renderNhsoServicePanel();
       } else {
+        if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (standardChartsSection) standardChartsSection.classList.remove('hidden');
         if (standardTableSection) standardTableSection.classList.remove('hidden');
@@ -8790,6 +9410,14 @@ console.log("Saraphi Records:", saraphiData);`;
     ttmMassageSearchInput.addEventListener('input', (e) => {
       ttmMassageSearchQuery = e.target.value;
       renderTtmMassagePanel();
+    });
+  }
+
+  const dmHba1cSearchInput = document.getElementById('dm-hba1c-table-search');
+  if (dmHba1cSearchInput) {
+    dmHba1cSearchInput.addEventListener('input', (e) => {
+      dmHba1cSearchQuery = e.target.value;
+      renderDmHba1cPanel();
     });
   }
 
