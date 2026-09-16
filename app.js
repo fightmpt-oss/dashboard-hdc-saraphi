@@ -8527,13 +8527,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       dmHba1cChartServiceInstance = null;
     }
 
-    // Chart labels: 'รวม' followed by HDC names of the 14 units
-    const labels = ['รวม', ...units.map(u => {
-      const raw = u.hdc_name || `${u.hospcode}:${u.name}`;
-      return raw.length > 18 ? raw.substring(0, 16) + '...' : raw;
-    })];
-
-    const fullLabels = ['รวมอำเภอสารภี', ...units.map(u => u.hdc_name || `${u.hospcode}:${u.name}`)];
+    // Chart labels: 'รวม' followed by short clean names of the 14 units
+    const labels = ['รวม', ...units.map(u => `${u.hospcode}:${u.name}`)];
+    const fullLabels = ['รวมอำเภอสารภี', ...units.map(u => `${u.hospcode}: ${u.full_name || u.name} (ต.${u.subdistrict})`)];
 
     // Values
     const inAreaRates = [hdcSum.rate1 || 0, ...units.map(u => u.rate1 || 0)];
@@ -8732,7 +8728,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th rowspan="2" class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px] shadow-xs">หน่วยบริการ</th>
+            <th rowspan="2" class="p-2.5 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
+            <th rowspan="2" class="p-2.5 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
+            <th rowspan="2" class="p-2.5 text-left min-w-[90px]">ตำบล</th>
             <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-800/80">ผู้ป่วยที่อยู่ในเขตรับผิดชอบ Typearea 1,3</th>
             <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-900/80">ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU</th>
             <th rowspan="2" class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
@@ -8757,9 +8755,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Summary row for Total District
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
-          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
+          <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b1 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-emerald-800">${(hdcSum.a1 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate1 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
@@ -8788,10 +8788,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
-              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
-                ${u.hdc_name || `${u.hospcode}:${u.name}`}
-              </div>
+            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+              ${u.hospcode}
+            </td>
+            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
+              ${u.name}
+            </td>
+            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+              ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
@@ -8819,7 +8823,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px]">หน่วยบริการ</th>
+            <th class="p-3 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
+            <th class="p-3 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
+            <th class="p-3 text-left min-w-[90px]">ตำบล</th>
             <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B1)</th>
             <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A1)</th>
             <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A1/B1] x 100</th>
@@ -8832,9 +8838,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
-          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
+          <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b1 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-emerald-800">${(hdcSum.a1 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate1 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
@@ -8853,10 +8861,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rate1Pass = (u.rate1 || 0) >= 70.0;
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
-              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
-                ${u.hdc_name || `${u.hospcode}:${u.name}`}
-              </div>
+            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+              ${u.hospcode}
+            </td>
+            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
+              ${u.name}
+            </td>
+            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+              ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b1 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a1 || 0).toLocaleString()}</td>
@@ -8877,7 +8889,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th class="p-3 text-left sticky left-0 bg-emerald-700 z-10 min-w-[240px]">หน่วยบริการ</th>
+            <th class="p-3 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
+            <th class="p-3 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
+            <th class="p-3 text-left min-w-[90px]">ตำบล</th>
             <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B2)</th>
             <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A2)</th>
             <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A2/B2] x 100</th>
@@ -8890,9 +8904,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       tbodyHtml += `
         <tr class="bg-emerald-50/90 font-bold text-slate-900 border-b-2 border-emerald-200 text-xs">
-          <td class="p-2.5 sticky left-0 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
+          <td class="p-2.5 text-center sticky left-0 bg-emerald-50/95 z-10 font-mono text-emerald-950 font-bold">TOTAL</td>
+          <td class="p-2.5 sticky left-16 bg-emerald-50/95 z-10 font-extrabold text-emerald-950 flex items-center gap-1.5">
             <i class="fa-solid fa-calculator text-emerald-600"></i> รวมอำเภอสารภี
           </td>
+          <td class="p-2.5 text-slate-600 font-medium">สารภี</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono">${(hdcSum.b2 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono text-blue-800">${(hdcSum.a2 || 0).toLocaleString()}</td>
           <td class="p-2 text-right border-l border-emerald-200 font-mono font-extrabold ${hdcSum.rate2 >= 70 ? 'text-emerald-700 bg-emerald-100/60' : 'text-amber-700 bg-amber-50'}">
@@ -8911,10 +8927,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rate2Pass = (u.rate2 || 0) >= 70.0;
         tbodyHtml += `
           <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
-            <td class="p-2.5 sticky left-0 bg-white font-medium text-slate-800 z-10 border-r border-slate-200 shadow-xs">
-              <div class="truncate max-w-[280px]" title="${u.hdc_name || u.name}">
-                ${u.hdc_name || `${u.hospcode}:${u.name}`}
-              </div>
+            <td class="p-2.5 text-center sticky left-0 bg-white font-mono font-bold text-slate-600 z-10 border-r border-slate-200 shadow-xs">
+              ${u.hospcode}
+            </td>
+            <td class="p-2.5 sticky left-16 bg-white font-bold text-slate-900 z-10 border-r border-slate-200 shadow-xs">
+              ${u.name}
+            </td>
+            <td class="p-2.5 text-slate-600 border-r border-slate-200 font-medium">
+              ${u.subdistrict || '-'}
             </td>
             <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.b2 || 0).toLocaleString()}</td>
             <td class="p-2 text-right border-r border-slate-200 font-mono font-semibold text-slate-700">${(u.a2 || 0).toLocaleString()}</td>
