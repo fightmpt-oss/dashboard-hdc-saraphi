@@ -61,6 +61,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentDmHba1cView = 'hdc_full';
   let currentDmHba1cYear = '2569';
+  let currentDmHba1cSort = 'desc'; // 'desc' (ร้อยละมาก->น้อย), 'asc' (น้อย->มาก), 'code' (ตามรหัส)
+  let currentDmHba1cSortField = null; // null for auto percentage, or specific field key ('rate1', 'rate2', 'b1', 'a1', etc.)
   let dmHba1cSearchQuery = '';
   let dmHba1cChartInAreaInstance = null;
   let dmHba1cChartServiceInstance = null;
@@ -8364,6 +8366,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderDmHba1cPanel();
   };
 
+  window.switchDmHba1cSort = function(sortMode, sortField = null) {
+    if (sortField) {
+      if (currentDmHba1cSortField === sortField) {
+        // Clicking same header toggles: desc -> asc -> code -> desc
+        if (currentDmHba1cSort === 'desc') {
+          currentDmHba1cSort = 'asc';
+        } else if (currentDmHba1cSort === 'asc') {
+          currentDmHba1cSort = 'code';
+          currentDmHba1cSortField = null;
+        } else {
+          currentDmHba1cSort = 'desc';
+        }
+      } else {
+        currentDmHba1cSortField = sortField;
+        currentDmHba1cSort = 'desc';
+      }
+    } else {
+      currentDmHba1cSort = sortMode || 'desc';
+      currentDmHba1cSortField = null;
+    }
+    renderDmHba1cPanel();
+  };
+
   window.exportDmHba1cCsv = function() {
     const yr = currentDmHba1cYear || currentYear || '2569';
     const ind = masterData?.indicators?.['pcc_dm_hba1c'] || {};
@@ -8416,7 +8441,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // 2. Sync Year Buttons
+    // 2. Sync Sort Buttons
+    ['desc', 'asc', 'code'].forEach(s => {
+      const btn = document.getElementById(`btn-dm-hba1c-sort-${s}`);
+      if (btn) {
+        if (s === currentDmHba1cSort && !currentDmHba1cSortField) {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white flex items-center gap-1';
+        } else if (s === currentDmHba1cSort) {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-700 text-white flex items-center gap-1';
+        } else {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent flex items-center gap-1';
+        }
+      }
+    });
+
+    // 3. Sync Year Buttons
     ['2569', '2568', '2567'].forEach(y => {
       const btn = document.getElementById(`btn-dm-hba1c-yr-${y}`);
       if (btn) {
@@ -8428,7 +8467,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // 3. Retrieve Data
+    // 4. Retrieve Data
     const ind = masterData?.indicators?.['pcc_dm_hba1c'] || {};
     const yrData = ind?.years?.[yr] || {};
     const units = yrData.units || [];
@@ -8440,7 +8479,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       b2: 0, a2: 0, rate2: 0, a4: 0, rate4: 0
     };
 
-    // 4. Update Bento KPI Metric Cards
+    // 5. Update Bento KPI Metric Cards
     const kpiRate1 = document.getElementById('dm-hba1c-kpi-rate1');
     if (kpiRate1) kpiRate1.textContent = `${(hdcSum.rate1 || 0).toFixed(2)}%`;
 
@@ -8505,10 +8544,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       kpiPassUnits.textContent = `${passCount} / ${units.length} แห่ง`;
     }
 
-    // 5. Render Dual HDC Charts
+    // 6. Render Dual HDC Charts (Sorted)
     renderDmHba1cCharts(units, hdcSum);
 
-    // 6. Render HDC Matrix Table
+    // 7. Render HDC Matrix Table (Sorted)
     renderDmHba1cTable(units, hdcSum, yr);
   }
 
@@ -8527,13 +8566,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       dmHba1cChartServiceInstance = null;
     }
 
-    // Chart labels: 'รวม' followed by short clean names of the 14 units
-    const labels = ['รวม', ...units.map(u => `${u.hospcode}:${u.name}`)];
-    const fullLabels = ['รวมอำเภอสารภี', ...units.map(u => `${u.hospcode}: ${u.full_name || u.name} (ต.${u.subdistrict})`)];
+    // Sort units for Chart 1 (In-Area / Typearea 1,3 based on rate1)
+    const chart1Units = [...units];
+    if (currentDmHba1cSort === 'desc') {
+      chart1Units.sort((a, b) => (b.rate1 || 0) - (a.rate1 || 0));
+    } else if (currentDmHba1cSort === 'asc') {
+      chart1Units.sort((a, b) => (a.rate1 || 0) - (b.rate1 || 0));
+    } else if (currentDmHba1cSort === 'code') {
+      chart1Units.sort((a, b) => (a.hospcode || '').localeCompare(b.hospcode || ''));
+    }
 
-    // Values
-    const inAreaRates = [hdcSum.rate1 || 0, ...units.map(u => u.rate1 || 0)];
-    const serviceRates = [hdcSum.rate2 || 0, ...units.map(u => u.rate2 || 0)];
+    // Sort units for Chart 2 (Service / ChronicFU based on rate2)
+    const chart2Units = [...units];
+    if (currentDmHba1cSort === 'desc') {
+      chart2Units.sort((a, b) => (b.rate2 || 0) - (a.rate2 || 0));
+    } else if (currentDmHba1cSort === 'asc') {
+      chart2Units.sort((a, b) => (a.rate2 || 0) - (b.rate2 || 0));
+    } else if (currentDmHba1cSort === 'code') {
+      chart2Units.sort((a, b) => (a.hospcode || '').localeCompare(b.hospcode || ''));
+    }
+
+    // Chart labels: 'รวม' followed by short clean names of the sorted units
+    const labels1 = ['รวม', ...chart1Units.map(u => `${u.hospcode}:${u.name}`)];
+    const fullLabels1 = ['รวมอำเภอสารภี', ...chart1Units.map(u => `${u.hospcode}: ${u.full_name || u.name} (ต.${u.subdistrict})`)];
+    const inAreaRates = [hdcSum.rate1 || 0, ...chart1Units.map(u => u.rate1 || 0)];
+
+    const labels2 = ['รวม', ...chart2Units.map(u => `${u.hospcode}:${u.name}`)];
+    const fullLabels2 = ['รวมอำเภอสารภี', ...chart2Units.map(u => `${u.hospcode}: ${u.full_name || u.name} (ต.${u.subdistrict})`)];
+    const serviceRates = [hdcSum.rate2 || 0, ...chart2Units.map(u => u.rate2 || 0)];
 
     // Target 70% threshold plugin
     const target70Plugin = {
@@ -8597,7 +8657,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dmHba1cChartInAreaInstance = new Chart(ctx1, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: labels1,
         datasets: [{
           label: 'ร้อยละ [A1/B1]',
           data: inAreaRates,
@@ -8618,7 +8678,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              title: (ctx) => fullLabels[ctx[0].dataIndex],
+              title: (ctx) => fullLabels1[ctx[0].dataIndex],
               label: (ctx) => `ร้อยละ: ${ctx.parsed.y.toFixed(2)}% (เป้าหมาย 70%)`
             }
           }
@@ -8655,7 +8715,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dmHba1cChartServiceInstance = new Chart(ctx2, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: labels2,
         datasets: [{
           label: 'ร้อยละ [A2/B2]',
           data: serviceRates,
@@ -8676,7 +8736,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              title: (ctx) => fullLabels[ctx[0].dataIndex],
+              title: (ctx) => fullLabels2[ctx[0].dataIndex],
               label: (ctx) => `ร้อยละ: ${ctx.parsed.y.toFixed(2)}% (เป้าหมาย 70%)`
             }
           }
@@ -8719,7 +8779,55 @@ document.addEventListener('DOMContentLoaded', async () => {
           (u.hdc_name && u.hdc_name.toLowerCase().includes(query)) ||
           (u.subdistrict && u.subdistrict.toLowerCase().includes(query))
         )
-      : units;
+      : [...units];
+
+    // Determine active sort field
+    let activeField = currentDmHba1cSortField;
+    if (!activeField) {
+      if (currentDmHba1cView === 'in_area') activeField = 'rate1';
+      else if (currentDmHba1cView === 'chronic_fu') activeField = 'rate2';
+      else activeField = 'rate2'; // Default ranking metric for full matrix view
+    }
+
+    const isDesc = currentDmHba1cSort === 'desc';
+    const isAsc = currentDmHba1cSort === 'asc';
+
+    const sortedUnits = filteredUnits.sort((a, b) => {
+      if (currentDmHba1cSort === 'code' || activeField === 'hospcode') {
+        return (a.hospcode || '').localeCompare(b.hospcode || '');
+      }
+      if (activeField === 'name') {
+        return isDesc ? (b.name || '').localeCompare(a.name || '', 'th') : (a.name || '').localeCompare(b.name || '', 'th');
+      }
+      if (activeField === 'subdistrict') {
+        return isDesc ? (b.subdistrict || '').localeCompare(a.subdistrict || '', 'th') : (a.subdistrict || '').localeCompare(b.subdistrict || '', 'th');
+      }
+
+      const valA = Number(a[activeField] ?? 0);
+      const valB = Number(b[activeField] ?? 0);
+      if (isAsc) return valA - valB;
+      return valB - valA; // default desc
+    });
+
+    // Helper for table header sort icons
+    const sortIcon = (field) => {
+      const isActive = (currentDmHba1cSortField === field) ||
+        (!currentDmHba1cSortField && (
+          (field === 'rate1' && currentDmHba1cView === 'in_area') ||
+          (field === 'rate2' && currentDmHba1cView !== 'in_area')
+        ));
+
+      if (!isActive) {
+        return `<i class="fa-solid fa-sort ml-1 opacity-40 group-hover:opacity-100 text-[10px]"></i>`;
+      }
+      if (currentDmHba1cSort === 'asc') {
+        return `<i class="fa-solid fa-arrow-up-wide-short ml-1 text-amber-300 text-[11px]"></i>`;
+      }
+      if (currentDmHba1cSort === 'desc') {
+        return `<i class="fa-solid fa-arrow-down-wide-short ml-1 text-amber-300 text-[11px]"></i>`;
+      }
+      return `<i class="fa-solid fa-sort ml-1 opacity-40 text-[10px]"></i>`;
+    };
 
     let theadHtml = '';
     let tbodyHtml = '';
@@ -8728,26 +8836,52 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th rowspan="2" class="p-2.5 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
-            <th rowspan="2" class="p-2.5 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
-            <th rowspan="2" class="p-2.5 text-left min-w-[90px]">ตำบล</th>
+            <th rowspan="2" onclick="window.switchDmHba1cSort(null, 'hospcode')" class="p-2.5 text-center sticky left-0 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 w-16 shadow-xs select-none group" title="คลิกเพื่อเรียงตามรหัส">
+              รหัส ${sortIcon('hospcode')}
+            </th>
+            <th rowspan="2" onclick="window.switchDmHba1cSort(null, 'name')" class="p-2.5 text-left sticky left-16 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 min-w-[170px] shadow-xs select-none group" title="คลิกเพื่อเรียงตามชื่อหน่วยบริการ">
+              หน่วยบริการ / รพ.สต. ${sortIcon('name')}
+            </th>
+            <th rowspan="2" onclick="window.switchDmHba1cSort(null, 'subdistrict')" class="p-2.5 text-left min-w-[90px] hover:bg-emerald-800 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตามตำบล">
+              ตำบล ${sortIcon('subdistrict')}
+            </th>
             <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-800/80">ผู้ป่วยที่อยู่ในเขตรับผิดชอบ Typearea 1,3</th>
             <th colspan="5" class="p-2.5 border-l border-emerald-600 bg-emerald-900/80">ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU</th>
             <th rowspan="2" class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
           </tr>
           <tr class="bg-emerald-800 text-white text-[11px] font-semibold text-center border-b border-emerald-900">
             <!-- Typearea 1,3 -->
-            <th class="p-2 border-l border-emerald-700 font-medium">จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B1)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A1)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 text-amber-200">ร้อยละ<br><span class="text-xs font-normal">[A1/B1] x 100</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A3)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ร้อยละ<br><span class="text-emerald-200 font-normal">[A3/B1] x 100</span></th>
+            <th onclick="window.switchDmHba1cSort(null, 'b1')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม B1">
+              จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B1)</span> ${sortIcon('b1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a1')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม A1">
+              ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A1)</span> ${sortIcon('a1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate1')" class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 hover:bg-emerald-800 cursor-pointer text-amber-200 transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A1/B1">
+              ร้อยละ<br><span class="text-xs font-normal">[A1/B1] x 100</span> ${sortIcon('rate1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a3')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม A3">
+              ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A3)</span> ${sortIcon('a3')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate3')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A3/B1">
+              ร้อยละ<br><span class="text-emerald-200 font-normal">[A3/B1] x 100</span> ${sortIcon('rate3')}
+            </th>
             <!-- ChronicFU -->
-            <th class="p-2 border-l border-emerald-700 font-medium">จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B2)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A2)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 text-amber-200">ร้อยละ<br><span class="text-xs font-normal">[A2/B2] x 100</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A4)</span></th>
-            <th class="p-2 border-l border-emerald-700 font-medium">ร้อยละ<br><span class="text-emerald-200 font-normal">[A4/B2] x 100</span></th>
+            <th onclick="window.switchDmHba1cSort(null, 'b2')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม B2">
+              จำนวนผู้ป่วย<br><span class="text-emerald-200 font-normal">(B2)</span> ${sortIcon('b2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a2')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม A2">
+              ได้รับการตรวจ HbA1c<br>อย่างน้อย 1 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A2)</span> ${sortIcon('a2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate2')" class="p-2 border-l border-emerald-700 font-bold bg-emerald-700/90 hover:bg-emerald-800 cursor-pointer text-amber-200 transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A2/B2">
+              ร้อยละ<br><span class="text-xs font-normal">[A2/B2] x 100</span> ${sortIcon('rate2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a4')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตาม A4">
+              ได้รับการตรวจ HbA1c<br>อย่างน้อย 2 ครั้ง/ปี <span class="text-emerald-200 font-normal">(A4)</span> ${sortIcon('a4')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate4')" class="p-2 border-l border-emerald-700 hover:bg-emerald-900 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A4/B2">
+              ร้อยละ<br><span class="text-emerald-200 font-normal">[A4/B2] x 100</span> ${sortIcon('rate4')}
+            </th>
           </tr>
         </thead>
       `;
@@ -8781,7 +8915,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
 
       // Unit rows
-      filteredUnits.forEach((u, idx) => {
+      sortedUnits.forEach((u, idx) => {
         const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
         const rate1Pass = (u.rate1 || 0) >= 70.0;
         const rate2Pass = (u.rate2 || 0) >= 70.0;
@@ -8823,14 +8957,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th class="p-3 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
-            <th class="p-3 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
-            <th class="p-3 text-left min-w-[90px]">ตำบล</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B1)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A1)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A1/B1] x 100</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A3)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ร้อยละ [A3/B1] x 100</th>
+            <th onclick="window.switchDmHba1cSort(null, 'hospcode')" class="p-3 text-center sticky left-0 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 w-16 shadow-xs select-none group" title="คลิกเพื่อเรียงตามรหัส">
+              รหัส ${sortIcon('hospcode')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'name')" class="p-3 text-left sticky left-16 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 min-w-[170px] shadow-xs select-none group" title="คลิกเพื่อเรียงตามชื่อหน่วยบริการ">
+              หน่วยบริการ / รพ.สต. ${sortIcon('name')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'subdistrict')" class="p-3 text-left min-w-[90px] hover:bg-emerald-800 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตามตำบล">
+              ตำบล ${sortIcon('subdistrict')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'b1')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม B1">
+              จำนวนผู้ป่วย (B1) ${sortIcon('b1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a1')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม A1">
+              ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A1) ${sortIcon('a1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate1')" class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 hover:bg-emerald-900 cursor-pointer text-amber-200 transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A1/B1">
+              ร้อยละ [A1/B1] x 100 ${sortIcon('rate1')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a3')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม A3">
+              ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A3) ${sortIcon('a3')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate3')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A3/B1">
+              ร้อยละ [A3/B1] x 100 ${sortIcon('rate3')}
+            </th>
             <th class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
           </tr>
         </thead>
@@ -8856,7 +9006,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
       `;
 
-      filteredUnits.forEach((u, idx) => {
+      sortedUnits.forEach((u, idx) => {
         const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
         const rate1Pass = (u.rate1 || 0) >= 70.0;
         tbodyHtml += `
@@ -8889,14 +9039,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       theadHtml = `
         <thead>
           <tr class="bg-emerald-700 text-white font-bold text-center border-b border-emerald-800">
-            <th class="p-3 text-center sticky left-0 bg-emerald-700 z-10 w-16 shadow-xs">รหัส</th>
-            <th class="p-3 text-left sticky left-16 bg-emerald-700 z-10 min-w-[170px] shadow-xs">หน่วยบริการ / รพ.สต.</th>
-            <th class="p-3 text-left min-w-[90px]">ตำบล</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">จำนวนผู้ป่วย (B2)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A2)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 text-amber-200">ร้อยละ [A2/B2] x 100</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A4)</th>
-            <th class="p-2.5 border-l border-emerald-600 font-medium">ร้อยละ [A4/B2] x 100</th>
+            <th onclick="window.switchDmHba1cSort(null, 'hospcode')" class="p-3 text-center sticky left-0 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 w-16 shadow-xs select-none group" title="คลิกเพื่อเรียงตามรหัส">
+              รหัส ${sortIcon('hospcode')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'name')" class="p-3 text-left sticky left-16 bg-emerald-700 hover:bg-emerald-800 cursor-pointer transition z-10 min-w-[170px] shadow-xs select-none group" title="คลิกเพื่อเรียงตามชื่อหน่วยบริการ">
+              หน่วยบริการ / รพ.สต. ${sortIcon('name')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'subdistrict')" class="p-3 text-left min-w-[90px] hover:bg-emerald-800 cursor-pointer transition select-none group" title="คลิกเพื่อเรียงตามตำบล">
+              ตำบล ${sortIcon('subdistrict')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'b2')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม B2">
+              จำนวนผู้ป่วย (B2) ${sortIcon('b2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a2')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม A2">
+              ได้รับการตรวจอย่างน้อย 1 ครั้ง/ปี (A2) ${sortIcon('a2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate2')" class="p-2.5 border-l border-emerald-600 font-bold bg-emerald-800/80 hover:bg-emerald-900 cursor-pointer text-amber-200 transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A2/B2">
+              ร้อยละ [A2/B2] x 100 ${sortIcon('rate2')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'a4')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตาม A4">
+              ได้รับการตรวจอย่างน้อย 2 ครั้ง/ปี (A4) ${sortIcon('a4')}
+            </th>
+            <th onclick="window.switchDmHba1cSort(null, 'rate4')" class="p-2.5 border-l border-emerald-600 hover:bg-emerald-800 cursor-pointer font-medium transition select-none group" title="คลิกเพื่อเรียงตามร้อยละ A4/B2">
+              ร้อยละ [A4/B2] x 100 ${sortIcon('rate4')}
+            </th>
             <th class="p-2.5 text-center border-l border-emerald-600 min-w-[80px]">เลือกดู</th>
           </tr>
         </thead>
@@ -8922,7 +9088,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
       `;
 
-      filteredUnits.forEach((u, idx) => {
+      sortedUnits.forEach((u, idx) => {
         const rowBg = idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80';
         const rate2Pass = (u.rate2 || 0) >= 70.0;
         tbodyHtml += `
