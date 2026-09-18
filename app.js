@@ -204,60 +204,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         pass: u.kpi4.score >= 3
       }));
 
-      masterData.indicators['pcc69_overview'] = {
-        id: 'pcc69_overview',
-        code: 'PCC-69',
-        name: 'ภาพรวมการจัดสรรเงิน PCC ปี 2569 และ 4 ตัวชี้วัด NCDs',
-        desc: 'วงเงินจัดสรรตามผลลัพธ์บริการ (Pay-for-Performance) Global Budget สปสช. เขต 1 เชียงใหม่',
-        table: 'PCC_69_R.1',
-        domain: 'pcc_2569',
-        target: 0,
-        unit: 'บาท',
-        years: { '2569': { rate: dist.total_budget || 98029.86, num: dist.total_budget || 98029.86, den: dist.uc35_pop || 25935, pass: true, units: uOverview } }
-      };
       masterData.indicators['pcc69_kpi1'] = {
         id: 'pcc69_kpi1',
-        code: 'PCC-69-1',
-        name: 'คัดกรองระดับน้ำตาลในเลือด (DM Screening - น้ำหนัก 20%)',
-        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น DM ได้รับการคัดกรองน้ำตาลในเลือด (เป้าหมาย 56-92% 1-5 ดาว)',
+        code: 'KPI 1',
+        name: 'KPI 1: จน.ปชก. UC อายุ ≥35 ปี ที่ไม่เคยเป็น DM ได้ตรวจคัดกรองน้ำตาล ในช่วง 1 กค. 68 - 30 มิย. 69',
+        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น DM ได้ตรวจคัดกรองน้ำตาล ในช่วง 1 ก.ค. 68 - 30 มิ.ย. 69 (น้ำหนัก 20% • เกณฑ์ 56-92% • อัตรา 1.90 บ./คะแนน)',
         table: 'PCC_69_R.1',
         domain: 'pcc_2569',
         target: 56.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi1?.rate || 44.6, num: dist.kpi1?.a || 1885, den: dist.kpi1?.b || 4226, pass: true, units: uKpi1 } }
+        years: { '2569': { rate: dist.kpi1?.rate || 47.87, num: dist.kpi1?.a || 10239, den: dist.kpi1?.b || 21391, pass: true, units: uKpi1 } }
       };
       masterData.indicators['pcc69_kpi2'] = {
         id: 'pcc69_kpi2',
-        code: 'PCC-69-2',
-        name: 'กลุ่มเสี่ยง Pre-DM มีระดับน้ำตาลกลับเป็นปกติ (น้ำหนัก 40%)',
-        desc: 'กลุ่มเสี่ยง Pre-DM ปีก่อนที่ได้รับการปรับเปลี่ยนพฤติกรรมแล้วผลตรวจน้ำตาลกลับเป็นปกติ (อัตรา 410.03 บ./คะแนน)',
+        code: 'KPI 2',
+        name: 'KPI 2: จน.ปชก. UC อายุ ≥35 ปี ที่คัดกรองเป็นกลุ่มเสี่ยง/Pre DM ในช่วง 1 กค. 67 - 30 มิย. 68 กลับมาปกติในช่วง 1 กค. 68 - 30 มิย. 69',
+        desc: 'กลุ่มเสี่ยง Pre-DM ปีก่อนที่ได้รับการปรับเปลี่ยนพฤติกรรมแล้วผลตรวจน้ำตาลกลับเป็นปกติ (น้ำหนัก 40% • เกณฑ์ 35-65% • อัตรา 410.03 บ./คะแนน)',
         table: 'PCC_69_R.1',
         domain: 'pcc_2569',
         target: 35.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi2?.rate || 4.19, num: dist.kpi2?.a || 75, den: dist.kpi2?.b || 1791, pass: true, units: uKpi2 } }
+        years: { '2569': { rate: dist.kpi2?.rate || 3.34, num: dist.kpi2?.a || 75, den: dist.kpi2?.b || 2248, pass: true, units: uKpi2 } }
       };
       masterData.indicators['pcc69_kpi3'] = {
         id: 'pcc69_kpi3',
-        code: 'PCC-69-3',
-        name: 'คัดกรองความดันโลหิต (HT Screening - น้ำหนัก 15%)',
-        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น HT ได้รับการคัดกรองความดันโลหิต (เป้าหมาย 57-93% 1-5 ดาว)',
+        code: 'KPI 3',
+        name: 'KPI 3: จน.ปชก. UC อายุ ≥35 ปี ที่ไม่เคยเป็น HT ได้ตรวจคัดกรองความดัน ในช่วง 1 กค. 68 - 30 มิย. 69',
+        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น HT ได้ตรวจคัดกรองความดัน ในช่วง 1 ก.ค. 68 - 30 มิ.ย. 69 (น้ำหนัก 15% • เกณฑ์ 57-93% • อัตรา 1.51 บ./คะแนน)',
         table: 'PCC_69_R.1',
         domain: 'pcc_2569',
         target: 57.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi3?.rate || 51.02, num: dist.kpi3?.a || 1659, den: dist.kpi3?.b || 3252, pass: true, units: uKpi3 } }
+        years: { '2569': { rate: dist.kpi3?.rate || 52.92, num: dist.kpi3?.a || 8242, den: dist.kpi3?.b || 15575, pass: true, units: uKpi3 } }
       };
       masterData.indicators['pcc69_kpi4'] = {
         id: 'pcc69_kpi4',
-        code: 'PCC-69-4',
-        name: 'วินิจฉัยความดันโลหิตสูงรายใหม่ (New HT Diagnosis - น้ำหนัก 25%)',
-        desc: 'ผู้ที่คัดกรองพบความดันโลหิตสูงและได้รับการตรวจวินิจฉัยยืนยันเป็น HT รายใหม่ (อัตรา 777.69 บ./คะแนน)',
+        code: 'KPI 4',
+        name: 'KPI 4: จน.ปชก. UC อายุ ≥35 ปี ที่คัดกรองพบว่ามีความดันสูงและได้รับวินิจฉัยเป็น ผป.HT รายใหม่ ในช่วง 1 กค. 68 - 30 มิย. 69',
+        desc: 'ผู้ที่คัดกรองพบความดันโลหิตสูงและได้รับการตรวจวินิจฉัยยืนยันเป็นผู้ป่วย HT รายใหม่ (น้ำหนัก 25% • เกณฑ์ 6.3-10.8% • อัตรา 777.69 บ./คะแนน)',
         table: 'PCC_69_R.1',
         domain: 'pcc_2569',
         target: 6.3,
         unit: '%',
-        years: { '2569': { rate: dist.kpi4?.rate || 6.24, num: dist.kpi4?.a || 40, den: dist.kpi4?.b || 641, pass: true, units: uKpi4 } }
+        years: { '2569': { rate: dist.kpi4?.rate || 4.59, num: dist.kpi4?.a || 13, den: dist.kpi4?.b || 283, pass: true, units: uKpi4 } }
       };
     }
   } catch (err) {
@@ -962,9 +951,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     indicators.forEach((ind, idx) => {
       const opt = document.createElement('option');
       opt.value = ind.id;
-      const codeTag = ind.code ? `[${ind.code}] ` : (ind.table ? `[${ind.table}] ` : '');
-      const targetStr = ind.target > 0 ? ` (เกณฑ์ ≥ ${ind.target} ${ind.unit})` : ' (ตามผลงานสะสม)';
-      opt.textContent = `${idx + 1}. ${codeTag}${ind.name}${targetStr}`;
+      if (currentDomain === 'pcc_2569') {
+        opt.textContent = `${idx + 1}. ${ind.name}`;
+      } else {
+        const codeTag = ind.code ? `[${ind.code}] ` : (ind.table ? `[${ind.table}] ` : '');
+        const targetStr = ind.target > 0 ? ` (เกณฑ์ ≥ ${ind.target} ${ind.unit})` : ' (ตามผลงานสะสม)';
+        opt.textContent = `${idx + 1}. ${codeTag}${ind.name}${targetStr}`;
+      }
       indicatorSelect.appendChild(opt);
     });
 
@@ -1423,8 +1416,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         codeBadge.style.display = 'none';
       }
     }
-    const tablePrefix = (ind.domain === 'nhso_ttm' || (ind.table && ind.table.startsWith('MeData'))) ? '' : 'HDC: ';
-    document.getElementById('ind-table-badge').textContent = `${tablePrefix}${ind.table}`;
+    const tablePrefix = (ind.domain === 'nhso_ttm' || (ind.table && ind.table.startsWith('MeData')) || ind.domain === 'pcc_2569') ? '' : 'HDC: ';
+    const tableLabel = (ind.domain === 'pcc_2569') ? 'สปสช. เขต 1 เชียงใหม่ (R.1)' : `${tablePrefix}${ind.table}`;
+    document.getElementById('ind-table-badge').textContent = tableLabel;
     document.getElementById('ind-name-text').textContent = ind.name;
     document.getElementById('ind-desc-text').textContent = ind.desc;
     if (ind.id === 'nhso_error_code') {
@@ -1437,6 +1431,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('ind-target-text').textContent = 'เกณฑ์กระทรวงสาธารณสุข: สัดส่วนการใช้ยาในบัญชียาหลักแห่งชาติ (ED) ≥ 80%';
     } else if (ind.id === 'ttm_cases') {
       document.getElementById('ind-target-text').textContent = 'รายงานปริมาณการจ่ายยา: ทุกสิทธิ และสิทธิ UC (ครั้ง/รายการ) ทั้งปีและรายไตรมาส';
+    } else if (ind.id === 'pcc69_kpi1') {
+      document.getElementById('ind-target-text').textContent = 'เกณฑ์ 1-5 ดาว: 56-92% • อัตรา 1.90 บ./คะแนน (น้ำหนัก 20%)';
+    } else if (ind.id === 'pcc69_kpi2') {
+      document.getElementById('ind-target-text').textContent = 'เกณฑ์ 1-5 ดาว: 35-65% • อัตรา 410.03 บ./คะแนน (น้ำหนัก 40%)';
+    } else if (ind.id === 'pcc69_kpi3') {
+      document.getElementById('ind-target-text').textContent = 'เกณฑ์ 1-5 ดาว: 57-93% • อัตรา 1.51 บ./คะแนน (น้ำหนัก 15%)';
+    } else if (ind.id === 'pcc69_kpi4') {
+      document.getElementById('ind-target-text').textContent = 'เกณฑ์ 1-5 ดาว: 6.3-10.8% • อัตรา 777.69 บ./คะแนน (น้ำหนัก 25%)';
     } else {
       document.getElementById('ind-target-text').textContent = ind.target > 0 ? `≥ ${ind.target} ${ind.unit}` : 'ตามผลงาน';
     }
@@ -9424,6 +9426,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.switchPcc69View = function(view) {
     currentPcc69View = view;
+    if (currentDomain === 'pcc_2569') {
+      const targetId = (view === 'budget') ? 'pcc69_kpi1' : `pcc69_${view}`;
+      if (masterData && masterData.indicators && masterData.indicators[targetId]) {
+        currentIndicatorId = targetId;
+        if (indicatorSelect) indicatorSelect.value = targetId;
+        updateIndicatorNavButtons();
+        updateIndicatorHeader();
+      }
+    }
     renderPcc2569Panel();
   };
 
@@ -10468,6 +10479,11 @@ console.log("Saraphi Records:", saraphiData);`;
   if (indicatorSelect) {
     indicatorSelect.addEventListener('change', (e) => {
       currentIndicatorId = e.target.value;
+      if (currentDomain === 'pcc_2569') {
+        if (currentIndicatorId.startsWith('pcc69_kpi')) {
+          currentPcc69View = currentIndicatorId.replace('pcc69_', '');
+        }
+      }
       updateIndicatorNavButtons();
       updateDashboardView();
     });
@@ -10480,6 +10496,11 @@ console.log("Saraphi Records:", saraphiData);`;
       const currentIndex = indicators.findIndex(i => i.id === currentIndicatorId);
       if (currentIndex > 0) {
         currentIndicatorId = indicators[currentIndex - 1].id;
+        if (currentDomain === 'pcc_2569') {
+          if (currentIndicatorId.startsWith('pcc69_kpi')) {
+            currentPcc69View = currentIndicatorId.replace('pcc69_', '');
+          }
+        }
         if (indicatorSelect) indicatorSelect.value = currentIndicatorId;
         updateIndicatorNavButtons();
         updateDashboardView();
@@ -10493,6 +10514,11 @@ console.log("Saraphi Records:", saraphiData);`;
       const currentIndex = indicators.findIndex(i => i.id === currentIndicatorId);
       if (currentIndex >= 0 && currentIndex < indicators.length - 1) {
         currentIndicatorId = indicators[currentIndex + 1].id;
+        if (currentDomain === 'pcc_2569') {
+          if (currentIndicatorId.startsWith('pcc69_kpi')) {
+            currentPcc69View = currentIndicatorId.replace('pcc69_', '');
+          }
+        }
         if (indicatorSelect) indicatorSelect.value = currentIndicatorId;
         updateIndicatorNavButtons();
         updateDashboardView();
