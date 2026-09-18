@@ -85,16 +85,47 @@
             <span class="sidebar-badge bg-cyan-100 text-cyan-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">6</span>
           </button>
 
-          <button type="button" class="sidebar-item w-full" data-domain="pcc" title="💰 งบ PCC (ปฐมภูมิ)">
-            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-indigo-600 bg-indigo-50 shrink-0 mr-3 transition">
-              <i data-lucide="coins" class="w-5 h-5"></i>
+          <!-- Group: งบ PCC (ปฐมภูมิ) with Submenu (ปีงบ 2568 / ปีงบ 2569) -->
+          <div class="sidebar-group relative" id="sidebar-group-pcc">
+            <button type="button" class="sidebar-item sidebar-parent w-full" id="sidebar-parent-pcc" title="💰 งบ PCC (ปฐมภูมิ)">
+              <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-indigo-600 bg-indigo-50 shrink-0 mr-3 transition">
+                <i data-lucide="coins" class="w-5 h-5"></i>
+              </div>
+              <div class="sidebar-text text-left flex-1 min-w-0">
+                <div class="font-bold text-slate-800 text-[13.5px] truncate">งบ PCC (ปฐมภูมิ)</div>
+                <div class="text-[11px] text-slate-400 font-medium">ปีงบ 2568 &amp; 2569</div>
+              </div>
+              <div class="sidebar-chevron flex items-center ml-1 text-slate-400">
+                <i data-lucide="chevron-down" id="pcc-submenu-chevron" class="w-4 h-4 transition-transform duration-200"></i>
+              </div>
+            </button>
+
+            <!-- Submenu Container -->
+            <div class="sidebar-submenu pl-6 pr-1 py-1 space-y-1 transition-all duration-200" id="pcc-submenu-container">
+              <!-- Sub-item 1: ปีงบ 2568 (4 ตัวชี้วัดเดิม) -->
+              <button type="button" class="sidebar-item sidebar-subitem w-full" data-domain="pcc" data-pcc-year="2568" title="💰 งบ PCC ปีงบ 2568 (4 ตัวชี้วัดเดิม)">
+                <div class="w-2 h-2 rounded-full bg-slate-300 mr-2.5 shrink-0 subitem-dot transition"></div>
+                <div class="sidebar-text text-left flex-1 min-w-0">
+                  <div class="font-bold text-slate-700 text-[12.5px] truncate">ปีงบ 2568</div>
+                  <div class="text-[10px] text-slate-400 font-medium">4 ตัวชี้วัดเดิม • HDC PCC 1-4</div>
+                </div>
+                <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0">4</span>
+              </button>
+
+              <!-- Sub-item 2: ปีงบ 2569 (4 ตัวชี้วัดใหม่ & จัดสรรเงิน) -->
+              <button type="button" class="sidebar-item sidebar-subitem w-full" data-domain="pcc_2569" data-pcc-year="2569" title="✨ งบ PCC ปีงบ 2569 (4 ตัวชี้วัดใหม่ & จัดสรรเงิน)">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 mr-2.5 shrink-0 subitem-dot transition"></div>
+                <div class="sidebar-text text-left flex-1 min-w-0">
+                  <div class="font-bold text-slate-800 text-[12.5px] truncate flex items-center gap-1">
+                    <span>ปีงบ 2569</span>
+                    <span class="px-1 py-0.2 rounded text-[8.5px] font-extrabold bg-emerald-100 text-emerald-700">NEW</span>
+                  </div>
+                  <div class="text-[10px] text-emerald-600 font-medium">4 ตัวชี้วัดใหม่ • P4P &amp; จัดสรรเงิน</div>
+                </div>
+                <span class="sidebar-badge bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0">9.8 หมื่น</span>
+              </button>
             </div>
-            <div class="sidebar-text text-left flex-1 min-w-0">
-              <div class="font-bold text-slate-800 text-[13.5px] truncate">งบ PCC (ปฐมภูมิ)</div>
-              <div class="text-[11px] text-slate-400 font-medium">4 ตัวชี้วัด • DM / HT Control</div>
-            </div>
-            <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">4</span>
-          </button>
+          </div>
 
           <button type="button" class="sidebar-item w-full" data-domain="ppb" title="🎯 งบ PPB (บริการพื้นฐาน)">
             <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-amber-600 bg-amber-50 shrink-0 mr-3 transition">
@@ -2121,6 +2152,381 @@
               <a href="https://hdc.moph.go.th/cmi/public/standard-report-detail/fdc28cd7317936b7b734cec34103524c" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline font-semibold flex items-center gap-1">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> รายงาน HDC ต้นฉบับ
               </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SPECIAL PANEL FOR PCC FY 2569 (4 KPIs & Budget Allocation) -->
+      <!-- ======================================================== -->
+      <div id="pcc-2569-panel" class="hidden space-y-4">
+
+        <!-- Top Header & Filter Bar -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs flex items-center gap-1">
+                <i class="fa-solid fa-coins text-amber-600"></i> งบ PCC ปีงบประมาณ 2569
+              </span>
+              <span class="px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                รอบที่ 1 (R.1) • ตัดยอดผลงานสะสมถึง 30 มิ.ย. 69
+              </span>
+            </div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 mt-1 flex items-center gap-2 flex-wrap">
+              <span>จัดสรรค่าบริการสาธารณสุขเพิ่มเติมระดับปฐมภูมิ (PCC) ปีงบ 2569</span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">P4P Global Budget เขต 1 เชียงใหม่</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              ติดตามผลการดำเนินงาน 4 ตัวชี้วัดสร้างเสริมสุขภาพและป้องกันโรค NCDs และวงเงินจัดสรรรายหน่วยบริการ (14 หน่วยบริการ อำเภอสารภี)
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <!-- View Mode Switcher -->
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold gap-1 flex-wrap" id="pcc69-view-buttons">
+              <button type="button" onclick="window.switchPcc69View('budget')" id="btn-pcc69-view-budget" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">
+                <i class="fa-solid fa-sack-dollar mr-1"></i> ภาพรวมเงินจัดสรร
+              </button>
+              <button type="button" onclick="window.switchPcc69View('kpi1')" id="btn-pcc69-view-kpi1" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                KPI 1: DM (20%)
+              </button>
+              <button type="button" onclick="window.switchPcc69View('kpi2')" id="btn-pcc69-view-kpi2" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                KPI 2: Pre-DM (40%)
+              </button>
+              <button type="button" onclick="window.switchPcc69View('kpi3')" id="btn-pcc69-view-kpi3" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                KPI 3: HT (15%)
+              </button>
+              <button type="button" onclick="window.switchPcc69View('kpi4')" id="btn-pcc69-view-kpi4" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                KPI 4: วินิจฉัย HT (25%)
+              </button>
+            </div>
+
+            <!-- Toggle Legal Criteria Box -->
+            <button type="button" onclick="window.togglePcc69CriteriaBox()" class="px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition flex items-center gap-1.5 shadow-2xs">
+              <i class="fa-solid fa-scale-balanced text-indigo-600"></i>
+              <span>หลักเกณฑ์ราชกิจจาฯ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert Banner with Selected Unit Badge -->
+        <div class="rounded-2xl p-3.5 bg-amber-50/90 border border-amber-200/90 text-xs text-amber-950 space-y-1.5 shadow-xs">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-circle-info text-amber-600 shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-amber-900">เกณฑ์การจัดสรรเงินแบบมีเพดาน (Global Budget สปสช. เขต 1):</span>
+                <span>สูตรคิดเงิน = (ผลงานจริง $\times$ คะแนนดาว 1-5 $\times$ ตัวคูณขึ้นทะเบียน 1.0 หรือ 0.9) $\times$ อัตราจ่ายต่อคะแนน</span>
+              </div>
+            </div>
+            <div id="pcc69-unit-badge" class="hidden"></div>
+          </div>
+          <div class="flex items-center gap-4 pt-1.5 border-t border-amber-200/60 text-[11.5px] text-amber-900 font-medium flex-wrap">
+            <span><strong>วงเงินจัดสรรทั้งเขต 1:</strong> 44,658,155.07 บาท</span>
+            <span><strong>อัตราจ่าย:</strong> KPI 1 = 1.90 บ. | <strong class="text-rose-700">KPI 2 = 410.03 บ./คน</strong> | KPI 3 = 1.51 บ. | <strong class="text-indigo-700">KPI 4 = 777.69 บ./คน</strong></span>
+            <span><strong>งบรวม อ.สารภี (R.1):</strong> <strong class="text-emerald-800 text-sm">98,029.86 บาท</strong></span>
+          </div>
+        </div>
+
+        <!-- Collapsible Legal & Scoring Brackets Reference Box -->
+        <div id="pcc69-criteria-box" class="hidden glass-card rounded-2xl p-4 bg-slate-900 text-slate-100 border border-slate-800 shadow-md space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h4 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+              <i class="fa-solid fa-book-open"></i> รายละเอียดเกณฑ์ระดับคะแนน 1-5 ดาว ตามประกาศราชกิจจานุเบกษา (2 ก.ย. 2568)
+            </h4>
+            <button type="button" onclick="window.togglePcc69CriteriaBox()" class="text-slate-400 hover:text-white text-xs">
+              <i class="fa-solid fa-xmark"></i> ปิด
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <!-- KPI 1 Box -->
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1.5">
+              <div class="font-bold text-emerald-400 flex items-center justify-between">
+                <span>KPI 1: คัดกรองเบาหวาน</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px]">20%</span>
+              </div>
+              <div class="text-[11px] text-slate-300">อัตราจ่าย: <strong>1.900648 บาท/คะแนน</strong></div>
+              <ul class="text-[10.5px] text-slate-400 space-y-0.5">
+                <li>• &lt; 56.0% = 0 ดาว (ไม่ได้เงิน)</li>
+                <li>• 56 - &lt; 65% = 1 ดาว</li>
+                <li>• 65 - &lt; 74% = 2 ดาว</li>
+                <li>• 74 - &lt; 83% = 3 ดาว</li>
+                <li>• 83 - &lt; 92% = 4 ดาว</li>
+                <li>• &ge; 92.0% = 5 ดาว</li>
+              </ul>
+            </div>
+            <!-- KPI 2 Box -->
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-amber-700/60 space-y-1.5">
+              <div class="font-bold text-amber-400 flex items-center justify-between">
+                <span>KPI 2: Pre-DM กลับปกติ</span>
+                <span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 text-[10px]">40%</span>
+              </div>
+              <div class="text-[11px] text-amber-300 font-bold">อัตราจ่าย: 410.030762 บาท/คะแนน 🔥</div>
+              <ul class="text-[10.5px] text-slate-400 space-y-0.5">
+                <li>• 0% = 0 ดาว</li>
+                <li>• &gt;0 - &le; 34% = 1 ดาว</li>
+                <li>• 35 - &lt; 45% = 2 ดาว</li>
+                <li>• 45 - &lt; 55% = 3 ดาว</li>
+                <li>• 55 - &lt; 65% = 4 ดาว</li>
+                <li>• &ge; 65.0% = 5 ดาว</li>
+              </ul>
+            </div>
+            <!-- KPI 3 Box -->
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1.5">
+              <div class="font-bold text-cyan-400 flex items-center justify-between">
+                <span>KPI 3: คัดกรองความดัน</span>
+                <span class="px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px]">15%</span>
+              </div>
+              <div class="text-[11px] text-slate-300">อัตราจ่าย: <strong>1.510514 บาท/คะแนน</strong></div>
+              <ul class="text-[10.5px] text-slate-400 space-y-0.5">
+                <li>• &lt; 57.0% = 0 ดาว (ไม่ได้เงิน)</li>
+                <li>• 57 - &lt; 66% = 1 ดาว</li>
+                <li>• 66 - &lt; 75% = 2 ดาว</li>
+                <li>• 75 - &lt; 84% = 3 ดาว</li>
+                <li>• 84 - &lt; 93% = 4 ดาว</li>
+                <li>• &ge; 93.0% = 5 ดาว</li>
+              </ul>
+            </div>
+            <!-- KPI 4 Box -->
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-indigo-700/60 space-y-1.5">
+              <div class="font-bold text-indigo-400 flex items-center justify-between">
+                <span>KPI 4: วินิจฉัย HT รายใหม่</span>
+                <span class="px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 text-[10px]">25%</span>
+              </div>
+              <div class="text-[11px] text-indigo-300 font-bold">อัตราจ่าย: 777.690478 บาท/คะแนน 🔥</div>
+              <ul class="text-[10.5px] text-slate-400 space-y-0.5">
+                <li>• 0% = 0 ดาว</li>
+                <li>• &gt;0 - &lt; 6.3% = 1 ดาว</li>
+                <li>• 6.3 - &lt; 7.8% = 2 ดาว</li>
+                <li>• 7.8 - &lt; 9.3% = 3 ดาว</li>
+                <li>• 9.3 - &lt; 10.8% = 4 ดาว</li>
+                <li>• &ge; 10.8% = 5 ดาว</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Bento Metric Cards for PCC 2569 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          <!-- Card 1: KPI 1 คัดกรอง DM -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">KPI 1 • น้ำหนัก 20%</span>
+              <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-droplet"></i>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="text-[11.5px] text-slate-500 font-medium">คัดกรองเบาหวาน (&ge;35 ปี)</div>
+              <div class="text-2xl font-extrabold text-slate-900 mt-0.5 tracking-tight flex items-baseline gap-1.5">
+                <span id="pcc69-card-kpi1-rate">0.00%</span>
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800" id="pcc69-card-kpi1-stars">0 ดาว</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between font-medium">
+                <span>ผลงาน/เป้าหมาย:</span>
+                <span class="font-bold text-slate-800" id="pcc69-card-kpi1-ab">0 / 0 คน</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
+              <span class="text-slate-400">เงินจัดสรร:</span>
+              <span class="font-extrabold text-emerald-700 font-mono" id="pcc69-card-kpi1-pay">0 บาท</span>
+            </div>
+          </div>
+
+          <!-- Card 2: KPI 2 Pre-DM Return Normal (40%) -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600">KPI 2 • น้ำหนัก 40%</span>
+              <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="text-[11.5px] text-slate-500 font-medium">Pre-DM น้ำตาลกลับปกติ</div>
+              <div class="text-2xl font-extrabold text-amber-600 mt-0.5 tracking-tight flex items-baseline gap-1.5">
+                <span id="pcc69-card-kpi2-rate">0.00%</span>
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900" id="pcc69-card-kpi2-stars">0 ดาว</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between font-medium">
+                <span>กลับปกติ/กลุ่มเสี่ยง:</span>
+                <span class="font-bold text-slate-800" id="pcc69-card-kpi2-ab">0 / 0 คน</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
+              <span class="text-slate-400">เงินจัดสรร (410 บ./คน):</span>
+              <span class="font-extrabold text-amber-700 font-mono" id="pcc69-card-kpi2-pay">0 บาท</span>
+            </div>
+          </div>
+
+          <!-- Card 3: KPI 3 คัดกรองความดัน (15%) -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">KPI 3 • น้ำหนัก 15%</span>
+              <span class="w-7 h-7 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-gauge-high"></i>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="text-[11.5px] text-slate-500 font-medium">คัดกรองความดันโลหิต</div>
+              <div class="text-2xl font-extrabold text-slate-900 mt-0.5 tracking-tight flex items-baseline gap-1.5">
+                <span id="pcc69-card-kpi3-rate">0.00%</span>
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800" id="pcc69-card-kpi3-stars">0 ดาว</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between font-medium">
+                <span>ผลงาน/เป้าหมาย:</span>
+                <span class="font-bold text-slate-800" id="pcc69-card-kpi3-ab">0 / 0 คน</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
+              <span class="text-slate-400">เงินจัดสรร:</span>
+              <span class="font-extrabold text-cyan-700 font-mono" id="pcc69-card-kpi3-pay">0 บาท</span>
+            </div>
+          </div>
+
+          <!-- Card 4: KPI 4 วินิจฉัย HT รายใหม่ (25%) -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">KPI 4 • น้ำหนัก 25%</span>
+              <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-stethoscope"></i>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="text-[11.5px] text-slate-500 font-medium">วินิจฉัยยืนยัน HT รายใหม่</div>
+              <div class="text-2xl font-extrabold text-indigo-600 mt-0.5 tracking-tight flex items-baseline gap-1.5">
+                <span id="pcc69-card-kpi4-rate">0.00%</span>
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800" id="pcc69-card-kpi4-stars">0 ดาว</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between font-medium">
+                <span>วินิจฉัย/คัดกรองสูง:</span>
+                <span class="font-bold text-slate-800" id="pcc69-card-kpi4-ab">0 / 0 คน</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
+              <span class="text-slate-400">เงินจัดสรร (777 บ./คน):</span>
+              <span class="font-extrabold text-indigo-700 font-mono" id="pcc69-card-kpi4-pay">0 บาท</span>
+            </div>
+          </div>
+
+          <!-- Card 5: ยอดเงินจัดสรรรวมทั้งสิ้น -->
+          <div class="glass-card rounded-2xl p-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-100">รวมจัดสรรจ่าย PCC 2569</span>
+              <span class="w-7 h-7 rounded-lg bg-white/20 text-white flex items-center justify-center text-xs backdrop-blur-xs">
+                <i class="fa-solid fa-wallet"></i>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="text-[11px] text-emerald-100 font-medium">งบประมาณจัดสรรสุทธิ (R.1)</div>
+              <div class="text-2xl font-extrabold mt-0.5 tracking-tight" id="pcc69-card-total-pay">0 บาท</div>
+              <div class="text-[11px] text-emerald-100/90 mt-1 flex items-center justify-between">
+                <span>ประชากร UC 35+ รวม:</span>
+                <span class="font-bold text-white" id="pcc69-card-uc35-pop">0 คน</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-white/20 flex items-center justify-between text-[10.5px]">
+              <span class="text-emerald-100" id="pcc69-card-rank-label">อันดับในอำเภอ:</span>
+              <span class="font-extrabold text-white" id="pcc69-card-rank-val">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DUAL CHARTS SECTION (Chart 1: ยอดเงินจัดสรร vs Chart 2: ร้อยละผลงานเทียบเกณฑ์) -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <!-- Chart 1: แผนภูมิแท่งแสดง ยอดเงินจัดสรร PCC 2569 รายหน่วยบริการ -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-center mb-3">
+              <span class="px-5 py-1.5 rounded-full text-xs font-extrabold bg-[#ecfdf5] text-[#065f46] border border-[#a7f3d0] shadow-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-chart-column"></i> แผนภูมิแสดง ยอดเงินจัดสรร PCC 2569 รายหน่วยบริการ (บาท)
+              </span>
+            </div>
+            <div class="flex items-center justify-between px-2 text-xs text-slate-500 mb-1">
+              <span>จัดสรรตามผลลัพธ์บริการ (Pay-for-Performance) 4 ตัวชี้วัด</span>
+              <span class="text-emerald-700 font-bold" id="pcc69-chart1-subtitle">งบประมาณรวมทั้งอำเภอ 98,029.86 บ.</span>
+            </div>
+            <div class="relative w-full h-[330px]">
+              <canvas id="pcc69ChartBudget"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: แผนภูมิแท่งแสดง ผลงานร้อยละ / คะแนนดาว เทียบเกณฑ์ -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs flex flex-col">
+            <div class="flex items-center justify-center mb-3">
+              <span class="px-5 py-1.5 rounded-full text-xs font-extrabold bg-[#fef08a]/80 text-[#713f12] border border-[#fde047] shadow-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-chart-bar"></i> <span id="pcc69-chart2-heading">แผนภูมิเปรียบเทียบร้อยละผลงานรายหน่วยบริการ</span>
+              </span>
+            </div>
+            <div class="flex items-center justify-between px-2 text-xs text-slate-500 mb-1">
+              <span id="pcc69-chart2-legend-desc">เปรียบเทียบผลงานกับเกณฑ์คะแนน 1-5 ดาว</span>
+              <span class="text-rose-600 font-bold flex items-center gap-1" id="pcc69-chart2-target-line">
+                <span class="w-3 h-0.5 bg-emerald-600 border-t-2 border-dashed border-emerald-600 inline-block"></span> เป้าหมาย 3 ดาว
+              </span>
+            </div>
+            <div class="relative w-full h-[330px]">
+              <canvas id="pcc69ChartRates"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- MATRIX TABLE SECTION (14 หน่วยบริการ + ยอดรวม อ.สารภี) -->
+        <div class="glass-card rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+          <!-- Table Header Controls -->
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-table text-emerald-600"></i>
+                <span>ตารางข้อมูลการจัดสรรเงินและผลงาน PCC ปีงบประมาณ 2569 รายหน่วยบริการ</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                จำแนก 4 ตัวชี้วัด: คัดกรอง DM, Pre-DM ปกติ, คัดกรอง HT, วินิจฉัย HT (14 หน่วยบริการ อำเภอสารภี)
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+              <!-- Search Box -->
+              <div class="relative flex-1 md:w-56">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="pcc69-table-search" placeholder="ค้นหา รพ.สต. หรือ ตำบล..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition">
+              </div>
+
+              <!-- Sort Buttons -->
+              <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold gap-1 shrink-0" id="pcc69-sort-buttons">
+                <button type="button" onclick="window.setPcc69Sort('budget_desc')" id="btn-pcc69-sort-budget_desc" class="px-2.5 py-1 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white" title="เรียงตามเงินจัดสรร มากไปน้อย">
+                  <i class="fa-solid fa-arrow-down-wide-short"></i> งบมาก ➔ น้อย
+                </button>
+                <button type="button" onclick="window.setPcc69Sort('rate_desc')" id="btn-pcc69-sort-rate_desc" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent" title="เรียงตามร้อยละผลงาน">
+                  % มาก ➔ น้อย
+                </button>
+                <button type="button" onclick="window.setPcc69Sort('code')" id="btn-pcc69-sort-code" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent" title="เรียงตามรหัสหน่วยบริการ">
+                  ตามรหัส
+                </button>
+              </div>
+
+              <!-- Export CSV Button -->
+              <button type="button" onclick="window.exportPcc2569Csv()" class="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl shadow-xs shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>ส่งออก CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Body with Horizontal Scrolling & Sticky Columns -->
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-xs text-left text-slate-600 border-collapse hdc-matrix-table" id="pcc69-matrix-table">
+              <!-- Dynamically populated via renderPcc2569Panel() in app.js -->
+            </table>
+          </div>
+
+          <!-- Table Footer Note -->
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11.5px] text-slate-500">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-emerald-600"></i>
+              <span>คลิกที่ชื่อหน่วยบริการ หรือปุ่ม <strong>"ดู รพ.สต."</strong> เพื่อ Highlight แถวและสลับกราฟ/การ์ดด้านบนไปยัง รพ.สต. นั้น</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>แหล่งข้อมูล: ข้อมูลการจัดสรร สปสช. เขต 1 เชียงใหม่ (PCC 2569 R.1) :: ประกาศราชกิจจานุเบกษา 2 ก.ย. 2568</span>
             </div>
           </div>
         </div>

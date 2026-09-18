@@ -1,0 +1,958 @@
+{
+  "metadata": {
+    "title": "ข้อมูลการจัดสรรค่าบริการสาธารณสุขเพิ่มเติม PCC ปีงบประมาณ 2569 (รอบที่ 1)",
+    "budget_year": 2569,
+    "round": "R.1",
+    "service_date_window": "1 กรกฎาคม 2568 - 30 มิถุนายน 2569",
+    "announcement": "ประกาศสำนักงานหลักประกันสุขภาพแห่งชาติ ในราชกิจจานุเบกษา เล่ม 142 ตอนพิเศษ 288 ง (2 ก.ย. 2568)",
+    "zone": "สปสช. เขต 1 เชียงใหม่",
+    "district": "อำเภอสารภี จังหวัดเชียงใหม่",
+    "num_units": 14,
+    "kpi_meta": {
+      "kpi1": {
+        "code": "PCC-69-1",
+        "name": "ร้อยละของความครอบคลุมในประชากรที่ได้รับการคัดกรองระดับน้ำตาลในเลือด",
+        "short_name": "คัดกรองเบาหวาน (DM Screen)",
+        "weight_percent": 20,
+        "rate_per_point": 1.9006484139723119,
+        "target_desc": "เกณฑ์คะแนน: <56% (0 ดาว), 56-<65% (1 ดาว), 65-<74% (2 ดาว), 74-<83% (3 ดาว), 83-<92% (4 ดาว), >=92% (5 ดาว)",
+        "brackets": [
+          {
+            "score": 1,
+            "min": 56.0,
+            "max": 65.0,
+            "label": "56 - <65%"
+          },
+          {
+            "score": 2,
+            "min": 65.0,
+            "max": 74.0,
+            "label": "65 - <74%"
+          },
+          {
+            "score": 3,
+            "min": 74.0,
+            "max": 83.0,
+            "label": "74 - <83%"
+          },
+          {
+            "score": 4,
+            "min": 83.0,
+            "max": 92.0,
+            "label": "83 - <92%"
+          },
+          {
+            "score": 5,
+            "min": 92.0,
+            "max": 100.0,
+            "label": ">= 92%"
+          }
+        ]
+      },
+      "kpi2": {
+        "code": "PCC-69-2",
+        "name": "ร้อยละของกลุ่มเสี่ยงเบาหวานหรือภาวะก่อนเบาหวาน (Pre-DM) มีระดับน้ำตาลในเลือดกลับเป็นปกติ",
+        "short_name": "Pre-DM กลับเป็นปกติ (Pre-DM Normal)",
+        "weight_percent": 40,
+        "rate_per_point": 410.03076187557514,
+        "target_desc": "เกณฑ์คะแนน: 0% (0 ดาว), >0-<=34% (1 ดาว), 35-<45% (2 ดาว), 45-<55% (3 ดาว), 55-<65% (4 ดาว), >=65% (5 ดาว)",
+        "brackets": [
+          {
+            "score": 1,
+            "min": 0.01,
+            "max": 34.0,
+            "label": ">0 - <=34%"
+          },
+          {
+            "score": 2,
+            "min": 35.0,
+            "max": 45.0,
+            "label": "35 - <45%"
+          },
+          {
+            "score": 3,
+            "min": 45.0,
+            "max": 55.0,
+            "label": "45 - <55%"
+          },
+          {
+            "score": 4,
+            "min": 55.0,
+            "max": 65.0,
+            "label": "55 - <65%"
+          },
+          {
+            "score": 5,
+            "min": 65.0,
+            "max": 100.0,
+            "label": ">= 65%"
+          }
+        ]
+      },
+      "kpi3": {
+        "code": "PCC-69-3",
+        "name": "ร้อยละของความครอบคลุมในประชากรที่ได้รับการคัดกรองความดันโลหิต",
+        "short_name": "คัดกรองความดัน (HT Screen)",
+        "weight_percent": 15,
+        "rate_per_point": 1.5105137508703663,
+        "target_desc": "เกณฑ์คะแนน: <57% (0 ดาว), 57-<66% (1 ดาว), 66-<75% (2 ดาว), 75-<84% (3 ดาว), 84-<93% (4 ดาว), >=93% (5 ดาว)",
+        "brackets": [
+          {
+            "score": 1,
+            "min": 57.0,
+            "max": 66.0,
+            "label": "57 - <66%"
+          },
+          {
+            "score": 2,
+            "min": 66.0,
+            "max": 75.0,
+            "label": "66 - <75%"
+          },
+          {
+            "score": 3,
+            "min": 75.0,
+            "max": 84.0,
+            "label": "75 - <84%"
+          },
+          {
+            "score": 4,
+            "min": 84.0,
+            "max": 93.0,
+            "label": "84 - <93%"
+          },
+          {
+            "score": 5,
+            "min": 93.0,
+            "max": 100.0,
+            "label": ">= 93%"
+          }
+        ]
+      },
+      "kpi4": {
+        "code": "PCC-69-4",
+        "name": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงรายใหม่ที่ได้รับการตรวจวินิจฉัยจากประชากรที่คัดกรองพบว่ามีความดันโลหิตสูง",
+        "short_name": "วินิจฉัย HT รายใหม่ (New HT Diag)",
+        "weight_percent": 25,
+        "rate_per_point": 777.6904777825682,
+        "target_desc": "เกณฑ์คะแนน: 0% (0 ดาว), >0-<6.3% (1 ดาว), 6.3-<7.8% (2 ดาว), 7.8-<9.3% (3 ดาว), 9.3-<10.8% (4 ดาว), >=10.8% (5 ดาว)",
+        "brackets": [
+          {
+            "score": 1,
+            "min": 0.01,
+            "max": 6.3,
+            "label": ">0 - <6.3%"
+          },
+          {
+            "score": 2,
+            "min": 6.3,
+            "max": 7.8,
+            "label": "6.3 - <7.8%"
+          },
+          {
+            "score": 3,
+            "min": 7.8,
+            "max": 9.3,
+            "label": "7.8 - <9.3%"
+          },
+          {
+            "score": 4,
+            "min": 9.3,
+            "max": 10.8,
+            "label": "9.3 - <10.8%"
+          },
+          {
+            "score": 5,
+            "min": 10.8,
+            "max": 100.0,
+            "label": ">= 10.8%"
+          }
+        ]
+      }
+    }
+  },
+  "zone1_benchmark": {
+    "total_budget": 44658155.07471422,
+    "uc_pop": 7774906,
+    "uc35_pop": 4672204,
+    "kpis": {
+      "kpi1": {
+        "total_a": 2198046,
+        "total_b": 4009752,
+        "total_rate": 54.82,
+        "total_pt_prod": 4263913.0,
+        "total_budget": 8104199.480765922,
+        "rate_per_point": 1.9006484139723119
+      },
+      "kpi2": {
+        "total_a": 40896,
+        "total_b": 464314,
+        "total_rate": 8.81,
+        "total_pt_prod": 42161.79999999999,
+        "total_budget": 17287634.97604562,
+        "rate_per_point": 410.03076187557514
+      },
+      "kpi3": {
+        "total_a": 1845950,
+        "total_b": 3108614,
+        "total_rate": 59.38,
+        "total_pt_prod": 3674374.8000000003,
+        "total_budget": 5550193.661251552,
+        "rate_per_point": 1.5105137508703663
+      },
+      "kpi4": {
+        "total_a": 5022,
+        "total_b": 73566,
+        "total_rate": 6.83,
+        "total_pt_prod": 17637.0,
+        "total_budget": 13716126.956651155,
+        "rate_per_point": 777.6904777825682
+      }
+    }
+  },
+  "saraphi_district": {
+    "uc_pop": 41109,
+    "uc35_pop": 25935,
+    "total_budget": 98029.85,
+    "kpi1": {
+      "a": 10239,
+      "b": 21391,
+      "rate": 47.87,
+      "budget": 20673.35,
+      "rate_per_point": 1.9006484139723119
+    },
+    "kpi2": {
+      "a": 75,
+      "b": 2248,
+      "rate": 3.34,
+      "budget": 30752.3,
+      "rate_per_point": 410.03076187557514
+    },
+    "kpi3": {
+      "a": 8242,
+      "b": 15575,
+      "rate": 52.92,
+      "budget": 16274.27,
+      "rate_per_point": 1.5105137508703663
+    },
+    "kpi4": {
+      "a": 13,
+      "b": 283,
+      "rate": 4.59,
+      "budget": 30329.92,
+      "rate_per_point": 777.6904777825682
+    }
+  },
+  "units": {
+    "11135": {
+      "hospcode": "11135",
+      "name": "โรงพยาบาลสารภี",
+      "short_name": "รพ.สารภี",
+      "subdistrict": "สารภี",
+      "uc_pop": 5453,
+      "uc35_pop": 3178,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 495,
+        "b": 2739,
+        "rate": 18.07,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 1,
+        "b": 73,
+        "rate": 1.37,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 410.03
+      },
+      "kpi3": {
+        "a": 627,
+        "b": 2093,
+        "rate": 29.96,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 1,
+        "b": 19,
+        "rate": 5.26,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 777.69
+      },
+      "total_budget": 1187.72,
+      "rank_budget": 12
+    },
+    "06014": {
+      "hospcode": "06014",
+      "name": "รพ.สต.บ้านยางเนิ้ง",
+      "short_name": "รพ.สต.บ้านยางเนิ้ง",
+      "subdistrict": "ยางเนิ้ง",
+      "uc_pop": 4842,
+      "uc35_pop": 3140,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 642,
+        "b": 2623,
+        "rate": 24.48,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 1,
+        "b": 133,
+        "rate": 0.75,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 410.03
+      },
+      "kpi3": {
+        "a": 567,
+        "b": 1910,
+        "rate": 29.69,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 2,
+        "b": 19,
+        "rate": 10.53,
+        "score": 4,
+        "multiplier": 1.0,
+        "weight_score": 4.0,
+        "point_prod": 8.0,
+        "budget": 6221.52
+      },
+      "total_budget": 6631.55,
+      "rank_budget": 6
+    },
+    "06015": {
+      "hospcode": "06015",
+      "name": "รพ.สต.บ้านพญาชมพู",
+      "short_name": "รพ.สต.บ้านพญาชมพู",
+      "subdistrict": "ชมภู",
+      "uc_pop": 2350,
+      "uc35_pop": 1495,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 473,
+        "b": 1244,
+        "rate": 38.02,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 9,
+        "b": 302,
+        "rate": 2.98,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 9.0,
+        "budget": 3690.28
+      },
+      "kpi3": {
+        "a": 353,
+        "b": 897,
+        "rate": 39.35,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 5,
+        "b": 36,
+        "rate": 13.89,
+        "score": 5,
+        "multiplier": 1.0,
+        "weight_score": 5.0,
+        "point_prod": 25.0,
+        "budget": 19442.26
+      },
+      "total_budget": 23132.54,
+      "rank_budget": 1
+    },
+    "06016": {
+      "hospcode": "06016",
+      "name": "รพ.สต.บ้านศรีสองเมือง",
+      "short_name": "รพ.สต.บ้านศรีสองเมือง",
+      "subdistrict": "ไชยสถาน",
+      "uc_pop": 2498,
+      "uc35_pop": 1456,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 316,
+        "b": 1192,
+        "rate": 26.51,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 1,
+        "b": 88,
+        "rate": 1.14,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 1.0,
+        "budget": 410.03
+      },
+      "kpi3": {
+        "a": 293,
+        "b": 868,
+        "rate": 33.76,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 23,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 410.03,
+      "rank_budget": 13
+    },
+    "06017": {
+      "hospcode": "06017",
+      "name": "รพ.สต.บ้านหัวดง",
+      "short_name": "รพ.สต.บ้านหัวดง",
+      "subdistrict": "ขัวมุง",
+      "uc_pop": 2904,
+      "uc35_pop": 1993,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 743,
+        "b": 1585,
+        "rate": 46.88,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 2,
+        "b": 283,
+        "rate": 0.71,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 2.0,
+        "budget": 820.06
+      },
+      "kpi3": {
+        "a": 592,
+        "b": 1140,
+        "rate": 51.93,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 1,
+        "b": 17,
+        "rate": 5.88,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 777.69
+      },
+      "total_budget": 1597.75,
+      "rank_budget": 11
+    },
+    "06018": {
+      "hospcode": "06018",
+      "name": "รพ.สต.บ้านหนองแฝก",
+      "short_name": "รพ.สต.บ้านหนองแฝก",
+      "subdistrict": "หนองแฝก",
+      "uc_pop": 2838,
+      "uc35_pop": 1842,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 913,
+        "b": 1512,
+        "rate": 60.38,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 913.0,
+        "budget": 1735.29
+      },
+      "kpi2": {
+        "a": 3,
+        "b": 247,
+        "rate": 1.21,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 3.0,
+        "budget": 1230.09
+      },
+      "kpi3": {
+        "a": 615,
+        "b": 922,
+        "rate": 66.7,
+        "score": 2,
+        "multiplier": 1.0,
+        "weight_score": 2.0,
+        "point_prod": 1230.0,
+        "budget": 1857.93
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 10,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 4823.32,
+      "rank_budget": 8
+    },
+    "06020": {
+      "hospcode": "06020",
+      "name": "รพ.สต.บ้านแคว",
+      "short_name": "รพ.สต.บ้านแคว",
+      "subdistrict": "ท่าวังตาล",
+      "uc_pop": 1344,
+      "uc35_pop": 930,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 597,
+        "b": 706,
+        "rate": 84.56,
+        "score": 4,
+        "multiplier": 1.0,
+        "weight_score": 4.0,
+        "point_prod": 2388.0,
+        "budget": 4538.75
+      },
+      "kpi2": {
+        "a": 13,
+        "b": 146,
+        "rate": 8.9,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 13.0,
+        "budget": 5330.4
+      },
+      "kpi3": {
+        "a": 417,
+        "b": 498,
+        "rate": 83.73,
+        "score": 3,
+        "multiplier": 1.0,
+        "weight_score": 3.0,
+        "point_prod": 1251.0,
+        "budget": 1889.65
+      },
+      "kpi4": {
+        "a": 1,
+        "b": 26,
+        "rate": 3.85,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 777.69
+      },
+      "total_budget": 12536.49,
+      "rank_budget": 4
+    },
+    "06021": {
+      "hospcode": "06021",
+      "name": "รพ.สต.บ้านสันต้นกอก",
+      "short_name": "รพ.สต.บ้านสันต้นกอก",
+      "subdistrict": "ดอนแก้ว",
+      "uc_pop": 2217,
+      "uc35_pop": 1402,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 906,
+        "b": 1127,
+        "rate": 80.39,
+        "score": 3,
+        "multiplier": 1.0,
+        "weight_score": 3.0,
+        "point_prod": 2718.0,
+        "budget": 5165.96
+      },
+      "kpi2": {
+        "a": 11,
+        "b": 76,
+        "rate": 14.47,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 11.0,
+        "budget": 4510.34
+      },
+      "kpi3": {
+        "a": 656,
+        "b": 815,
+        "rate": 80.49,
+        "score": 3,
+        "multiplier": 1.0,
+        "weight_score": 3.0,
+        "point_prod": 1968.0,
+        "budget": 2972.69
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 6,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 12648.99,
+      "rank_budget": 3
+    },
+    "06022": {
+      "hospcode": "06022",
+      "name": "รพ.สต.บ้านบวกครกเหนือ",
+      "short_name": "รพ.สต.บ้านบวกครกเหนือ",
+      "subdistrict": "ท่าวังตาล",
+      "uc_pop": 4497,
+      "uc35_pop": 2748,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 1503,
+        "b": 2294,
+        "rate": 65.52,
+        "score": 2,
+        "multiplier": 1.0,
+        "weight_score": 2.0,
+        "point_prod": 3044.0,
+        "budget": 5785.57
+      },
+      "kpi2": {
+        "a": 13,
+        "b": 183,
+        "rate": 7.1,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 13.0,
+        "budget": 5330.4
+      },
+      "kpi3": {
+        "a": 1091,
+        "b": 1691,
+        "rate": 64.52,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1155.0,
+        "budget": 1744.64
+      },
+      "kpi4": {
+        "a": 2,
+        "b": 34,
+        "rate": 5.88,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 2.0,
+        "budget": 1555.38
+      },
+      "total_budget": 14416.0,
+      "rank_budget": 2
+    },
+    "06023": {
+      "hospcode": "06023",
+      "name": "รพ.สต.บ้านป่าสา",
+      "short_name": "รพ.สต.บ้านป่าสา",
+      "subdistrict": "สันทราย",
+      "uc_pop": 2618,
+      "uc35_pop": 1869,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 840,
+        "b": 1540,
+        "rate": 54.55,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 5,
+        "b": 368,
+        "rate": 1.36,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 5.0,
+        "budget": 2050.15
+      },
+      "kpi3": {
+        "a": 768,
+        "b": 1148,
+        "rate": 66.9,
+        "score": 2,
+        "multiplier": 1.0,
+        "weight_score": 2.0,
+        "point_prod": 1536.0,
+        "budget": 2320.15
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 39,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 4370.3,
+      "rank_budget": 9
+    },
+    "06024": {
+      "hospcode": "06024",
+      "name": "รพ.สต.บ้านศรีคำชมภู",
+      "short_name": "รพ.สต.บ้านศรีคำชมภู",
+      "subdistrict": "ป่าบง",
+      "uc_pop": 1874,
+      "uc35_pop": 1167,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 671,
+        "b": 931,
+        "rate": 72.07,
+        "score": 2,
+        "multiplier": 1.0,
+        "weight_score": 2.0,
+        "point_prod": 1342.0,
+        "budget": 2550.67
+      },
+      "kpi2": {
+        "a": 5,
+        "b": 91,
+        "rate": 5.49,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 5.0,
+        "budget": 2050.15
+      },
+      "kpi3": {
+        "a": 519,
+        "b": 689,
+        "rate": 75.33,
+        "score": 3,
+        "multiplier": 1.0,
+        "weight_score": 3.0,
+        "point_prod": 1557.0,
+        "budget": 2351.87
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 24,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 6952.69,
+      "rank_budget": 5
+    },
+    "13994": {
+      "hospcode": "13994",
+      "name": "รพ.สต.บ้านท่าต้นกวาว",
+      "short_name": "รพ.สต.บ้านท่าต้นกวาว",
+      "subdistrict": "ชมภู",
+      "uc_pop": 1379,
+      "uc35_pop": 884,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 472,
+        "b": 733,
+        "rate": 64.39,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 472.0,
+        "budget": 897.11
+      },
+      "kpi2": {
+        "a": 4,
+        "b": 142,
+        "rate": 2.82,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 4.0,
+        "budget": 1640.12
+      },
+      "kpi3": {
+        "a": 340,
+        "b": 514,
+        "rate": 66.15,
+        "score": 2,
+        "multiplier": 1.0,
+        "weight_score": 2.0,
+        "point_prod": 680.0,
+        "budget": 1027.15
+      },
+      "kpi4": {
+        "a": 1,
+        "b": 23,
+        "rate": 4.35,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1.0,
+        "budget": 777.69
+      },
+      "total_budget": 4342.07,
+      "rank_budget": 10
+    },
+    "14461": {
+      "hospcode": "14461",
+      "name": "รพ.สต.บ้านหนองผึ้ง",
+      "short_name": "รพ.สต.บ้านหนองผึ้ง",
+      "subdistrict": "หนองผึ้ง",
+      "uc_pop": 6295,
+      "uc35_pop": 3831,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 1668,
+        "b": 3165,
+        "rate": 52.7,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 7,
+        "b": 116,
+        "rate": 6.03,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 7.0,
+        "budget": 2870.22
+      },
+      "kpi3": {
+        "a": 1404,
+        "b": 2390,
+        "rate": 58.74,
+        "score": 1,
+        "multiplier": 1.0,
+        "weight_score": 1.0,
+        "point_prod": 1397.0,
+        "budget": 2110.19
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 7,
+        "rate": 0.0,
+        "score": 0,
+        "multiplier": 1.0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 4980.4,
+      "rank_budget": 7
+    },
+    "99758": {
+      "hospcode": "99758",
+      "name": "ศสม.สารภี",
+      "short_name": "ศสม.สารภี",
+      "subdistrict": "สารภี",
+      "uc_pop": 0,
+      "uc35_pop": 0,
+      "multiplier": 1.0,
+      "kpi1": {
+        "a": 0,
+        "b": 0,
+        "rate": 0.0,
+        "score": 0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi2": {
+        "a": 0,
+        "b": 0,
+        "rate": 0.0,
+        "score": 0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi3": {
+        "a": 0,
+        "b": 0,
+        "rate": 0.0,
+        "score": 0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "kpi4": {
+        "a": 0,
+        "b": 0,
+        "rate": 0.0,
+        "score": 0,
+        "weight_score": 0.0,
+        "point_prod": 0.0,
+        "budget": 0.0
+      },
+      "total_budget": 0.0,
+      "rank_budget": 14
+    }
+  }
+}

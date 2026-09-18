@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tableExportBtn = document.getElementById('table-export-btn');
   const ttmMassagePanel = document.getElementById('ttm-massage-panel');
   const dmHba1cPanel = document.getElementById('dm-hba1c-panel');
+  const pcc2569Panel = document.getElementById('pcc-2569-panel');
+
+  let currentPcc69View = 'budget'; // 'budget', 'kpi1', 'kpi2', 'kpi3', 'kpi4'
+  let currentPcc69Sort = 'budget_desc'; // 'budget_desc', 'rate_desc', 'code'
+  let pcc69SearchQuery = '';
+  let pcc69ChartBudgetInstance = null;
+  let pcc69ChartRatesInstance = null;
 
   let currentDmHba1cView = 'hdc_full';
   let currentDmHba1cYear = '2569';
@@ -114,12 +121,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Load Data with Cache-Busting
   let nhsoMasterData = null;
+  let pcc2569MasterData = null;
   try {
     const cacheBuster = `?t=${Date.now()}`;
-    const [resMaster, resCatalog, resNhso] = await Promise.all([
+    const [resMaster, resCatalog, resNhso, resPcc2569] = await Promise.all([
       fetch(`data/saraphi_complete_master.json${cacheBuster}`, { cache: 'no-cache' }),
       fetch(`data/moph_catalog.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => [] })),
-      fetch(`data/nhso/nhso_saraphi_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => null }))
+      fetch(`data/nhso/nhso_saraphi_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => null })),
+      fetch(`data/pcc_2569_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => null }))
     ]);
     masterData = await resMaster.json();
     try {
@@ -134,6 +143,122 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
       console.warn('NHSO master data not loaded:', e);
       nhsoMasterData = null;
+    }
+    try {
+      if (resPcc2569) {
+        pcc2569MasterData = await resPcc2569.json();
+      }
+    } catch (e) {
+      console.warn('PCC 2569 master data not loaded:', e);
+      pcc2569MasterData = null;
+    }
+
+    // Register PCC 2569 Virtual Indicators into masterData.indicators
+    if (pcc2569MasterData && masterData && masterData.indicators) {
+      const dist = pcc2569MasterData.saraphi_district || {};
+      const rawUnits = Object.values(pcc2569MasterData.units || {});
+
+      const uOverview = rawUnits.map(u => ({
+        hospcode: u.hospcode,
+        name: u.name,
+        subdistrict: u.subdistrict,
+        rate: u.total_budget,
+        num: u.total_budget,
+        den: u.uc35_pop,
+        pass: true
+      }));
+      const uKpi1 = rawUnits.map(u => ({
+        hospcode: u.hospcode,
+        name: u.name,
+        subdistrict: u.subdistrict,
+        rate: u.kpi1.rate,
+        num: u.kpi1.a,
+        den: u.kpi1.b,
+        pass: u.kpi1.score >= 3
+      }));
+      const uKpi2 = rawUnits.map(u => ({
+        hospcode: u.hospcode,
+        name: u.name,
+        subdistrict: u.subdistrict,
+        rate: u.kpi2.rate,
+        num: u.kpi2.a,
+        den: u.kpi2.b,
+        pass: u.kpi2.score >= 3
+      }));
+      const uKpi3 = rawUnits.map(u => ({
+        hospcode: u.hospcode,
+        name: u.name,
+        subdistrict: u.subdistrict,
+        rate: u.kpi3.rate,
+        num: u.kpi3.a,
+        den: u.kpi3.b,
+        pass: u.kpi3.score >= 3
+      }));
+      const uKpi4 = rawUnits.map(u => ({
+        hospcode: u.hospcode,
+        name: u.name,
+        subdistrict: u.subdistrict,
+        rate: u.kpi4.rate,
+        num: u.kpi4.a,
+        den: u.kpi4.b,
+        pass: u.kpi4.score >= 3
+      }));
+
+      masterData.indicators['pcc69_overview'] = {
+        id: 'pcc69_overview',
+        code: 'PCC-69',
+        name: 'ภาพรวมการจัดสรรเงิน PCC ปี 2569 และ 4 ตัวชี้วัด NCDs',
+        desc: 'วงเงินจัดสรรตามผลลัพธ์บริการ (Pay-for-Performance) Global Budget สปสช. เขต 1 เชียงใหม่',
+        table: 'PCC_69_R.1',
+        domain: 'pcc_2569',
+        target: 0,
+        unit: 'บาท',
+        years: { '2569': { rate: dist.total_budget || 98029.86, num: dist.total_budget || 98029.86, den: dist.uc35_pop || 25935, pass: true, units: uOverview } }
+      };
+      masterData.indicators['pcc69_kpi1'] = {
+        id: 'pcc69_kpi1',
+        code: 'PCC-69-1',
+        name: 'คัดกรองระดับน้ำตาลในเลือด (DM Screening - น้ำหนัก 20%)',
+        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น DM ได้รับการคัดกรองน้ำตาลในเลือด (เป้าหมาย 56-92% 1-5 ดาว)',
+        table: 'PCC_69_R.1',
+        domain: 'pcc_2569',
+        target: 56.0,
+        unit: '%',
+        years: { '2569': { rate: dist.kpi1?.rate || 44.6, num: dist.kpi1?.a || 1885, den: dist.kpi1?.b || 4226, pass: true, units: uKpi1 } }
+      };
+      masterData.indicators['pcc69_kpi2'] = {
+        id: 'pcc69_kpi2',
+        code: 'PCC-69-2',
+        name: 'กลุ่มเสี่ยง Pre-DM มีระดับน้ำตาลกลับเป็นปกติ (น้ำหนัก 40%)',
+        desc: 'กลุ่มเสี่ยง Pre-DM ปีก่อนที่ได้รับการปรับเปลี่ยนพฤติกรรมแล้วผลตรวจน้ำตาลกลับเป็นปกติ (อัตรา 410.03 บ./คะแนน)',
+        table: 'PCC_69_R.1',
+        domain: 'pcc_2569',
+        target: 35.0,
+        unit: '%',
+        years: { '2569': { rate: dist.kpi2?.rate || 4.19, num: dist.kpi2?.a || 75, den: dist.kpi2?.b || 1791, pass: true, units: uKpi2 } }
+      };
+      masterData.indicators['pcc69_kpi3'] = {
+        id: 'pcc69_kpi3',
+        code: 'PCC-69-3',
+        name: 'คัดกรองความดันโลหิต (HT Screening - น้ำหนัก 15%)',
+        desc: 'ประชากร UC อายุ 35 ปีขึ้นไปที่ไม่เคยเป็น HT ได้รับการคัดกรองความดันโลหิต (เป้าหมาย 57-93% 1-5 ดาว)',
+        table: 'PCC_69_R.1',
+        domain: 'pcc_2569',
+        target: 57.0,
+        unit: '%',
+        years: { '2569': { rate: dist.kpi3?.rate || 51.02, num: dist.kpi3?.a || 1659, den: dist.kpi3?.b || 3252, pass: true, units: uKpi3 } }
+      };
+      masterData.indicators['pcc69_kpi4'] = {
+        id: 'pcc69_kpi4',
+        code: 'PCC-69-4',
+        name: 'วินิจฉัยความดันโลหิตสูงรายใหม่ (New HT Diagnosis - น้ำหนัก 25%)',
+        desc: 'ผู้ที่คัดกรองพบความดันโลหิตสูงและได้รับการตรวจวินิจฉัยยืนยันเป็น HT รายใหม่ (อัตรา 777.69 บ./คะแนน)',
+        table: 'PCC_69_R.1',
+        domain: 'pcc_2569',
+        target: 6.3,
+        unit: '%',
+        years: { '2569': { rate: dist.kpi4?.rate || 6.24, num: dist.kpi4?.a || 40, den: dist.kpi4?.b || 641, pass: true, units: uKpi4 } }
+      };
     }
   } catch (err) {
     console.error('Failed to load dashboard data:', err);
@@ -1273,7 +1398,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const domainTitles = {
       ttm: 'หมวด: 🌿 แพทย์แผนไทย & ยาสมุนไพร',
       nhso_ttm: 'หมวด: 🏦 กองทุนแพทย์แผนไทย สปสช. (MeData)',
-      pcc: 'หมวด: 💰 งบ PCC (ผลลัพธ์บริการปฐมภูมิตรายบุคคล)',
+      pcc: 'หมวด: 💰 งบ PCC ปีงบ 2568 (4 ตัวชี้วัดเดิม HDC PCC 1-4)',
+      pcc_2569: 'หมวด: ✨ งบ PCC ปีงบ 2569 (4 ตัวชี้วัดใหม่ & การจัดสรรเงิน P4P)',
       ppb: 'หมวด: 🎯 งบ PPB (บริการพื้นฐาน Workload)',
       elderly: 'หมวด: 👵 ผู้สูงอายุ & NCDs',
       mch: 'หมวด: 👶 อนามัยแม่และเด็ก',
@@ -9292,6 +9418,585 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // =========================================================================
+  // PCC 2569 (4 KPIs & Global Budget Allocation) - CONTROLLER & RENDER
+  // =========================================================================
+
+  window.switchPcc69View = function(view) {
+    currentPcc69View = view;
+    renderPcc2569Panel();
+  };
+
+  window.setPcc69Sort = function(sortMode) {
+    currentPcc69Sort = sortMode;
+    renderPcc69Table();
+  };
+
+  window.togglePcc69CriteriaBox = function() {
+    const box = document.getElementById('pcc69-criteria-box');
+    if (box) box.classList.toggle('hidden');
+  };
+
+  window.exportPcc2569Csv = function() {
+    if (!pcc2569MasterData) return;
+    const units = Object.values(pcc2569MasterData.units || {});
+    const dist = pcc2569MasterData.saraphi_district || {};
+
+    let csv = '\uFEFFรหัสสถานบริการ,ชื่อหน่วยบริการ,ตำบล,ประชากร UC 35+,KPI1 คัดกรอง DM (ตรวจแล้ว A),KPI1 (เป้าหมาย B),KPI1 (ร้อยละ),KPI1 (ดาว),KPI1 (จัดสรรเงิน บ.),KPI2 Pre-DM กลับปกติ (A),KPI2 (เป้าหมาย B),KPI2 (ร้อยละ),KPI2 (ดาว),KPI2 (จัดสรรเงิน บ.),KPI3 คัดกรอง HT (ตรวจแล้ว A),KPI3 (เป้าหมาย B),KPI3 (ร้อยละ),KPI3 (ดาว),KPI3 (จัดสรรเงิน บ.),KPI4 วินิจฉัย HT (ตรวจแล้ว A),KPI4 (เป้าหมาย B),KPI4 (ร้อยละ),KPI4 (ดาว),KPI4 (จัดสรรเงิน บ.),รวมเงินจัดสรรทั้งหมด (บาท)\n';
+
+    // Total Row
+    csv += `TOTAL,รวมอำเภอสารภี,สารภี,${dist.uc35_pop || 0},${dist.kpi1?.a || 0},${dist.kpi1?.b || 0},${dist.kpi1?.rate || 0},-,${dist.kpi1?.budget || 0},${dist.kpi2?.a || 0},${dist.kpi2?.b || 0},${dist.kpi2?.rate || 0},-,${dist.kpi2?.budget || 0},${dist.kpi3?.a || 0},${dist.kpi3?.b || 0},${dist.kpi3?.rate || 0},-,${dist.kpi3?.budget || 0},${dist.kpi4?.a || 0},${dist.kpi4?.b || 0},${dist.kpi4?.rate || 0},-,${dist.kpi4?.budget || 0},${dist.total_budget || 0}\n`;
+
+    units.forEach(u => {
+      csv += `"${u.hospcode}","${u.name}","${u.subdistrict}",${u.uc35_pop},${u.kpi1.a},${u.kpi1.b},${u.kpi1.rate},${u.kpi1.score},${u.kpi1.budget},${u.kpi2.a},${u.kpi2.b},${u.kpi2.rate},${u.kpi2.score},${u.kpi2.budget},${u.kpi3.a},${u.kpi3.b},${u.kpi3.rate},${u.kpi3.score},${u.kpi3.budget},${u.kpi4.a},${u.kpi4.b},${u.kpi4.rate},${u.kpi4.score},${u.kpi4.budget},${u.total_budget}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `PCC_2569_Saraphi_Allocation_R1.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function renderPcc2569Panel() {
+    if (!pcc2569Panel || !pcc2569MasterData) return;
+
+    // 1. Sync View Mode Buttons
+    ['budget', 'kpi1', 'kpi2', 'kpi3', 'kpi4'].forEach(v => {
+      const btn = document.getElementById(`btn-pcc69-view-${v}`);
+      if (btn) {
+        if (v === currentPcc69View) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Unit Filter Badge & 5 Bento Cards
+    const dist = pcc2569MasterData.saraphi_district || {};
+    const unitsMap = pcc2569MasterData.units || {};
+    const unitBadge = document.getElementById('pcc69-unit-badge');
+
+    const isAll = (currentUnit === 'all');
+    let selData = null;
+
+    if (!isAll && unitsMap[currentUnit]) {
+      selData = unitsMap[currentUnit];
+      if (unitBadge) {
+        unitBadge.className = 'flex items-center gap-1.5';
+        unitBadge.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500 text-white font-bold text-xs shadow-xs">
+            <i class="fa-solid fa-hospital-user"></i> กำลังดู: ${selData.name} (ต.${selData.subdistrict})
+            <button type="button" onclick="window.selectDashboardUnit('all')" class="ml-1 px-1.5 py-0.5 rounded bg-amber-700 hover:bg-amber-800 text-white font-bold text-[10.5px] transition" title="คลิกเพื่อกลับสู่ภาพรวมทั้งอำเภอ">
+              ดูภาพรวมทั้งหมด <i class="fa-solid fa-arrow-rotate-left"></i>
+            </button>
+          </span>
+        `;
+      }
+    } else {
+      if (unitBadge) {
+        unitBadge.className = 'hidden';
+        unitBadge.innerHTML = '';
+      }
+    }
+
+    // Populate Cards
+    const k1Rate = selData ? selData.kpi1.rate : dist.kpi1.rate;
+    const k1Score = selData ? selData.kpi1.score : (k1Rate >= 56 ? Math.min(5, Math.floor((k1Rate - 56) / 9) + 1) : 0);
+    const k1A = selData ? selData.kpi1.a : dist.kpi1.a;
+    const k1B = selData ? selData.kpi1.b : dist.kpi1.b;
+    const k1Pay = selData ? selData.kpi1.budget : dist.kpi1.budget;
+
+    const elK1Rate = document.getElementById('pcc69-card-kpi1-rate');
+    const elK1Stars = document.getElementById('pcc69-card-kpi1-stars');
+    const elK1Ab = document.getElementById('pcc69-card-kpi1-ab');
+    const elK1Pay = document.getElementById('pcc69-card-kpi1-pay');
+    if (elK1Rate) elK1Rate.textContent = `${k1Rate.toFixed(2)}%`;
+    if (elK1Stars) elK1Stars.textContent = `${k1Score} ดาว`;
+    if (elK1Ab) elK1Ab.textContent = `${Number(k1A).toLocaleString()} / ${Number(k1B).toLocaleString()} คน`;
+    if (elK1Pay) elK1Pay.textContent = `${Number(k1Pay).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บ.`;
+
+    const k2Rate = selData ? selData.kpi2.rate : dist.kpi2.rate;
+    const k2Score = selData ? selData.kpi2.score : 1;
+    const k2A = selData ? selData.kpi2.a : dist.kpi2.a;
+    const k2B = selData ? selData.kpi2.b : dist.kpi2.b;
+    const k2Pay = selData ? selData.kpi2.budget : dist.kpi2.budget;
+
+    const elK2Rate = document.getElementById('pcc69-card-kpi2-rate');
+    const elK2Stars = document.getElementById('pcc69-card-kpi2-stars');
+    const elK2Ab = document.getElementById('pcc69-card-kpi2-ab');
+    const elK2Pay = document.getElementById('pcc69-card-kpi2-pay');
+    if (elK2Rate) elK2Rate.textContent = `${k2Rate.toFixed(2)}%`;
+    if (elK2Stars) elK2Stars.textContent = `${k2Score} ดาว`;
+    if (elK2Ab) elK2Ab.textContent = `${Number(k2A).toLocaleString()} / ${Number(k2B).toLocaleString()} คน`;
+    if (elK2Pay) elK2Pay.textContent = `${Number(k2Pay).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บ.`;
+
+    const k3Rate = selData ? selData.kpi3.rate : dist.kpi3.rate;
+    const k3Score = selData ? selData.kpi3.score : (k3Rate >= 57 ? Math.min(5, Math.floor((k3Rate - 57) / 9) + 1) : 0);
+    const k3A = selData ? selData.kpi3.a : dist.kpi3.a;
+    const k3B = selData ? selData.kpi3.b : dist.kpi3.b;
+    const k3Pay = selData ? selData.kpi3.budget : dist.kpi3.budget;
+
+    const elK3Rate = document.getElementById('pcc69-card-kpi3-rate');
+    const elK3Stars = document.getElementById('pcc69-card-kpi3-stars');
+    const elK3Ab = document.getElementById('pcc69-card-kpi3-ab');
+    const elK3Pay = document.getElementById('pcc69-card-kpi3-pay');
+    if (elK3Rate) elK3Rate.textContent = `${k3Rate.toFixed(2)}%`;
+    if (elK3Stars) elK3Stars.textContent = `${k3Score} ดาว`;
+    if (elK3Ab) elK3Ab.textContent = `${Number(k3A).toLocaleString()} / ${Number(k3B).toLocaleString()} คน`;
+    if (elK3Pay) elK3Pay.textContent = `${Number(k3Pay).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บ.`;
+
+    const k4Rate = selData ? selData.kpi4.rate : dist.kpi4.rate;
+    const k4Score = selData ? selData.kpi4.score : (k4Rate >= 10.8 ? 5 : (k4Rate > 0 ? 1 : 0));
+    const k4A = selData ? selData.kpi4.a : dist.kpi4.a;
+    const k4B = selData ? selData.kpi4.b : dist.kpi4.b;
+    const k4Pay = selData ? selData.kpi4.budget : dist.kpi4.budget;
+
+    const elK4Rate = document.getElementById('pcc69-card-kpi4-rate');
+    const elK4Stars = document.getElementById('pcc69-card-kpi4-stars');
+    const elK4Ab = document.getElementById('pcc69-card-kpi4-ab');
+    const elK4Pay = document.getElementById('pcc69-card-kpi4-pay');
+    if (elK4Rate) elK4Rate.textContent = `${k4Rate.toFixed(2)}%`;
+    if (elK4Stars) elK4Stars.textContent = `${k4Score} ดาว`;
+    if (elK4Ab) elK4Ab.textContent = `${Number(k4A).toLocaleString()} / ${Number(k4B).toLocaleString()} คน`;
+    if (elK4Pay) elK4Pay.textContent = `${Number(k4Pay).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บ.`;
+
+    // Card 5: Total Pay & Rank
+    const totPay = selData ? selData.total_budget : dist.total_budget;
+    const uc35 = selData ? selData.uc35_pop : dist.uc35_pop;
+    const rankVal = selData ? `อันดับที่ ${selData.rank_budget} จาก 14 แห่ง` : '14 แห่งในอำเภอ';
+
+    const elTotPay = document.getElementById('pcc69-card-total-pay');
+    const elUc35 = document.getElementById('pcc69-card-uc35-pop');
+    const elRankVal = document.getElementById('pcc69-card-rank-val');
+    if (elTotPay) elTotPay.textContent = `${Number(totPay).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บ.`;
+    if (elUc35) elUc35.textContent = `${Number(uc35).toLocaleString()} คน`;
+    if (elRankVal) elRankVal.textContent = rankVal;
+
+    // 3. Render Charts
+    renderPcc69Charts();
+
+    // 4. Render Table
+    renderPcc69Table();
+  }
+
+  function renderPcc69Charts() {
+    if (!pcc2569MasterData) return;
+    const unitsList = Object.values(pcc2569MasterData.units || {});
+
+    // --- CHART 1: Total Allocated Budget (บาท) ---
+    const canvasBudget = document.getElementById('pcc69ChartBudget');
+    if (canvasBudget) {
+      if (pcc69ChartBudgetInstance) {
+        pcc69ChartBudgetInstance.destroy();
+        pcc69ChartBudgetInstance = null;
+      }
+
+      const sortedBudgetUnits = [...unitsList].sort((a, b) => b.total_budget - a.total_budget);
+      const labels1 = sortedBudgetUnits.map(u => u.short_name || u.name);
+      const data1 = sortedBudgetUnits.map(u => u.total_budget);
+      const bgColors1 = sortedBudgetUnits.map(u => (u.hospcode === currentUnit ? '#f59e0b' : '#10b981'));
+      const borderColors1 = sortedBudgetUnits.map(u => (u.hospcode === currentUnit ? '#b45309' : '#059669'));
+      const borderWidths1 = sortedBudgetUnits.map(u => (u.hospcode === currentUnit ? 2.5 : 1));
+
+      const ctx1 = canvasBudget.getContext('2d');
+      pcc69ChartBudgetInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels1,
+          datasets: [{
+            label: 'เงินจัดสรร PCC 2569 (บาท)',
+            data: data1,
+            backgroundColor: bgColors1,
+            borderColor: borderColors1,
+            borderWidth: borderWidths1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const val = ctx.raw || 0;
+                  const total = pcc2569MasterData.saraphi_district?.total_budget || 1;
+                  const share = ((val / total) * 100).toFixed(1);
+                  return ` งบจัดสรร: ${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บาท (${share}%)`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(v) { return Number(v).toLocaleString() + ' บ.'; },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            }
+          },
+          onClick: (evt, elements) => {
+            if (elements && elements.length > 0) {
+              const elIndex = elements[0].index;
+              const target = sortedBudgetUnits[elIndex];
+              if (target) {
+                window.selectDashboardUnit(target.hospcode);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // --- CHART 2: Performance Rates / Scores (%) ---
+    const canvasRates = document.getElementById('pcc69ChartRates');
+    if (canvasRates) {
+      if (pcc69ChartRatesInstance) {
+        pcc69ChartRatesInstance.destroy();
+        pcc69ChartRatesInstance = null;
+      }
+
+      let metricKey = 'kpi1';
+      let chartTitle = 'ร้อยละการคัดกรองเบาหวาน (KPI 1)';
+      let targetVal = 74.0; // 3 stars
+      let targetLabel = 'เป้าหมาย 3 ดาว (≥74%)';
+
+      if (currentPcc69View === 'kpi2') {
+        metricKey = 'kpi2';
+        chartTitle = 'ร้อยละ Pre-DM กลับเป็นปกติ (KPI 2 - 410 บ./คน)';
+        targetVal = 45.0;
+        targetLabel = 'เป้าหมาย 3 ดาว (≥45%)';
+      } else if (currentPcc69View === 'kpi3') {
+        metricKey = 'kpi3';
+        chartTitle = 'ร้อยละการคัดกรองความดันโลหิต (KPI 3)';
+        targetVal = 75.0;
+        targetLabel = 'เป้าหมาย 3 ดาว (≥75%)';
+      } else if (currentPcc69View === 'kpi4') {
+        metricKey = 'kpi4';
+        chartTitle = 'ร้อยละการวินิจฉัย HT รายใหม่ (KPI 4 - 777 บ./คน)';
+        targetVal = 7.8;
+        targetLabel = 'เป้าหมาย 3 ดาว (≥7.8%)';
+      } else if (currentPcc69View === 'budget') {
+        metricKey = 'kpi4';
+        chartTitle = 'ร้อยละการวินิจฉัย HT รายใหม่ (ตัวชี้วัดทำรายได้สูงสุด 777 บ./คน)';
+        targetVal = 7.8;
+        targetLabel = 'เกณฑ์ 3 ดาว (≥7.8%)';
+      }
+
+      const headingEl = document.getElementById('pcc69-chart2-heading');
+      if (headingEl) headingEl.textContent = chartTitle;
+
+      const targetLineEl = document.getElementById('pcc69-chart2-target-line');
+      if (targetLineEl) {
+        targetLineEl.innerHTML = `<span class="w-3 h-0.5 bg-emerald-600 border-t-2 border-dashed border-emerald-600 inline-block"></span> ${targetLabel}`;
+      }
+
+      const sortedRateUnits = [...unitsList].sort((a, b) => (b[metricKey]?.rate || 0) - (a[metricKey]?.rate || 0));
+      const labels2 = sortedRateUnits.map(u => u.short_name || u.name);
+      const data2 = sortedRateUnits.map(u => u[metricKey]?.rate || 0);
+
+      const bgColors2 = sortedRateUnits.map(u => {
+        if (u.hospcode === currentUnit) return '#f59e0b'; // Amber for selected
+        const score = u[metricKey]?.score || 0;
+        if (score >= 3) return '#38bdf8'; // Sky
+        if (score >= 1) return '#34d399'; // Emerald
+        return '#cbd5e1'; // Slate
+      });
+
+      const borderColors2 = sortedRateUnits.map(u => (u.hospcode === currentUnit ? '#b45309' : '#0284c7'));
+      const borderWidths2 = sortedRateUnits.map(u => (u.hospcode === currentUnit ? 2.5 : 1));
+
+      const ctx2 = canvasRates.getContext('2d');
+      pcc69ChartRatesInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: labels2,
+          datasets: [
+            {
+              type: 'line',
+              label: targetLabel,
+              data: new Array(labels2.length).fill(targetVal),
+              borderColor: '#10b981',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              type: 'bar',
+              label: 'ร้อยละผลงาน (%)',
+              data: data2,
+              backgroundColor: bgColors2,
+              borderColor: borderColors2,
+              borderWidth: borderWidths2,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10.5 },
+                filter: item => item.text !== 'ร้อยละผลงาน (%)'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  if (ctx.dataset.type === 'line') return ` ${ctx.dataset.label}`;
+                  const u = sortedRateUnits[ctx.dataIndex];
+                  const kObj = u[metricKey] || {};
+                  return [
+                    ` ผลงาน: ${(kObj.rate || 0).toFixed(2)}% (${kObj.score || 0} ดาว)`,
+                    ` จำนวน: ${(kObj.a || 0).toLocaleString()} / ${(kObj.b || 0).toLocaleString()} คน`,
+                    ` เงินจัดสรร: ${(kObj.budget || 0).toLocaleString()} บาท`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(v) { return v + '%'; },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            }
+          },
+          onClick: (evt, elements) => {
+            if (elements && elements.length > 0) {
+              const elIndex = elements[0].index;
+              const target = sortedRateUnits[elIndex];
+              if (target) {
+                window.selectDashboardUnit(target.hospcode);
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function renderPcc69Table() {
+    const tableEl = document.getElementById('pcc69-matrix-table');
+    if (!tableEl || !pcc2569MasterData) return;
+
+    // Sync sort buttons
+    ['budget_desc', 'rate_desc', 'code'].forEach(s => {
+      const btn = document.getElementById(`btn-pcc69-sort-${s}`);
+      if (btn) {
+        if (s === currentPcc69Sort) {
+          btn.className = 'px-2.5 py-1 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    const dist = pcc2569MasterData.saraphi_district || {};
+    let units = Object.values(pcc2569MasterData.units || {});
+
+    // Filter by query
+    const q = (pcc69SearchQuery || '').trim().toLowerCase();
+    if (q) {
+      units = units.filter(u =>
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.hospcode && u.hospcode.includes(q)) ||
+        (u.subdistrict && u.subdistrict.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort
+    let activeKey = 'kpi1';
+    if (currentPcc69View === 'kpi2') activeKey = 'kpi2';
+    else if (currentPcc69View === 'kpi3') activeKey = 'kpi3';
+    else if (currentPcc69View === 'kpi4') activeKey = 'kpi4';
+
+    if (currentPcc69Sort === 'budget_desc') {
+      units.sort((a, b) => (b.total_budget || 0) - (a.total_budget || 0));
+    } else if (currentPcc69Sort === 'rate_desc') {
+      units.sort((a, b) => (b[activeKey]?.rate || 0) - (a[activeKey]?.rate || 0));
+    } else if (currentPcc69Sort === 'code') {
+      units.sort((a, b) => String(a.hospcode).localeCompare(String(b.hospcode)));
+    }
+
+    // Header HTML
+    const theadHtml = `
+      <thead class="bg-emerald-800 text-white font-bold uppercase text-[11px] tracking-wider border-b border-emerald-950 select-none">
+        <tr class="border-b border-emerald-700/60 text-center">
+          <th rowspan="2" class="p-2.5 sticky left-0 bg-emerald-900 z-30 w-16 border-r border-emerald-700/80 shadow-xs">รหัส</th>
+          <th rowspan="2" class="p-2.5 sticky left-16 bg-emerald-900 z-30 min-w-[190px] text-left border-r border-emerald-700/80 shadow-xs">หน่วยบริการ / รพ.สต.</th>
+          <th rowspan="2" class="p-2.5 min-w-[85px] border-r border-emerald-700/80">ตำบล</th>
+          <th rowspan="2" class="p-2.5 min-w-[80px] text-right border-r border-emerald-700/80">UC 35+</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 1: คัดกรอง DM (20%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 2: Pre-DM ปกติ (40%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 3: คัดกรอง HT (15%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 4: วินิจฉัย HT (25%)</th>
+          <th rowspan="2" class="p-2.5 min-w-[110px] text-right border-r border-emerald-700/80 bg-emerald-950/90 text-amber-300">รวมเงินจัดสรร (บาท)</th>
+          <th rowspan="2" class="p-2.5 w-20 text-center">เลือกดู</th>
+        </tr>
+        <tr class="border-b border-emerald-900/80 text-[10.5px]">
+          <th class="p-1.5 text-right border-r border-emerald-700/50">ร้อยละ (ดาว)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/80 font-mono">เงิน (บ.)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/50">ร้อยละ (ดาว)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/80 font-mono text-amber-200">เงิน (บ.)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/50">ร้อยละ (ดาว)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/80 font-mono">เงิน (บ.)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/50">ร้อยละ (ดาว)</th>
+          <th class="p-1.5 text-right border-r border-emerald-700/80 font-mono text-amber-200">เงิน (บ.)</th>
+        </tr>
+      </thead>
+    `;
+
+    // Row 1: TOTAL
+    let tbodyHtml = `
+      <tr class="bg-emerald-100/90 font-extrabold text-emerald-950 border-b-2 border-emerald-300 text-xs transition">
+        <td class="p-2.5 text-center sticky left-0 bg-emerald-100/95 font-mono z-20 border-r border-emerald-300 shadow-xs">TOTAL</td>
+        <td class="p-2.5 sticky left-16 bg-emerald-100/95 z-20 text-left border-r border-emerald-300 shadow-xs cursor-pointer hover:text-emerald-800" onclick="window.selectDashboardUnit('all')">
+          <i class="fa-solid fa-calculator text-emerald-700 mr-1"></i> รวมอำเภอสารภี
+        </td>
+        <td class="p-2.5 border-r border-emerald-300 text-slate-700">สารภี</td>
+        <td class="p-2 text-right border-r border-emerald-300 font-mono">${(dist.uc35_pop || 0).toLocaleString()}</td>
+        
+        <td class="p-2 text-right border-r border-emerald-300 font-mono">${(dist.kpi1?.rate || 0).toFixed(2)}%</td>
+        <td class="p-2 text-right border-r border-emerald-300 font-mono text-emerald-900">${(dist.kpi1?.budget || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+        
+        <td class="p-2 text-right border-r border-emerald-300 font-mono">${(dist.kpi2?.rate || 0).toFixed(2)}%</td>
+        <td class="p-2 text-right border-r border-emerald-300 font-mono text-amber-900 font-extrabold">${(dist.kpi2?.budget || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+        
+        <td class="p-2 text-right border-r border-emerald-300 font-mono">${(dist.kpi3?.rate || 0).toFixed(2)}%</td>
+        <td class="p-2 text-right border-r border-emerald-300 font-mono text-emerald-900">${(dist.kpi3?.budget || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+        
+        <td class="p-2 text-right border-r border-emerald-300 font-mono">${(dist.kpi4?.rate || 0).toFixed(2)}%</td>
+        <td class="p-2 text-right border-r border-emerald-300 font-mono text-indigo-950 font-extrabold">${(dist.kpi4?.budget || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+        
+        <td class="p-2.5 text-right border-r border-emerald-300 font-mono text-emerald-950 text-sm font-black bg-emerald-200/60">
+          ${(dist.total_budget || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}
+        </td>
+        <td class="p-2 text-center">
+          <button type="button" onclick="window.selectDashboardUnit('all')" class="px-2 py-0.5 rounded ${currentUnit === 'all' ? 'bg-emerald-700 text-white font-extrabold' : 'bg-emerald-200 text-emerald-900 font-bold'} text-[10.5px]">
+            ${currentUnit === 'all' ? 'ดูอยู่' : 'ยอดรวม'}
+          </button>
+        </td>
+      </tr>
+    `;
+
+    // Unit Rows
+    units.forEach((u, idx) => {
+      const isSelected = (currentUnit === u.hospcode);
+      const rowBg = isSelected
+        ? 'bg-amber-100/90 font-bold text-slate-900 border-y-2 border-amber-400 shadow-sm ring-1 ring-amber-400'
+        : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/80' : 'bg-slate-50/50 hover:bg-slate-100/80');
+
+      const stickyCodeClass = isSelected
+        ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+        : 'bg-white text-slate-600 font-bold border-r border-slate-200 shadow-xs';
+
+      const stickyNameClass = isSelected
+        ? 'bg-amber-100 text-amber-950 font-extrabold border-r border-amber-300 shadow-xs'
+        : 'bg-white text-slate-900 font-bold border-r border-slate-200 shadow-xs';
+
+      const stickySubClass = isSelected
+        ? 'bg-amber-100/80 text-amber-900 font-semibold border-r border-amber-300'
+        : 'text-slate-600 font-medium border-r border-slate-200';
+
+      const actionBtn = isSelected
+        ? `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition flex items-center justify-center gap-1 mx-auto" title="คลิกเพื่อยกเลิกการเลือก"><i class="fa-solid fa-check"></i> ดู รพ.สต.</button>`
+        : `<button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-2xs">ดู รพ.สต.</button>`;
+
+      tbodyHtml += `
+        <tr class="${rowBg} border-b border-slate-200/80 text-xs transition">
+          <td class="p-2.5 text-center sticky left-0 ${stickyCodeClass} font-mono z-10">
+            ${u.hospcode}
+          </td>
+          <td class="p-2.5 sticky left-16 ${stickyNameClass} z-10">
+            <span class="cursor-pointer hover:text-emerald-700 hover:underline" onclick="window.selectDashboardUnit('${u.hospcode}')">${u.name}</span>
+          </td>
+          <td class="p-2.5 ${stickySubClass}">
+            ${u.subdistrict || '-'}
+          </td>
+          <td class="p-2 text-right border-r border-slate-200 font-mono">${(u.uc35_pop || 0).toLocaleString()}</td>
+          
+          <td class="p-2 text-right border-r border-slate-200 font-mono">
+            <span class="${u.kpi1.score > 0 ? 'text-emerald-700 font-bold' : 'text-slate-400'}">${u.kpi1.rate.toFixed(2)}%</span>
+            <span class="text-[10px] text-slate-500 ml-0.5">(${u.kpi1.score}★)</span>
+          </td>
+          <td class="p-2 text-right border-r border-slate-200 font-mono ${u.kpi1.budget > 0 ? 'text-emerald-700 font-semibold' : 'text-slate-400'}">
+            ${u.kpi1.budget > 0 ? Number(u.kpi1.budget).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '-'}
+          </td>
+          
+          <td class="p-2 text-right border-r border-slate-200 font-mono">
+            <span class="${u.kpi2.score > 0 ? 'text-amber-700 font-bold' : 'text-slate-400'}">${u.kpi2.rate.toFixed(2)}%</span>
+            <span class="text-[10px] text-slate-500 ml-0.5">(${u.kpi2.score}★)</span>
+          </td>
+          <td class="p-2 text-right border-r border-slate-200 font-mono ${u.kpi2.budget > 0 ? 'text-amber-800 font-bold' : 'text-slate-400'}">
+            ${u.kpi2.budget > 0 ? Number(u.kpi2.budget).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '-'}
+          </td>
+          
+          <td class="p-2 text-right border-r border-slate-200 font-mono">
+            <span class="${u.kpi3.score > 0 ? 'text-emerald-700 font-bold' : 'text-slate-400'}">${u.kpi3.rate.toFixed(2)}%</span>
+            <span class="text-[10px] text-slate-500 ml-0.5">(${u.kpi3.score}★)</span>
+          </td>
+          <td class="p-2 text-right border-r border-slate-200 font-mono ${u.kpi3.budget > 0 ? 'text-emerald-700 font-semibold' : 'text-slate-400'}">
+            ${u.kpi3.budget > 0 ? Number(u.kpi3.budget).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '-'}
+          </td>
+          
+          <td class="p-2 text-right border-r border-slate-200 font-mono">
+            <span class="${u.kpi4.score > 0 ? 'text-indigo-700 font-bold' : 'text-slate-400'}">${u.kpi4.rate.toFixed(2)}%</span>
+            <span class="text-[10px] text-slate-500 ml-0.5">(${u.kpi4.score}★)</span>
+          </td>
+          <td class="p-2 text-right border-r border-slate-200 font-mono ${u.kpi4.budget > 0 ? 'text-indigo-800 font-bold' : 'text-slate-400'}">
+            ${u.kpi4.budget > 0 ? Number(u.kpi4.budget).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '-'}
+          </td>
+          
+          <td class="p-2.5 text-right border-r border-slate-200 font-mono font-bold ${u.total_budget > 0 ? 'text-emerald-800' : 'text-slate-400'} bg-emerald-50/30">
+            ${u.total_budget > 0 ? Number(u.total_budget).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '0.00'}
+          </td>
+          <td class="p-2 text-center">
+            ${actionBtn}
+          </td>
+        </tr>
+      `;
+    });
+
+    tableEl.innerHTML = `${theadHtml}<tbody>${tbodyHtml}</tbody>`;
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+
 
   // 10. Update Everything on View Change
   function updateDashboardView() {
@@ -9300,8 +10005,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (indicatorDropdownBar) indicatorDropdownBar.classList.add('hidden');
       if (executiveBanner) executiveBanner.classList.add('hidden');
       if (explorerSection) explorerSection.classList.remove('hidden');
+      if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
       renderExplorerCatalog();
+    } else if (currentDomain === 'pcc_2569') {
+      if (explorerSection) explorerSection.classList.add('hidden');
+      if (indicatorDropdownBar) indicatorDropdownBar.classList.remove('hidden');
+      if (executiveBanner) executiveBanner.classList.add('hidden');
+      if (activeSection) activeSection.classList.remove('hidden');
+
+      populateIndicatorDropdown();
+      updateIndicatorHeader();
+
+      const standardChartsSection = document.getElementById('standard-charts-section');
+      const standardTableSection = document.getElementById('standard-table-section');
+      if (standardChartsSection) standardChartsSection.classList.add('hidden');
+      if (standardTableSection) standardTableSection.classList.add('hidden');
+      if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+      if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+      if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+      if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+      if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+      if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+      if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+      if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
+      if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+
+      if (pcc2569Panel) pcc2569Panel.classList.remove('hidden');
+      renderPcc2569Panel();
     } else {
+      if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
       if (explorerSection) explorerSection.classList.add('hidden');
       if (indicatorDropdownBar) indicatorDropdownBar.classList.remove('hidden');
       if (executiveBanner) executiveBanner.classList.remove('hidden');
@@ -9617,11 +10349,56 @@ console.log("Saraphi Records:", saraphiData);`;
   });
 
   // Sidebar Navigation Listeners
+  const sidebarParentPcc = document.getElementById('sidebar-parent-pcc');
+  const pccSubmenuContainer = document.getElementById('pcc-submenu-container');
+  const pccSubmenuChevron = document.getElementById('pcc-submenu-chevron');
+
+  if (sidebarParentPcc) {
+    sidebarParentPcc.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // If sidebar is collapsed on desktop, expand it
+      if (sidebarNav && sidebarNav.classList.contains('sidebar-collapsed')) {
+        sidebarNav.classList.remove('sidebar-collapsed');
+        sidebarNav.classList.add('sidebar-expanded');
+      }
+
+      if (pccSubmenuContainer) {
+        const isHidden = pccSubmenuContainer.classList.contains('hidden');
+        if (isHidden) {
+          pccSubmenuContainer.classList.remove('hidden');
+          if (pccSubmenuChevron) pccSubmenuChevron.classList.add('rotate-180');
+        } else {
+          pccSubmenuContainer.classList.add('hidden');
+          if (pccSubmenuChevron) pccSubmenuChevron.classList.remove('rotate-180');
+        }
+      }
+
+      // If current domain is not one of the PCC domains, switch to pcc_2569 by default
+      if (currentDomain !== 'pcc' && currentDomain !== 'pcc_2569') {
+        const pcc69SubItem = document.querySelector('.sidebar-subitem[data-domain="pcc_2569"]');
+        if (pcc69SubItem) {
+          pcc69SubItem.click();
+        }
+      }
+    });
+  }
+
   sidebarItems.forEach(item => {
+    // Skip parent button since it's handled above
+    if (item.classList.contains('sidebar-parent')) return;
+
     item.addEventListener('click', () => {
       sidebarItems.forEach(i => i.classList.remove('active'));
       item.classList.add('active');
       currentDomain = item.dataset.domain;
+
+      if (item.classList.contains('sidebar-subitem')) {
+        if (sidebarParentPcc) sidebarParentPcc.classList.add('active-parent');
+        if (pccSubmenuContainer) pccSubmenuContainer.classList.remove('hidden');
+        if (pccSubmenuChevron) pccSubmenuChevron.classList.add('rotate-180');
+      } else {
+        if (sidebarParentPcc) sidebarParentPcc.classList.remove('active-parent');
+      }
 
       // Close mobile drawer if open
       if (sidebarNav) sidebarNav.classList.remove('mobile-open');
@@ -9770,6 +10547,14 @@ console.log("Saraphi Records:", saraphiData);`;
     dmHba1cSearchInput.addEventListener('input', (e) => {
       dmHba1cSearchQuery = e.target.value;
       renderDmHba1cPanel();
+    });
+  }
+
+  const pcc69SearchInput = document.getElementById('pcc69-table-search');
+  if (pcc69SearchInput) {
+    pcc69SearchInput.addEventListener('input', (e) => {
+      pcc69SearchQuery = e.target.value;
+      renderPcc69Table();
     });
   }
 
