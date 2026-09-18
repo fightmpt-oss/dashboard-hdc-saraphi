@@ -9453,7 +9453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const units = Object.values(pcc2569MasterData.units || {});
     const dist = pcc2569MasterData.saraphi_district || {};
 
-    let csv = '\uFEFFรหัสสถานบริการ,ชื่อหน่วยบริการ,ตำบล,ประชากร UC 35+,KPI1 คัดกรอง DM (ตรวจแล้ว A),KPI1 (เป้าหมาย B),KPI1 (ร้อยละ),KPI1 (ดาว),KPI1 (จัดสรรเงิน บ.),KPI2 Pre-DM กลับปกติ (A),KPI2 (เป้าหมาย B),KPI2 (ร้อยละ),KPI2 (ดาว),KPI2 (จัดสรรเงิน บ.),KPI3 คัดกรอง HT (ตรวจแล้ว A),KPI3 (เป้าหมาย B),KPI3 (ร้อยละ),KPI3 (ดาว),KPI3 (จัดสรรเงิน บ.),KPI4 วินิจฉัย HT (ตรวจแล้ว A),KPI4 (เป้าหมาย B),KPI4 (ร้อยละ),KPI4 (ดาว),KPI4 (จัดสรรเงิน บ.),รวมเงินจัดสรรทั้งหมด (บาท)\n';
+    let csv = '\uFEFFรหัสสถานบริการ,ชื่อหน่วยบริการ,ตำบล,ประชากร UC 35+,KPI1 35 ปี คัดกรอง DM (ตรวจแล้ว A),KPI1 (เป้าหมาย B),KPI1 (ร้อยละ),KPI1 (ดาว),KPI1 (จัดสรรเงิน บ.),KPI2 กลุ่มเสี่ยง/PreDM กลับมาเป็นปกติ (A),KPI2 (เป้าหมาย B),KPI2 (ร้อยละ),KPI2 (ดาว),KPI2 (จัดสรรเงิน บ.),KPI3 35 ปี คัดกรอง HT (ตรวจแล้ว A),KPI3 (เป้าหมาย B),KPI3 (ร้อยละ),KPI3 (ดาว),KPI3 (จัดสรรเงิน บ.),KPI4 BP สูง Dx.HT รายใหม่ (ตรวจแล้ว A),KPI4 (เป้าหมาย B),KPI4 (ร้อยละ),KPI4 (ดาว),KPI4 (จัดสรรเงิน บ.),รวมเงินจัดสรรทั้งหมด (บาท)\n';
 
     // Total Row
     csv += `TOTAL,รวมอำเภอสารภี,สารภี,${dist.uc35_pop || 0},${dist.kpi1?.a || 0},${dist.kpi1?.b || 0},${dist.kpi1?.rate || 0},-,${dist.kpi1?.budget || 0},${dist.kpi2?.a || 0},${dist.kpi2?.b || 0},${dist.kpi2?.rate || 0},-,${dist.kpi2?.budget || 0},${dist.kpi3?.a || 0},${dist.kpi3?.b || 0},${dist.kpi3?.rate || 0},-,${dist.kpi3?.budget || 0},${dist.kpi4?.a || 0},${dist.kpi4?.b || 0},${dist.kpi4?.rate || 0},-,${dist.kpi4?.budget || 0},${dist.total_budget || 0}\n`;
@@ -9864,16 +9864,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Header HTML
     const theadHtml = `
-      <thead class="bg-emerald-800 text-white font-bold uppercase text-[11px] tracking-wider border-b border-emerald-950 select-none">
+      <thead class="bg-emerald-800 text-white font-bold normal-case text-[11px] tracking-wider border-b border-emerald-950 select-none">
         <tr class="border-b border-emerald-700/60 text-center">
           <th rowspan="2" class="p-2.5 sticky left-0 bg-emerald-900 z-30 w-16 border-r border-emerald-700/80 shadow-xs">รหัส</th>
           <th rowspan="2" class="p-2.5 sticky left-16 bg-emerald-900 z-30 min-w-[190px] text-left border-r border-emerald-700/80 shadow-xs">หน่วยบริการ / รพ.สต.</th>
           <th rowspan="2" class="p-2.5 min-w-[85px] border-r border-emerald-700/80">ตำบล</th>
           <th rowspan="2" class="p-2.5 min-w-[80px] text-right border-r border-emerald-700/80">UC 35+</th>
-          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 1: คัดกรอง DM (20%)</th>
-          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 2: Pre-DM ปกติ (40%)</th>
-          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 3: คัดกรอง HT (15%)</th>
-          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 4: วินิจฉัย HT (25%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 1 : 35 ปี คัดกรอง DM (20%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 2 : กลุ่มเสี่ยง/PreDM กลับมาเป็นปกติ (40%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 3 : 35 ปี คัดกรอง HT (15%)</th>
+          <th colspan="2" class="p-2 border-r border-emerald-700/80 bg-emerald-850">KPI 4 : BP สูง Dx.HT รายใหม่ (25%)</th>
           <th rowspan="2" class="p-2.5 min-w-[110px] text-right border-r border-emerald-700/80 bg-emerald-950/90 text-amber-300">รวมเงินจัดสรร (บาท)</th>
           <th rowspan="2" class="p-2.5 w-20 text-center">เลือกดู</th>
         </tr>
