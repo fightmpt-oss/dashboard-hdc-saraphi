@@ -551,3 +551,61 @@ tfoot .hdc-sticky-col-1,
 tfoot .hdc-sticky-col-2 {
   z-index: 25 !important;
 }
+
+/* ==========================================================================
+   Smartphone Responsive Table Sticky Columns (< 768px / max-width: 767px)
+   บนจอสมาร์ทโฟน: ตรึงเฉพาะคอลัมน์แรก (รหัสสถานบริการ / Column 1) เท่านั้น 
+   และปลดตรึงคอลัมน์ที่ 2 (ชื่อหน่วยบริการ) เพื่อให้เลื่อนดูข้อมูลได้เต็มหน้าจอ
+   ========================================================================== */
+@media (max-width: 767px) {
+  /* 1. ปลดตรึงคอลัมน์ที่ 2 ในตารางแบบ .hdc-sticky-col-2 */
+  .hdc-sticky-col-2 {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    z-index: 1 !important;
+  }
+
+  /* 2. ปลดตรึงคอลัมน์ที่ 2 หรือ 3 ในตารางที่ใช้ utility classes (เช่น PCC 2568, PCC 2569, NHSO) */
+  table th.left-16,
+  table td.left-16,
+  table th[class*="left-16"],
+  table td[class*="left-16"],
+  table th[class*="left-[55px]"],
+  table td[class*="left-[55px]"],
+  table th[class*="left-[76px]"],
+  table td[class*="left-[76px]"] {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    z-index: 1 !important;
+  }
+
+  /* 3. ตรึงเฉพาะคอลัมน์แรก (รหัสสถานบริการ / left-0 / hdc-sticky-col-1) พร้อมเงาแบ่งคอลัมน์ชัดเจน */
+  .hdc-sticky-col-1,
+  table th.left-0,
+  table td.left-0,
+  table th[class*="left-0"],
+  table td[class*="left-0"] {
+    position: sticky !important;
+    left: 0 !important;
+    box-shadow: 2.5px 0 5px -1px rgba(0, 0, 0, 0.16) !important;
+  }
+
+  /* 4. รักษาระดับ z-index ส่วนหัวตารางคอลัมน์แรกให้อยู่เหนือเนื้อหาที่เลื่อนผ่าน */
+  thead .hdc-sticky-col-1,
+  table thead th.left-0,
+  table thead th[class*="left-0"] {
+    z-index: 35 !important;
+  }
+
+  /* 5. ปลดตรึงแถวสรุปรวมท้ายตาราง (tfoot) ที่มี colspan เพื่อไม่ให้บังเนื้อหาบนจอมือถือ */
+  tfoot [colspan],
+  tfoot .hdc-sticky-col-1[colspan] {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    z-index: 1 !important;
+  }
+}
+
