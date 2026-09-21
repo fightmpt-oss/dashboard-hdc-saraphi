@@ -128,8 +128,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentHerb32Month = 'all';
   let currentHerb32Unit = 'all';
   let currentHerb32Item = 'all';
-  let herb32ChartInstance = null;
-  let herb32HerbChartInstance = null;
+  let herb32UnitCountChartInstance = null;
+  let herb32UnitPayChartInstance = null;
+  let herb32HerbCountChartInstance = null;
+  let herb32HerbPayChartInstance = null;
 
   let currentErrorMonth = 'all';
   let currentErrorUnit = 'all';
@@ -830,22 +832,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       unit: 'ครั้ง',
       target: 0,
       num_label: 'จำนวนครั้งที่เบิก (ครั้ง)',
-      den_label: 'เงินชดเชยประมาณการ (บาท)',
+      den_label: 'เงินชดเชยจ่ายจริง (บาท)',
       herb32Data: herb32Monthly,
       years: {
         '2569': {
           rate: herb32Monthly['2569']?.districtTotalCount || dt.sheet6_herb32_count || 4836,
           num: herb32Monthly['2569']?.districtTotalCount || dt.sheet6_herb32_count || 4836,
-          den: herb32Monthly['2569']?.districtTotalBath || dt.sheet6_herb32_bath || 265980,
+          den: herb32Monthly['2569']?.districtTotalBath || dt.sheet6_herb32_bath || 312425,
           pass: true,
           units: unitsList.map(u => {
             const cnt = herb32Monthly['2569']?.units?.[u.hospcode]?.totalCount ?? (u.sheet6_herb32_count || 0);
+            const bath = herb32Monthly['2569']?.units?.[u.hospcode]?.totalBath ?? (u.sheet6_herb32_bath || (cnt * 55));
             return {
               hospcode: u.hospcode,
               name: u.name,
               subdistrict: u.subdistrict,
               num: cnt,
-              den: cnt * 55,
+              den: Math.round(bath),
               rate: cnt,
               pass: cnt > 0
             };
@@ -854,16 +857,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         '2568': {
           rate: herb32Monthly['2568']?.districtTotalCount || myS6['2568']?.district_total || 1595,
           num: herb32Monthly['2568']?.districtTotalCount || myS6['2568']?.district_total || 1595,
-          den: herb32Monthly['2568']?.districtTotalBath || (myS6['2568']?.district_total || 1595) * 55,
+          den: herb32Monthly['2568']?.districtTotalBath || 103445,
           pass: true,
           units: unitsList.map(u => {
             const cnt = herb32Monthly['2568']?.units?.[u.hospcode]?.totalCount ?? (myS6['2568']?.units?.[u.hospcode] || 0);
+            const bath = herb32Monthly['2568']?.units?.[u.hospcode]?.totalBath ?? (cnt * 55);
             return {
               hospcode: u.hospcode,
               name: u.name,
               subdistrict: u.subdistrict,
               num: cnt,
-              den: cnt * 55,
+              den: Math.round(bath),
               rate: cnt,
               pass: cnt > 0
             };
@@ -5986,52 +5990,89 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // 6. Active Herbs & Filtered Total
+    // 6. Active Herbs & Filtered Total / Compensation Pay
     let activeHerbsMap = {};
+    let activeHerbsPayMap = {};
+
     if (isSingleUnit) {
       if (isSingleMonth) {
         activeHerbsMap = uSlice?.monthlyHerbs?.[activeMonth] || {};
+        activeHerbsPayMap = uSlice?.monthlyHerbsPay?.[activeMonth] || {};
       } else {
         activeHerbsMap = uSlice?.herbs || {};
+        activeHerbsPayMap = uSlice?.herbsPay || {};
       }
     } else {
       if (isSingleMonth) {
         activeHerbsMap = yrData.months?.[activeMonth]?.items || yrData.months?.[activeMonth]?.herbs || {};
+        activeHerbsPayMap = yrData.months?.[activeMonth]?.herbsPay || {};
       } else {
         activeHerbsMap = districtHerbs;
+        activeHerbsPayMap = yrData.districtHerbsPay || {};
       }
     }
 
     let filteredTotal = 0;
+    let filteredBath = 0;
+
     if (activeItem !== 'all') {
       filteredTotal = activeHerbsMap[activeItem] || 0;
+      filteredBath = activeHerbsPayMap[activeItem] !== undefined ? activeHerbsPayMap[activeItem] : (filteredTotal * 55);
     } else {
-      filteredTotal = Object.values(activeHerbsMap).reduce((a, b) => a + b, 0);
+      if (isSingleUnit) {
+        if (isSingleMonth) {
+          filteredTotal = uSlice?.monthly?.[activeMonth]?.count ?? Object.values(activeHerbsMap).reduce((a, b) => a + b, 0);
+          filteredBath = uSlice?.monthly?.[activeMonth]?.pay ?? Object.values(activeHerbsPayMap).reduce((a, b) => a + b, 0);
+        } else {
+          filteredTotal = uSlice?.totalCount ?? Object.values(activeHerbsMap).reduce((a, b) => a + b, 0);
+          filteredBath = uSlice?.totalBath ?? Object.values(activeHerbsPayMap).reduce((a, b) => a + b, 0);
+        }
+      } else {
+        if (isSingleMonth) {
+          filteredTotal = yrData.months?.[activeMonth]?.districtCount ?? Object.values(activeHerbsMap).reduce((a, b) => a + b, 0);
+          filteredBath = yrData.months?.[activeMonth]?.districtBath ?? Object.values(activeHerbsPayMap).reduce((a, b) => a + b, 0);
+        } else {
+          filteredTotal = yrData.districtTotalCount ?? Object.values(activeHerbsMap).reduce((a, b) => a + b, 0);
+          filteredBath = yrData.districtTotalBath ?? Object.values(activeHerbsPayMap).reduce((a, b) => a + b, 0);
+        }
+      }
     }
-    const filteredBath = filteredTotal * 55;
 
     // 7. Render 4 Bento KPI Cards
     const cardsContainer = document.getElementById('herb32-kpi-cards');
     if (cardsContainer) {
       const sortedHerbs = Object.entries(activeHerbsMap).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]);
       const topHerb = sortedHerbs[0] || ['-', 0];
-      const topHerbPct = filteredTotal > 0 ? ((topHerb[1] / filteredTotal) * 100).toFixed(1) : '0.0';
+      const topHerbCount = activeItem !== 'all' ? filteredTotal : topHerb[1];
+      const topHerbPay = activeItem !== 'all' ? filteredBath : (activeHerbsPayMap[topHerb[0]] || (topHerb[1] * 55));
+      const topHerbPct = filteredTotal > 0 ? ((topHerbCount / filteredTotal) * 100).toFixed(1) : '0.0';
 
       const unitKeys = Object.keys(SARAPHI_UNITS_MAP).sort();
       const unitsPerformance = unitKeys.map(code => {
         let cnt = 0;
+        let pay = 0;
         if (activeItem !== 'all') {
-          if (isSingleMonth) cnt = unitsMap[code]?.monthlyHerbs?.[activeMonth]?.[activeItem] || 0;
-          else cnt = unitsMap[code]?.herbs?.[activeItem] || 0;
+          if (isSingleMonth) {
+            cnt = unitsMap[code]?.monthlyHerbs?.[activeMonth]?.[activeItem] || 0;
+            pay = unitsMap[code]?.monthlyHerbsPay?.[activeMonth]?.[activeItem] || (cnt * 55);
+          } else {
+            cnt = unitsMap[code]?.herbs?.[activeItem] || 0;
+            pay = unitsMap[code]?.herbsPay?.[activeItem] || (cnt * 55);
+          }
         } else {
-          if (isSingleMonth) cnt = yrData.months?.[activeMonth]?.units?.[code] || 0;
-          else cnt = unitsMap[code]?.totalCount || 0;
+          if (isSingleMonth) {
+            cnt = yrData.months?.[activeMonth]?.units?.[code] || 0;
+            pay = yrData.months?.[activeMonth]?.unitsPay?.[code] || (cnt * 55);
+          } else {
+            cnt = unitsMap[code]?.totalCount || 0;
+            pay = unitsMap[code]?.totalBath || (cnt * 55);
+          }
         }
-        return { code, name: SARAPHI_UNITS_MAP[code]?.name || code, short: SARAPHI_UNITS_MAP[code]?.short || code, count: cnt };
+        return { code, name: SARAPHI_UNITS_MAP[code]?.name || code, short: SARAPHI_UNITS_MAP[code]?.short || code, count: cnt, pay: pay };
       }).sort((a, b) => b.count - a.count);
 
       const activeUnitsCount = unitsPerformance.filter(u => u.count > 0).length;
-      const topUnit = unitsPerformance[0] || { short: '-', count: 0 };
+      const topUnit = isSingleUnit ? { short: SARAPHI_UNITS_MAP[activeUnit]?.short, count: filteredTotal, pay: filteredBath } : (unitsPerformance[0] || { short: '-', count: 0, pay: 0 });
       const topUnitPct = filteredTotal > 0 ? ((topUnit.count / filteredTotal) * 100).toFixed(1) : '0.0';
 
       cardsContainer.innerHTML = `
@@ -6040,7 +6081,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">
               <i class="fa-solid fa-prescription-bottle-medical text-lg"></i>
             </div>
-            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md num-font">55 บ./ครั้ง</span>
+            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md num-font">จ่ายตามจริง/Point</span>
           </div>
           <div class="mt-3">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ผลงานจำนวนครั้ง</span>
@@ -6049,8 +6090,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>ชดเชยบาท:</span>
-            <span class="font-bold text-emerald-700 num-font">~${Number(filteredBath).toLocaleString()} บาท</span>
+            <span>ชดเชยเงินจริง:</span>
+            <span class="font-bold text-emerald-700 num-font">${Number(Math.round(filteredBath)).toLocaleString()} บาท</span>
           </div>
         </div>
 
@@ -6063,13 +6104,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="mt-3">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ยาสมุนไพรยอดนิยม</span>
-            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${topHerb[0]}">
+            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${activeItem !== 'all' ? activeItem : topHerb[0]}">
               ${activeItem !== 'all' ? activeItem : topHerb[0]}
             </div>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span>ผลงาน:</span>
-            <span class="font-bold text-teal-700 num-font">${Number(activeItem !== 'all' ? filteredTotal : topHerb[1]).toLocaleString()} ครั้ง</span>
+            <span class="font-bold text-teal-700 num-font">${Number(topHerbCount).toLocaleString()} ครั้ง (${Number(Math.round(topHerbPay)).toLocaleString()} บ.)</span>
           </div>
         </div>
 
@@ -6082,13 +6123,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="mt-3">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">หน่วยบริการสูงสุด</span>
-            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${topUnit.name}">
-              ${isSingleUnit ? SARAPHI_UNITS_MAP[activeUnit]?.short : topUnit.short}
+            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${topUnit.short}">
+              ${topUnit.short}
             </div>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>ยอดสั่งใช้:</span>
-            <span class="font-bold text-amber-700 num-font">${Number(isSingleUnit ? filteredTotal : topUnit.count).toLocaleString()} ครั้ง</span>
+            <span>ยอดชดเชย:</span>
+            <span class="font-bold text-amber-700 num-font">${Number(Math.round(topUnit.pay)).toLocaleString()} บาท (${Number(topUnit.count).toLocaleString()} ครั้ง)</span>
           </div>
         </div>
 
@@ -6113,19 +6154,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
     }
 
-    // 8. Render Chart 1: Unit or Monthly Trend (Stacked Bar)
-    const canvas1 = document.getElementById('herb32-breakdown-chart');
-    const chartTitle1 = document.getElementById('herb32-chart-title');
-    const chartSubtitle1 = document.getElementById('herb32-chart-subtitle');
-    const chartBadge1 = document.getElementById('herb32-chart-badge');
+    // Destroy existing 4 chart instances
+    if (herb32UnitCountChartInstance) {
+      herb32UnitCountChartInstance.destroy();
+      herb32UnitCountChartInstance = null;
+    }
+    if (herb32UnitPayChartInstance) {
+      herb32UnitPayChartInstance.destroy();
+      herb32UnitPayChartInstance = null;
+    }
+    if (herb32HerbCountChartInstance) {
+      herb32HerbCountChartInstance.destroy();
+      herb32HerbCountChartInstance = null;
+    }
+    if (herb32HerbPayChartInstance) {
+      herb32HerbPayChartInstance.destroy();
+      herb32HerbPayChartInstance = null;
+    }
 
-    if (canvas1) {
-      if (herb32ChartInstance) {
-        herb32ChartInstance.destroy();
-        herb32ChartInstance = null;
-      }
-      const ctx1 = canvas1.getContext('2d');
-      let chartConfig1 = null;
+    // Update Section Headings
+    const s1Title = document.getElementById('herb32-section1-title');
+    const s1Sub = document.getElementById('herb32-section1-sub');
+    if (s1Title) s1Title.textContent = isSingleUnit ? `ประวัติรายเดือน: ${SARAPHI_UNITS_MAP[activeUnit]?.name || activeUnit}` : 'หน่วยบริการ (Service Units)';
+    if (s1Sub) s1Sub.textContent = isSingleUnit ? 'แนวโน้มจำนวนครั้งสั่งใช้ และยอดเงินจ่ายชดเชยรายเดือน' : 'เปรียบเทียบผลงานจำนวนครั้ง และยอดเงินจ่ายชดเชย 14 หน่วยบริการ';
+
+    const s2Title = document.getElementById('herb32-section2-title');
+    const s2Sub = document.getElementById('herb32-section2-sub');
+    if (s2Title) s2Title.textContent = 'จำแนกรายประเภทบริการ (Service Types)';
+    if (s2Sub) s2Sub.textContent = isSingleUnit ? `ยอดสั่งใช้และเงินชดเชยของ ${SARAPHI_UNITS_MAP[activeUnit]?.short || activeUnit}` : 'เปรียบเทียบผลงานและจำนวนเงินชดเชยรายชนิดยาสมุนไพร 32 รายการ';
+
+    // 8.1 SECTION 1 - CHART 1: Unit Count (จำนวนครั้ง)
+    const c1 = document.getElementById('herb32-unit-count-chart');
+    const c1Title = document.getElementById('herb32-unit-count-title');
+    const c1Subtitle = document.getElementById('herb32-unit-count-subtitle');
+    const c1Badge = document.getElementById('herb32-unit-count-badge');
+
+    if (c1) {
+      const ctx1 = c1.getContext('2d');
+      let config1 = null;
 
       if (!isSingleUnit) {
         const unitKeys = Object.keys(SARAPHI_UNITS_MAP).sort();
@@ -6141,99 +6207,68 @@ document.addEventListener('DOMContentLoaded', async () => {
           return { code, short: SARAPHI_UNITS_MAP[code]?.short || code, count: cnt };
         }).sort((a, b) => b.count - a.count);
 
-        if (chartTitle1) chartTitle1.textContent = isSingleMonth ? `ผลงานยาสมุนไพร 32 รายการ (${activeMonth})` : `ผลงานยาสมุนไพร 32 รายการ (ปีงบ ${yr})`;
-        if (chartSubtitle1) chartSubtitle1.textContent = activeItem !== 'all' ? `เปรียบเทียบผลงาน ${activeItem} รายหน่วยบริการ 14 แห่ง` : `เปรียบเทียบผลงานจำนวนครั้งรายหน่วยบริการ (จำแนกชนิดยา - แยกสีในแท่งเดียว)`;
-        if (chartBadge1) {
-          chartBadge1.textContent = `${isSingleMonth ? activeMonth : 'รวมทั้งปี'}: ${Number(filteredTotal).toLocaleString()} ครั้ง`;
-          chartBadge1.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+        if (c1Title) c1Title.textContent = 'กราฟแท่งแสดงจำนวนครั้ง';
+        if (c1Subtitle) c1Subtitle.textContent = activeItem !== 'all' ? `เปรียบเทียบ ${activeItem} (${isSingleMonth ? activeMonth : 'ปีงบ ' + yr})` : `จำแนกรายหน่วยบริการ (${isSingleMonth ? activeMonth : 'ปีงบ ' + yr})`;
+        if (c1Badge) {
+          c1Badge.textContent = `${isSingleMonth ? activeMonth : 'รวมทั้งปี'}: ${Number(filteredTotal).toLocaleString()} ครั้ง`;
+          c1Badge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
         }
 
-        if (activeItem === 'all') {
-          const allHerbsInDistrict = Object.keys(districtHerbs);
-          const datasets = allHerbsInDistrict.map((hName, hIdx) => {
-            const pal = HERB_PALETTE[hIdx % HERB_PALETTE.length];
-            return {
-              label: hName,
-              data: unitsList.map(u => {
-                if (isSingleMonth) return unitsMap[u.code]?.monthlyHerbs?.[activeMonth]?.[hName] || 0;
-                return unitsMap[u.code]?.herbs?.[hName] || 0;
-              }),
-              backgroundColor: pal.bg,
-              borderColor: pal.border,
+        config1 = {
+          type: 'bar',
+          data: {
+            labels: unitsList.map(u => u.short),
+            datasets: [{
+              label: 'จำนวนครั้ง',
+              data: unitsList.map(u => u.count),
+              backgroundColor: 'rgba(242, 142, 139, 0.85)',
+              borderColor: '#e15759',
               borderWidth: 1,
-              borderRadius: 3,
-              maxBarThickness: 22,
-              stack: 'units'
-            };
-          });
-
-          chartConfig1 = {
-            type: 'bar',
-            data: { labels: unitsList.map(u => u.short), datasets: datasets },
-            options: {
-              indexAxis: 'y',
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                x: { stacked: true, grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } },
-                y: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11, weight: '500' }, color: '#334155' } }
-              },
-              plugins: {
-                legend: { position: 'top', labels: { font: { family: 'Prompt', size: 10 }, usePointStyle: true, boxWidth: 6, padding: 8 } },
-                tooltip: {
-                  titleFont: { family: 'Prompt', size: 12 },
-                  bodyFont: { family: 'Prompt', size: 11 },
-                  callbacks: {
-                    label: (ctx) => ` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()} ครั้ง`,
-                    footer: (items) => ` รวมทุกชนิดยา: ${Number(items.reduce((a, b) => a + b.raw, 0)).toLocaleString()} ครั้ง`
+              borderRadius: 4,
+              maxBarThickness: 16,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (e, items) => {
+              if (items && items.length > 0) {
+                const idx = items[0].index;
+                const clickedCode = unitsList[idx]?.code;
+                if (clickedCode) window.switchHerb32Unit(clickedCode);
+              }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } },
+              y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10, weight: '500' }, color: '#334155' } }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                titleFont: { family: 'Prompt', size: 12 },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: (ctx) => {
+                    const u = unitsList[ctx.dataIndex];
+                    const pct = filteredTotal > 0 ? ((ctx.raw / filteredTotal) * 100).toFixed(1) : 0;
+                    return ` สั่งใช้: ${Number(ctx.raw).toLocaleString()} ครั้ง (${pct}%) (คลิกเพื่อเจาะลึก)`;
                   }
                 }
               }
             }
-          };
-        } else {
-          chartConfig1 = {
-            type: 'bar',
-            data: {
-              labels: unitsList.map(u => u.short),
-              datasets: [{
-                label: activeItem,
-                data: unitsList.map(u => u.count),
-                backgroundColor: '#059669',
-                borderColor: '#047857',
-                borderWidth: 1,
-                borderRadius: 4,
-                maxBarThickness: 22
-              }]
-            },
-            options: {
-              indexAxis: 'y',
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                x: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } },
-                y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11, weight: '500' }, color: '#334155' } }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  titleFont: { family: 'Prompt', size: 12 },
-                  bodyFont: { family: 'Prompt', size: 11 },
-                  callbacks: { label: (ctx) => ` ${activeItem}: ${Number(ctx.raw).toLocaleString()} ครั้ง` }
-                }
-              }
-            }
-          };
-        }
+          }
+        };
       } else {
+        // Single unit monthly breakdown
         const uInfo = SARAPHI_UNITS_MAP[activeUnit];
-        const byMonth = uSlice?.byMonth || {};
-
-        if (chartTitle1) chartTitle1.textContent = `ประวัติรายเดือน: ${uInfo?.name || activeUnit} (ปีงบ ${yr})`;
-        if (chartSubtitle1) chartSubtitle1.textContent = activeItem !== 'all' ? `แนวโน้มการสั่งใช้ ${activeItem} รายเดือน` : `แนวโน้มการสั่งใช้ยาสมุนไพร 32 รายการ (จำแนกชนิดยา - แยกสีในแท่งเดียว)`;
-        if (chartBadge1) {
-          chartBadge1.textContent = `${uInfo?.short}: ${Number(filteredTotal).toLocaleString()} ครั้ง`;
-          chartBadge1.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+        if (c1Title) c1Title.textContent = 'กราฟแท่งแสดงจำนวนครั้ง';
+        if (c1Subtitle) c1Subtitle.textContent = activeItem !== 'all' ? `แนวโน้มการสั่งใช้ ${activeItem} รายเดือน` : `แนวโน้มสั่งใช้ยาสมุนไพร 32 รายการ (จำแนกชนิดยา - แยกสี)`;
+        if (c1Badge) {
+          c1Badge.textContent = `${uInfo?.short}: ${Number(filteredTotal).toLocaleString()} ครั้ง`;
+          c1Badge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
         }
 
         const unitHerbsList = Object.keys(uSlice?.herbs || {});
@@ -6247,29 +6282,28 @@ document.addEventListener('DOMContentLoaded', async () => {
               borderColor: pal.border,
               borderWidth: 1,
               borderRadius: 3,
-              maxBarThickness: 28,
+              maxBarThickness: 20,
               stack: 'month'
             };
           });
 
-          chartConfig1 = {
+          config1 = {
             type: 'bar',
             data: { labels: monthList, datasets: datasets },
             options: {
               responsive: true,
               maintainAspectRatio: false,
-              maxBarThickness: 28,
-              barPercentage: 0.6,
-              categoryPercentage: 0.7,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8,
               scales: {
-                x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10 } } },
+                x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 9 }, maxRotation: 45 } },
                 y: { stacked: true, grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } }
               },
               plugins: {
-                legend: { position: 'top', labels: { font: { family: 'Prompt', size: 10 }, usePointStyle: true, boxWidth: 6, padding: 8 } },
+                legend: { position: 'top', labels: { font: { family: 'Prompt', size: 9 }, usePointStyle: true, boxWidth: 6, padding: 6 } },
                 tooltip: {
-                  titleFont: { family: 'Prompt', size: 12 },
-                  bodyFont: { family: 'Prompt', size: 11 },
+                  titleFont: { family: 'Prompt', size: 11 },
+                  bodyFont: { family: 'Prompt', size: 10 },
                   callbacks: {
                     label: (ctx) => ` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()} ครั้ง`,
                     footer: (items) => {
@@ -6286,36 +6320,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
           const cnts = monthList.map(m => {
             if (activeItem !== 'all') return uSlice?.monthlyHerbs?.[m]?.[activeItem] || 0;
-            return byMonth[m] || 0;
+            return uSlice?.monthly?.[m]?.count ?? (uSlice?.byMonth?.[m] || 0);
           });
-          chartConfig1 = {
+          config1 = {
             type: 'bar',
             data: {
               labels: monthList,
               datasets: [{
                 label: activeItem !== 'all' ? activeItem : 'ผลงานจำนวนครั้ง',
                 data: cnts,
-                backgroundColor: '#059669',
-                borderColor: '#047857',
+                backgroundColor: 'rgba(242, 142, 139, 0.85)',
+                borderColor: '#e15759',
                 borderWidth: 1,
                 borderRadius: 4,
-                maxBarThickness: 28,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7
+                maxBarThickness: 20,
+                barPercentage: 0.7,
+                categoryPercentage: 0.8
               }]
             },
             options: {
               responsive: true,
               maintainAspectRatio: false,
               scales: {
-                x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10 } } },
+                x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 9 }, maxRotation: 45 } },
                 y: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } }
               },
               plugins: {
                 legend: { display: false },
                 tooltip: {
-                  titleFont: { family: 'Prompt', size: 12 },
-                  bodyFont: { family: 'Prompt', size: 11 },
+                  titleFont: { family: 'Prompt', size: 11 },
+                  bodyFont: { family: 'Prompt', size: 10 },
                   callbacks: { label: (ctx) => ` ${monthList[ctx.dataIndex]}: ${Number(ctx.raw).toLocaleString()} ครั้ง` }
                 }
               }
@@ -6324,50 +6358,188 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
 
-      herb32ChartInstance = new Chart(ctx1, chartConfig1);
+      herb32UnitCountChartInstance = new Chart(ctx1, config1);
     }
 
-    // 9. Render Chart 2: Herb Breakdown Bar Chart
-    const canvas2 = document.getElementById('herb32-herb-chart');
-    const chartTitle2 = document.getElementById('herb32-herb-chart-title');
-    const chartSubtitle2 = document.getElementById('herb32-herb-chart-subtitle');
-    const chartBadge2 = document.getElementById('herb32-herb-chart-badge');
+    // 8.2 SECTION 1 - CHART 2: Unit Pay (จำนวนเงินจ่ายชดเชย)
+    const c2 = document.getElementById('herb32-unit-pay-chart');
+    const c2Title = document.getElementById('herb32-unit-pay-title');
+    const c2Subtitle = document.getElementById('herb32-unit-pay-subtitle');
+    const c2Badge = document.getElementById('herb32-unit-pay-badge');
 
-    if (canvas2) {
-      if (herb32HerbChartInstance) {
-        herb32HerbChartInstance.destroy();
-        herb32HerbChartInstance = null;
+    if (c2) {
+      const ctx2 = c2.getContext('2d');
+      let config2 = null;
+
+      if (!isSingleUnit) {
+        const unitKeys = Object.keys(SARAPHI_UNITS_MAP).sort();
+        const unitsList = unitKeys.map(code => {
+          let pay = 0;
+          if (activeItem !== 'all') {
+            if (isSingleMonth) pay = unitsMap[code]?.monthlyHerbsPay?.[activeMonth]?.[activeItem] || ((unitsMap[code]?.monthlyHerbs?.[activeMonth]?.[activeItem] || 0) * 55);
+            else pay = unitsMap[code]?.herbsPay?.[activeItem] || ((unitsMap[code]?.herbs?.[activeItem] || 0) * 55);
+          } else {
+            if (isSingleMonth) pay = yrData.months?.[activeMonth]?.unitsPay?.[code] || ((yrData.months?.[activeMonth]?.units?.[code] || 0) * 55);
+            else pay = unitsMap[code]?.totalBath || ((unitsMap[code]?.totalCount || 0) * 55);
+          }
+          return { code, short: SARAPHI_UNITS_MAP[code]?.short || code, pay: Math.round(pay) };
+        }).sort((a, b) => b.pay - a.pay);
+
+        if (c2Title) c2Title.textContent = 'กราฟแท่งแสดงจำนวนเงินจ่ายชดเชย';
+        if (c2Subtitle) c2Subtitle.textContent = activeItem !== 'all' ? `เงินชดเชย ${activeItem} (${isSingleMonth ? activeMonth : 'ปีงบ ' + yr})` : `ยอดเงินจ่ายชดเชยจริงที่ สปสช. อนุมัติ (${isSingleMonth ? activeMonth : 'ปีงบ ' + yr})`;
+        if (c2Badge) {
+          c2Badge.textContent = `${isSingleMonth ? activeMonth : 'รวมทั้งปี'}: ${Number(Math.round(filteredBath)).toLocaleString()} บาท`;
+          c2Badge.className = 'text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+        }
+
+        config2 = {
+          type: 'bar',
+          data: {
+            labels: unitsList.map(u => u.short),
+            datasets: [{
+              label: 'จำนวนเงินจ่ายชดเชย (บาท)',
+              data: unitsList.map(u => u.pay),
+              backgroundColor: 'rgba(242, 142, 139, 0.85)',
+              borderColor: '#e15759',
+              borderWidth: 1,
+              borderRadius: 4,
+              maxBarThickness: 16,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (e, items) => {
+              if (items && items.length > 0) {
+                const idx = items[0].index;
+                const clickedCode = unitsList[idx]?.code;
+                if (clickedCode) window.switchHerb32Unit(clickedCode);
+              }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() + ' บ.' } },
+              y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10, weight: '500' }, color: '#334155' } }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                titleFont: { family: 'Prompt', size: 12 },
+                bodyFont: { family: 'Prompt', size: 11 },
+                callbacks: {
+                  label: (ctx) => {
+                    const u = unitsList[ctx.dataIndex];
+                    const pct = filteredBath > 0 ? ((ctx.raw / filteredBath) * 100).toFixed(1) : 0;
+                    return ` ชดเชยจริง: ${Number(ctx.raw).toLocaleString()} บาท (${pct}%) (คลิกเพื่อเจาะลึก)`;
+                  }
+                }
+              }
+            }
+          }
+        };
+      } else {
+        // Single unit monthly pay
+        const uInfo = SARAPHI_UNITS_MAP[activeUnit];
+        if (c2Title) c2Title.textContent = 'กราฟแท่งแสดงจำนวนเงินจ่ายชดเชย';
+        if (c2Subtitle) c2Subtitle.textContent = `ยอดเงินชดเชยจริงรายเดือนของ ${uInfo?.name || activeUnit} (บาท)`;
+        if (c2Badge) {
+          c2Badge.textContent = `${uInfo?.short}: ${Number(Math.round(filteredBath)).toLocaleString()} บาท`;
+          c2Badge.className = 'text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+        }
+
+        const monthlyPays = monthList.map(m => {
+          if (activeItem !== 'all') {
+            return Math.round(uSlice?.monthlyHerbsPay?.[m]?.[activeItem] || ((uSlice?.monthlyHerbs?.[m]?.[activeItem] || 0) * 55));
+          }
+          return Math.round(uSlice?.monthly?.[m]?.pay ?? ((uSlice?.monthly?.[m]?.count || 0) * 55));
+        });
+
+        config2 = {
+          type: 'bar',
+          data: {
+            labels: monthList,
+            datasets: [{
+              label: 'เงินชดเชย (บาท)',
+              data: monthlyPays,
+              backgroundColor: 'rgba(13, 148, 136, 0.85)',
+              borderColor: '#0f766e',
+              borderWidth: 1,
+              borderRadius: 4,
+              maxBarThickness: 20,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 9 }, maxRotation: 45 } },
+              y: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() + ' บ.' } }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                titleFont: { family: 'Prompt', size: 11 },
+                bodyFont: { family: 'Prompt', size: 10 },
+                callbacks: { label: (ctx) => ` ${monthList[ctx.dataIndex]}: ${Number(ctx.raw).toLocaleString()} บาท` }
+              }
+            }
+          }
+        };
       }
-      const ctx2 = canvas2.getContext('2d');
+
+      herb32UnitPayChartInstance = new Chart(ctx2, config2);
+    }
+
+    // 8.3 SECTION 2 - CHART 3: Herb Count (จำแนกรายประเภทบริการ - ครั้ง)
+    const c3 = document.getElementById('herb32-herb-count-chart');
+    const c3Title = document.getElementById('herb32-herb-count-title');
+    const c3Subtitle = document.getElementById('herb32-herb-count-subtitle');
+    const c3Badge = document.getElementById('herb32-herb-count-badge');
+
+    if (c3) {
+      const ctx3 = c3.getContext('2d');
       const herbEntries = Object.entries(activeHerbsMap)
         .filter(e => activeItem === 'all' || e[0] === activeItem)
         .sort((a, b) => b[1] - a[1]);
 
-      if (chartTitle2) chartTitle2.textContent = `จำแนกรายประเภทบริการ / ชนิดยา (${yr})`;
-      if (chartSubtitle2) chartSubtitle2.textContent = `${isSingleUnit ? SARAPHI_UNITS_MAP[activeUnit]?.short : 'รวมทั้งอำเภอ'} • ${isSingleMonth ? activeMonth : 'ทั้งปีงบ ' + yr}`;
-      if (chartBadge2) chartBadge2.textContent = `${herbEntries.length} ชนิดยา`;
+      if (c3Title) c3Title.textContent = 'กราฟแท่งแสดงจำนวนครั้ง';
+      if (c3Subtitle) c3Subtitle.textContent = `ยอดสั่งใช้จำแนกตามชนิดยา (${isSingleUnit ? SARAPHI_UNITS_MAP[activeUnit]?.short : 'รวมทั้งอำเภอ'})`;
+      if (c3Badge) c3Badge.textContent = `${herbEntries.length} ชนิดยา`;
 
-      const chartConfig2 = {
+      const config3 = {
         type: 'bar',
         data: {
           labels: herbEntries.map(e => e[0]),
           datasets: [{
             label: 'จำนวนครั้ง',
             data: herbEntries.map(e => e[1]),
-            backgroundColor: herbEntries.map((_, i) => HERB_PALETTE[i % HERB_PALETTE.length].bg),
-            borderColor: herbEntries.map((_, i) => HERB_PALETTE[i % HERB_PALETTE.length].border),
+            backgroundColor: 'rgba(242, 142, 43, 0.85)',
+            borderColor: '#e67e22',
             borderWidth: 1,
             borderRadius: 4,
-            maxBarThickness: 22
+            maxBarThickness: 15,
+            barPercentage: 0.7,
+            categoryPercentage: 0.8
           }]
         },
         options: {
           indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, items) => {
+            if (items && items.length > 0) {
+              const idx = items[0].index;
+              const clickedHerb = herbEntries[idx]?.[0];
+              if (clickedHerb) window.switchHerb32Item(clickedHerb === activeItem ? 'all' : clickedHerb);
+            }
+          },
           scales: {
             x: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() } },
-            y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11, weight: '500' }, color: '#334155' } }
+            y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10, weight: '500' }, color: '#334155' } }
           },
           plugins: {
             legend: { display: false },
@@ -6378,7 +6550,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 label: (ctx) => {
                   const val = ctx.raw || 0;
                   const pct = filteredTotal > 0 ? ((val / filteredTotal) * 100).toFixed(1) : 0;
-                  return ` สั่งใช้: ${Number(val).toLocaleString()} ครั้ง (~${Number(val * 55).toLocaleString()} บาท, ${pct}%)`;
+                  return ` สั่งใช้: ${Number(val).toLocaleString()} ครั้ง (${pct}%) (คลิกเพื่อกรองชนิดยา)`;
                 }
               }
             }
@@ -6386,10 +6558,78 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       };
 
-      herb32HerbChartInstance = new Chart(ctx2, chartConfig2);
+      herb32HerbCountChartInstance = new Chart(ctx3, config3);
     }
 
-    // 10. Render Table
+    // 8.4 SECTION 2 - CHART 4: Herb Pay (จำแนกรายประเภทบริการ - บาท)
+    const c4 = document.getElementById('herb32-herb-pay-chart');
+    const c4Title = document.getElementById('herb32-herb-pay-title');
+    const c4Subtitle = document.getElementById('herb32-herb-pay-subtitle');
+    const c4Badge = document.getElementById('herb32-herb-pay-badge');
+
+    if (c4) {
+      const ctx4 = c4.getContext('2d');
+      const herbPayEntries = Object.entries(activeHerbsPayMap)
+        .filter(e => activeItem === 'all' || e[0] === activeItem)
+        .map(e => [e[0], Math.round(e[1])])
+        .sort((a, b) => b[1] - a[1]);
+
+      if (c4Title) c4Title.textContent = 'กราฟแท่งแสดงจำนวนเงินจ่ายชดเชย';
+      if (c4Subtitle) c4Subtitle.textContent = `ยอดเงินชดเชยจำแนกตามชนิดยา (${isSingleUnit ? SARAPHI_UNITS_MAP[activeUnit]?.short : 'รวมทั้งอำเภอ'})`;
+      if (c4Badge) c4Badge.textContent = `ชดเชยรวม ${Number(Math.round(filteredBath)).toLocaleString()} บาท`;
+
+      const config4 = {
+        type: 'bar',
+        data: {
+          labels: herbPayEntries.map(e => e[0]),
+          datasets: [{
+            label: 'จำนวนเงินจ่ายชดเชย (บาท)',
+            data: herbPayEntries.map(e => e[1]),
+            backgroundColor: 'rgba(242, 142, 43, 0.85)',
+            borderColor: '#e67e22',
+            borderWidth: 1,
+            borderRadius: 4,
+            maxBarThickness: 15,
+            barPercentage: 0.7,
+            categoryPercentage: 0.8
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          onClick: (e, items) => {
+            if (items && items.length > 0) {
+              const idx = items[0].index;
+              const clickedHerb = herbPayEntries[idx]?.[0];
+              if (clickedHerb) window.switchHerb32Item(clickedHerb === activeItem ? 'all' : clickedHerb);
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { font: { family: 'Prompt', size: 10 }, callback: v => Number(v).toLocaleString() + ' บ.' } },
+            y: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 10, weight: '500' }, color: '#334155' } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              titleFont: { family: 'Prompt', size: 12 },
+              bodyFont: { family: 'Prompt', size: 11 },
+              callbacks: {
+                label: (ctx) => {
+                  const val = ctx.raw || 0;
+                  const pct = filteredBath > 0 ? ((val / filteredBath) * 100).toFixed(1) : 0;
+                  return ` ชดเชยจริง: ${Number(val).toLocaleString()} บาท (${pct}%) (คลิกเพื่อกรองชนิดยา)`;
+                }
+              }
+            }
+          }
+        }
+      };
+
+      herb32HerbPayChartInstance = new Chart(ctx4, config4);
+    }
+
+    // 9. Render Table
     const thead = document.getElementById('herb32-matrix-thead');
     const tbody = document.getElementById('herb32-matrix-tbody');
     const tfoot = document.getElementById('herb32-matrix-tfoot');
@@ -6400,7 +6640,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!isSingleUnit) {
       if (tableTitle) tableTitle.textContent = isSingleMonth ? `ตารางผลงานยาสมุนไพร 32 รายการ ประจำเดือน: ${activeMonth}` : `ตารางผลงานยาสมุนไพร 32 รายการ รายหน่วยบริการ (ปีงบ ${yr})`;
       if (tableSubtitle) tableSubtitle.textContent = activeItem !== 'all' ? `แสดงผลงานเฉพาะยา ${activeItem} (คลิกที่แถวเพื่อเจาะลึก)` : `คลิกที่แถวหน่วยบริการเพื่อดูประวัติการเคลมและชนิดยาที่จ่ายรายเดือน`;
-      if (tableBadge) tableBadge.textContent = `${isSingleMonth ? activeMonth : 'ทั้งปีงบ ' + yr} - ${Number(filteredTotal).toLocaleString()} ครั้ง`;
+      if (tableBadge) tableBadge.textContent = `${isSingleMonth ? activeMonth : 'ทั้งปีงบ ' + yr} - ${Number(filteredTotal).toLocaleString()} ครั้ง (${Number(Math.round(filteredBath)).toLocaleString()} บาท)`;
 
       if (thead) {
         thead.innerHTML = `
@@ -6410,7 +6650,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th class="py-3 px-3 min-w-[180px] text-slate-800 font-bold">หน่วยบริการ</th>
             <th class="py-3 px-3 w-24 text-slate-600 font-bold">ตำบล</th>
             <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60">จำนวนครั้ง</th>
-            <th class="py-3 px-4 text-right text-teal-900 font-bold">ชดเชยบาท (~55บ.)</th>
+            <th class="py-3 px-4 text-right text-teal-900 font-bold">ชดเชยจริง (บาท)</th>
             <th class="py-3 px-3 text-right text-slate-600 font-semibold w-20">สัดส่วน %</th>
             <th class="py-3 px-3 text-center text-slate-500 font-semibold w-28">ชนิดยาหลัก</th>
           </tr>
@@ -6420,19 +6660,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       const unitKeys = Object.keys(SARAPHI_UNITS_MAP).sort();
       const unitsList = unitKeys.map(code => {
         let cnt = 0;
+        let pay = 0;
         if (activeItem !== 'all') {
-          if (isSingleMonth) cnt = unitsMap[code]?.monthlyHerbs?.[activeMonth]?.[activeItem] || 0;
-          else cnt = unitsMap[code]?.herbs?.[activeItem] || 0;
+          if (isSingleMonth) {
+            cnt = unitsMap[code]?.monthlyHerbs?.[activeMonth]?.[activeItem] || 0;
+            pay = unitsMap[code]?.monthlyHerbsPay?.[activeMonth]?.[activeItem] || (cnt * 55);
+          } else {
+            cnt = unitsMap[code]?.herbs?.[activeItem] || 0;
+            pay = unitsMap[code]?.herbsPay?.[activeItem] || (cnt * 55);
+          }
         } else {
-          if (isSingleMonth) cnt = yrData.months?.[activeMonth]?.units?.[code] || 0;
-          else cnt = unitsMap[code]?.totalCount || 0;
+          if (isSingleMonth) {
+            cnt = yrData.months?.[activeMonth]?.units?.[code] || 0;
+            pay = yrData.months?.[activeMonth]?.unitsPay?.[code] || (cnt * 55);
+          } else {
+            cnt = unitsMap[code]?.totalCount || 0;
+            pay = unitsMap[code]?.totalBath || (cnt * 55);
+          }
         }
         return {
           hospcode: code,
           name: SARAPHI_UNITS_MAP[code]?.name || code,
           subdistrict: SARAPHI_UNITS_MAP[code]?.subdistrict || '-',
           count: cnt,
-          bath: cnt * 55,
+          bath: Math.round(pay),
           herbs: unitsMap[code]?.herbs || {}
         };
       }).sort((a, b) => b.count - a.count);
@@ -6461,7 +6712,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${Number(u.count).toLocaleString()}
             </td>
             <td class="py-2.5 px-4 text-right num-font font-bold text-teal-900">
-              ~${Number(u.bath).toLocaleString()}
+              ${Number(u.bath).toLocaleString()} บาท
             </td>
             <td class="py-2.5 px-3 text-right num-font font-semibold text-slate-600">${pct}%</td>
             <td class="py-2.5 px-3 text-center">
@@ -6482,7 +6733,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${Number(filteredTotal).toLocaleString()} ครั้ง
             </td>
             <td class="py-3 px-4 text-right num-font font-black text-teal-950 text-sm bg-teal-100/70">
-              ~${Number(filteredBath).toLocaleString()} บาท
+              ${Number(Math.round(filteredBath)).toLocaleString()} บาท
             </td>
             <td class="py-3 px-3 text-right num-font font-black text-emerald-900">100.0%</td>
             <td class="py-3 px-3 text-center num-font font-bold text-emerald-800">14 หน่วย</td>
@@ -6492,20 +6743,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       // Single Unit Monthly Breakdown View with Herbs Details
       const uInfo = SARAPHI_UNITS_MAP[activeUnit];
-      const byMonth = uSlice?.byMonth || {};
 
       if (tableTitle) tableTitle.textContent = `ประวัติผลงานรายเดือน: ${uInfo?.name || activeUnit}`;
       if (tableSubtitle) {
         tableSubtitle.innerHTML = `
           <div class="flex items-center gap-2 flex-wrap mt-0.5">
-            <span>ผลงานสะสมตลอดปีงบประมาณ ${yr} รวม <strong>${Number(filteredTotal).toLocaleString()} ครั้ง (~${Number(filteredBath).toLocaleString()} บาท)</strong></span>
+            <span>ผลงานสะสมตลอดปีงบประมาณ ${yr} รวม <strong>${Number(filteredTotal).toLocaleString()} ครั้ง (${Number(Math.round(filteredBath)).toLocaleString()} บาท)</strong></span>
             <button type="button" onclick="window.switchHerb32Unit('all')" class="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-white border border-emerald-300 px-2 py-0.5 rounded-lg shadow-2xs flex items-center gap-1">
               <i class="fa-solid fa-arrow-left text-[10px]"></i> กลับไปดูทุกหน่วยบริการ
             </button>
           </div>
         `;
       }
-      if (tableBadge) tableBadge.textContent = `${uInfo?.short}: ${Number(filteredTotal).toLocaleString()} ครั้ง`;
+      if (tableBadge) tableBadge.textContent = `${uInfo?.short}: ${Number(filteredTotal).toLocaleString()} ครั้ง (${Number(Math.round(filteredBath)).toLocaleString()} บาท)`;
 
       if (thead) {
         thead.innerHTML = `
@@ -6513,7 +6763,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold sticky left-0 bg-slate-50 z-10 sm:static">#</th>
             <th class="py-3 px-4 text-slate-800 font-bold min-w-[160px]">ประจำเดือน</th>
             <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60 w-32">จำนวนครั้ง</th>
-            <th class="py-3 px-4 text-right text-teal-900 font-bold w-32">ชดเชย (~55บ.)</th>
+            <th class="py-3 px-4 text-right text-teal-900 font-bold w-32">ชดเชยจริง (บาท)</th>
             <th class="py-3 px-3 text-right text-slate-600 font-semibold w-24">สัดส่วน %</th>
             <th class="py-3 px-4 text-left text-slate-700 font-bold min-w-[220px]">ชนิดยาสมุนไพรที่จ่ายในเดือน</th>
           </tr>
@@ -6525,8 +6775,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalYear = filteredTotal > 0 ? filteredTotal : 1;
         monthList.forEach((m, idx) => {
           let cnt = 0;
-          if (activeItem !== 'all') cnt = uSlice?.monthlyHerbs?.[m]?.[activeItem] || 0;
-          else cnt = byMonth[m] || 0;
+          let pay = 0;
+          if (activeItem !== 'all') {
+            cnt = uSlice?.monthlyHerbs?.[m]?.[activeItem] || 0;
+            pay = uSlice?.monthlyHerbsPay?.[m]?.[activeItem] || (cnt * 55);
+          } else {
+            cnt = uSlice?.monthly?.[m]?.count ?? (uSlice?.byMonth?.[m] || 0);
+            pay = uSlice?.monthly?.[m]?.pay ?? (cnt * 55);
+          }
 
           const isCurrentM = (activeMonth === m);
           const pct = totalYear > 0 ? ((cnt / totalYear) * 100).toFixed(1) : '0.0';
@@ -6553,7 +6809,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${Number(cnt).toLocaleString()}
             </td>
             <td class="py-2.5 px-4 text-right num-font font-bold text-teal-900">
-              ~${Number(cnt * 55).toLocaleString()} บ.
+              ${Number(Math.round(pay)).toLocaleString()} บาท
             </td>
             <td class="py-2.5 px-3 text-right num-font font-semibold text-slate-600">${pct}%</td>
             <td class="py-2.5 px-4 text-left flex flex-wrap gap-1">
@@ -6574,7 +6830,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${Number(filteredTotal).toLocaleString()} ครั้ง
             </td>
             <td class="py-3 px-4 text-right num-font font-black text-teal-950 text-sm bg-teal-100/70">
-              ~${Number(filteredBath).toLocaleString()} บาท
+              ${Number(Math.round(filteredBath)).toLocaleString()} บาท
             </td>
             <td class="py-3 px-3 text-right num-font font-black text-emerald-900">100.0%</td>
             <td class="py-3 px-4 text-left font-bold text-emerald-800">
@@ -6583,6 +6839,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </tr>
         `;
       }
+    }
+    if (window.lucide) {
+      window.lucide.createIcons();
     }
   }
 

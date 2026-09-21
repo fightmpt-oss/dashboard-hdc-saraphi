@@ -3156,47 +3156,112 @@
           <!-- Dynamically populated -->
         </div>
 
-        <!-- Charts Grid (2 Cards: Monthly/Unit Stacked Bar Chart & Herb Breakdown Chart) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Chart 1: Unit or Monthly Trend (Stacked by Herb) -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-              <div>
-                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
-                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                  </span>
-                  <span id="herb32-chart-title">ผลงานยาสมุนไพร 32 รายการ</span>
-                </h4>
-                <p class="text-xs text-slate-500 mt-0.5" id="herb32-chart-subtitle">แสดงผลงานจำแนกตามชนิดยา (Stacked Bar)</p>
+        <!-- SECTION 1: หน่วยบริการ (Service Units / ประวัติรายเดือน) -->
+        <div class="space-y-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1">
+            <h3 class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-black">1</span>
+              <span id="herb32-section1-title">หน่วยบริการ (Service Units)</span>
+            </h3>
+            <span class="text-[11px] text-slate-400 font-medium" id="herb32-section1-sub">เปรียบเทียบผลงานจำนวนครั้ง และยอดเงินจ่ายชดเชย</span>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Chart 1: Unit Count (จำนวนครั้ง) -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                      <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                    </span>
+                    <span id="herb32-unit-count-title">กราฟแท่งแสดงจำนวนครั้ง</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5" id="herb32-unit-count-subtitle">จำแนกรายหน่วยบริการ (ครั้ง)</p>
+                </div>
+                <span id="herb32-unit-count-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                  -
+                </span>
               </div>
-              <span id="herb32-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
-                -
-              </span>
+              <div class="relative w-full overflow-hidden" style="min-height: 310px; height: 320px;">
+                <canvas id="herb32-unit-count-chart" class="w-full h-full"></canvas>
+              </div>
             </div>
-            <div class="relative w-full overflow-hidden" style="height: 320px;">
-              <canvas id="herb32-breakdown-chart" class="w-full h-full"></canvas>
+
+            <!-- Chart 2: Unit Pay (จำนวนเงินจ่ายชดเชย) -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
+                      <i data-lucide="coins" class="w-4 h-4"></i>
+                    </span>
+                    <span id="herb32-unit-pay-title">กราฟแท่งแสดงจำนวนเงินจ่ายชดเชย</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5" id="herb32-unit-pay-subtitle">ยอดเงินจ่ายชดเชยจริงที่ สปสช. อนุมัติ (บาท)</p>
+                </div>
+                <span id="herb32-unit-pay-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                  -
+                </span>
+              </div>
+              <div class="relative w-full overflow-hidden" style="min-height: 310px; height: 320px;">
+                <canvas id="herb32-unit-pay-chart" class="w-full h-full"></canvas>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Chart 2: Herb Breakdown (จำแนกตามชนิดยาสมุนไพร แบบ Medata) -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-              <div>
-                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
-                    <i data-lucide="leaf" class="w-4 h-4"></i>
-                  </span>
-                  <span id="herb32-herb-chart-title">จำแนกตามชนิดยาสมุนไพร</span>
-                </h4>
-                <p class="text-xs text-slate-500 mt-0.5" id="herb32-herb-chart-subtitle">ยอดสั่งใช้ยาสมุนไพรแต่ละชนิด (ตามเงื่อนไขตัวกรอง)</p>
+        <!-- SECTION 2: จำแนกรายประเภทบริการ (Service Types / Herb Categories) -->
+        <div class="space-y-2 pt-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1">
+            <h3 class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-black">2</span>
+              <span id="herb32-section2-title">จำแนกรายประเภทบริการ (Service Types)</span>
+            </h3>
+            <span class="text-[11px] text-slate-400 font-medium" id="herb32-section2-sub">เปรียบเทียบผลงานและจำนวนเงินชดเชยรายชนิดยาสมุนไพร 32 รายการ</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Chart 3: Herb Count (จำนวนครั้ง) -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                      <i data-lucide="leaf" class="w-4 h-4"></i>
+                    </span>
+                    <span id="herb32-herb-count-title">กราฟแท่งแสดงจำนวนครั้ง</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5" id="herb32-herb-count-subtitle">ยอดสั่งใช้จำแนกตามชนิดยาสมุนไพร (ครั้ง)</p>
+                </div>
+                <span id="herb32-herb-count-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                  -
+                </span>
               </div>
-              <span id="herb32-herb-chart-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
-                จำแนกตามชนิดยา
-              </span>
+              <div class="relative w-full overflow-hidden" style="min-height: 310px; height: 320px;">
+                <canvas id="herb32-herb-count-chart" class="w-full h-full"></canvas>
+              </div>
             </div>
-            <div class="relative w-full overflow-hidden" style="height: 320px;">
-              <canvas id="herb32-herb-chart" class="w-full h-full"></canvas>
+
+            <!-- Chart 4: Herb Pay (จำนวนเงินจ่ายชดเชย) -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
+                      <i data-lucide="wallet" class="w-4 h-4"></i>
+                    </span>
+                    <span id="herb32-herb-pay-title">กราฟแท่งแสดงจำนวนเงินจ่ายชดเชย</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5" id="herb32-herb-pay-subtitle">ยอดเงินจ่ายชดเชยจำแนกตามชนิดยาสมุนไพร (บาท)</p>
+                </div>
+                <span id="herb32-herb-pay-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                  -
+                </span>
+              </div>
+              <div class="relative w-full overflow-hidden" style="min-height: 310px; height: 320px;">
+                <canvas id="herb32-herb-pay-chart" class="w-full h-full"></canvas>
+              </div>
             </div>
           </div>
         </div>
@@ -3226,9 +3291,9 @@
                   <th class="py-3 px-3 min-w-[200px] text-slate-800 font-bold">หน่วยบริการ</th>
                   <th class="py-3 px-3 w-28 text-slate-600 font-bold">ตำบล</th>
                   <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60">จำนวนครั้ง</th>
-                  <th class="py-3 px-4 text-right text-teal-900 font-bold">ชดเชยบาท (~55บ.)</th>
+                  <th class="py-3 px-4 text-right text-teal-900 font-bold">ชดเชยจริง (บาท)</th>
                   <th class="py-3 px-3 text-right text-slate-600 font-semibold w-24">สัดส่วน %</th>
-                  <th class="py-3 px-3 text-center text-slate-500 font-semibold w-28">ประวัติรายเดือน</th>
+                  <th class="py-3 px-3 text-center text-slate-500 font-semibold w-28">ชนิดยาหลัก</th>
                 </tr>
               </thead>
               <tbody id="herb32-matrix-tbody" class="text-xs divide-y divide-slate-100"></tbody>
@@ -3759,6 +3824,6 @@
 
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=4.2"></script>
 </body>
 </html>
