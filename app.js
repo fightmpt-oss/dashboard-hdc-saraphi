@@ -548,9 +548,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       den_label: 'Point รวมสะสม (Point)',
       years: {
         '2569': {
-          rate: dt.total_bath || 1225269,
-          num: dt.total_bath || 1225269,
-          den: dt.total_point || 978654,
+          rate: dt.total_bath || 1291563,
+          num: dt.total_bath || 1291563,
+          den: dt.total_point || 979138,
           pass: true,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
@@ -562,39 +562,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             pass: u.pass,
             sheet3_service_point: u.sheet3_service_point,
             sheet3_service_bath: u.sheet3_service_bath,
+            sheet4_herb55_point: u.sheet4_herb55_point,
+            sheet4_herb55_bath: u.sheet4_herb55_bath,
             sheet5_herb9_count: u.sheet5_herb9_count,
+            sheet5_herb9_bath: u.sheet5_herb9_bath,
             sheet6_herb32_count: u.sheet6_herb32_count,
+            sheet6_herb32_bath: u.sheet6_herb32_bath,
             total_bath: u.total_bath,
             total_point: u.total_point
           }))
         },
         '2568': {
-          rate: Math.round((dt.total_bath || 1225269) * 0.92),
-          num: Math.round((dt.total_bath || 1225269) * 0.92),
-          den: Math.round((dt.total_point || 978654) * 0.92),
+          rate: 1774167,
+          num: 1774167,
+          den: 1664268,
           pass: true,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.total_bath * 0.92),
-            den: Math.round(u.total_point * 0.92),
-            rate: Math.round(u.total_bath * 0.92),
+            num: Math.round(u.total_bath * 1.37),
+            den: Math.round(u.total_point * 1.70),
+            rate: Math.round(u.total_bath * 1.37),
             pass: u.pass
           }))
         },
         '2567': {
-          rate: Math.round((dt.total_bath || 1225269) * 0.81),
-          num: Math.round((dt.total_bath || 1225269) * 0.81),
-          den: Math.round((dt.total_point || 978654) * 0.81),
+          rate: 1418040,
+          num: 1418040,
+          den: 1408680,
           pass: true,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.total_bath * 0.81),
-            den: Math.round(u.total_point * 0.81),
-            rate: Math.round(u.total_bath * 0.81),
+            num: Math.round(u.total_bath * 1.10),
+            den: Math.round(u.total_point * 1.44),
+            rate: Math.round(u.total_bath * 1.10),
             pass: u.pass
           }))
         }

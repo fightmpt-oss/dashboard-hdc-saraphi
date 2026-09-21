@@ -8683,9 +8683,9 @@
       "sheet5_herb9_count": 0,
       "sheet5_herb9_bath": 0,
       "sheet6_herb32_count": 4836,
-      "sheet6_herb32_bath": 265980,
+      "sheet6_herb32_bath": 312425.0,
       "total_point": 979138,
-      "total_bath": 1245118
+      "total_bath": 1291563
     },
     "units": {
       "06014": {
@@ -8699,9 +8699,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 76,
-        "sheet6_herb32_bath": 4180,
+        "sheet6_herb32_bath": 3473,
         "total_point": 64250,
-        "total_bath": 68430
+        "total_bath": 67723
       },
       "06015": {
         "hospcode": "06015",
@@ -8714,9 +8714,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 45,
-        "sheet6_herb32_bath": 2475,
+        "sheet6_herb32_bath": 3010,
         "total_point": 7600,
-        "total_bath": 10075
+        "total_bath": 10610
       },
       "06016": {
         "hospcode": "06016",
@@ -8729,9 +8729,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 510,
-        "sheet6_herb32_bath": 28050,
+        "sheet6_herb32_bath": 35937,
         "total_point": 66350,
-        "total_bath": 94400
+        "total_bath": 102287
       },
       "06017": {
         "hospcode": "06017",
@@ -8744,9 +8744,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 151,
-        "sheet6_herb32_bath": 8305,
+        "sheet6_herb32_bath": 7390,
         "total_point": 334,
-        "total_bath": 8639
+        "total_bath": 7724
       },
       "06018": {
         "hospcode": "06018",
@@ -8759,9 +8759,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 760,
-        "sheet6_herb32_bath": 41800,
+        "sheet6_herb32_bath": 49781,
         "total_point": 142276,
-        "total_bath": 184076
+        "total_bath": 192057
       },
       "06020": {
         "hospcode": "06020",
@@ -8774,9 +8774,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 783,
-        "sheet6_herb32_bath": 43065,
+        "sheet6_herb32_bath": 53342,
         "total_point": 52470,
-        "total_bath": 95535
+        "total_bath": 105812
       },
       "06021": {
         "hospcode": "06021",
@@ -8789,9 +8789,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 300,
-        "sheet6_herb32_bath": 16500,
+        "sheet6_herb32_bath": 19946,
         "total_point": 168,
-        "total_bath": 16668
+        "total_bath": 20114
       },
       "06022": {
         "hospcode": "06022",
@@ -8804,9 +8804,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 440,
-        "sheet6_herb32_bath": 24200,
+        "sheet6_herb32_bath": 27420,
         "total_point": 33442,
-        "total_bath": 57642
+        "total_bath": 60862
       },
       "06023": {
         "hospcode": "06023",
@@ -8819,9 +8819,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 325,
-        "sheet6_herb32_bath": 17875,
+        "sheet6_herb32_bath": 21816,
         "total_point": 84,
-        "total_bath": 17959
+        "total_bath": 21900
       },
       "06024": {
         "hospcode": "06024",
@@ -8834,9 +8834,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 128,
-        "sheet6_herb32_bath": 7040,
+        "sheet6_herb32_bath": 6946,
         "total_point": 25602,
-        "total_bath": 32642
+        "total_bath": 32548
       },
       "11135": {
         "hospcode": "11135",
@@ -8849,9 +8849,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 1072,
-        "sheet6_herb32_bath": 58960,
+        "sheet6_herb32_bath": 66674,
         "total_point": 586562,
-        "total_bath": 645522
+        "total_bath": 653236
       },
       "13994": {
         "hospcode": "13994",
@@ -8864,9 +8864,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 136,
-        "sheet6_herb32_bath": 7480,
+        "sheet6_herb32_bath": 8885,
         "total_point": 0,
-        "total_bath": 7480
+        "total_bath": 8885
       },
       "14461": {
         "hospcode": "14461",
@@ -8879,9 +8879,9 @@
         "sheet5_herb9_count": 0,
         "sheet5_herb9_bath": 0,
         "sheet6_herb32_count": 110,
-        "sheet6_herb32_bath": 6050,
+        "sheet6_herb32_bath": 7805,
         "total_point": 0,
-        "total_bath": 6050
+        "total_bath": 7805
       },
       "99758": {
         "hospcode": "99758",
