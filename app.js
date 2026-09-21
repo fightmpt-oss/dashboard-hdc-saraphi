@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentErrorYear = '2569';
   let currentProcedureService = 'all';
   let currentProcedureYear = '2569';
+  let currentProcedureMonth = 'all';
+  let currentProcedureUnit = 'all';
   let procedureChartInstance = null;
 
   let currentTtmAgeView = 'age';
@@ -3070,6 +3072,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.switchProcedureYear = function(yr) {
     currentProcedureYear = yr;
     currentYear = yr;
+    currentProcedureMonth = 'all'; // Reset month filter on year change
     if (yearButtons) {
       yearButtons.forEach(b => {
         if (b.dataset.year === yr) {
@@ -3084,6 +3087,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateDashboardView();
   };
 
+  window.switchProcedureMonth = function(m) {
+    currentProcedureMonth = m;
+    renderNhsoServicePanel();
+  };
+
+  window.switchProcedureUnit = function(u) {
+    currentProcedureUnit = u;
+    renderNhsoServicePanel();
+  };
+
+  window.resetProcedureFilters = function() {
+    currentProcedureMonth = 'all';
+    currentProcedureUnit = 'all';
+    currentProcedureService = 'all';
+    renderNhsoServicePanel();
+  };
+
   function renderNhsoServicePanel() {
     if (currentIndicatorId !== 'nhso_service') {
       if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
@@ -3093,8 +3113,82 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const yr = currentProcedureYear || currentYear || '2569';
     const activeService = currentProcedureService || 'all';
+    let activeMonth = currentProcedureMonth || 'all';
+    let activeUnit = currentProcedureUnit || 'all';
 
-    // 1. Update Service Filter Buttons
+    // 1. Extract Data for Year
+    const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || (masterData?.indicators?.['nhso_service']?.procedureData) || {};
+    const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0, units: {}, monthList: [], months: {} };
+    const monthList = yrData.monthList || (yrData.months ? Object.keys(yrData.months) : []);
+
+    // 2. Sync Month Selector Dropdown
+    const procMonthSelect = document.getElementById('proc-month-select');
+    if (procMonthSelect) {
+      const currentOpts = Array.from(procMonthSelect.options).map(o => o.value);
+      const expectedOpts = ['all', ...monthList];
+      const isMatched = currentOpts.length === expectedOpts.length && currentOpts.every((v, i) => v === expectedOpts[i]);
+      if (!isMatched) {
+        procMonthSelect.innerHTML = `<option value="all">ทุกเดือน (รวมทั้งปีงบประมาณ ${yr})</option>`;
+        monthList.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          procMonthSelect.appendChild(opt);
+        });
+      }
+      if (activeMonth !== 'all' && !monthList.includes(activeMonth)) {
+        currentProcedureMonth = 'all';
+        activeMonth = 'all';
+      }
+      procMonthSelect.value = activeMonth;
+    }
+
+    // 3. Sync Unit Selector Dropdown
+    const procUnitSelect = document.getElementById('proc-unit-select');
+    if (procUnitSelect) {
+      if (procUnitSelect.options.length <= 1) {
+        procUnitSelect.innerHTML = '<option value="all">ทุกหน่วยบริการ (รวมทั้งอำเภอ 14 แห่ง)</option>';
+        Object.keys(SARAPHI_UNITS_MAP).forEach(code => {
+          const u = SARAPHI_UNITS_MAP[code];
+          const opt = document.createElement('option');
+          opt.value = code;
+          opt.textContent = `${code} - ${u.name} (${u.subdistrict})`;
+          procUnitSelect.appendChild(opt);
+        });
+      }
+      procUnitSelect.value = activeUnit;
+    }
+
+    // 4. Sync Reset Button & Active Filter Tag
+    const btnReset = document.getElementById('btn-proc-reset');
+    const badgeFilter = document.getElementById('proc-active-filter-badge');
+    const isFiltered = (activeMonth !== 'all' || activeUnit !== 'all' || activeService !== 'all');
+    if (btnReset) {
+      if (isFiltered) btnReset.classList.remove('hidden');
+      else btnReset.classList.add('hidden');
+    }
+    if (badgeFilter) {
+      if (isFiltered) {
+        const tags = [];
+        tags.push(`<span class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-calendar-days text-[10px]"></i> ปีงบ ${yr}</span>`);
+        if (activeMonth !== 'all') {
+          tags.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-regular fa-calendar-check text-[10px]"></i> ${activeMonth}</span>`);
+        }
+        if (activeUnit !== 'all') {
+          const uName = SARAPHI_UNITS_MAP[activeUnit]?.short || activeUnit;
+          tags.push(`<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-hospital text-[10px]"></i> ${uName}</span>`);
+        }
+        if (activeService !== 'all') {
+          const meta = PROCEDURE_SERVICE_META[activeService];
+          tags.push(`<span class="inline-flex items-center gap-1 bg-sky-50 text-sky-700 px-2 py-0.5 rounded-md font-bold text-[11px]">${meta?.icon || ''} ${activeService}</span>`);
+        }
+        badgeFilter.innerHTML = tags.join(' ');
+      } else {
+        badgeFilter.innerHTML = `<span class="text-slate-400 text-xs">แสดงผลรวมทั้งอำเภอ (14 หน่วยบริการ, ทุกเดือน)</span>`;
+      }
+    }
+
+    // 5. Update Service Filter Buttons
     const btnAll = document.getElementById('btn-proc-all');
     if (btnAll) {
       if (activeService === 'all') {
@@ -3118,46 +3212,80 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // 2. Update Year Filter Buttons
+    // 6. Update Year Filter Buttons
     ['2569', '2568', '2567'].forEach(y => {
       const btn = document.getElementById(`btn-proc-yr-${y}`);
       if (btn) {
         if (y === yr) {
-          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white';
+          btn.className = 'px-3 py-1 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white';
         } else {
-          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+          btn.className = 'px-3 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
         }
       }
     });
 
-    // 3. Extract Data for Year
-    const procMaster = (nhsoMasterData && nhsoMasterData.procedure_types) || (masterData?.indicators?.['nhso_service']?.procedureData) || {};
-    const yrData = procMaster[yr] || { districtSummary: {}, districtTotal: 0, units: {} };
-    const distSummary = yrData.districtSummary || {};
-    const distTotal = yrData.districtTotal || 0;
-    const unitsData = yrData.units || {};
+    // 7. Determine Data Scopes
+    const isSingleUnit = (activeUnit !== 'all' && SARAPHI_UNITS_MAP[activeUnit]);
+    const isSingleMonth = (activeMonth !== 'all' && yrData.months && yrData.months[activeMonth]);
 
-    // 4. Render 6 Mini Bento KPI Cards
+    let distSummary = yrData.districtSummary || {};
+    let distTotal = yrData.districtTotal || 0;
+    let unitsMap = yrData.units || {};
+
+    if (isSingleMonth) {
+      const mSlice = yrData.months[activeMonth];
+      distSummary = mSlice.districtSummary || {};
+      distTotal = mSlice.districtTotal || 0;
+      unitsMap = mSlice.units || {};
+    }
+
+    const unitFullYear = isSingleUnit ? (yrData.units?.[activeUnit] || { services: {}, totalPoint: 0, byMonth: {} }) : null;
+    const unitCurrentMonth = (isSingleUnit && isSingleMonth) ? (yrData.months?.[activeMonth]?.units?.[activeUnit] || { services: {}, totalPoint: 0 }) : null;
+
+    // 8. Render 6 Mini Bento KPI Cards
     const cardsContainer = document.getElementById('proc-kpi-cards');
     if (cardsContainer) {
       cardsContainer.innerHTML = '';
       PROCEDURE_SERVICES_ORDER.forEach(srv => {
         const meta = PROCEDURE_SERVICE_META[srv];
-        const srvPt = distSummary[srv] || 0;
-        const sharePct = distTotal > 0 ? ((srvPt / distTotal) * 100).toFixed(1) : '0.0';
         const isSelected = (activeService === srv);
 
-        // Find top unit for this service
-        let topUnitHosp = null;
-        let topUnitPt = 0;
-        Object.entries(unitsData).forEach(([hosp, u]) => {
-          const pt = (u.services && u.services[srv]) || 0;
-          if (pt > topUnitPt) {
-            topUnitPt = pt;
-            topUnitHosp = hosp;
+        let srvPt = 0;
+        let totalBasis = 0;
+        let sharePct = '0.0';
+        let bottomText = '';
+        let bottomVal = '';
+
+        if (!isSingleUnit) {
+          srvPt = distSummary[srv] || 0;
+          totalBasis = distTotal;
+          sharePct = totalBasis > 0 ? ((srvPt / totalBasis) * 100).toFixed(1) : '0.0';
+
+          let topHosp = null;
+          let topPt = 0;
+          Object.entries(unitsMap).forEach(([hosp, u]) => {
+            const pt = (u.services && u.services[srv]) || 0;
+            if (pt > topPt) {
+              topPt = pt;
+              topHosp = hosp;
+            }
+          });
+          bottomText = `สูงสุด: ${topHosp ? (SARAPHI_UNITS_MAP[topHosp]?.short || topHosp) : '-'}`;
+          bottomVal = Number(topPt).toLocaleString();
+        } else {
+          if (isSingleMonth) {
+            srvPt = unitCurrentMonth?.services?.[srv] || 0;
+            totalBasis = unitCurrentMonth?.totalPoint || 0;
+          } else {
+            srvPt = unitFullYear?.services?.[srv] || 0;
+            totalBasis = unitFullYear?.totalPoint || 0;
           }
-        });
-        const topUnitShort = topUnitHosp ? (SARAPHI_UNITS_MAP[topUnitHosp]?.short || topUnitHosp) : '-';
+          sharePct = totalBasis > 0 ? ((srvPt / totalBasis) * 100).toFixed(1) : '0.0';
+          const distSrvPt = distSummary[srv] || 0;
+          const pctOfDist = distSrvPt > 0 ? ((srvPt / distSrvPt) * 100).toFixed(1) : '0.0';
+          bottomText = `% ของอำเภอ:`;
+          bottomVal = `${pctOfDist}%`;
+        }
 
         const card = document.createElement('div');
         card.className = `cursor-pointer rounded-2xl p-3 bg-white border transition-all flex flex-col justify-between ${
@@ -3183,29 +3311,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
           </div>
           <div class="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-            <span class="truncate pr-1">สูงสุด: ${topUnitShort}</span>
-            <span class="font-bold text-slate-700 num-font shrink-0">${Number(topUnitPt).toLocaleString()}</span>
+            <span class="truncate pr-1">${bottomText}</span>
+            <span class="font-bold text-slate-700 num-font shrink-0">${bottomVal}</span>
           </div>
         `;
         cardsContainer.appendChild(card);
       });
     }
 
-    // 5. Prepare Units Array (All 14 units)
-    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(hospcode => {
-      const uInfo = SARAPHI_UNITS_MAP[hospcode];
-      const uData = unitsData[hospcode] || { services: {}, totalPoint: 0 };
-      return {
-        hospcode: hospcode,
-        name: uInfo.name,
-        short: uInfo.short,
-        subdistrict: uInfo.subdistrict,
-        services: uData.services || {},
-        totalPoint: uData.totalPoint || 0
-      };
-    });
-
-    // 6. Render Chart.js Bar Chart
+    // 9. Render Chart
     const chartTitle = document.getElementById('proc-chart-title');
     const chartSubtitle = document.getElementById('proc-chart-subtitle');
     const chartBadge = document.getElementById('proc-chart-badge');
@@ -3220,237 +3334,495 @@ document.addEventListener('DOMContentLoaded', async () => {
       let chartConfig = null;
       const ctx = canvas.getContext('2d');
 
-      if (activeService === 'all') {
-        // Stacked Horizontal Bar Chart: 14 units sorted by totalPoint descending
-        const sortedUnits = [...unitsList].sort((a, b) => b.totalPoint - a.totalPoint);
-        if (chartTitle) chartTitle.textContent = 'กราฟแท่งแสดงผลงานบริการหัตถการ (Point / ประมาณการบาท)';
-        if (chartSubtitle) chartSubtitle.textContent = `แสดงสัดส่วน 6 หัตถการรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงตามผลงานรวม) ปีงบประมาณ ${yr}`;
-        if (chartBadge) {
-          chartBadge.textContent = `รวมทั้งอำเภอ: ${Number(distTotal).toLocaleString()} Point`;
-          chartBadge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
-        }
-
-        const datasets = PROCEDURE_SERVICES_ORDER.map(srv => {
-          const meta = PROCEDURE_SERVICE_META[srv];
+      if (!isSingleUnit) {
+        // 14 Units Chart
+        const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(hospcode => {
+          const uInfo = SARAPHI_UNITS_MAP[hospcode];
+          const uData = unitsMap[hospcode] || { services: {}, totalPoint: 0 };
           return {
-            label: `${meta.icon} ${srv}`,
-            data: sortedUnits.map(u => u.services[srv] || 0),
-            backgroundColor: meta.color,
-            borderRadius: 3,
-            borderSkipped: false
+            hospcode: hospcode,
+            name: uInfo.name,
+            short: uInfo.short,
+            subdistrict: uInfo.subdistrict,
+            services: uData.services || {},
+            totalPoint: uData.totalPoint || 0
           };
         });
 
-        chartConfig = {
-          type: 'bar',
-          data: {
-            labels: sortedUnits.map(u => u.short),
-            datasets: datasets
-          },
-          options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                stacked: true,
-                grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                ticks: {
-                  font: { family: 'Prompt', size: 11 },
-                  callback: val => Number(val).toLocaleString()
-                }
-              },
-              y: {
-                stacked: true,
-                grid: { display: false },
-                ticks: {
-                  font: { family: 'Prompt', size: 11.5, weight: '500' },
-                  color: '#334155'
-                }
-              }
+        if (activeService === 'all') {
+          const sortedUnits = [...unitsList].sort((a, b) => b.totalPoint - a.totalPoint);
+          if (chartTitle) chartTitle.textContent = isSingleMonth ? `กราฟแท่งแสดงผลงานบริการหัตถการ (${activeMonth})` : 'กราฟแท่งแสดงผลงานบริการหัตถการ (Point / ประมาณการบาท)';
+          if (chartSubtitle) chartSubtitle.textContent = isSingleMonth ? `สัดส่วน 6 หัตถการรายหน่วยบริการ 14 แห่ง ประจำเดือน ${activeMonth} ปีงบ ${yr}` : `สัดส่วน 6 หัตถการรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงตามผลงานรวม) ปีงบประมาณ ${yr}`;
+          if (chartBadge) {
+            chartBadge.textContent = `${isSingleMonth ? activeMonth : 'รวมทั้งปี'}: ${Number(distTotal).toLocaleString()} Point`;
+            chartBadge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
+          }
+
+          const datasets = PROCEDURE_SERVICES_ORDER.map(srv => {
+            const meta = PROCEDURE_SERVICE_META[srv];
+            return {
+              label: `${meta.icon} ${srv}`,
+              data: sortedUnits.map(u => u.services[srv] || 0),
+              backgroundColor: meta.color,
+              borderRadius: 3,
+              borderSkipped: false
+            };
+          });
+
+          chartConfig = {
+            type: 'bar',
+            data: {
+              labels: sortedUnits.map(u => u.short),
+              datasets: datasets
             },
-            plugins: {
-              legend: {
-                position: 'top',
-                labels: {
-                  font: { family: 'Prompt', size: 11 },
-                  usePointStyle: true,
-                  boxWidth: 8,
-                  padding: 12
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  stacked: true,
+                  grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                  ticks: { font: { family: 'Prompt', size: 11 }, callback: val => Number(val).toLocaleString() }
+                },
+                y: {
+                  stacked: true,
+                  grid: { display: false },
+                  ticks: { font: { family: 'Prompt', size: 11.5, weight: '500' }, color: '#334155' }
                 }
               },
-              tooltip: {
-                titleFont: { family: 'Prompt', size: 12 },
-                bodyFont: { family: 'Prompt', size: 11 },
-                callbacks: {
-                  label: function(ctx) {
-                    const val = ctx.raw || 0;
-                    const uTotal = sortedUnits[ctx.dataIndex]?.totalPoint || 0;
-                    const pct = uTotal > 0 ? ((val / uTotal) * 100).toFixed(1) : 0;
-                    return ` ${ctx.dataset.label}: ${Number(val).toLocaleString()} Point (${pct}% ของหน่วย)`;
-                  },
-                  footer: function(ctxItems) {
-                    const uIndex = ctxItems[0]?.dataIndex;
-                    const u = sortedUnits[uIndex];
-                    return ` รวมของหน่วยนี้: ${Number(u.totalPoint).toLocaleString()} Point`;
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: { font: { family: 'Prompt', size: 11 }, usePointStyle: true, boxWidth: 8, padding: 12 }
+                },
+                tooltip: {
+                  titleFont: { family: 'Prompt', size: 12 },
+                  bodyFont: { family: 'Prompt', size: 11 },
+                  callbacks: {
+                    label: function(ctx) {
+                      const val = ctx.raw || 0;
+                      const uTotal = sortedUnits[ctx.dataIndex]?.totalPoint || 0;
+                      const pct = uTotal > 0 ? ((val / uTotal) * 100).toFixed(1) : 0;
+                      return ` ${ctx.dataset.label}: ${Number(val).toLocaleString()} Point (${pct}% ของหน่วย)`;
+                    },
+                    footer: function(ctxItems) {
+                      const uIndex = ctxItems[0]?.dataIndex;
+                      const u = sortedUnits[uIndex];
+                      return ` รวมของหน่วยนี้: ${Number(u.totalPoint).toLocaleString()} Point`;
+                    }
                   }
                 }
               }
             }
-          }
-        };
-      } else {
-        // Single Horizontal Bar Chart: 14 units sorted by selected service points descending
-        const meta = PROCEDURE_SERVICE_META[activeService];
-        const srvTotal = distSummary[activeService] || 0;
-        const sortedUnits = [...unitsList].sort((a, b) => (b.services[activeService] || 0) - (a.services[activeService] || 0));
+          };
+        } else {
+          const meta = PROCEDURE_SERVICE_META[activeService];
+          const srvTotal = distSummary[activeService] || 0;
+          const sortedUnits = [...unitsList].sort((a, b) => (b.services[activeService] || 0) - (a.services[activeService] || 0));
 
-        if (chartTitle) chartTitle.textContent = `กราฟแท่งจัดอันดับผลงาน: ${meta.icon} ${activeService} (Point / บาท)`;
-        if (chartSubtitle) chartSubtitle.textContent = `ผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงจากมากไปน้อย) ปีงบประมาณ ${yr}`;
+          if (chartTitle) chartTitle.textContent = `กราฟแท่งจัดอันดับผลงาน: ${meta.icon} ${activeService} (${isSingleMonth ? activeMonth : `ปี ${yr}`})`;
+          if (chartSubtitle) chartSubtitle.textContent = `ผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี (เรียงจากมากไปน้อย) ${isSingleMonth ? `ประจำเดือน ${activeMonth}` : `ปีงบประมาณ ${yr}`}`;
+          if (chartBadge) {
+            chartBadge.textContent = `${meta.icon} ${activeService}: ${Number(srvTotal).toLocaleString()} Point`;
+            chartBadge.className = `text-xs font-bold ${meta.badgeClass} px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto`;
+          }
+
+          chartConfig = {
+            type: 'bar',
+            data: {
+              labels: sortedUnits.map(u => u.short),
+              datasets: [{
+                label: `${meta.icon} ${activeService} (Point)`,
+                data: sortedUnits.map(u => u.services[activeService] || 0),
+                backgroundColor: meta.color,
+                borderColor: meta.borderColor,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderSkipped: false
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                  ticks: { font: { family: 'Prompt', size: 11 }, callback: val => Number(val).toLocaleString() }
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { font: { family: 'Prompt', size: 11.5, weight: '500' }, color: '#334155' }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  titleFont: { family: 'Prompt', size: 12 },
+                  bodyFont: { family: 'Prompt', size: 11 },
+                  callbacks: {
+                    label: function(ctx) {
+                      const val = ctx.raw || 0;
+                      const pct = srvTotal > 0 ? ((val / srvTotal) * 100).toFixed(1) : 0;
+                      return ` ผลงาน: ${Number(val).toLocaleString()} Point (${pct}% ของอำเภอ)`;
+                    }
+                  }
+                }
+              }
+            }
+          };
+        }
+      } else {
+        // Single Unit Monthly Trend Chart
+        const uInfo = SARAPHI_UNITS_MAP[activeUnit];
+        const byMonth = unitFullYear?.byMonth || {};
+
+        if (chartTitle) chartTitle.textContent = `แนวโน้มผลงานรายเดือน: ${uInfo?.name || activeUnit} (ปีงบประมาณ ${yr})`;
+        if (chartSubtitle) chartSubtitle.textContent = activeService === 'all' ? `แสดงสัดส่วน 6 หัตถการเรียงตามแต่ละเดือน (ต.ค. - ก.ค./ก.ย.)` : `ผลงานหัตถการ ${activeService} รายเดือน`;
         if (chartBadge) {
-          chartBadge.textContent = `${meta.icon} ${activeService}: รวม ${Number(srvTotal).toLocaleString()} Point`;
-          chartBadge.className = `text-xs font-bold ${meta.badgeClass} px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto`;
+          chartBadge.textContent = `รวมทั้งปี (${uInfo?.short}): ${Number(unitFullYear?.totalPoint || 0).toLocaleString()} Point`;
+          chartBadge.className = 'text-xs font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
         }
 
-        chartConfig = {
-          type: 'bar',
-          data: {
-            labels: sortedUnits.map(u => u.short),
-            datasets: [{
-              label: `${meta.icon} ${activeService} (Point)`,
-              data: sortedUnits.map(u => u.services[activeService] || 0),
+        if (activeService === 'all') {
+          const datasets = PROCEDURE_SERVICES_ORDER.map(srv => {
+            const meta = PROCEDURE_SERVICE_META[srv];
+            return {
+              label: `${meta.icon} ${srv}`,
+              data: monthList.map(m => byMonth[m]?.services?.[srv] || 0),
               backgroundColor: meta.color,
-              borderColor: meta.borderColor,
-              borderWidth: 1,
-              borderRadius: 5,
+              borderRadius: 3,
               borderSkipped: false
-            }]
-          },
-          options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                ticks: {
-                  font: { family: 'Prompt', size: 11 },
-                  callback: val => Number(val).toLocaleString()
+            };
+          });
+
+          chartConfig = {
+            type: 'bar',
+            data: {
+              labels: monthList,
+              datasets: datasets
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  stacked: true,
+                  grid: { display: false },
+                  ticks: { font: { family: 'Prompt', size: 11 } }
+                },
+                y: {
+                  stacked: true,
+                  grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                  ticks: { font: { family: 'Prompt', size: 11 }, callback: val => Number(val).toLocaleString() }
                 }
               },
-              y: {
-                grid: { display: false },
-                ticks: {
-                  font: { family: 'Prompt', size: 11.5, weight: '500' },
-                  color: '#334155'
-                }
-              }
-            },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                titleFont: { family: 'Prompt', size: 12 },
-                bodyFont: { family: 'Prompt', size: 11 },
-                callbacks: {
-                  label: function(ctx) {
-                    const val = ctx.raw || 0;
-                    const pct = srvTotal > 0 ? ((val / srvTotal) * 100).toFixed(1) : 0;
-                    return ` ผลงาน: ${Number(val).toLocaleString()} Point (${pct}% ของอำเภอ)`;
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: { font: { family: 'Prompt', size: 11 }, usePointStyle: true, boxWidth: 8, padding: 12 }
+                },
+                tooltip: {
+                  titleFont: { family: 'Prompt', size: 12 },
+                  bodyFont: { family: 'Prompt', size: 11 },
+                  callbacks: {
+                    label: function(ctx) {
+                      const val = ctx.raw || 0;
+                      const mName = monthList[ctx.dataIndex];
+                      const mTotal = byMonth[mName]?.totalPoint || 0;
+                      const pct = mTotal > 0 ? ((val / mTotal) * 100).toFixed(1) : 0;
+                      return ` ${ctx.dataset.label}: ${Number(val).toLocaleString()} Point (${pct}% ของเดือน)`;
+                    },
+                    footer: function(ctxItems) {
+                      const mIndex = ctxItems[0]?.dataIndex;
+                      const mName = monthList[mIndex];
+                      const mTotal = byMonth[mName]?.totalPoint || 0;
+                      return ` รวมเดือนนี้: ${Number(mTotal).toLocaleString()} Point`;
+                    }
                   }
                 }
               }
             }
-          }
-        };
+          };
+        } else {
+          const meta = PROCEDURE_SERVICE_META[activeService];
+          const srvMonthlyPts = monthList.map(m => byMonth[m]?.services?.[activeService] || 0);
+          const srvYearTotal = srvMonthlyPts.reduce((a, b) => a + b, 0);
+
+          chartConfig = {
+            type: 'bar',
+            data: {
+              labels: monthList,
+              datasets: [{
+                label: `${meta.icon} ${activeService}`,
+                data: srvMonthlyPts,
+                backgroundColor: meta.color,
+                borderColor: meta.borderColor,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderSkipped: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { family: 'Prompt', size: 11 } }
+                },
+                y: {
+                  grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                  ticks: { font: { family: 'Prompt', size: 11 }, callback: val => Number(val).toLocaleString() }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  titleFont: { family: 'Prompt', size: 12 },
+                  bodyFont: { family: 'Prompt', size: 11 },
+                  callbacks: {
+                    label: function(ctx) {
+                      const val = ctx.raw || 0;
+                      const pct = srvYearTotal > 0 ? ((val / srvYearTotal) * 100).toFixed(1) : 0;
+                      return ` ผลงาน: ${Number(val).toLocaleString()} Point (${pct}% ของทั้งปี)`;
+                    }
+                  }
+                }
+              }
+            }
+          };
+        }
       }
 
       procedureChartInstance = new Chart(ctx, chartConfig);
     }
 
-    // 7. Render Matrix Table (14 Units x 6 Services)
+    // 10. Render Table (14 Units View or Single Unit Monthly View)
+    const thead = document.getElementById('proc-matrix-thead');
     const tbody = document.getElementById('proc-matrix-tbody');
     const tfoot = document.getElementById('proc-matrix-tfoot');
+    const tableTitle = document.getElementById('proc-table-title');
+    const tableSubtitle = document.getElementById('proc-table-subtitle');
     const tableBadge = document.getElementById('proc-table-summary-badge');
 
-    if (tableBadge) {
-      tableBadge.textContent = `รวมทั้งอำเภอ: ${Number(distTotal).toLocaleString()} Point (ประมาณการ ${Number(distTotal).toLocaleString()} บาท)`;
-    }
-
-    // Sort table rows: if activeService is 'all' sort by totalPoint, else sort by that service
-    const sortedTableUnits = [...unitsList].sort((a, b) => {
-      if (activeService === 'all') {
-        return b.totalPoint - a.totalPoint;
-      } else {
-        return (b.services[activeService] || 0) - (a.services[activeService] || 0);
+    if (!isSingleUnit) {
+      // 14 Units View
+      if (tableTitle) tableTitle.textContent = 'ตารางแจกแจงผลงานหัตถการจำแนก 6 ประเภทบริการ รายหน่วยบริการ (14 แห่ง)';
+      if (tableSubtitle) {
+        tableSubtitle.innerHTML = isSingleMonth
+          ? `ข้อมูลประจำเดือน <strong>${activeMonth}</strong> ปีงบ ${yr} (คลิกที่แถวหน่วยบริการเพื่อดูประวัติรายเดือน)`
+          : 'คลิกที่แถวหน่วยบริการเพื่อดูประวัติการเคลมรายเดือน หรือเลือกตัวกรองด้านบน';
       }
-    });
+      if (tableBadge) {
+        tableBadge.textContent = isSingleMonth
+          ? `รวมเดือน ${activeMonth}: ${Number(distTotal).toLocaleString()} Point (ประมาณการ ${Number(distTotal).toLocaleString()} บาท)`
+          : `รวมทั้งอำเภอ: ${Number(distTotal).toLocaleString()} Point (ประมาณการ ${Number(distTotal).toLocaleString()} บาท)`;
+      }
 
-    if (tbody) {
-      tbody.innerHTML = '';
-      sortedTableUnits.forEach((u, idx) => {
-        const isSelectedUnit = (currentUnit === u.hospcode);
-        const tr = document.createElement('tr');
-        tr.className = `hover:bg-slate-50/80 transition ${
-          isSelectedUnit ? 'bg-emerald-50/70 font-semibold border-l-4 border-emerald-600' : ''
-        }`;
+      if (thead) {
+        thead.innerHTML = `
+          <tr class="bg-slate-50 text-slate-700 font-bold text-xs border-b border-slate-200">
+            <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold sticky left-0 bg-slate-50 z-10 sm:static">#</th>
+            <th class="py-3 px-3 w-20 text-slate-500 font-bold">รหัส</th>
+            <th class="py-3 px-3 min-w-[180px] text-slate-800 font-bold">หน่วยบริการ</th>
+            <th class="py-3 px-3 w-24 text-slate-600 font-bold">ตำบล</th>
+            <th class="py-3 px-3 text-right text-emerald-700 font-extrabold"><i class="fa-solid fa-spa text-emerald-600 mr-1"></i> นวด+ประคบ</th>
+            <th class="py-3 px-3 text-right text-amber-600 font-extrabold"><i class="fa-solid fa-bandage text-amber-600 mr-1"></i> พอกเข่า</th>
+            <th class="py-3 px-3 text-right text-sky-600 font-extrabold"><i class="fa-solid fa-hand-holding-heart text-sky-600 mr-1"></i> นวด</th>
+            <th class="py-3 px-3 text-right text-teal-600 font-extrabold"><i class="fa-solid fa-leaf text-teal-600 mr-1"></i> ประคบ</th>
+            <th class="py-3 px-3 text-right text-rose-600 font-extrabold"><i class="fa-solid fa-person-breastfeeding text-rose-600 mr-1"></i> ฟื้นฟูมารดา</th>
+            <th class="py-3 px-3 text-right text-purple-600 font-extrabold"><i class="fa-solid fa-hot-tub-person text-purple-600 mr-1"></i> อบสมุนไพร</th>
+            <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60">รวม Point (บาท)</th>
+          </tr>
+        `;
+      }
 
-        let servicesCells = '';
+      const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(hospcode => {
+        const uInfo = SARAPHI_UNITS_MAP[hospcode];
+        const uData = unitsMap[hospcode] || { services: {}, totalPoint: 0 };
+        return {
+          hospcode: hospcode,
+          name: uInfo.name,
+          short: uInfo.short,
+          subdistrict: uInfo.subdistrict,
+          services: uData.services || {},
+          totalPoint: uData.totalPoint || 0
+        };
+      });
+
+      const sortedTableUnits = [...unitsList].sort((a, b) => {
+        if (activeService === 'all') return b.totalPoint - a.totalPoint;
+        return (b.services[activeService] || 0) - (a.services[activeService] || 0);
+      });
+
+      if (tbody) {
+        tbody.innerHTML = '';
+        sortedTableUnits.forEach((u, idx) => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-emerald-50/50 cursor-pointer transition group';
+          tr.onclick = () => window.switchProcedureUnit(u.hospcode);
+          tr.title = `คลิกเพื่อดูประวัติการเคลมรายเดือนของ ${u.name}`;
+
+          let servicesCells = '';
+          PROCEDURE_SERVICES_ORDER.forEach(srv => {
+            const pt = u.services[srv] || 0;
+            const isCurrentSrv = (activeService === srv);
+            const meta = PROCEDURE_SERVICE_META[srv];
+            const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}15; font-weight: 700; color: ${meta.color};` : '';
+            servicesCells += `
+              <td class="py-2.5 px-3 text-right num-font ${pt > 0 ? 'text-slate-800' : 'text-slate-300 font-light'}" style="${highlightStyle}">
+                ${pt > 0 ? Number(pt).toLocaleString() : '-'}
+              </td>
+            `;
+          });
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 text-center num-font ${idx < 3 ? 'font-bold text-amber-600' : 'text-slate-400'} sticky left-0 bg-white group-hover:bg-emerald-50/50 z-10 sm:static">
+              ${idx === 0 ? '🥇 1' : (idx === 1 ? '🥈 2' : (idx === 2 ? '🥉 3' : idx + 1))}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${u.hospcode}</td>
+            <td class="py-2.5 px-3 font-medium text-slate-900 flex items-center justify-between gap-1.5">
+              <span class="group-hover:text-emerald-700 font-semibold transition">${u.name}</span>
+              <span class="text-[10px] text-emerald-600 opacity-0 group-hover:opacity-100 transition shrink-0"><i class="fa-solid fa-arrow-right"></i> ดูรายเดือน</span>
+            </td>
+            <td class="py-2.5 px-3 text-slate-500">${u.subdistrict}</td>
+            ${servicesCells}
+            <td class="py-2.5 px-4 text-right num-font font-black text-emerald-950 bg-emerald-50/50 group-hover:bg-emerald-100/60">
+              ${Number(u.totalPoint).toLocaleString()}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      if (tfoot) {
+        let tfootCells = '';
         PROCEDURE_SERVICES_ORDER.forEach(srv => {
-          const pt = u.services[srv] || 0;
+          const pt = distSummary[srv] || 0;
           const isCurrentSrv = (activeService === srv);
           const meta = PROCEDURE_SERVICE_META[srv];
-          const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}15; font-weight: 700; color: ${meta.color};` : '';
-          servicesCells += `
-            <td class="py-2.5 px-3 text-right num-font ${pt > 0 ? 'text-slate-800' : 'text-slate-300 font-light'}" style="${highlightStyle}">
-              ${pt > 0 ? Number(pt).toLocaleString() : '-'}
+          const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}25; color: ${meta.color};` : '';
+          tfootCells += `
+            <td class="py-3 px-3 text-right num-font font-black ${pt > 0 ? 'text-slate-900' : 'text-slate-400'}" style="${highlightStyle}">
+              ${Number(pt).toLocaleString()}
             </td>
           `;
         });
 
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 text-center num-font ${idx < 3 ? 'font-bold text-amber-600' : 'text-slate-400'}">
-            ${idx === 0 ? '🥇 1' : (idx === 1 ? '🥈 2' : (idx === 2 ? '🥉 3' : idx + 1))}
-          </td>
-          <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${u.hospcode}</td>
-          <td class="py-2.5 px-3 font-medium text-slate-900 flex items-center gap-1.5">
-            ${u.hospcode === '11135' ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>' : ''}
-            <span>${u.name}</span>
-          </td>
-          <td class="py-2.5 px-3 text-slate-500">${u.subdistrict}</td>
-          ${servicesCells}
-          <td class="py-2.5 px-4 text-right num-font font-black text-emerald-950 bg-emerald-50/50">
-            ${Number(u.totalPoint).toLocaleString()}
-          </td>
+        tfoot.innerHTML = `
+          <tr class="text-xs bg-emerald-50/80 font-bold border-t-2 border-emerald-300">
+            <td colspan="4" class="py-3 px-4 text-left font-black text-emerald-900">
+              รวมทั้งอำเภอสารภี (${isSingleMonth ? activeMonth : '14 หน่วยบริการ'})
+            </td>
+            ${tfootCells}
+            <td class="py-3 px-4 text-right num-font font-black text-emerald-900 text-sm bg-emerald-100/70">
+              ${Number(distTotal).toLocaleString()}
+            </td>
+          </tr>
         `;
-        tbody.appendChild(tr);
-      });
-    }
+      }
+    } else {
+      // Single Unit: Monthly Breakdown View!
+      const uInfo = SARAPHI_UNITS_MAP[activeUnit];
+      const byMonth = unitFullYear?.byMonth || {};
 
-    if (tfoot) {
-      let tfootCells = '';
-      PROCEDURE_SERVICES_ORDER.forEach(srv => {
-        const pt = distSummary[srv] || 0;
-        const isCurrentSrv = (activeService === srv);
-        const meta = PROCEDURE_SERVICE_META[srv];
-        const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}25; color: ${meta.color};` : '';
-        tfootCells += `
-          <td class="py-3 px-3 text-right num-font font-black ${pt > 0 ? 'text-slate-900' : 'text-slate-400'}" style="${highlightStyle}">
-            ${Number(pt).toLocaleString()}
-          </td>
+      if (tableTitle) {
+        tableTitle.innerHTML = `ตารางประวัติผลงานรายเดือน: <span class="text-emerald-700 font-extrabold">${uInfo?.name || activeUnit}</span>`;
+      }
+      if (tableSubtitle) {
+        tableSubtitle.innerHTML = `แจกแจงผลงาน 6 ประเภทบริการแยกรายเดือน ปีงบประมาณ ${yr} &nbsp; <button type="button" onclick="window.switchProcedureUnit('all')" class="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer text-xs ml-2"><i class="fa-solid fa-arrow-left"></i> กลับไปดูทุกหน่วยบริการ</button>`;
+      }
+      if (tableBadge) {
+        tableBadge.textContent = `รวมทั้งปี (${uInfo?.short}): ${Number(unitFullYear?.totalPoint || 0).toLocaleString()} Point (บาท)`;
+      }
+
+      if (thead) {
+        thead.innerHTML = `
+          <tr class="bg-slate-50 text-slate-700 font-bold text-xs border-b border-slate-200">
+            <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold sticky left-0 bg-slate-50 z-10 sm:static">#</th>
+            <th class="py-3 px-4 min-w-[160px] text-slate-800 font-bold">ประจำเดือน</th>
+            <th class="py-3 px-3 w-24 text-slate-600 font-bold">ปีงบประมาณ</th>
+            <th class="py-3 px-3 text-right text-emerald-700 font-extrabold"><i class="fa-solid fa-spa text-emerald-600 mr-1"></i> นวด+ประคบ</th>
+            <th class="py-3 px-3 text-right text-amber-600 font-extrabold"><i class="fa-solid fa-bandage text-amber-600 mr-1"></i> พอกเข่า</th>
+            <th class="py-3 px-3 text-right text-sky-600 font-extrabold"><i class="fa-solid fa-hand-holding-heart text-sky-600 mr-1"></i> นวด</th>
+            <th class="py-3 px-3 text-right text-teal-600 font-extrabold"><i class="fa-solid fa-leaf text-teal-600 mr-1"></i> ประคบ</th>
+            <th class="py-3 px-3 text-right text-rose-600 font-extrabold"><i class="fa-solid fa-person-breastfeeding text-rose-600 mr-1"></i> ฟื้นฟูมารดา</th>
+            <th class="py-3 px-3 text-right text-purple-600 font-extrabold"><i class="fa-solid fa-hot-tub-person text-purple-600 mr-1"></i> อบสมุนไพร</th>
+            <th class="py-3 px-4 text-right text-emerald-900 font-extrabold bg-emerald-50/60">รวม Point (บาท)</th>
+          </tr>
         `;
-      });
+      }
 
-      tfoot.innerHTML = `
-        <tr class="text-xs">
-          <td colspan="4" class="py-3 px-4 text-left font-black text-emerald-900">
-            รวมทั้งอำเภอสารภี (14 หน่วยบริการ)
-          </td>
-          ${tfootCells}
-          <td class="py-3 px-4 text-right num-font font-black text-emerald-900 text-sm bg-emerald-100/70">
-            ${Number(distTotal).toLocaleString()}
-          </td>
-        </tr>
-      `;
+      if (tbody) {
+        tbody.innerHTML = '';
+        monthList.forEach((m, idx) => {
+          const mData = byMonth[m] || { services: {}, totalPoint: 0 };
+          const isCurrentMonthRow = (activeMonth === m);
+
+          const tr = document.createElement('tr');
+          tr.className = `hover:bg-slate-50 transition cursor-pointer ${
+            isCurrentMonthRow ? 'bg-emerald-50/80 font-semibold border-l-4 border-emerald-600' : ''
+          }`;
+          tr.onclick = () => window.switchProcedureMonth(m === activeMonth ? 'all' : m);
+          tr.title = isCurrentMonthRow ? 'คลิกเพื่อยกเลิกการกรองเดือนนี้' : `คลิกเพื่อกรองเฉพาะเดือน ${m}`;
+
+          let servicesCells = '';
+          PROCEDURE_SERVICES_ORDER.forEach(srv => {
+            const pt = mData.services?.[srv] || 0;
+            const isCurrentSrv = (activeService === srv);
+            const meta = PROCEDURE_SERVICE_META[srv];
+            const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}15; font-weight: 700; color: ${meta.color};` : '';
+            servicesCells += `
+              <td class="py-2.5 px-3 text-right num-font ${pt > 0 ? 'text-slate-800 font-medium' : 'text-slate-300 font-light'}" style="${highlightStyle}">
+                ${pt > 0 ? Number(pt).toLocaleString() : '-'}
+              </td>
+            `;
+          });
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 text-center num-font text-slate-400 sticky left-0 bg-white z-10 sm:static">${idx + 1}</td>
+            <td class="py-2.5 px-4 font-medium text-slate-900 flex items-center justify-between gap-1.5">
+              <span class="${isCurrentMonthRow ? 'text-emerald-800 font-bold' : ''}">${m}</span>
+              ${isCurrentMonthRow ? '<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">เลือกอยู่</span>' : ''}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${yr}</td>
+            ${servicesCells}
+            <td class="py-2.5 px-4 text-right num-font font-black text-emerald-950 bg-emerald-50/50">
+              ${Number(mData.totalPoint || 0).toLocaleString()}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      if (tfoot) {
+        let tfootCells = '';
+        PROCEDURE_SERVICES_ORDER.forEach(srv => {
+          const pt = unitFullYear?.services?.[srv] || 0;
+          const isCurrentSrv = (activeService === srv);
+          const meta = PROCEDURE_SERVICE_META[srv];
+          const highlightStyle = isCurrentSrv ? `background-color: ${meta.color}25; color: ${meta.color};` : '';
+          tfootCells += `
+            <td class="py-3 px-3 text-right num-font font-black ${pt > 0 ? 'text-slate-900' : 'text-slate-400'}" style="${highlightStyle}">
+              ${Number(pt).toLocaleString()}
+            </td>
+          `;
+        });
+
+        tfoot.innerHTML = `
+          <tr class="text-xs bg-emerald-50/80 font-bold border-t-2 border-emerald-300">
+            <td colspan="3" class="py-3 px-4 text-left font-black text-emerald-900">
+              รวมทั้งปีงบประมาณ ${yr} (${uInfo?.name || activeUnit})
+            </td>
+            ${tfootCells}
+            <td class="py-3 px-4 text-right num-font font-black text-emerald-900 text-sm bg-emerald-100/70">
+              ${Number(unitFullYear?.totalPoint || 0).toLocaleString()}
+            </td>
+          </tr>
+        `;
+      }
     }
 
     if (window.lucide) {

@@ -2536,8 +2536,60 @@
       <!-- SPECIAL PANEL FOR NHSO SERVICE BREAKDOWN (Shows when nhso_service is active) -->
       <div id="nhso-service-panel" class="hidden space-y-4">
 
-        <!-- Filter Bar: Service Type Selector & Year Selector -->
-        <div class="glass-card rounded-2xl p-4 bg-white flex flex-col xl:flex-row xl:items-center justify-between gap-4 border border-slate-200/80 shadow-xs">
+        <!-- Filter Bar: Service Type Selector, Month Selector, Unit Selector & Year Selector -->
+        <div class="glass-card rounded-2xl p-4 bg-white space-y-3 border border-slate-200/80 shadow-xs">
+          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <!-- Year & Month & Unit Controls -->
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- Year Selector -->
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ปีงบ:</span>
+                <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                  <button type="button" id="btn-proc-yr-2569" onclick="window.switchProcedureYear('2569')" class="px-3 py-1 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white">
+                    2569
+                  </button>
+                  <button type="button" id="btn-proc-yr-2568" onclick="window.switchProcedureYear('2568')" class="px-3 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                    2568
+                  </button>
+                  <button type="button" id="btn-proc-yr-2567" onclick="window.switchProcedureYear('2567')" class="px-3 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
+                    2567
+                  </button>
+                </div>
+              </div>
+
+              <!-- Month Selector Dropdown -->
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i> ประจำเดือน:
+                </span>
+                <select id="proc-month-select" onchange="window.switchProcedureMonth(this.value)" class="text-xs font-bold bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none cursor-pointer">
+                  <option value="all">ทุกเดือน (รวมทั้งปีงบประมาณ)</option>
+                </select>
+              </div>
+
+              <!-- Unit Selector Dropdown -->
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <i data-lucide="building-2" class="w-3.5 h-3.5 text-slate-400"></i> หน่วยบริการ:
+                </span>
+                <select id="proc-unit-select" onchange="window.switchProcedureUnit(this.value)" class="text-xs font-bold bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none cursor-pointer">
+                  <option value="all">ทุกหน่วยบริการ (รวมทั้งอำเภอ 14 แห่ง)</option>
+                </select>
+              </div>
+
+              <!-- Reset Button -->
+              <button type="button" id="btn-proc-reset" onclick="window.resetProcedureFilters()" class="hidden text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1">
+                <i data-lucide="rotate-ccw" class="w-3 h-3"></i> ล้างตัวกรอง
+              </button>
+            </div>
+
+            <!-- Active Filter Badge -->
+            <div id="proc-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Service Type Buttons -->
           <div class="flex items-center gap-3 flex-wrap">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
               <i data-lucide="filter" class="w-3.5 h-3.5 text-slate-400"></i> ประเภทบริการ:
@@ -2563,21 +2615,6 @@
               </button>
               <button type="button" onclick="window.switchProcedureService('อบสมุนไพร')" id="btn-proc-steam" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
                 <i class="fa-solid fa-hot-tub-person text-purple-600 mr-1"></i> อบสมุนไพร
-              </button>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2.5 flex-wrap shrink-0">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ปีงบประมาณ:</span>
-            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-              <button type="button" id="btn-proc-yr-2569" onclick="window.switchProcedureYear('2569')" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-indigo-600 text-white">
-                2569
-              </button>
-              <button type="button" id="btn-proc-yr-2568" onclick="window.switchProcedureYear('2568')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
-                2568
-              </button>
-              <button type="button" id="btn-proc-yr-2567" onclick="window.switchProcedureYear('2567')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition">
-                2567
               </button>
             </div>
           </div>
@@ -2620,7 +2657,7 @@
                 </span>
                 <span id="proc-table-title">ตารางแจกแจงผลงานหัตถการจำแนก 6 ประเภทบริการ รายหน่วยบริการ (14 แห่ง)</span>
               </h4>
-              <p class="text-xs text-slate-500 mt-0.5">คลิกหรือเลือกประเภทบริการด้านบนเพื่อกรองและจัดอันดับ</p>
+              <p class="text-xs text-slate-500 mt-0.5" id="proc-table-subtitle">คลิกที่แถวหน่วยบริการเพื่อดูประวัติการเคลมรายเดือน หรือเลือกตัวกรองด้านบน</p>
             </div>
             <div class="flex items-center gap-2">
               <span id="proc-table-summary-badge" class="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs">
@@ -2631,7 +2668,7 @@
 
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse custom-table" id="proc-matrix-table">
-              <thead>
+              <thead id="proc-matrix-thead">
                 <tr class="bg-slate-50 text-slate-700 font-bold text-xs border-b border-slate-200" id="proc-matrix-thead-tr">
                   <th class="py-3 px-3 w-12 text-center text-slate-500 font-bold">#</th>
                   <th class="py-3 px-3 w-20 text-slate-500 font-bold">รหัส</th>
