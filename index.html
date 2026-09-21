@@ -2787,24 +2787,48 @@
           <!-- Dynamically populated -->
         </div>
 
-        <!-- Bar Chart Card -->
-        <div class="glass-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 shadow-sm space-y-3">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-            <div>
-              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
-                  <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                </span>
-                <span id="herb55-chart-title">กราฟแท่งผลงานการสั่งใช้ยาสมุนไพร 55 รายการ (Point / ชดเชยบาท)</span>
-              </h4>
-              <p class="text-xs text-slate-500 mt-0.5" id="herb55-chart-subtitle">แสดงข้อมูลผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี</p>
+        <!-- Charts Grid (2 Cards: Monthly/Unit Stacked Bar Chart & Herb Breakdown Chart) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Chart 1: Unit or Monthly Trend (Stacked by Herb) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb55-chart-title">ผลงานยาสมุนไพร 55 รายการ</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb55-chart-subtitle">แสดงผลงานจำแนกตามชนิดยา (Stacked Bar)</p>
+              </div>
+              <span id="herb55-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                -
+              </span>
             </div>
-            <span id="herb55-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
-              ระบบ Point (1 Point = 1 บาท)
-            </span>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb55-breakdown-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
-          <div class="relative w-full overflow-hidden" style="min-height: 420px;">
-            <canvas id="herb55-breakdown-chart" class="w-full"></canvas>
+
+          <!-- Chart 2: Herb Breakdown (จำแนกตามชนิดยาสมุนไพร แบบ Medata) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="leaf" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb55-herb-chart-title">จำแนกตามชนิดยาสมุนไพร</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb55-herb-chart-subtitle">ยอดสั่งใช้ยาสมุนไพรแต่ละชนิด (ตามเงื่อนไขตัวกรอง)</p>
+              </div>
+              <span id="herb55-herb-chart-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                จำแนกตามชนิดยา
+              </span>
+            </div>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb55-herb-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
         </div>
 
@@ -2907,24 +2931,48 @@
           <!-- Dynamically populated -->
         </div>
 
-        <!-- Bar Chart Card -->
-        <div class="glass-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 shadow-sm space-y-3">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-            <div>
-              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
-                  <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                </span>
-                <span id="herb9-chart-title">กราฟแท่งผลงานการสั่งใช้ยาสมุนไพร 9 รายการ (ครั้ง / ประมาณการบาท)</span>
-              </h4>
-              <p class="text-xs text-slate-500 mt-0.5" id="herb9-chart-subtitle">แสดงข้อมูลผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี</p>
+        <!-- Charts Grid (2 Cards: Monthly/Unit Stacked Bar Chart & Herb Breakdown Chart) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Chart 1: Unit or Monthly Trend (Stacked by Herb) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb9-chart-title">ผลงานยาสมุนไพร 9 รายการ</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb9-chart-subtitle">แสดงผลงานจำแนกตามชนิดยา (Stacked Bar)</p>
+              </div>
+              <span id="herb9-chart-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                -
+              </span>
             </div>
-            <span id="herb9-chart-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
-              อัตราชดเชย 60 บาท/ครั้ง
-            </span>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb9-breakdown-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
-          <div class="relative w-full overflow-hidden" style="min-height: 420px;">
-            <canvas id="herb9-breakdown-chart" class="w-full"></canvas>
+
+          <!-- Chart 2: Herb Breakdown (จำแนกตามชนิดยาสมุนไพร แบบ Medata) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="leaf" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb9-herb-chart-title">จำแนกตามชนิดยาสมุนไพร</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb9-herb-chart-subtitle">ยอดสั่งใช้ยาสมุนไพรแต่ละชนิด (ตามเงื่อนไขตัวกรอง)</p>
+              </div>
+              <span id="herb9-herb-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                จำแนกตามชนิดยา
+              </span>
+            </div>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb9-herb-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
         </div>
 
@@ -3028,24 +3076,48 @@
           <!-- Dynamically populated -->
         </div>
 
-        <!-- Bar Chart Card -->
-        <div class="glass-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 shadow-sm space-y-3">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-            <div>
-              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
-                  <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                </span>
-                <span id="herb32-chart-title">กราฟแท่งผลงานการสั่งใช้ยาสมุนไพร 32 รายการ (ครั้ง / ประมาณการบาท)</span>
-              </h4>
-              <p class="text-xs text-slate-500 mt-0.5" id="herb32-chart-subtitle">แสดงข้อมูลผลงานรายหน่วยบริการ 14 แห่งใน อ.สารภี</p>
+        <!-- Charts Grid (2 Cards: Monthly/Unit Stacked Bar Chart & Herb Breakdown Chart) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Chart 1: Unit or Monthly Trend (Stacked by Herb) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb32-chart-title">ผลงานยาสมุนไพร 32 รายการ</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb32-chart-subtitle">แสดงผลงานจำแนกตามชนิดยา (Stacked Bar)</p>
+              </div>
+              <span id="herb32-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                -
+              </span>
             </div>
-            <span id="herb32-chart-badge" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
-              อัตราชดเชย 55 บาท/ครั้ง
-            </span>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb32-breakdown-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
-          <div class="relative w-full overflow-hidden" style="min-height: 420px;">
-            <canvas id="herb32-breakdown-chart" class="w-full"></canvas>
+
+          <!-- Chart 2: Herb Breakdown (จำแนกตามชนิดยาสมุนไพร แบบ Medata) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i data-lucide="leaf" class="w-4 h-4"></i>
+                  </span>
+                  <span id="herb32-herb-chart-title">จำแนกตามชนิดยาสมุนไพร</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5" id="herb32-herb-chart-subtitle">ยอดสั่งใช้ยาสมุนไพรแต่ละชนิด (ตามเงื่อนไขตัวกรอง)</p>
+              </div>
+              <span id="herb32-herb-chart-badge" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-xl shadow-2xs self-start sm:self-auto">
+                จำแนกตามชนิดยา
+              </span>
+            </div>
+            <div class="relative w-full overflow-hidden" style="height: 320px;">
+              <canvas id="herb32-herb-chart" class="w-full h-full"></canvas>
+            </div>
           </div>
         </div>
 
