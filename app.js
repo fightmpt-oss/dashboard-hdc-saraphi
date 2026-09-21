@@ -4952,6 +4952,75 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // ==========================================================================
+  // NHSO Herb 9 Dictionary & Legend Helper (คำอธิบาย HERB1-9)
+  // ==========================================================================
+  const NHSO_HERB9_DICT = {
+    'HERB1': 'ฟ้าทะลายโจร',
+    'HERB2': 'ขมิ้นชัน',
+    'HERB3': 'ประสะมะแว้ง',
+    'HERB4': 'ยาแก้ไอมะขามป้อม',
+    'HERB5': 'ยาไพล',
+    'HERB6': 'เถาวัลย์เปรียง',
+    'HERB7': 'ยาประคบ *',
+    'HERB8': 'ยาธาตุอบเชย',
+    'HERB9': 'ยาสหัสธารา',
+    'HERB01': 'ฟ้าทะลายโจร',
+    'HERB02': 'ขมิ้นชัน',
+    'HERB03': 'ประสะมะแว้ง',
+    'HERB04': 'ยาแก้ไอมะขามป้อม',
+    'HERB05': 'ยาไพล',
+    'HERB06': 'เถาวัลย์เปรียง',
+    'HERB07': 'ยาประคบ *',
+    'HERB08': 'ยาธาตุอบเชย',
+    'HERB09': 'ยาสหัสธารา'
+  };
+
+  function formatHerb9Label(rawKey) {
+    if (!rawKey) return '-';
+    const k = String(rawKey).trim();
+    const upper = k.toUpperCase();
+    const name = NHSO_HERB9_DICT[upper];
+    if (name) {
+      const num = upper.replace('HERB', '').replace(/^0+/, '');
+      return `Herb${num} = ${name}`;
+    }
+    return k;
+  }
+
+  function getHerb9ShortName(rawKey) {
+    if (!rawKey) return '-';
+    const k = String(rawKey).trim();
+    const upper = k.toUpperCase();
+    return NHSO_HERB9_DICT[upper] || k;
+  }
+
+  window.toggleHerb9Legend = function(forceOpen = false) {
+    const body = document.getElementById('herb9-legend-body');
+    const title = document.getElementById('herb9-legend-header-title');
+    const icon = document.getElementById('herb9-legend-icon');
+    const hint = document.getElementById('herb9-legend-toggle-hint');
+    if (!body) return;
+    const isHidden = body.classList.contains('hidden');
+    if (forceOpen || isHidden) {
+      body.classList.remove('hidden');
+      if (title) title.textContent = '(คลิกเพื่อปิด) คำอธิบาย HERB';
+      if (icon) {
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      }
+      if (hint) hint.textContent = 'คลิกเพื่อย่อ';
+    } else {
+      body.classList.add('hidden');
+      if (title) title.textContent = '(คลิกเพื่อเปิด) คำอธิบาย HERB';
+      if (icon) {
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      }
+      if (hint) hint.textContent = 'คลิกเพื่อขยาย';
+    }
+  };
+
   window.switchHerb9Year = function(yr) {
     currentHerb9Year = yr;
     currentHerb9Month = 'all';
@@ -5008,6 +5077,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (availableHerbs.length === 0 && Object.keys(districtHerbs).length > 0) {
       availableHerbs.push(...Object.keys(districtHerbs));
     }
+    availableHerbs.sort((a, b) => {
+      const numA = parseInt(a.replace(/\D/g, '')) || 0;
+      const numB = parseInt(b.replace(/\D/g, '')) || 0;
+      return numA - numB;
+    });
 
     // 1. Year Buttons UI
     ['2569', '2568', '2567'].forEach(y => {
@@ -5066,14 +5140,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       const expectedOpts = ['all', ...availableHerbs];
       const isMatched = currentOpts.length === expectedOpts.length && currentOpts.every((v, i) => v === expectedOpts[i]);
       if (!isMatched) {
-        itemSelect.innerHTML = `<option value="all">ยาสมุนไพร 9 รายการทั้งหมด (${availableHerbs.length})</option>`;
+        itemSelect.innerHTML = `<option value="all">ยาสมุนไพร 9 รายการทั้งหมด (${availableHerbs.length} รายการ)</option>`;
         availableHerbs.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item;
           let val = 0;
           if (isSingleUnit) val = uSlice?.herbs?.[item] || 0;
           else val = districtHerbs[item] || 0;
-          opt.textContent = `${item} (${Number(val).toLocaleString()} ครั้ง)`;
+          opt.textContent = `${formatHerb9Label(item)} (${Number(val).toLocaleString()} ครั้ง)`;
           itemSelect.appendChild(opt);
         });
       }
@@ -5104,7 +5178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           tags.push(`<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-hospital text-[10px]"></i> ${uName}</span>`);
         }
         if (activeItem !== 'all') {
-          tags.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-leaf text-[10px]"></i> ${activeItem}</span>`);
+          tags.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-leaf text-[10px]"></i> ${formatHerb9Label(activeItem)}</span>`);
         }
         badgeFilter.innerHTML = tags.join(' ');
       } else {
@@ -5125,6 +5199,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         activeHerbsMap = yrData.months?.[activeMonth]?.items || yrData.months?.[activeMonth]?.herbs || {};
       } else {
         activeHerbsMap = districtHerbs;
+      }
+    }
+
+    // Update Herb 1-9 Legend Box counts & active highlight
+    for (let i = 1; i <= 9; i++) {
+      const code = `HERB${i}`;
+      const elCount = document.getElementById(`herb9-count-herb${i}`);
+      const btnEl = document.getElementById(`btn-legend-herb${i}`);
+      const val = activeHerbsMap[code] || 0;
+      if (elCount) {
+        elCount.textContent = `${Number(val).toLocaleString()} ครั้ง`;
+      }
+      if (btnEl) {
+        if (activeItem === code) {
+          btnEl.className = 'flex items-center justify-between p-2 rounded-lg bg-emerald-700 text-white font-bold border border-emerald-800 shadow-xs transition text-left cursor-pointer ring-2 ring-emerald-400';
+          if (elCount) elCount.className = 'text-[11px] text-emerald-100 font-mono ml-2';
+        } else {
+          btnEl.className = 'flex items-center justify-between p-2 rounded-lg bg-white/70 hover:bg-white border border-emerald-200/60 hover:border-emerald-400 hover:shadow-2xs transition text-left cursor-pointer';
+          if (elCount) elCount.className = 'text-[11px] text-emerald-800 font-mono ml-2';
+        }
       }
     }
 
@@ -5189,8 +5283,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="mt-3">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ยาสมุนไพรยอดนิยม</span>
-            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${topHerb[0]}">
-              ${activeItem !== 'all' ? activeItem : topHerb[0]}
+            <div class="text-lg font-black text-slate-900 truncate mt-1" title="${formatHerb9Label(activeItem !== 'all' ? activeItem : topHerb[0])}">
+              ${formatHerb9Label(activeItem !== 'all' ? activeItem : topHerb[0])}
             </div>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
@@ -5275,11 +5369,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (activeItem === 'all') {
-          const allHerbsInDistrict = Object.keys(districtHerbs);
-          const datasets = allHerbsInDistrict.map((hName, hIdx) => {
-            const pal = HERB_PALETTE[hIdx % HERB_PALETTE.length];
+          const allHerbsInDistrict = Object.keys(districtHerbs).sort((a, b) => {
+            const numA = parseInt(a.replace(/\D/g, '')) || 0;
+            const numB = parseInt(b.replace(/\D/g, '')) || 0;
+            return numA - numB;
+          });
+          const datasets = allHerbsInDistrict.map((hName) => {
+            const num = parseInt(hName.replace(/\D/g, '')) || 1;
+            const pal = HERB_PALETTE[(num - 1) % HERB_PALETTE.length];
             return {
-              label: hName,
+              label: formatHerb9Label(hName),
               data: unitsList.map(u => {
                 if (isSingleMonth) return unitsMap[u.code]?.monthlyHerbs?.[activeMonth]?.[hName] || 0;
                 return unitsMap[u.code]?.herbs?.[hName] || 0;
@@ -5323,7 +5422,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             data: {
               labels: unitsList.map(u => u.short),
               datasets: [{
-                label: activeItem,
+                label: formatHerb9Label(activeItem),
                 data: unitsList.map(u => u.count),
                 backgroundColor: '#0d9488',
                 borderColor: '#0f766e',
@@ -5345,7 +5444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tooltip: {
                   titleFont: { family: 'Prompt', size: 12 },
                   bodyFont: { family: 'Prompt', size: 11 },
-                  callbacks: { label: (ctx) => ` ${activeItem}: ${Number(ctx.raw).toLocaleString()} ครั้ง` }
+                  callbacks: { label: (ctx) => ` ${formatHerb9Label(activeItem)}: ${Number(ctx.raw).toLocaleString()} ครั้ง` }
                 }
               }
             }
@@ -5362,12 +5461,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           chartBadge1.className = 'text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-xl shadow-2xs self-start sm:self-auto';
         }
 
-        const unitHerbsList = Object.keys(uSlice?.herbs || {});
+        const unitHerbsList = Object.keys(uSlice?.herbs || {}).sort((a, b) => {
+          const numA = parseInt(a.replace(/\D/g, '')) || 0;
+          const numB = parseInt(b.replace(/\D/g, '')) || 0;
+          return numA - numB;
+        });
         if (activeItem === 'all' && unitHerbsList.length > 0) {
-          const datasets = unitHerbsList.map((hName, hIdx) => {
-            const pal = HERB_PALETTE[hIdx % HERB_PALETTE.length];
+          const datasets = unitHerbsList.map((hName) => {
+            const num = parseInt(hName.replace(/\D/g, '')) || 1;
+            const pal = HERB_PALETTE[(num - 1) % HERB_PALETTE.length];
             return {
-              label: hName,
+              label: formatHerb9Label(hName),
               data: monthList.map(m => uSlice?.monthlyHerbs?.[m]?.[hName] || 0),
               backgroundColor: pal.bg,
               borderColor: pal.border,
@@ -5419,7 +5523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             data: {
               labels: monthList,
               datasets: [{
-                label: activeItem !== 'all' ? activeItem : 'ผลงานจำนวนครั้ง',
+                label: activeItem !== 'all' ? formatHerb9Label(activeItem) : 'ผลงานจำนวนครั้ง',
                 data: cnts,
                 backgroundColor: '#0d9488',
                 borderColor: '#0f766e',
@@ -5476,12 +5580,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const chartConfig2 = {
         type: 'bar',
         data: {
-          labels: herbEntries.map(e => e[0]),
+          labels: herbEntries.map(e => formatHerb9Label(e[0])),
           datasets: [{
             label: 'จำนวนครั้ง',
             data: herbEntries.map(e => e[1]),
-            backgroundColor: herbEntries.map((_, i) => HERB_PALETTE[i % HERB_PALETTE.length].bg),
-            borderColor: herbEntries.map((_, i) => HERB_PALETTE[i % HERB_PALETTE.length].border),
+            backgroundColor: herbEntries.map((e) => {
+              const num = parseInt(e[0].replace(/\D/g, '')) || 1;
+              return HERB_PALETTE[(num - 1) % HERB_PALETTE.length].bg;
+            }),
+            borderColor: herbEntries.map((e) => {
+              const num = parseInt(e[0].replace(/\D/g, '')) || 1;
+              return HERB_PALETTE[(num - 1) % HERB_PALETTE.length].border;
+            }),
             borderWidth: 1,
             borderRadius: 4,
             maxBarThickness: 22
@@ -5501,6 +5611,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               titleFont: { family: 'Prompt', size: 12 },
               bodyFont: { family: 'Prompt', size: 11 },
               callbacks: {
+                title: (items) => {
+                  const entry = herbEntries[items[0].dataIndex];
+                  return formatHerb9Label(entry ? entry[0] : '');
+                },
                 label: (ctx) => {
                   const val = ctx.raw || 0;
                   const pct = filteredTotal > 0 ? ((val / filteredTotal) * 100).toFixed(1) : 0;
@@ -5573,7 +5687,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           const pct = filteredTotal > 0 ? ((u.count / filteredTotal) * 100).toFixed(1) : '0.0';
           const topHerbEntry = Object.entries(u.herbs).sort((a, b) => b[1] - a[1])[0];
-          const topHerbBadge = topHerbEntry ? `<span class="text-[10px] bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded border border-teal-200 truncate max-w-[120px] inline-block" title="${topHerbEntry[0]}: ${topHerbEntry[1]} ครั้ง">${topHerbEntry[0]}</span>` : '<span class="text-slate-300">-</span>';
+          const topHerbBadge = topHerbEntry ? `<span class="text-[10px] bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded border border-teal-200 truncate max-w-[140px] inline-block" title="${formatHerb9Label(topHerbEntry[0])}: ${topHerbEntry[1]} ครั้ง">${formatHerb9Label(topHerbEntry[0])}</span>` : '<span class="text-slate-300">-</span>';
 
           tr.innerHTML = `
             <td class="py-2.5 px-3 text-center num-font text-slate-400 sticky left-0 bg-white group-hover:bg-teal-50/50 z-10 sm:static">${idx + 1}</td>
@@ -5659,7 +5773,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           const monthHerbs = uSlice?.monthlyHerbs?.[m] || {};
           const herbBadges = Object.entries(monthHerbs).map(([hName, hCnt]) => {
-            return `<span class="inline-flex items-center gap-1 text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 px-1.5 py-0.5 rounded">${hName}: ${Number(hCnt).toLocaleString()} ครั้ง</span>`;
+            return `<span class="inline-flex items-center gap-1 text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 px-1.5 py-0.5 rounded">${formatHerb9Label(hName)}: ${Number(hCnt).toLocaleString()} ครั้ง</span>`;
           }).join(' ') || '<span class="text-slate-300 text-xs">-</span>';
 
           const tr = document.createElement('tr');
