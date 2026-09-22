@@ -3646,6 +3646,57 @@
           </div>
         </div>
 
+        <!-- Dual Dataset Mode Toggle Bar (Shown when indicator has ChronicFU dataset) -->
+        <div id="ncd-dataset-mode-bar" class="hidden glass-card rounded-2xl p-4 bg-gradient-to-r from-emerald-50/90 via-blue-50/60 to-indigo-50/90 border border-slate-200/90 shadow-2xs space-y-2.5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-xs sm:text-sm font-extrabold text-slate-800 flex items-center gap-2 flex-wrap">
+                  <span>ตัวชี้วัดนี้มีข้อมูล 2 ชุด (Dual Datasets)</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-indigo-100 text-indigo-800 border border-indigo-200">Typearea 1,3 & ChronicFU</span>
+                </div>
+                <div class="text-[11.5px] text-slate-500 mt-0.5">
+                  เลือกดูผลงานตาม <strong class="text-emerald-800">ประชากรในเขตรับผิดชอบ</strong> หรือ <strong class="text-indigo-800">ผู้ป่วยที่มารับบริการจริงที่คลินิก รพ.สต. (ChronicFU)</strong> หรือเปรียบเทียบพร้อมกัน
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode Selector Buttons -->
+            <div class="inline-flex bg-white/95 p-1 rounded-xl border border-slate-200 shadow-2xs text-xs font-semibold shrink-0" id="ncd-mode-toggle-group">
+              <button type="button" id="btn-ncd-mode-typearea" onclick="window.switchNcdDatasetMode('typearea')" class="px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-2xs">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span>1. ในเขตรับผิดชอบ (Typearea 1,3)</span>
+              </button>
+              <button type="button" id="btn-ncd-mode-chronicfu" onclick="window.switchNcdDatasetMode('chronicfu')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                <i data-lucide="hospital" class="w-3.5 h-3.5 text-indigo-600"></i>
+                <span>2. ผู้มารับบริการจริง (ChronicFU)</span>
+              </button>
+              <button type="button" id="btn-ncd-mode-compare" onclick="window.switchNcdDatasetMode('compare')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                <i data-lucide="git-compare" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>3. เปรียบเทียบ 2 กลุ่ม</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dataset Legend / Explanatory Badges -->
+          <div class="pt-2 border-t border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-600 gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1 bg-emerald-100/80 text-emerald-900 px-2 py-0.5 rounded-md font-medium border border-emerald-200">
+                <strong class="font-bold">B1 / A1:</strong> ผู้ป่วยในเขตพื้นที่รับผิดชอบ (Typearea 1, 3)
+              </span>
+              <span class="inline-flex items-center gap-1 bg-indigo-100/80 text-indigo-900 px-2 py-0.5 rounded-md font-medium border border-indigo-200">
+                <strong class="font-bold">B2 / A2:</strong> ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU (ผลงานคลินิกจริง)
+              </span>
+            </div>
+            <div class="text-slate-400 text-[10.5px]">
+              *แฟ้ม ChronicFU แสดงผลงานตรวจจริงของผู้ป่วยที่เข้ามารับบริการในคลินิก รพ.สต.
+            </div>
+          </div>
+        </div>
+
         <!-- 4 Bento KPI Cards Container -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="ncd-kpi-cards">
           <!-- Card 1: Numerator (A) -->
@@ -3794,8 +3845,8 @@
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse custom-table">
-              <thead>
+            <table id="ncd-matrix-table" class="w-full text-left border-collapse custom-table">
+              <thead id="ncd-table-thead">
                 <tr class="bg-slate-50/80 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
                   <th class="py-2.5 px-4 w-14 text-center">อันดับ</th>
                   <th class="py-2.5 px-4 w-24">รหัส</th>

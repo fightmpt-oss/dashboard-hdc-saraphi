@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentNcdUnit = 'all';
   let currentNcdSearchQuery = '';
   let currentNcdTableSearch = '';
+  let currentNcdDatasetMode = 'typearea'; // 'typearea', 'chronicfu', 'compare'
   let ncdUnitRateChartInstance = null;
   let ncdUnitCompareChartInstance = null;
   let ncdTrendChartInstance = null;
@@ -13583,6 +13584,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderServicePlanNcdPanel();
   };
 
+  window.switchNcdDatasetMode = function(mode) {
+    currentNcdDatasetMode = mode;
+    ['typearea', 'chronicfu', 'compare'].forEach(m => {
+      const btn = document.getElementById(`btn-ncd-mode-${m}`);
+      if (btn) {
+        if (m === mode) {
+          const bg = (m === 'typearea') ? 'bg-emerald-600' : (m === 'chronicfu') ? 'bg-indigo-600' : 'bg-blue-600';
+          btn.className = `px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${bg} text-white shadow-2xs`;
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+        }
+      }
+    });
+    const report = getActiveNcdReport();
+    if (report) {
+      renderNcdKpis(report);
+      renderNcdCharts(report);
+      renderNcdTable(report);
+    }
+  };
+
   window.filterNcdReportList = function() {
     const searchInput = document.getElementById('ncd-search-input');
     currentNcdSearchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
@@ -13601,6 +13623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentNcdUnit = 'all';
     currentNcdSearchQuery = '';
     currentNcdTableSearch = '';
+    currentNcdDatasetMode = 'typearea';
     currentNcdReportId = 'ncd_22'; // s_dm_screen
 
     const searchInput = document.getElementById('ncd-search-input');
@@ -13732,6 +13755,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       hdcLink.href = report.hdc_url || `https://hdc.moph.go.th/cmi/public/standard-report-detail/${report.opendata_id}`;
     }
 
+    // Toggle Dual Dataset Mode Bar
+    const modeBar = document.getElementById('ncd-dataset-mode-bar');
+    if (modeBar) {
+      if (report.has_fu) {
+        modeBar.classList.remove('hidden');
+        ['typearea', 'chronicfu', 'compare'].forEach(m => {
+          const btn = document.getElementById(`btn-ncd-mode-${m}`);
+          if (btn) {
+            if (m === currentNcdDatasetMode) {
+              const bg = (m === 'typearea') ? 'bg-emerald-600' : (m === 'chronicfu') ? 'bg-indigo-600' : 'bg-blue-600';
+              btn.className = `px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${bg} text-white shadow-2xs`;
+            } else {
+              btn.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+            }
+          }
+        });
+      } else {
+        modeBar.classList.add('hidden');
+        currentNcdDatasetMode = 'typearea';
+      }
+    }
+
     // Render 4 Bento Cards
     renderNcdKpis(report);
 
@@ -13753,9 +13798,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       selData = yrData.units[currentNcdUnit];
     }
 
-    const num = selData ? (selData.result || 0) : (yrData.district?.result || 0);
-    const den = selData ? (selData.target || 0) : (yrData.district?.target || 0);
-    const rate = selData ? (selData.rate || 0) : (yrData.district?.rate || 0);
+    const isFuOnly = report.has_fu && (currentNcdDatasetMode === 'chronicfu');
+    const isCompare = report.has_fu && (currentNcdDatasetMode === 'compare');
+
+    let num = 0, den = 0, rate = 0;
+    let num_fu = 0, den_fu = 0, rate_fu = 0;
+
+    if (selData) {
+      num = selData.result || 0;
+      den = selData.target || 0;
+      rate = selData.rate || 0;
+      num_fu = selData.result_fu || 0;
+      den_fu = selData.target_fu || 0;
+      rate_fu = selData.rate_fu || 0;
+    } else {
+      const d = yrData.district || {};
+      num = d.result || 0;
+      den = d.target || 0;
+      rate = d.rate || 0;
+      num_fu = d.result_fu || 0;
+      den_fu = d.target_fu || 0;
+      rate_fu = d.rate_fu || 0;
+    }
 
     const elResult = document.getElementById('ncd-kpi-result');
     const elTarget = document.getElementById('ncd-kpi-target');
@@ -13764,28 +13828,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     const elResultSub = document.getElementById('ncd-kpi-result-sub');
     const elTargetSub = document.getElementById('ncd-kpi-target-sub');
 
-    if (elResult) elResult.textContent = Number(num).toLocaleString();
-    if (elTarget) elTarget.textContent = Number(den).toLocaleString();
-    if (elRate) elRate.textContent = Number(rate).toFixed(2);
-    if (elRateBar) {
-      const capped = Math.min(100, Math.max(0, rate));
-      elRateBar.style.width = `${capped}%`;
-      elRateBar.className = (rate >= 80) ? 'bg-emerald-500 h-2 rounded-full transition-all duration-500' :
-                            (rate >= 50) ? 'bg-amber-500 h-2 rounded-full transition-all duration-500' :
-                            'bg-rose-500 h-2 rounded-full transition-all duration-500';
+    // Update values based on mode
+    if (isFuOnly) {
+      if (elResult) elResult.textContent = Number(num_fu).toLocaleString();
+      if (elTarget) elTarget.textContent = Number(den_fu).toLocaleString();
+      if (elRate) elRate.textContent = Number(rate_fu).toFixed(2);
+      if (elResultSub) elResultSub.textContent = isAll ? 'ตรวจแล้ว (แฟ้ม ChronicFU รวม)' : `ตรวจแล้วที่คลินิก รพ.สต. (A2)`;
+      if (elTargetSub) elTargetSub.textContent = isAll ? 'ผู้ป่วยมารับบริการจริง (ChronicFU รวม)' : `ผู้ป่วยมารับบริการที่คลินิก (B2)`;
+    } else if (isCompare) {
+      if (elResult) elResult.innerHTML = `<span class="text-emerald-700">${Number(num).toLocaleString()}</span> <span class="text-xs text-slate-400 font-normal">/</span> <span class="text-indigo-700">${Number(num_fu).toLocaleString()}</span>`;
+      if (elTarget) elTarget.innerHTML = `<span class="text-amber-700">${Number(den).toLocaleString()}</span> <span class="text-xs text-slate-400 font-normal">/</span> <span class="text-indigo-700">${Number(den_fu).toLocaleString()}</span>`;
+      if (elRate) elRate.innerHTML = `<span class="text-emerald-600">${Number(rate).toFixed(2)}%</span> <span class="text-xs font-medium text-slate-400">vs</span> <span class="text-indigo-600">${Number(rate_fu).toFixed(2)}%</span>`;
+      if (elResultSub) elResultSub.textContent = `A1 ในเขต: ${Number(num).toLocaleString()} | A2 คลินิก: ${Number(num_fu).toLocaleString()} คน`;
+      if (elTargetSub) elTargetSub.textContent = `B1 ในเขต: ${Number(den).toLocaleString()} | B2 คลินิก: ${Number(den_fu).toLocaleString()} คน`;
+    } else {
+      if (elResult) elResult.textContent = Number(num).toLocaleString();
+      if (elTarget) elTarget.textContent = Number(den).toLocaleString();
+      if (elRate) elRate.textContent = Number(rate).toFixed(2);
+      if (elResultSub) elResultSub.textContent = isAll ? 'ผลงานรวมทั้งอำเภอสารภี (A1)' : `ผลงานในเขต ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit} (A1)`;
+      if (elTargetSub) elTargetSub.textContent = isAll ? 'เป้าหมายรวมทั้งอำเภอสารภี (B1)' : `เป้าหมายในเขต ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit} (B1)`;
     }
 
-    if (elResultSub) {
-      elResultSub.textContent = isAll ? 'ผลงานรวมทั้งอำเภอสารภี' : `ผลงาน ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit}`;
-    }
-    if (elTargetSub) {
-      elTargetSub.textContent = isAll ? 'เป้าหมายรวมทั้งอำเภอสารภี' : `เป้าหมาย ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit}`;
+    const activeRate = isFuOnly ? rate_fu : rate;
+    if (elRateBar) {
+      const capped = Math.min(100, Math.max(0, activeRate));
+      elRateBar.style.width = `${capped}%`;
+      elRateBar.className = isCompare 
+        ? 'bg-gradient-to-r from-emerald-500 to-indigo-500 h-2 rounded-full transition-all duration-500'
+        : (activeRate >= 80) ? 'bg-emerald-500 h-2 rounded-full transition-all duration-500' :
+          (activeRate >= 50) ? 'bg-amber-500 h-2 rounded-full transition-all duration-500' :
+          'bg-rose-500 h-2 rounded-full transition-all duration-500';
     }
 
     // Top Performing Unit
     const unitsMap = yrData.units || {};
-    const unitEntries = Object.entries(unitsMap).filter(([code, u]) => (u.target || 0) > 0 || (u.result || 0) > 0);
-    unitEntries.sort((a, b) => (b[1].rate || 0) - (a[1].rate || 0));
+    const unitEntries = Object.entries(unitsMap).filter(([code, u]) => {
+      if (isFuOnly) return (u.target_fu || 0) > 0 || (u.result_fu || 0) > 0;
+      return (u.target || 0) > 0 || (u.result || 0) > 0;
+    });
+
+    unitEntries.sort((a, b) => {
+      const rA = isFuOnly ? (a[1].rate_fu || 0) : (a[1].rate || 0);
+      const rB = isFuOnly ? (b[1].rate_fu || 0) : (b[1].rate || 0);
+      return rB - rA;
+    });
 
     const elTopUnit = document.getElementById('ncd-kpi-top-unit');
     const elTopRate = document.getElementById('ncd-kpi-top-rate');
@@ -13794,15 +13880,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (unitEntries.length > 0) {
       if (isAll) {
         const top = unitEntries[0][1];
+        const topR = isFuOnly ? (top.rate_fu || 0) : (top.rate || 0);
+        const topA = isFuOnly ? (top.result_fu || 0) : (top.result || 0);
+        const topB = isFuOnly ? (top.target_fu || 0) : (top.target || 0);
         if (elTopUnit) elTopUnit.textContent = top.name || SARAPHI_UNITS_MAP[top.hospcode]?.name || top.hospcode;
-        if (elTopRate) elTopRate.textContent = `${Number(top.rate || 0).toFixed(2)}%`;
-        if (elTopSub) elTopSub.textContent = `อันดับ 1 ของอำเภอ (A: ${Number(top.result || 0).toLocaleString()} / B: ${Number(top.target || 0).toLocaleString()})`;
+        if (elTopRate) elTopRate.textContent = `${Number(topR).toFixed(2)}%`;
+        if (elTopSub) elTopSub.textContent = `อันดับ 1 ${isFuOnly ? 'คลินิก' : 'ในเขต'} (A: ${Number(topA).toLocaleString()} / B: ${Number(topB).toLocaleString()})`;
       } else {
         const rankIdx = unitEntries.findIndex(([code]) => code === currentNcdUnit);
         const thisUnit = yrData.units?.[currentNcdUnit];
         if (rankIdx >= 0 && thisUnit) {
+          const uR = isFuOnly ? (thisUnit.rate_fu || 0) : (thisUnit.rate || 0);
           if (elTopUnit) elTopUnit.textContent = thisUnit.name || SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit;
-          if (elTopRate) elTopRate.textContent = `${Number(thisUnit.rate || 0).toFixed(2)}%`;
+          if (elTopRate) elTopRate.textContent = `${Number(uR).toFixed(2)}%`;
           if (elTopSub) elTopSub.textContent = `อันดับที่ ${rankIdx + 1} จากทั้งหมด ${unitEntries.length} รพ.สต.`;
         } else {
           if (elTopUnit) elTopUnit.textContent = SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit;
@@ -13820,8 +13910,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderNcdCharts(report) {
     const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
     const unitsMap = yrData.units || {};
-    
-    // Sort units by rate descending for horizontal bar chart
+    const hasFu = report.has_fu;
+    const isCompare = hasFu && currentNcdDatasetMode === 'compare';
+    const isFuOnly = hasFu && currentNcdDatasetMode === 'chronicfu';
+
+    // Map units
     const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
       const u = unitsMap[code] || {};
       const meta = SARAPHI_UNITS_MAP[code] || {};
@@ -13832,11 +13925,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         subdistrict: meta.subdistrict || u.subdistrict || '',
         target: u.target || 0,
         result: u.result || 0,
-        rate: u.rate || 0
+        rate: u.rate || 0,
+        target_fu: u.target_fu || 0,
+        result_fu: u.result_fu || 0,
+        rate_fu: u.rate_fu || 0
       };
     });
 
-    const sortedByRate = [...unitsList].sort((a, b) => b.rate - a.rate);
+    // Sort units
+    const sortedByRate = [...unitsList].sort((a, b) => {
+      if (isFuOnly) return b.rate_fu - a.rate_fu;
+      if (isCompare) return (b.rate_fu + b.rate) - (a.rate_fu + a.rate);
+      return b.rate - a.rate;
+    });
 
     // --- CHART 1: Horizontal Bar Chart of Unit Rates (%) ---
     const canvasRate = document.getElementById('ncd-unit-rate-chart');
@@ -13847,39 +13948,86 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const labels1 = sortedByRate.map(u => u.name);
-      const data1 = sortedByRate.map(u => u.rate);
-      const bgColors1 = sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : '#10b981'));
-      const borderColors1 = sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669'));
+      let datasets1 = [];
+
+      if (isCompare) {
+        datasets1 = [
+          {
+            label: 'ในเขตรับผิดชอบ (Typearea 1,3 %)',
+            data: sortedByRate.map(u => u.rate),
+            backgroundColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)'),
+            borderColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#d97706' : '#059669'),
+            borderWidth: 1,
+            borderRadius: 4
+          },
+          {
+            label: 'ผู้มารับบริการจริง (ChronicFU %)',
+            data: sortedByRate.map(u => u.rate_fu),
+            backgroundColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#fbbf24' : 'rgba(99, 102, 241, 0.85)'),
+            borderColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5'),
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ];
+        const badge = document.getElementById('ncd-chart1-badge');
+        if (badge) badge.textContent = 'เปรียบเทียบ Typearea vs ChronicFU %';
+      } else if (isFuOnly) {
+        datasets1 = [{
+          label: 'ร้อยละผู้มารับบริการจริง (ChronicFU %)',
+          data: sortedByRate.map(u => u.rate_fu),
+          backgroundColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(99, 102, 241, 0.85)')),
+          borderColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5')),
+          borderWidth: 1,
+          borderRadius: 6
+        }];
+        const badge = document.getElementById('ncd-chart1-badge');
+        if (badge) badge.textContent = 'ChronicFU Rate %';
+      } else {
+        datasets1 = [{
+          label: 'ร้อยละในเขตรับผิดชอบ (Typearea 1,3 %)',
+          data: sortedByRate.map(u => u.rate),
+          backgroundColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)')),
+          borderColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669')),
+          borderWidth: 1,
+          borderRadius: 6
+        }];
+        const badge = document.getElementById('ncd-chart1-badge');
+        if (badge) badge.textContent = 'Typearea Rate %';
+      }
 
       const ctx1 = canvasRate.getContext('2d');
       ncdUnitRateChartInstance = new Chart(ctx1, {
         type: 'bar',
         data: {
           labels: labels1,
-          datasets: [{
-            label: 'ร้อยละผลงาน (%)',
-            data: data1,
-            backgroundColor: bgColors1,
-            borderColor: borderColors1,
-            borderWidth: 1,
-            borderRadius: 6
-          }]
+          datasets: datasets1
         },
         options: {
           indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false },
+            legend: {
+              display: isCompare,
+              position: 'top',
+              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
+            },
             tooltip: {
               callbacks: {
                 label: function(ctx) {
                   const idx = ctx.dataIndex;
                   const item = sortedByRate[idx];
+                  if (ctx.dataset.label.includes('ChronicFU')) {
+                    return [
+                      ` ${ctx.dataset.label}: ${item.rate_fu.toFixed(2)}%`,
+                      ` ตรวจแล้ว (A2): ${item.result_fu.toLocaleString()} คน`,
+                      ` ผู้ป่วยคลินิก (B2): ${item.target_fu.toLocaleString()} คน`
+                    ];
+                  }
                   return [
-                    ` ร้อยละผลงาน: ${item.rate.toFixed(2)}%`,
-                    ` ผลงาน (A): ${item.result.toLocaleString()} คน`,
-                    ` เป้าหมาย (B): ${item.target.toLocaleString()} คน`
+                    ` ${ctx.dataset.label}: ${item.rate.toFixed(2)}%`,
+                    ` ตรวจแล้ว (A1): ${item.result.toLocaleString()} คน`,
+                    ` ผู้ป่วยในเขต (B1): ${item.target.toLocaleString()} คน`
                   ];
                 }
               }
@@ -13916,7 +14064,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    // --- CHART 2: Grouped Bar Chart Numerator (A) vs Denominator (B) ---
+    // --- CHART 2: Grouped Bar Chart Numerator vs Denominator ---
     const canvasCompare = document.getElementById('ncd-unit-compare-chart');
     if (canvasCompare) {
       if (ncdUnitCompareChartInstance) {
@@ -13925,32 +14073,79 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const labels2 = unitsList.map(u => u.name);
-      const dataResult = unitsList.map(u => u.result);
-      const dataTarget = unitsList.map(u => u.target);
+      let datasets2 = [];
+
+      if (isCompare) {
+        datasets2 = [
+          {
+            label: 'ผลงานตรวจในเขต (A1)',
+            data: unitsList.map(u => u.result),
+            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+            borderColor: '#059669',
+            borderWidth: 1,
+            borderRadius: 4
+          },
+          {
+            label: 'ผลงานตรวจคลินิกจริง (A2)',
+            data: unitsList.map(u => u.result_fu),
+            backgroundColor: 'rgba(99, 102, 241, 0.85)',
+            borderColor: '#4f46e5',
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ];
+        const badge2 = document.getElementById('ncd-chart2-badge');
+        if (badge2) badge2.textContent = 'ผลงาน A1 vs A2';
+      } else if (isFuOnly) {
+        datasets2 = [
+          {
+            label: 'ผลงานตรวจคลินิกจริง (A2)',
+            data: unitsList.map(u => u.result_fu),
+            backgroundColor: 'rgba(99, 102, 241, 0.85)',
+            borderColor: '#4f46e5',
+            borderWidth: 1,
+            borderRadius: 4
+          },
+          {
+            label: 'ผู้ป่วยคลินิกจริง (B2)',
+            data: unitsList.map(u => u.target_fu),
+            backgroundColor: 'rgba(245, 158, 11, 0.75)',
+            borderColor: '#d97706',
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ];
+        const badge2 = document.getElementById('ncd-chart2-badge');
+        if (badge2) badge2.textContent = 'A2 vs B2 (ChronicFU)';
+      } else {
+        datasets2 = [
+          {
+            label: 'ผลงาน (ตัวตั้ง A1)',
+            data: unitsList.map(u => u.result),
+            backgroundColor: 'rgba(59, 130, 246, 0.85)',
+            borderColor: '#2563eb',
+            borderWidth: 1,
+            borderRadius: 4
+          },
+          {
+            label: 'เป้าหมาย (ตัวหาร B1)',
+            data: unitsList.map(u => u.target),
+            backgroundColor: 'rgba(245, 158, 11, 0.75)',
+            borderColor: '#d97706',
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ];
+        const badge2 = document.getElementById('ncd-chart2-badge');
+        if (badge2) badge2.textContent = 'A1 vs B1 (Typearea)';
+      }
 
       const ctx2 = canvasCompare.getContext('2d');
       ncdUnitCompareChartInstance = new Chart(ctx2, {
         type: 'bar',
         data: {
           labels: labels2,
-          datasets: [
-            {
-              label: 'ผลงาน (ตัวตั้ง A)',
-              data: dataResult,
-              backgroundColor: 'rgba(59, 130, 246, 0.85)',
-              borderColor: '#2563eb',
-              borderWidth: 1,
-              borderRadius: 4
-            },
-            {
-              label: 'เป้าหมาย (ตัวหาร B)',
-              data: dataTarget,
-              backgroundColor: 'rgba(245, 158, 11, 0.75)',
-              borderColor: '#d97706',
-              borderWidth: 1,
-              borderRadius: 4
-            }
-          ]
+          datasets: datasets2
         },
         options: {
           responsive: true,
@@ -13958,9 +14153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           plugins: {
             legend: {
               position: 'top',
-              labels: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' }
-              }
+              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
             },
             tooltip: {
               callbacks: {
@@ -14018,6 +14211,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const trendResult = [];
       const trendTarget = [];
       const trendRate = [];
+      const trendResultFu = [];
+      const trendTargetFu = [];
+      const trendRateFu = [];
 
       years.forEach(y => {
         const yObj = report.years?.[y] || {};
@@ -14026,11 +14222,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           trendResult.push(d.result || 0);
           trendTarget.push(d.target || 0);
           trendRate.push(d.rate || 0);
+          trendResultFu.push(d.result_fu || 0);
+          trendTargetFu.push(d.target_fu || 0);
+          trendRateFu.push(d.rate_fu || 0);
         } else {
           const u = yObj.units?.[currentNcdUnit] || {};
           trendResult.push(u.result || 0);
           trendTarget.push(u.target || 0);
           trendRate.push(u.rate || 0);
+          trendResultFu.push(u.result_fu || 0);
+          trendTargetFu.push(u.target_fu || 0);
+          trendRateFu.push(u.rate_fu || 0);
         }
       });
 
@@ -14039,49 +14241,109 @@ document.addEventListener('DOMContentLoaded', async () => {
         scopeBadge.textContent = isAll ? 'ภาพรวมทั้งอำเภอสารภี' : (SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit);
       }
 
+      let trendDatasets = [];
+      if (hasFu) {
+        trendDatasets = [
+          {
+            type: 'line',
+            label: 'ร้อยละในเขต (Typearea %)',
+            data: trendRate,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 3,
+            tension: 0.3,
+            fill: false,
+            yAxisID: 'y1',
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#10b981',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2
+          },
+          {
+            type: 'line',
+            label: 'ร้อยละคลินิกจริง (ChronicFU %)',
+            data: trendRateFu,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            borderWidth: 3,
+            tension: 0.3,
+            fill: false,
+            yAxisID: 'y1',
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#6366f1',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2
+          },
+          {
+            type: 'bar',
+            label: 'ผลงานตรวจในเขต (A1)',
+            data: trendResult,
+            backgroundColor: 'rgba(16, 185, 129, 0.4)',
+            borderColor: '#059669',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          },
+          {
+            type: 'bar',
+            label: 'ผลงานตรวจคลินิกจริง (A2)',
+            data: trendResultFu,
+            backgroundColor: 'rgba(99, 102, 241, 0.4)',
+            borderColor: '#4f46e5',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          }
+        ];
+      } else {
+        trendDatasets = [
+          {
+            type: 'line',
+            label: 'ร้อยละผลงาน (Rate %)',
+            data: trendRate,
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.15)',
+            borderWidth: 3,
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y1',
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#8b5cf6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2
+          },
+          {
+            type: 'bar',
+            label: 'ผลงาน (A)',
+            data: trendResult,
+            backgroundColor: 'rgba(59, 130, 246, 0.85)',
+            borderColor: '#2563eb',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          },
+          {
+            type: 'bar',
+            label: 'เป้าหมาย (B)',
+            data: trendTarget,
+            backgroundColor: 'rgba(203, 213, 225, 0.7)',
+            borderColor: '#94a3b8',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          }
+        ];
+      }
+
       const ctx3 = canvasTrend.getContext('2d');
       ncdTrendChartInstance = new Chart(ctx3, {
         type: 'bar',
         data: {
           labels: ['ปีงบ 2567', 'ปีงบ 2568', 'ปีงบ 2569 (ปัจจุบัน)'],
-          datasets: [
-            {
-              type: 'line',
-              label: 'ร้อยละผลงาน (Rate %)',
-              data: trendRate,
-              borderColor: '#8b5cf6',
-              backgroundColor: 'rgba(139, 92, 246, 0.15)',
-              borderWidth: 3,
-              tension: 0.3,
-              fill: true,
-              yAxisID: 'y1',
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              pointBackgroundColor: '#8b5cf6',
-              pointBorderColor: '#ffffff',
-              pointBorderWidth: 2
-            },
-            {
-              type: 'bar',
-              label: 'ผลงาน (A)',
-              data: trendResult,
-              backgroundColor: 'rgba(59, 130, 246, 0.85)',
-              borderColor: '#2563eb',
-              borderWidth: 1,
-              borderRadius: 6,
-              yAxisID: 'y'
-            },
-            {
-              type: 'bar',
-              label: 'เป้าหมาย (B)',
-              data: trendTarget,
-              backgroundColor: 'rgba(203, 213, 225, 0.7)',
-              borderColor: '#94a3b8',
-              borderWidth: 1,
-              borderRadius: 6,
-              yAxisID: 'y'
-            }
-          ]
+          datasets: trendDatasets
         },
         options: {
           responsive: true,
@@ -14089,15 +14351,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           plugins: {
             legend: {
               position: 'top',
-              labels: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' }
-              }
+              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
             },
             tooltip: {
               callbacks: {
                 label: function(ctx) {
                   if (ctx.dataset.yAxisID === 'y1') {
-                    return ` ร้อยละผลงาน: ${(ctx.raw || 0).toFixed(2)}%`;
+                    return ` ${ctx.dataset.label}: ${(ctx.raw || 0).toFixed(2)}%`;
                   }
                   return ` ${ctx.dataset.label}: ${Number(ctx.raw || 0).toLocaleString()} คน`;
                 }
@@ -14144,9 +14404,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
     const unitsMap = yrData.units || {};
+    const thead = document.getElementById('ncd-table-thead');
     const tbody = document.getElementById('ncd-table-tbody');
     const tfoot = document.getElementById('ncd-table-tfoot');
     if (!tbody || !tfoot) return;
+
+    const hasFu = report.has_fu;
 
     const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
       const u = unitsMap[code] || {};
@@ -14157,13 +14420,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         subdistrict: meta.subdistrict || u.subdistrict || '',
         target: u.target || 0,
         result: u.result || 0,
-        rate: u.rate || 0
+        rate: u.rate || 0,
+        result1: u.result1 || 0,
+        result2: u.result2 || 0,
+        target_fu: u.target_fu || 0,
+        result_fu: u.result_fu || 0,
+        rate_fu: u.rate_fu || 0,
+        result1_fu: u.result1_fu || 0,
+        result2_fu: u.result2_fu || 0
       };
     });
 
     // Also include any extra hospcodes in yrData.units if not in SARAPHI_UNITS_MAP
     Object.keys(unitsMap).forEach(code => {
-      if (!SARAPHI_UNITS_MAP[code] && (unitsMap[code].target > 0 || unitsMap[code].result > 0)) {
+      if (!SARAPHI_UNITS_MAP[code] && (unitsMap[code].target > 0 || unitsMap[code].result > 0 || unitsMap[code].target_fu > 0)) {
         const u = unitsMap[code];
         unitsList.push({
           hospcode: code,
@@ -14171,13 +14441,24 @@ document.addEventListener('DOMContentLoaded', async () => {
           subdistrict: u.subdistrict || '-',
           target: u.target || 0,
           result: u.result || 0,
-          rate: u.rate || 0
+          rate: u.rate || 0,
+          result1: u.result1 || 0,
+          result2: u.result2 || 0,
+          target_fu: u.target_fu || 0,
+          result_fu: u.result_fu || 0,
+          rate_fu: u.rate_fu || 0,
+          result1_fu: u.result1_fu || 0,
+          result2_fu: u.result2_fu || 0
         });
       }
     });
 
-    // Sort by rate descending
-    unitsList.sort((a, b) => b.rate - a.rate);
+    // Sort by rate descending (if ChronicFU mode, sort by rate_fu)
+    if (hasFu && currentNcdDatasetMode === 'chronicfu') {
+      unitsList.sort((a, b) => b.rate_fu - a.rate_fu);
+    } else {
+      unitsList.sort((a, b) => b.rate - a.rate);
+    }
 
     // Filter by table search input
     const filtered = unitsList.filter(u => {
@@ -14189,61 +14470,176 @@ document.addEventListener('DOMContentLoaded', async () => {
       );
     });
 
-    const distRate = yrData.district?.rate || 0;
+    const dist = yrData.district || {};
 
-    tbody.innerHTML = '';
-    if (!filtered.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
-    } else {
-      filtered.forEach((u, idx) => {
-        const isSelected = (u.hospcode === currentNcdUnit);
-        const rowClass = isSelected ? 'bg-amber-50/70 font-semibold' : 'hover:bg-slate-50/70 transition';
-        const isAboveAvg = (u.rate >= distRate && u.target > 0);
-        const statusBadge = isAboveAvg 
-          ? `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">ผลงานเด่น</span>`
-          : `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-medium bg-slate-100 text-slate-600">ปกติ</span>`;
-
-        const tr = document.createElement('tr');
-        tr.className = rowClass;
-        tr.style.cursor = 'pointer';
-        tr.onclick = () => {
-          const uSel = document.getElementById('ncd-unit-select');
-          if (uSel) uSel.value = u.hospcode;
-          window.switchNcdUnit(u.hospcode);
-        };
-
-        tr.innerHTML = `
-          <td class="py-2.5 px-4 text-center text-slate-400 num-font">${idx + 1}</td>
-          <td class="py-2.5 px-4 font-mono text-slate-600 text-xs">${u.hospcode}</td>
-          <td class="py-2.5 px-4 font-bold text-slate-900">${u.name}</td>
-          <td class="py-2.5 px-4 text-slate-500">${u.subdistrict}</td>
-          <td class="py-2.5 px-4 text-right num-font font-bold text-blue-700">${Number(u.result).toLocaleString()}</td>
-          <td class="py-2.5 px-4 text-right num-font text-slate-700">${Number(u.target).toLocaleString()}</td>
-          <td class="py-2.5 px-4 text-right num-font font-extrabold ${u.rate >= distRate ? 'text-emerald-700' : 'text-slate-800'}">${Number(u.rate).toFixed(2)}%</td>
-          <td class="py-2.5 px-4 text-center">${statusBadge}</td>
+    if (hasFu) {
+      // 1. RENDER DUAL-GROUP THEAD (Exact Match to HDC Screenshot)
+      if (thead) {
+        thead.innerHTML = `
+          <tr class="bg-emerald-900 text-white text-xs font-bold border-b border-emerald-800">
+            <th rowspan="2" class="py-3 px-3 w-12 text-center border-r border-emerald-800">ลำดับ</th>
+            <th rowspan="2" class="py-3 px-3 w-20 border-r border-emerald-800">รหัส</th>
+            <th rowspan="2" class="py-3 px-4 min-w-[200px] border-r border-emerald-800">หน่วยบริการ</th>
+            <th colspan="5" class="py-2.5 px-3 text-center border-r border-emerald-700 bg-emerald-800 font-extrabold text-[12px]">
+              <i class="fa-solid fa-house-chimney mr-1 text-emerald-300"></i> ผู้ป่วยที่อยู่ในเขตรับผิดชอบ Typearea 1,3
+            </th>
+            <th colspan="5" class="py-2.5 px-3 text-center bg-indigo-900 font-extrabold text-[12px]">
+              <i class="fa-solid fa-hospital-user mr-1 text-indigo-300"></i> ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU
+            </th>
+          </tr>
+          <tr class="bg-emerald-950 text-white text-[11px] font-semibold border-b border-emerald-800">
+            <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90">จำนวนผู้ป่วย (B1)</th>
+            <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90">ได้รับการตรวจ (A1)</th>
+            <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-800 font-extrabold text-emerald-200">%</th>
+            <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90">ผลปกติ</th>
+            <th class="py-2 px-2.5 text-right border-r border-emerald-800 bg-emerald-900/90">ผลผิดปกติ</th>
+            <th class="py-2 px-2.5 text-right border-r border-indigo-800/80 bg-indigo-950/90">จำนวนผู้ป่วย (B2)</th>
+            <th class="py-2 px-2.5 text-right border-r border-indigo-800/80 bg-indigo-950/90">ได้รับการตรวจ (A2)</th>
+            <th class="py-2 px-2.5 text-right border-r border-indigo-800/80 bg-indigo-950 font-extrabold text-indigo-200">%</th>
+            <th class="py-2 px-2.5 text-right border-r border-indigo-800/80 bg-indigo-950/90">ผลปกติ</th>
+            <th class="py-2 px-2.5 text-right bg-indigo-950/90">ผลผิดปกติ</th>
+          </tr>
         `;
-        tbody.appendChild(tr);
-      });
+      }
+
+      // 2. RENDER DUAL-GROUP TBODY
+      tbody.innerHTML = '';
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="13" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
+      } else {
+        filtered.forEach((u, idx) => {
+          const isSelected = (u.hospcode === currentNcdUnit);
+          const rowClass = isSelected ? 'bg-amber-50/80 font-semibold ring-1 ring-amber-300' : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/70' : 'bg-slate-50/40 hover:bg-slate-100/60');
+
+          const tr = document.createElement('tr');
+          tr.className = `${rowClass} text-xs transition border-b border-slate-100`;
+          tr.style.cursor = 'pointer';
+          tr.onclick = () => {
+            const uSel = document.getElementById('ncd-unit-select');
+            if (uSel) uSel.value = u.hospcode;
+            window.switchNcdUnit(u.hospcode);
+          };
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 text-center text-slate-400 num-font border-r border-slate-200/60">${idx + 1}</td>
+            <td class="py-2.5 px-3 font-mono text-slate-600 text-xs border-r border-slate-200/60">${u.hospcode}</td>
+            <td class="py-2.5 px-4 font-bold text-slate-900 border-r border-slate-200/60">
+              <span>${u.name}</span>
+              <span class="text-[11px] text-slate-400 font-normal ml-1">ต.${u.subdistrict}</span>
+            </td>
+            <!-- Typearea 1,3 Data -->
+            <td class="py-2.5 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-200/60 bg-emerald-50/20">${Number(u.target).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font font-bold text-emerald-800 border-r border-slate-200/60 bg-emerald-50/30">${Number(u.result).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font font-extrabold text-emerald-700 border-r border-slate-200/60 bg-emerald-100/40">${Number(u.rate).toFixed(2)}</td>
+            <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60 bg-emerald-50/10">${Number(u.result1).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font text-rose-700 border-r-2 border-slate-300 bg-emerald-50/10">${Number(u.result2).toLocaleString()}</td>
+            <!-- ChronicFU Data -->
+            <td class="py-2.5 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-200/60 bg-indigo-50/20">${Number(u.target_fu).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font font-bold text-indigo-800 border-r border-slate-200/60 bg-indigo-50/30">${Number(u.result_fu).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font font-extrabold text-indigo-700 border-r border-slate-200/60 bg-indigo-100/40">${Number(u.rate_fu).toFixed(2)}</td>
+            <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.result1_fu).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font text-rose-700 bg-indigo-50/10">${Number(u.result2_fu).toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // 3. RENDER DUAL-GROUP TFOOT (District Total for 10 Columns)
+      tfoot.innerHTML = `
+        <tr class="bg-gradient-to-r from-emerald-100/90 to-indigo-100/90 text-slate-900 border-t-2 border-emerald-600 font-bold text-xs">
+          <td class="py-3 px-3 text-center num-font font-extrabold text-emerald-950 border-r border-slate-300">-</td>
+          <td class="py-3 px-3 font-mono text-emerald-950 font-extrabold text-xs border-r border-slate-300">5019</td>
+          <td class="py-3 px-4 font-extrabold text-emerald-950 text-sm border-r border-slate-300">
+            รวมทั้งอำเภอสารภี (HDC สธ.)
+          </td>
+          <!-- District Typearea 1,3 Total -->
+          <td class="py-3 px-2.5 text-right num-font font-extrabold text-slate-900 border-r border-slate-300 bg-emerald-100/80">${Number(dist.target || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-extrabold text-emerald-900 border-r border-slate-300 bg-emerald-100/90">${Number(dist.result || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-black text-emerald-800 text-[13px] border-r border-slate-300 bg-emerald-200/70">${Number(dist.rate || 0).toFixed(2)}</td>
+          <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300 bg-emerald-100/60">${Number(dist.result1 || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-bold text-rose-800 border-r-2 border-slate-400 bg-emerald-100/60">${Number(dist.result2 || 0).toLocaleString()}</td>
+          <!-- District ChronicFU Total -->
+          <td class="py-3 px-2.5 text-right num-font font-extrabold text-slate-900 border-r border-slate-300 bg-indigo-100/80">${Number(dist.target_fu || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-extrabold text-indigo-900 border-r border-slate-300 bg-indigo-100/90">${Number(dist.result_fu || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-black text-indigo-800 text-[13px] border-r border-slate-300 bg-indigo-200/70">${Number(dist.rate_fu || 0).toFixed(2)}</td>
+          <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(dist.result1_fu || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-bold text-rose-800 bg-indigo-100/60">${Number(dist.result2_fu || 0).toLocaleString()}</td>
+        </tr>
+      `;
+
+    } else {
+      // NON-FU SINGLE DATASET TABLE (Standard HDC Layout)
+      if (thead) {
+        thead.innerHTML = `
+          <tr class="bg-slate-50/80 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+            <th class="py-2.5 px-4 w-14 text-center">อันดับ</th>
+            <th class="py-2.5 px-4 w-24">รหัส</th>
+            <th class="py-2.5 px-4">ชื่อหน่วยบริการ</th>
+            <th class="py-2.5 px-4">ตำบล</th>
+            <th class="py-2.5 px-4 text-right">ผลงาน (ตัวตั้ง A)</th>
+            <th class="py-2.5 px-4 text-right">เป้าหมาย (ตัวหาร B)</th>
+            <th class="py-2.5 px-4 text-right">ร้อยละผลงาน</th>
+            <th class="py-2.5 px-4 text-center w-28">สถานะ</th>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = '';
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
+      } else {
+        const distRate = dist.rate || 0;
+        filtered.forEach((u, idx) => {
+          const isSelected = (u.hospcode === currentNcdUnit);
+          const rowClass = isSelected ? 'bg-amber-50/70 font-semibold' : 'hover:bg-slate-50/70 transition';
+          const isAboveAvg = (u.rate >= distRate && u.target > 0);
+          const statusBadge = isAboveAvg 
+            ? `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">ผลงานเด่น</span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-medium bg-slate-100 text-slate-600">ปกติ</span>`;
+
+          const tr = document.createElement('tr');
+          tr.className = rowClass;
+          tr.style.cursor = 'pointer';
+          tr.onclick = () => {
+            const uSel = document.getElementById('ncd-unit-select');
+            if (uSel) uSel.value = u.hospcode;
+            window.switchNcdUnit(u.hospcode);
+          };
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-4 text-center text-slate-400 num-font">${idx + 1}</td>
+            <td class="py-2.5 px-4 font-mono text-slate-600 text-xs">${u.hospcode}</td>
+            <td class="py-2.5 px-4 font-bold text-slate-900">${u.name}</td>
+            <td class="py-2.5 px-4 text-slate-500">${u.subdistrict}</td>
+            <td class="py-2.5 px-4 text-right num-font font-bold text-blue-700">${Number(u.result).toLocaleString()}</td>
+            <td class="py-2.5 px-4 text-right num-font text-slate-700">${Number(u.target).toLocaleString()}</td>
+            <td class="py-2.5 px-4 text-right num-font font-extrabold ${u.rate >= distRate ? 'text-emerald-700' : 'text-slate-800'}">${Number(u.rate).toFixed(2)}%</td>
+            <td class="py-2.5 px-4 text-center">${statusBadge}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Foot District Total Row
+      const distResult = dist.result || 0;
+      const distTarget = dist.target || 0;
+      const distRate = dist.rate || 0;
+
+      tfoot.innerHTML = `
+        <tr>
+          <td class="py-3 px-4 text-center num-font font-extrabold text-rose-800">-</td>
+          <td class="py-3 px-4 font-mono text-rose-800 font-extrabold text-xs">5019</td>
+          <td class="py-3 px-4 font-extrabold text-rose-900 text-sm">รวมทั้งอำเภอสารภี (HDC สธ.)</td>
+          <td class="py-3 px-4 text-rose-700 font-semibold">12 ตำบล</td>
+          <td class="py-3 px-4 text-right num-font font-extrabold text-blue-900 text-sm">${Number(distResult).toLocaleString()}</td>
+          <td class="py-3 px-4 text-right num-font font-extrabold text-amber-900 text-sm">${Number(distTarget).toLocaleString()}</td>
+          <td class="py-3 px-4 text-right num-font font-extrabold text-emerald-800 text-base">${Number(distRate).toFixed(2)}%</td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-200/80 text-rose-900 border border-rose-300 shadow-2xs">ภาพรวมอำเภอ</span>
+          </td>
+        </tr>
+      `;
     }
-
-    // Foot District Total Row
-    const distResult = yrData.district?.result || 0;
-    const distTarget = yrData.district?.target || 0;
-
-    tfoot.innerHTML = `
-      <tr>
-        <td class="py-3 px-4 text-center num-font font-extrabold text-rose-800">-</td>
-        <td class="py-3 px-4 font-mono text-rose-800 font-extrabold text-xs">5019</td>
-        <td class="py-3 px-4 font-extrabold text-rose-900 text-sm">รวมทั้งอำเภอสารภี (HDC สธ.)</td>
-        <td class="py-3 px-4 text-rose-700 font-semibold">12 ตำบล</td>
-        <td class="py-3 px-4 text-right num-font font-extrabold text-blue-900 text-sm">${Number(distResult).toLocaleString()}</td>
-        <td class="py-3 px-4 text-right num-font font-extrabold text-amber-900 text-sm">${Number(distTarget).toLocaleString()}</td>
-        <td class="py-3 px-4 text-right num-font font-extrabold text-emerald-800 text-base">${Number(distRate).toFixed(2)}%</td>
-        <td class="py-3 px-4 text-center">
-          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-200/80 text-rose-900 border border-rose-300 shadow-2xs">ภาพรวมอำเภอ</span>
-        </td>
-      </tr>
-    `;
   }
 
   window.exportNcdTableCsv = function() {
@@ -14252,32 +14648,72 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
     const unitsMap = yrData.units || {};
+    const hasFu = report.has_fu;
 
     let csvContent = `\uFEFFรายงานมาตรฐาน Service Plan NCDs: ${report.name}\n`;
     csvContent += `ตาราง HDC: ${report.table_name},ปีงบประมาณ: ${currentNcdYear},หมวดหมู่: ${report.category}\n\n`;
-    csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,ผลงาน (ตัวตั้ง A),เป้าหมาย (ตัวหาร B),ร้อยละผลงาน (%)\n`;
 
-    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
-      const u = unitsMap[code] || {};
-      const meta = SARAPHI_UNITS_MAP[code] || {};
-      return {
-        hospcode: code,
-        name: meta.name || u.name || code,
-        subdistrict: meta.subdistrict || u.subdistrict || '',
-        target: u.target || 0,
-        result: u.result || 0,
-        rate: u.rate || 0
-      };
-    });
+    if (hasFu) {
+      csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,เป้าหมายในเขต (B1),ผลงานในเขต (A1),ร้อยละในเขต (%),ผลปกติ (Typearea),ผลผิดปกติ (Typearea),เป้าหมายคลินิก (B2),ผลงานคลินิก (A2),ร้อยละคลินิก (%),ผลปกติ (ChronicFU),ผลผิดปกติ (ChronicFU)\n`;
 
-    unitsList.sort((a, b) => b.rate - a.rate);
+      const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
+        const u = unitsMap[code] || {};
+        const meta = SARAPHI_UNITS_MAP[code] || {};
+        return {
+          hospcode: code,
+          name: meta.name || u.name || code,
+          subdistrict: meta.subdistrict || u.subdistrict || '',
+          target: u.target || 0,
+          result: u.result || 0,
+          rate: u.rate || 0,
+          result1: u.result1 || 0,
+          result2: u.result2 || 0,
+          target_fu: u.target_fu || 0,
+          result_fu: u.result_fu || 0,
+          rate_fu: u.rate_fu || 0,
+          result1_fu: u.result1_fu || 0,
+          result2_fu: u.result2_fu || 0
+        };
+      });
 
-    unitsList.forEach((u, idx) => {
-      csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.result},${u.target},${u.rate.toFixed(2)}\n`;
-    });
+      if (currentNcdDatasetMode === 'chronicfu') {
+        unitsList.sort((a, b) => b.rate_fu - a.rate_fu);
+      } else {
+        unitsList.sort((a, b) => b.rate - a.rate);
+      }
 
-    const d = yrData.district || {};
-    csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.result || 0},${d.target || 0},${(d.rate || 0).toFixed(2)}\n`;
+      unitsList.forEach((u, idx) => {
+        csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.target},${u.result},${u.rate.toFixed(2)},${u.result1},${u.result2},${u.target_fu},${u.result_fu},${u.rate_fu.toFixed(2)},${u.result1_fu},${u.result2_fu}\n`;
+      });
+
+      const d = yrData.district || {};
+      csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.target || 0},${d.result || 0},${(d.rate || 0).toFixed(2)},${d.result1 || 0},${d.result2 || 0},${d.target_fu || 0},${d.result_fu || 0},${(d.rate_fu || 0).toFixed(2)},${d.result1_fu || 0},${d.result2_fu || 0}\n`;
+
+    } else {
+      csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,ผลงาน (ตัวตั้ง A),เป้าหมาย (ตัวหาร B),ร้อยละผลงาน (%)\n`;
+
+      const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
+        const u = unitsMap[code] || {};
+        const meta = SARAPHI_UNITS_MAP[code] || {};
+        return {
+          hospcode: code,
+          name: meta.name || u.name || code,
+          subdistrict: meta.subdistrict || u.subdistrict || '',
+          target: u.target || 0,
+          result: u.result || 0,
+          rate: u.rate || 0
+        };
+      });
+
+      unitsList.sort((a, b) => b.rate - a.rate);
+
+      unitsList.forEach((u, idx) => {
+        csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.result},${u.target},${u.rate.toFixed(2)}\n`;
+      });
+
+      const d = yrData.district || {};
+      csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.result || 0},${d.target || 0},${(d.rate || 0).toFixed(2)}\n`;
+    }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');

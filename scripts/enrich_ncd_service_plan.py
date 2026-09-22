@@ -26,22 +26,7 @@ SARAPHI_MAP = {
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']
 
-def classify_category(name, table):
-    name_lower = (name or '').lower()
-    table_lower = (table or '').lower()
-    
-    if 'ไต' in name_lower or 'ckd' in table_lower or 'egfr' in table_lower:
-        return 'CKD'
-    elif 'cvd' in table_lower or 'หัวใจ' in name_lower or 'หลอดเลือด' in name_lower:
-        return 'CVD'
-    elif 'เบาหวาน' in name_lower or 'dm' in table_lower or 'hba1c' in table_lower:
-        return 'DM'
-    elif 'ความดัน' in name_lower or 'ht' in table_lower or 'bp' in table_lower:
-        return 'HT'
-    else:
-        return 'SCREEN'
-
-async def fetch_table_year(session, sem, table, year, max_retries=3):
+async def fetch_table_year(session, sem, table, year, max_retries=5):
     payload = {
         'tableName': table,
         'year': str(year),
@@ -50,36 +35,42 @@ async def fetch_table_year(session, sem, table, year, max_retries=3):
         'offset': 0,
         'limit': 5000
     }
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Content-Type': 'application/json'
+    }
     async with sem:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'Content-Type': 'application/json'}
         for attempt in range(max_retries):
             try:
-                async with session.post(URL, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=35)) as res:
+                async with session.post(URL, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=40)) as res:
                     if res.status in (200, 201):
                         data = await res.json()
                         rows = data.get('data', [])
-                        # Filter Saraphi district: areacode starts with 5019
                         saraphi_rows = [r for r in rows if str(r.get('areacode', '')).startswith('5019')]
+                        await asyncio.sleep(0.3)
                         return table, year, saraphi_rows, None
+                    elif res.status == 429:
+                        wait_sec = (attempt + 1) * 3
+                        # print(f"  [429 Throttled] {table} ({year}) -> backing off {wait_sec}s...")
+                        await asyncio.sleep(wait_sec)
                     else:
                         if attempt == max_retries - 1:
                             return table, year, [], f"HTTP {res.status}"
+                        await asyncio.sleep(2.0)
             except Exception as e:
                 if attempt == max_retries - 1:
                     return table, year, [], str(e)
-            await asyncio.sleep(1.5)
-    return table, year, [], "Unknown Error"
+                await asyncio.sleep(2.0)
+    return table, year, [], "Exceeded max retries"
 
 def aggregate_saraphi(rows):
-    """Aggregate rows by hospcode and district total for both Typearea and ChronicFU."""
     units_acc = defaultdict(lambda: {
-        'target': 0, 'result': 0, 'result1': 0, 'result2': 0, 'result3': 0, 'result4': 0,
-        'target_fu': 0, 'result_fu': 0, 'result1_fu': 0, 'result2_fu': 0, 'result3_fu': 0, 'result4_fu': 0
+        'target': 0, 'result': 0, 'result1': 0, 'result2': 0,
+        'target_fu': 0, 'result_fu': 0, 'result1_fu': 0, 'result2_fu': 0
     })
     
     for r in rows:
         h = str(r.get('hospcode') or '').strip()
-        # Clean hospcode to 5 digits if needed
         if len(h) > 5 and h.startswith('0'):
             h = h[-5:]
         elif len(h) < 5 and h:
@@ -94,17 +85,12 @@ def aggregate_saraphi(rows):
         units_acc[h]['result'] += res
         units_acc[h]['result1'] += float(r.get('result1') or 0)
         units_acc[h]['result2'] += float(r.get('result2') or 0)
-        units_acc[h]['result3'] += float(r.get('result3') or 0)
-        units_acc[h]['result4'] += float(r.get('result4') or 0)
         
         units_acc[h]['target_fu'] += t_fu
         units_acc[h]['result_fu'] += res_fu
         units_acc[h]['result1_fu'] += float(r.get('result1_1') or 0)
         units_acc[h]['result2_fu'] += float(r.get('result2_1') or 0)
-        units_acc[h]['result3_fu'] += float(r.get('result3_1') or 0)
-        units_acc[h]['result4_fu'] += float(r.get('result4_1') or 0)
         
-    # Build complete units dictionary ensuring all standard 14 Saraphi units exist
     units = {}
     for code, meta in SARAPHI_MAP.items():
         u_data = units_acc.get(code, {
@@ -135,17 +121,14 @@ def aggregate_saraphi(rows):
             'result2_fu': round(u_data['result2_fu'])
         }
         
-    # Also add any other hospcode in Saraphi if present (e.g. 11999, 14550)
     for code, u_data in units_acc.items():
         if code not in units and code:
             t = round(u_data['target'])
             res = round(u_data['result'])
             rate = round((res / t * 100), 2) if t > 0 else 0.0
-            
             t_fu = round(u_data['target_fu'])
             res_fu = round(u_data['result_fu'])
             rate_fu = round((res_fu / t_fu * 100), 2) if t_fu > 0 else 0.0
-            
             units[code] = {
                 'hospcode': code,
                 'name': f"หน่วยบริการ {code}",
@@ -162,7 +145,6 @@ def aggregate_saraphi(rows):
                 'result2_fu': round(u_data['result2_fu'])
             }
 
-    # District Totals
     dist_t = sum(u['target'] for u in units.values())
     dist_res = sum(u['result'] for u in units.values())
     dist_res1 = sum(u['result1'] for u in units.values())
@@ -194,124 +176,70 @@ def aggregate_saraphi(rows):
     }
 
 async def main():
-    print("==================================================================", flush=True)
-    print("Starting Extraction of NCD Service Plan Reports (OpenData MoPH)", flush=True)
-    print("==================================================================", flush=True)
-    
-    # 1. Load 70 catalog reports
-    catalog_path = 'data/ncd_service_plan_catalog.json'
-    if not os.path.exists(catalog_path):
-        print(f"Error: {catalog_path} not found!")
+    master_file = 'data/ncd_service_plan_master.json'
+    if not os.path.exists(master_file):
+        print(f"Error: {master_file} not found!")
         return
-        
-    with open(catalog_path, encoding='utf-8') as f:
-        catalog = json.load(f)
-        
-    print(f"Loaded {len(catalog)} reports from catalog.")
-    
-    # Unique tables
-    unique_tables = sorted(list(set(r.get('source_table') for r in catalog if r.get('source_table'))))
-    print(f"Found {len(unique_tables)} unique tables.")
-    
-    # 2. Fetch all unique tables x 3 years
-    sem = asyncio.Semaphore(5) # max 5 concurrent requests
-    raw_data = defaultdict(dict) # raw_data[table][year] = aggregated
-    
-    t0 = time.time()
+
+    with open(master_file, encoding='utf-8') as f:
+        master_data = json.load(f)
+
+    # Find tasks that are missing or 0 across years
+    needed = []
+    for r in master_data['reports']:
+        tbl = r['table_name']
+        for yr in YEARS:
+            d = r['years'].get(yr, {}).get('district', {})
+            # If target==0 and result==0 and target_fu==0, it's candidate to fetch
+            if (d.get('target', 0) == 0 and d.get('result', 0) == 0 and d.get('target_fu', 0) == 0):
+                needed.append((tbl, yr))
+
+    # Deduplicate needed (table, year) pairs
+    needed = sorted(list(set(needed)))
+    print(f"Found {len(needed)} (table, year) pairs that need fetching/enrichment.")
+
+    if not needed:
+        print("All tables and years already have data! Done.")
+        return
+
+    sem = asyncio.Semaphore(2) # polite concurrency of 2
     async with aiohttp.ClientSession() as session:
-        tasks = []
-        for tbl in unique_tables:
-            for yr in YEARS:
-                tasks.append(fetch_table_year(session, sem, tbl, yr))
-                
-        print(f"Dispatching {len(tasks)} requests (5 concurrent)...", flush=True)
+        tasks = [fetch_table_year(session, sem, tbl, yr) for tbl, yr in needed]
         results = await asyncio.gather(*tasks)
-        
-    elapsed = time.time() - t0
-    print(f"Finished fetching {len(results)} requests in {elapsed:.2f}s ({len(results)/elapsed:.1f} req/s).", flush=True)
-    
-    # Process results into raw_data
+
+    fetched_data = defaultdict(dict)
     err_count = 0
+    success_count = 0
     for tbl, yr, rows, err in results:
         if err:
             err_count += 1
-            print(f"  [WARN] {tbl} ({yr}): {err}", flush=True)
-        raw_data[tbl][yr] = aggregate_saraphi(rows)
+            print(f"  [ERROR] {tbl} ({yr}): {err}")
+        else:
+            success_count += 1
+            fetched_data[tbl][yr] = aggregate_saraphi(rows)
+
+    print(f"Fetch completed: {success_count} succeeded, {err_count} failed.")
+
+    # Merge into master_data
+    for r in master_data['reports']:
+        tbl = r['table_name']
+        if tbl in fetched_data:
+            for yr, agg in fetched_data[tbl].items():
+                # Only overwrite if new data has non-zero or previous was 0
+                prev_d = r['years'].get(yr, {}).get('district', {})
+                if (prev_d.get('target', 0) == 0 and prev_d.get('result', 0) == 0 and prev_d.get('target_fu', 0) == 0):
+                    r['years'][yr] = agg
         
-    print(f"Data aggregation complete! Errors: {err_count}")
-    
-    # 3. Build comprehensive NCD Service Plan Master Dataset
-    master_reports = []
-    
-    for idx, item in enumerate(catalog, 1):
-        tbl = item.get('source_table')
-        name = item.get('report_name')
-        od_id = item.get('opendata_id')
-        rid = item.get('report_id')
-        category = classify_category(name, tbl)
-        
-        report_obj = {
-            'id': f"ncd_{idx:02d}",
-            'report_id': rid,
-            'table_name': tbl,
-            'name': name,
-            'category': category,
-            'opendata_id': od_id,
-            'hdc_url': f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{od_id}" if od_id else "",
-            'opendata_url': f"https://opendata.moph.go.th/th/services/summary-table/b2b59e64c4e6c92d4b1ec16a599d882b",
-            'has_fu': False,
-            'years': {}
-        }
-        
-        tbl_data = raw_data.get(tbl, {})
-        has_any_fu = False
-        for yr in YEARS:
-            yr_data = tbl_data.get(yr, {
-                'district': {'target': 0, 'result': 0, 'rate': 0.0, 'result1': 0, 'result2': 0, 'target_fu': 0, 'result_fu': 0, 'rate_fu': 0.0, 'result1_fu': 0, 'result2_fu': 0, 'has_fu': False},
-                'units': {code: {'hospcode': code, 'name': meta['name'], 'subdistrict': meta['subdistrict'], 'target': 0, 'result': 0, 'rate': 0.0, 'result1': 0, 'result2': 0, 'target_fu': 0, 'result_fu': 0, 'rate_fu': 0.0, 'result1_fu': 0, 'result2_fu': 0} for code, meta in SARAPHI_MAP.items()}
-            })
-            if yr_data.get('district', {}).get('has_fu'):
-                has_any_fu = True
-            report_obj['years'][yr] = yr_data
-            
-        report_obj['has_fu'] = has_any_fu
-        master_reports.append(report_obj)
-        
-    # 4. Save to master JSON file
-    output_dir = 'data'
-    os.makedirs(output_dir, exist_ok=True)
-    output_file = os.path.join(output_dir, 'ncd_service_plan_master.json')
-    
-    output_data = {
-        'last_updated': time.strftime('%Y-%m-%d %H:%M:%S'),
-        'total_reports': len(master_reports),
-        'years': YEARS,
-        'categories': {
-            'ALL': 'ทั้งหมด (70 รายงาน)',
-            'DM': 'โรคเบาหวาน (Diabetes)',
-            'HT': 'ความดันโลหิตสูง (Hypertension)',
-            'CVD': 'หลอดเลือดหัวใจ (CVD)',
-            'CKD': 'โรคไตเรื้อรัง (CKD)',
-            'SCREEN': 'คัดกรอง & ปัจจัยเสี่ยง (Screening)'
-        },
-        'reports': master_reports
-    }
-    
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=2)
-        
-    file_size_kb = os.path.getsize(output_file) / 1024
-    print(f"\n==================================================================", flush=True)
-    print(f"SUCCESS: Saved {len(master_reports)} NCD reports to {output_file} ({file_size_kb:.1f} KB)", flush=True)
-    print(f"==================================================================", flush=True)
-    
-    # Print sample stats for s_dm_screen
-    dm_screen = next((r for r in master_reports if r['table_name'] == 's_dm_screen'), None)
-    if dm_screen:
-        print("\nSample Report Verification (s_dm_screen):")
-        for yr in YEARS:
-            d = dm_screen['years'][yr]['district']
-            print(f"  Year {yr}: Target (B) = {d['target']:,} | Result (A) = {d['result']:,} | Rate = {d['rate']:.2f}%")
+        # Recalculate has_fu
+        has_any_fu = any(r['years'].get(yr, {}).get('district', {}).get('has_fu', False) for yr in YEARS)
+        r['has_fu'] = has_any_fu
+
+    master_data['last_updated'] = time.strftime('%Y-%m-%d %H:%M:%S')
+
+    with open(master_file, 'w', encoding='utf-8') as f:
+        json.dump(master_data, f, ensure_ascii=False, indent=2)
+
+    print(f"Updated {master_file} successfully!")
 
 if __name__ == '__main__':
     asyncio.run(main())
