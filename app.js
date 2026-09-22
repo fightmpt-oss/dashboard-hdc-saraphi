@@ -63,8 +63,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ttmMassagePanel = document.getElementById('ttm-massage-panel');
   const dmHba1cPanel = document.getElementById('dm-hba1c-panel');
   const pcc2569Panel = document.getElementById('pcc-2569-panel');
+  const servicePlanNcdPanel = document.getElementById('service-plan-ncd-panel');
 
-  let currentPcc69View = 'budget'; // 'budget', 'kpi1', 'kpi2', 'kpi3', 'kpi4'
+  let ncdMasterData = null;
+  let currentNcdReportId = 'ncd_22'; // Default: s_dm_screen (ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน)
+  let currentNcdCategory = 'ALL';
+  let currentNcdYear = '2569';
+  let currentNcdUnit = 'all';
+  let currentNcdSearchQuery = '';
+  let currentNcdTableSearch = '';
+  let ncdUnitRateChartInstance = null;
+  let ncdUnitCompareChartInstance = null;
+  let ncdTrendChartInstance = null;
   let currentPcc69Sort = 'budget_desc'; // 'budget_desc', 'rate_desc', 'code'
   let pcc69SearchQuery = '';
   let pcc69ChartBudgetInstance = null;
@@ -174,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pcc2569MasterData = null;
   try {
     const cacheBuster = `?t=${Date.now()}`;
-    const [resMaster, resCatalog, resNhso, resPcc2569, resH55, resH9, resH32, resErr] = await Promise.all([
+    const [resMaster, resCatalog, resNhso, resPcc2569, resH55, resH9, resH32, resErr, resNcd] = await Promise.all([
       fetch(`data/saraphi_complete_master.json${cacheBuster}`, { cache: 'no-cache' }),
       fetch(`data/moph_catalog.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => ({ json: () => [] })),
       fetch(`data/nhso/nhso_saraphi_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null),
@@ -182,7 +192,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       fetch(`data/nhso/nhso_herb55_monthly.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null),
       fetch(`data/nhso/nhso_herb9_monthly.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null),
       fetch(`data/nhso/nhso_herb32_monthly.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null),
-      fetch(`data/nhso/nhso_error_codes.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null)
+      fetch(`data/nhso/nhso_error_codes.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null),
+      fetch(`data/ncd_service_plan_master.json${cacheBuster}`, { cache: 'no-cache' }).catch(() => null)
     ]);
     masterData = await resMaster.json();
     try {
@@ -209,6 +220,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
       console.warn('PCC 2569 master data not loaded:', e);
       pcc2569MasterData = null;
+    }
+    try {
+      if (resNcd && resNcd.ok) {
+        ncdMasterData = await resNcd.json();
+      }
+    } catch (e) {
+      console.warn('NCD Service Plan master data not loaded:', e);
+      ncdMasterData = null;
     }
 
     // Register PCC 2569 Virtual Indicators into masterData.indicators
@@ -13500,6 +13519,775 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // =========================================================================
+  // SERVICE PLAN (NCD DM, HT, CVD, CKD) - CONTROLLER & RENDER
+  // =========================================================================
+
+  function getNcdReportsList() {
+    if (!ncdMasterData || !ncdMasterData.reports) return [];
+    return Object.values(ncdMasterData.reports);
+  }
+
+  function getActiveNcdReport() {
+    const list = getNcdReportsList();
+    if (!list.length) return null;
+    let found = list.find(r => r.id === currentNcdReportId || r.table_name === currentNcdReportId);
+    if (!found) {
+      found = list[0];
+      currentNcdReportId = found.id;
+    }
+    return found;
+  }
+
+  window.switchNcdCategory = function(cat) {
+    currentNcdCategory = cat;
+    
+    // Update pills active styling
+    const pillContainer = document.getElementById('ncd-category-pills');
+    if (pillContainer) {
+      pillContainer.querySelectorAll('.ncd-cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'ncd-cat-btn px-3 py-1 rounded-xl text-xs font-bold transition shadow-2xs bg-rose-600 text-white';
+        } else {
+          btn.className = 'ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition';
+        }
+      });
+    }
+
+    populateNcdReportDropdown();
+    renderServicePlanNcdPanel();
+  };
+
+  window.switchNcdYear = function(yr) {
+    currentNcdYear = yr;
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ncd-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+        }
+      }
+    });
+    renderServicePlanNcdPanel();
+  };
+
+  window.switchNcdUnit = function(unitCode) {
+    currentNcdUnit = unitCode;
+    renderServicePlanNcdPanel();
+  };
+
+  window.switchNcdReport = function(repId) {
+    currentNcdReportId = repId;
+    renderServicePlanNcdPanel();
+  };
+
+  window.filterNcdReportList = function() {
+    const searchInput = document.getElementById('ncd-search-input');
+    currentNcdSearchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    populateNcdReportDropdown();
+    renderServicePlanNcdPanel();
+  };
+
+  window.filterNcdTable = function(val) {
+    currentNcdTableSearch = (val || '').trim().toLowerCase();
+    renderNcdTable();
+  };
+
+  window.resetNcdFilters = function() {
+    currentNcdCategory = 'ALL';
+    currentNcdYear = '2569';
+    currentNcdUnit = 'all';
+    currentNcdSearchQuery = '';
+    currentNcdTableSearch = '';
+    currentNcdReportId = 'ncd_22'; // s_dm_screen
+
+    const searchInput = document.getElementById('ncd-search-input');
+    if (searchInput) searchInput.value = '';
+    const tableSearch = document.getElementById('ncd-table-search');
+    if (tableSearch) tableSearch.value = '';
+    const unitSelect = document.getElementById('ncd-unit-select');
+    if (unitSelect) unitSelect.value = 'all';
+
+    // Reset Category Pills
+    const pillContainer = document.getElementById('ncd-category-pills');
+    if (pillContainer) {
+      pillContainer.querySelectorAll('.ncd-cat-btn').forEach(btn => {
+        if (btn.dataset.cat === 'ALL') {
+          btn.className = 'ncd-cat-btn px-3 py-1 rounded-xl text-xs font-bold transition shadow-2xs bg-rose-600 text-white';
+        } else {
+          btn.className = 'ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition';
+        }
+      });
+    }
+
+    // Reset Year Buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ncd-yr-${y}`);
+      if (btn) {
+        if (y === '2569') {
+          btn.className = 'px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+        }
+      }
+    });
+
+    populateNcdReportDropdown();
+    renderServicePlanNcdPanel();
+  };
+
+  function populateNcdReportDropdown() {
+    const select = document.getElementById('ncd-report-select');
+    if (!select) return;
+
+    const list = getNcdReportsList();
+    const filtered = list.filter(r => {
+      const matchCat = (currentNcdCategory === 'ALL' || r.category === currentNcdCategory);
+      const matchQ = !currentNcdSearchQuery || 
+        (r.name && r.name.toLowerCase().includes(currentNcdSearchQuery)) ||
+        (r.table_name && r.table_name.toLowerCase().includes(currentNcdSearchQuery));
+      return matchCat && matchQ;
+    });
+
+    select.innerHTML = '';
+    if (!filtered.length) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'ไม่พบรายงานที่ตรงกับคำค้นหา';
+      select.appendChild(opt);
+      return;
+    }
+
+    filtered.forEach((r, idx) => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = `${idx + 1}. [${r.category}] [${r.table_name}] ${r.name}`;
+      select.appendChild(opt);
+    });
+
+    // Ensure current report is selected, or pick first matching
+    const stillInList = filtered.some(r => r.id === currentNcdReportId);
+    if (!stillInList && filtered.length > 0) {
+      currentNcdReportId = filtered[0].id;
+    }
+    select.value = currentNcdReportId;
+  }
+
+  function populateNcdUnitDropdown() {
+    const select = document.getElementById('ncd-unit-select');
+    if (!select || select.children.length > 1) return; // already populated
+
+    select.innerHTML = '<option value="all">🏥 ทุกหน่วยบริการ (รวมทั้งอำเภอสารภี)</option>';
+    Object.keys(SARAPHI_UNITS_MAP).sort().forEach(code => {
+      const u = SARAPHI_UNITS_MAP[code];
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = `${u.name} (ต.${u.subdistrict})`;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderServicePlanNcdPanel() {
+    if (!servicePlanNcdPanel) return;
+    if (!ncdMasterData) {
+      servicePlanNcdPanel.innerHTML = `
+        <div class="glass-card rounded-2xl p-8 bg-white text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-500 mx-auto flex items-center justify-center">
+            <i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">กำลังโหลดข้อมูล Service Plan NCDs...</h3>
+          <p class="text-xs text-slate-500">ระบบกำลังโหลดไฟล์มาสเตอร์ 70 รายงาน</p>
+        </div>
+      `;
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
+
+    populateNcdReportDropdown();
+    populateNcdUnitDropdown();
+
+    const report = getActiveNcdReport();
+    if (!report) return;
+
+    // Update Header Text & Meta
+    const titleEl = document.getElementById('ncd-active-report-title');
+    if (titleEl) titleEl.textContent = report.name;
+
+    const metaEl = document.getElementById('ncd-active-meta');
+    if (metaEl) {
+      metaEl.innerHTML = `
+        <span>หมวดหมู่: <span class="font-bold text-slate-700">${report.category}</span></span>
+        <span>•</span>
+        <span>ตารางแหล่งข้อมูล: <code class="bg-slate-100 text-rose-700 px-1 py-0.5 rounded text-[11px] font-mono font-bold">${report.table_name}</code></span>
+        <span>•</span>
+        <span>ปีงบประมาณ: <span class="font-bold text-emerald-700">${currentNcdYear}</span></span>
+      `;
+    }
+
+    // Update HDC External Link
+    const hdcLink = document.getElementById('ncd-hdc-link');
+    if (hdcLink) {
+      hdcLink.href = report.hdc_url || `https://hdc.moph.go.th/cmi/public/standard-report-detail/${report.opendata_id}`;
+    }
+
+    // Render 4 Bento Cards
+    renderNcdKpis(report);
+
+    // Render 3 Charts
+    renderNcdCharts(report);
+
+    // Render HDC Data Table
+    renderNcdTable(report);
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function renderNcdKpis(report) {
+    const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
+    const isAll = (currentNcdUnit === 'all');
+    let selData = null;
+
+    if (!isAll && yrData.units?.[currentNcdUnit]) {
+      selData = yrData.units[currentNcdUnit];
+    }
+
+    const num = selData ? (selData.result || 0) : (yrData.district?.result || 0);
+    const den = selData ? (selData.target || 0) : (yrData.district?.target || 0);
+    const rate = selData ? (selData.rate || 0) : (yrData.district?.rate || 0);
+
+    const elResult = document.getElementById('ncd-kpi-result');
+    const elTarget = document.getElementById('ncd-kpi-target');
+    const elRate = document.getElementById('ncd-kpi-rate');
+    const elRateBar = document.getElementById('ncd-kpi-rate-bar');
+    const elResultSub = document.getElementById('ncd-kpi-result-sub');
+    const elTargetSub = document.getElementById('ncd-kpi-target-sub');
+
+    if (elResult) elResult.textContent = Number(num).toLocaleString();
+    if (elTarget) elTarget.textContent = Number(den).toLocaleString();
+    if (elRate) elRate.textContent = Number(rate).toFixed(2);
+    if (elRateBar) {
+      const capped = Math.min(100, Math.max(0, rate));
+      elRateBar.style.width = `${capped}%`;
+      elRateBar.className = (rate >= 80) ? 'bg-emerald-500 h-2 rounded-full transition-all duration-500' :
+                            (rate >= 50) ? 'bg-amber-500 h-2 rounded-full transition-all duration-500' :
+                            'bg-rose-500 h-2 rounded-full transition-all duration-500';
+    }
+
+    if (elResultSub) {
+      elResultSub.textContent = isAll ? 'ผลงานรวมทั้งอำเภอสารภี' : `ผลงาน ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit}`;
+    }
+    if (elTargetSub) {
+      elTargetSub.textContent = isAll ? 'เป้าหมายรวมทั้งอำเภอสารภี' : `เป้าหมาย ${SARAPHI_UNITS_MAP[currentNcdUnit]?.short || currentNcdUnit}`;
+    }
+
+    // Top Performing Unit
+    const unitsMap = yrData.units || {};
+    const unitEntries = Object.entries(unitsMap).filter(([code, u]) => (u.target || 0) > 0 || (u.result || 0) > 0);
+    unitEntries.sort((a, b) => (b[1].rate || 0) - (a[1].rate || 0));
+
+    const elTopUnit = document.getElementById('ncd-kpi-top-unit');
+    const elTopRate = document.getElementById('ncd-kpi-top-rate');
+    const elTopSub = document.getElementById('ncd-kpi-top-sub');
+
+    if (unitEntries.length > 0) {
+      if (isAll) {
+        const top = unitEntries[0][1];
+        if (elTopUnit) elTopUnit.textContent = top.name || SARAPHI_UNITS_MAP[top.hospcode]?.name || top.hospcode;
+        if (elTopRate) elTopRate.textContent = `${Number(top.rate || 0).toFixed(2)}%`;
+        if (elTopSub) elTopSub.textContent = `อันดับ 1 ของอำเภอ (A: ${Number(top.result || 0).toLocaleString()} / B: ${Number(top.target || 0).toLocaleString()})`;
+      } else {
+        const rankIdx = unitEntries.findIndex(([code]) => code === currentNcdUnit);
+        const thisUnit = yrData.units?.[currentNcdUnit];
+        if (rankIdx >= 0 && thisUnit) {
+          if (elTopUnit) elTopUnit.textContent = thisUnit.name || SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit;
+          if (elTopRate) elTopRate.textContent = `${Number(thisUnit.rate || 0).toFixed(2)}%`;
+          if (elTopSub) elTopSub.textContent = `อันดับที่ ${rankIdx + 1} จากทั้งหมด ${unitEntries.length} รพ.สต.`;
+        } else {
+          if (elTopUnit) elTopUnit.textContent = SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit;
+          if (elTopRate) elTopRate.textContent = `0.00%`;
+          if (elTopSub) elTopSub.textContent = `ไม่มีข้อมูลเป้าหมายในปีงบนี้`;
+        }
+      }
+    } else {
+      if (elTopUnit) elTopUnit.textContent = '-';
+      if (elTopRate) elTopRate.textContent = '0.00%';
+      if (elTopSub) elTopSub.textContent = 'ไม่มีข้อมูลในระบบ';
+    }
+  }
+
+  function renderNcdCharts(report) {
+    const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
+    const unitsMap = yrData.units || {};
+    
+    // Sort units by rate descending for horizontal bar chart
+    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
+      const u = unitsMap[code] || {};
+      const meta = SARAPHI_UNITS_MAP[code] || {};
+      return {
+        hospcode: code,
+        name: meta.short || u.name || code,
+        fullName: meta.name || u.name || code,
+        subdistrict: meta.subdistrict || u.subdistrict || '',
+        target: u.target || 0,
+        result: u.result || 0,
+        rate: u.rate || 0
+      };
+    });
+
+    const sortedByRate = [...unitsList].sort((a, b) => b.rate - a.rate);
+
+    // --- CHART 1: Horizontal Bar Chart of Unit Rates (%) ---
+    const canvasRate = document.getElementById('ncd-unit-rate-chart');
+    if (canvasRate) {
+      if (ncdUnitRateChartInstance) {
+        ncdUnitRateChartInstance.destroy();
+        ncdUnitRateChartInstance = null;
+      }
+
+      const labels1 = sortedByRate.map(u => u.name);
+      const data1 = sortedByRate.map(u => u.rate);
+      const bgColors1 = sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : '#10b981'));
+      const borderColors1 = sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669'));
+
+      const ctx1 = canvasRate.getContext('2d');
+      ncdUnitRateChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels1,
+          datasets: [{
+            label: 'ร้อยละผลงาน (%)',
+            data: data1,
+            backgroundColor: bgColors1,
+            borderColor: borderColors1,
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const idx = ctx.dataIndex;
+                  const item = sortedByRate[idx];
+                  return [
+                    ` ร้อยละผลงาน: ${item.rate.toFixed(2)}%`,
+                    ` ผลงาน (A): ${item.result.toLocaleString()} คน`,
+                    ` เป้าหมาย (B): ${item.target.toLocaleString()} คน`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(v) { return v + '%'; },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            y: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { display: false }
+            }
+          },
+          onClick: (evt, elements) => {
+            if (elements && elements.length > 0) {
+              const elIndex = elements[0].index;
+              const target = sortedByRate[elIndex];
+              if (target) {
+                const uSel = document.getElementById('ncd-unit-select');
+                if (uSel) uSel.value = target.hospcode;
+                window.switchNcdUnit(target.hospcode);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // --- CHART 2: Grouped Bar Chart Numerator (A) vs Denominator (B) ---
+    const canvasCompare = document.getElementById('ncd-unit-compare-chart');
+    if (canvasCompare) {
+      if (ncdUnitCompareChartInstance) {
+        ncdUnitCompareChartInstance.destroy();
+        ncdUnitCompareChartInstance = null;
+      }
+
+      const labels2 = unitsList.map(u => u.name);
+      const dataResult = unitsList.map(u => u.result);
+      const dataTarget = unitsList.map(u => u.target);
+
+      const ctx2 = canvasCompare.getContext('2d');
+      ncdUnitCompareChartInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: labels2,
+          datasets: [
+            {
+              label: 'ผลงาน (ตัวตั้ง A)',
+              data: dataResult,
+              backgroundColor: 'rgba(59, 130, 246, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'เป้าหมาย (ตัวหาร B)',
+              data: dataTarget,
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
+              borderColor: '#d97706',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const val = ctx.raw || 0;
+                  return ` ${ctx.dataset.label}: ${val.toLocaleString()} คน`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(v) { return Number(v).toLocaleString(); },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 9 },
+                maxRotation: 45,
+                minRotation: 25
+              },
+              grid: { display: false }
+            }
+          },
+          onClick: (evt, elements) => {
+            if (elements && elements.length > 0) {
+              const elIndex = elements[0].index;
+              const target = unitsList[elIndex];
+              if (target) {
+                const uSel = document.getElementById('ncd-unit-select');
+                if (uSel) uSel.value = target.hospcode;
+                window.switchNcdUnit(target.hospcode);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // --- CHART 3: 3-Year Trend (2567 - 2568 - 2569) ---
+    const canvasTrend = document.getElementById('ncd-trend-chart');
+    if (canvasTrend) {
+      if (ncdTrendChartInstance) {
+        ncdTrendChartInstance.destroy();
+        ncdTrendChartInstance = null;
+      }
+
+      const years = ['2567', '2568', '2569'];
+      const isAll = (currentNcdUnit === 'all');
+      
+      const trendResult = [];
+      const trendTarget = [];
+      const trendRate = [];
+
+      years.forEach(y => {
+        const yObj = report.years?.[y] || {};
+        if (isAll) {
+          const d = yObj.district || {};
+          trendResult.push(d.result || 0);
+          trendTarget.push(d.target || 0);
+          trendRate.push(d.rate || 0);
+        } else {
+          const u = yObj.units?.[currentNcdUnit] || {};
+          trendResult.push(u.result || 0);
+          trendTarget.push(u.target || 0);
+          trendRate.push(u.rate || 0);
+        }
+      });
+
+      const scopeBadge = document.getElementById('ncd-trend-scope-badge');
+      if (scopeBadge) {
+        scopeBadge.textContent = isAll ? 'ภาพรวมทั้งอำเภอสารภี' : (SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit);
+      }
+
+      const ctx3 = canvasTrend.getContext('2d');
+      ncdTrendChartInstance = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['ปีงบ 2567', 'ปีงบ 2568', 'ปีงบ 2569 (ปัจจุบัน)'],
+          datasets: [
+            {
+              type: 'line',
+              label: 'ร้อยละผลงาน (Rate %)',
+              data: trendRate,
+              borderColor: '#8b5cf6',
+              backgroundColor: 'rgba(139, 92, 246, 0.15)',
+              borderWidth: 3,
+              tension: 0.3,
+              fill: true,
+              yAxisID: 'y1',
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              pointBackgroundColor: '#8b5cf6',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 2
+            },
+            {
+              type: 'bar',
+              label: 'ผลงาน (A)',
+              data: trendResult,
+              backgroundColor: 'rgba(59, 130, 246, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 6,
+              yAxisID: 'y'
+            },
+            {
+              type: 'bar',
+              label: 'เป้าหมาย (B)',
+              data: trendTarget,
+              backgroundColor: 'rgba(203, 213, 225, 0.7)',
+              borderColor: '#94a3b8',
+              borderWidth: 1,
+              borderRadius: 6,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  if (ctx.dataset.yAxisID === 'y1') {
+                    return ` ร้อยละผลงาน: ${(ctx.raw || 0).toFixed(2)}%`;
+                  }
+                  return ` ${ctx.dataset.label}: ${Number(ctx.raw || 0).toLocaleString()} คน`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: true,
+              ticks: {
+                callback: function(v) { return Number(v).toLocaleString(); },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(v) { return v + '%'; },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { display: false }
+            },
+            x: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' }
+              },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function renderNcdTable(report) {
+    if (!report) report = getActiveNcdReport();
+    if (!report) return;
+
+    const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
+    const unitsMap = yrData.units || {};
+    const tbody = document.getElementById('ncd-table-tbody');
+    const tfoot = document.getElementById('ncd-table-tfoot');
+    if (!tbody || !tfoot) return;
+
+    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
+      const u = unitsMap[code] || {};
+      const meta = SARAPHI_UNITS_MAP[code] || {};
+      return {
+        hospcode: code,
+        name: meta.name || u.name || code,
+        subdistrict: meta.subdistrict || u.subdistrict || '',
+        target: u.target || 0,
+        result: u.result || 0,
+        rate: u.rate || 0
+      };
+    });
+
+    // Also include any extra hospcodes in yrData.units if not in SARAPHI_UNITS_MAP
+    Object.keys(unitsMap).forEach(code => {
+      if (!SARAPHI_UNITS_MAP[code] && (unitsMap[code].target > 0 || unitsMap[code].result > 0)) {
+        const u = unitsMap[code];
+        unitsList.push({
+          hospcode: code,
+          name: u.name || code,
+          subdistrict: u.subdistrict || '-',
+          target: u.target || 0,
+          result: u.result || 0,
+          rate: u.rate || 0
+        });
+      }
+    });
+
+    // Sort by rate descending
+    unitsList.sort((a, b) => b.rate - a.rate);
+
+    // Filter by table search input
+    const filtered = unitsList.filter(u => {
+      if (!currentNcdTableSearch) return true;
+      return (
+        u.hospcode.includes(currentNcdTableSearch) ||
+        u.name.toLowerCase().includes(currentNcdTableSearch) ||
+        u.subdistrict.toLowerCase().includes(currentNcdTableSearch)
+      );
+    });
+
+    const distRate = yrData.district?.rate || 0;
+
+    tbody.innerHTML = '';
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
+    } else {
+      filtered.forEach((u, idx) => {
+        const isSelected = (u.hospcode === currentNcdUnit);
+        const rowClass = isSelected ? 'bg-amber-50/70 font-semibold' : 'hover:bg-slate-50/70 transition';
+        const isAboveAvg = (u.rate >= distRate && u.target > 0);
+        const statusBadge = isAboveAvg 
+          ? `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">ผลงานเด่น</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-medium bg-slate-100 text-slate-600">ปกติ</span>`;
+
+        const tr = document.createElement('tr');
+        tr.className = rowClass;
+        tr.style.cursor = 'pointer';
+        tr.onclick = () => {
+          const uSel = document.getElementById('ncd-unit-select');
+          if (uSel) uSel.value = u.hospcode;
+          window.switchNcdUnit(u.hospcode);
+        };
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 text-center text-slate-400 num-font">${idx + 1}</td>
+          <td class="py-2.5 px-4 font-mono text-slate-600 text-xs">${u.hospcode}</td>
+          <td class="py-2.5 px-4 font-bold text-slate-900">${u.name}</td>
+          <td class="py-2.5 px-4 text-slate-500">${u.subdistrict}</td>
+          <td class="py-2.5 px-4 text-right num-font font-bold text-blue-700">${Number(u.result).toLocaleString()}</td>
+          <td class="py-2.5 px-4 text-right num-font text-slate-700">${Number(u.target).toLocaleString()}</td>
+          <td class="py-2.5 px-4 text-right num-font font-extrabold ${u.rate >= distRate ? 'text-emerald-700' : 'text-slate-800'}">${Number(u.rate).toFixed(2)}%</td>
+          <td class="py-2.5 px-4 text-center">${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Foot District Total Row
+    const distResult = yrData.district?.result || 0;
+    const distTarget = yrData.district?.target || 0;
+
+    tfoot.innerHTML = `
+      <tr>
+        <td class="py-3 px-4 text-center num-font font-extrabold text-rose-800">-</td>
+        <td class="py-3 px-4 font-mono text-rose-800 font-extrabold text-xs">5019</td>
+        <td class="py-3 px-4 font-extrabold text-rose-900 text-sm">รวมทั้งอำเภอสารภี (HDC สธ.)</td>
+        <td class="py-3 px-4 text-rose-700 font-semibold">12 ตำบล</td>
+        <td class="py-3 px-4 text-right num-font font-extrabold text-blue-900 text-sm">${Number(distResult).toLocaleString()}</td>
+        <td class="py-3 px-4 text-right num-font font-extrabold text-amber-900 text-sm">${Number(distTarget).toLocaleString()}</td>
+        <td class="py-3 px-4 text-right num-font font-extrabold text-emerald-800 text-base">${Number(distRate).toFixed(2)}%</td>
+        <td class="py-3 px-4 text-center">
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-200/80 text-rose-900 border border-rose-300 shadow-2xs">ภาพรวมอำเภอ</span>
+        </td>
+      </tr>
+    `;
+  }
+
+  window.exportNcdTableCsv = function() {
+    const report = getActiveNcdReport();
+    if (!report) return;
+
+    const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
+    const unitsMap = yrData.units || {};
+
+    let csvContent = `\uFEFFรายงานมาตรฐาน Service Plan NCDs: ${report.name}\n`;
+    csvContent += `ตาราง HDC: ${report.table_name},ปีงบประมาณ: ${currentNcdYear},หมวดหมู่: ${report.category}\n\n`;
+    csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,ผลงาน (ตัวตั้ง A),เป้าหมาย (ตัวหาร B),ร้อยละผลงาน (%)\n`;
+
+    const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
+      const u = unitsMap[code] || {};
+      const meta = SARAPHI_UNITS_MAP[code] || {};
+      return {
+        hospcode: code,
+        name: meta.name || u.name || code,
+        subdistrict: meta.subdistrict || u.subdistrict || '',
+        target: u.target || 0,
+        result: u.result || 0,
+        rate: u.rate || 0
+      };
+    });
+
+    unitsList.sort((a, b) => b.rate - a.rate);
+
+    unitsList.forEach((u, idx) => {
+      csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.result},${u.target},${u.rate.toFixed(2)}\n`;
+    });
+
+    const d = yrData.district || {};
+    csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.result || 0},${d.target || 0},${(d.rate || 0).toFixed(2)}\n`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_ServicePlan_${report.table_name}_${currentNcdYear}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   // 10. Update Everything on View Change
   function updateDashboardView() {
@@ -13509,9 +14297,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (executiveBanner) executiveBanner.classList.add('hidden');
       if (explorerSection) explorerSection.classList.remove('hidden');
       if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
+      if (servicePlanNcdPanel) servicePlanNcdPanel.classList.add('hidden');
       renderExplorerCatalog();
     } else if (currentDomain === 'pcc_2569') {
       if (explorerSection) explorerSection.classList.add('hidden');
+      if (servicePlanNcdPanel) servicePlanNcdPanel.classList.add('hidden');
       if (indicatorDropdownBar) indicatorDropdownBar.classList.remove('hidden');
       if (executiveBanner) executiveBanner.classList.add('hidden');
       if (activeSection) activeSection.classList.remove('hidden');
@@ -13533,14 +14323,47 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
       if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
 
+      const standardIndHeader = document.getElementById('standard-indicator-header');
+      if (standardIndHeader) standardIndHeader.classList.add('hidden');
+
       if (pcc2569Panel) pcc2569Panel.classList.remove('hidden');
       renderPcc2569Panel();
+    } else if (currentDomain === 'service_plan_ncd') {
+      if (explorerSection) explorerSection.classList.add('hidden');
+      if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
+      if (indicatorDropdownBar) indicatorDropdownBar.classList.add('hidden');
+      if (executiveBanner) executiveBanner.classList.add('hidden');
+      if (activeSection) activeSection.classList.remove('hidden');
+
+      const standardIndHeader = document.getElementById('standard-indicator-header');
+      if (standardIndHeader) standardIndHeader.classList.add('hidden');
+
+      const standardChartsSection = document.getElementById('standard-charts-section');
+      const standardTableSection = document.getElementById('standard-table-section');
+      if (standardChartsSection) standardChartsSection.classList.add('hidden');
+      if (standardTableSection) standardTableSection.classList.add('hidden');
+      if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+      if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+      if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+      if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+      if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+      if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+      if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+      if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
+      if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+
+      if (servicePlanNcdPanel) servicePlanNcdPanel.classList.remove('hidden');
+      renderServicePlanNcdPanel();
     } else {
+      if (servicePlanNcdPanel) servicePlanNcdPanel.classList.add('hidden');
       if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
       if (explorerSection) explorerSection.classList.add('hidden');
       if (indicatorDropdownBar) indicatorDropdownBar.classList.remove('hidden');
       if (executiveBanner) executiveBanner.classList.remove('hidden');
       if (activeSection) activeSection.classList.remove('hidden');
+
+      const standardIndHeader = document.getElementById('standard-indicator-header');
+      if (standardIndHeader) standardIndHeader.classList.remove('hidden');
 
       populateIndicatorDropdown();
       updateExecutiveOverview();
@@ -13577,6 +14400,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
         if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
         if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+        if (servicePlanNcdPanel) servicePlanNcdPanel.classList.add('hidden');
       };
 
       // Toggle NHSO Live Sync Banner
@@ -13786,6 +14610,9 @@ console.log("Saraphi Records:", saraphiData);`;
   if (unitSelect) {
     unitSelect.addEventListener('change', (e) => {
       currentUnit = e.target.value;
+      currentNcdUnit = currentUnit;
+      const ncdUnitEl = document.getElementById('ncd-unit-select');
+      if (ncdUnitEl) ncdUnitEl.value = currentNcdUnit;
       updateDashboardView();
     });
   }
@@ -13807,6 +14634,17 @@ console.log("Saraphi Records:", saraphiData);`;
         currentHerb32Year = currentYear;
         currentTtmAgeYear = currentYear;
         currentTtmEdYear = currentYear;
+        currentNcdYear = currentYear;
+        ['2569', '2568', '2567'].forEach(y => {
+          const b = document.getElementById(`btn-ncd-yr-${y}`);
+          if (b) {
+            if (y === currentNcdYear) {
+              b.className = 'px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white';
+            } else {
+              b.className = 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+            }
+          }
+        });
       }
       updateDashboardView();
     });

@@ -160,6 +160,17 @@
             <span class="sidebar-badge bg-slate-100 text-slate-600 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">1</span>
           </button>
 
+          <button type="button" class="sidebar-item w-full" data-domain="service_plan_ncd" title="🩺 ข้อมูลตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-red-600 bg-red-50 shrink-0 mr-3 transition">
+              <i data-lucide="heart-pulse" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">Service Plan (NCDs)</div>
+              <div class="text-[11px] text-slate-400 font-medium">70 รายงาน • DM, HT, CVD, CKD</div>
+            </div>
+            <span class="sidebar-badge bg-red-100 text-red-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">70</span>
+          </button>
+
           <div class="pt-2 border-t border-slate-100">
             <button type="button" class="sidebar-item w-full" data-domain="explorer" title="OpenData MoPH (51 หมวด)">
               <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-teal-600 bg-teal-50 shrink-0 mr-3 transition">
@@ -420,7 +431,7 @@
     <section id="active-indicator-section" class="space-y-6">
       
       <!-- Indicator Header Card -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 relative overflow-hidden bg-gradient-to-r from-white via-white to-emerald-50/40">
+      <div id="standard-indicator-header" class="glass-card rounded-2xl p-4 sm:p-5 relative overflow-hidden bg-gradient-to-r from-white via-white to-emerald-50/40">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div class="flex items-center space-x-2">
@@ -3533,6 +3544,291 @@
 
       </div>
 
+      <!-- ======================================================== -->
+      <!-- SPECIAL PANEL FOR SERVICE PLAN (NCD DM, HT, CVD, CKD) -->
+      <!-- ======================================================== -->
+      <div id="service-plan-ncd-panel" class="hidden space-y-5">
+
+        <!-- Top Header & Filter Toolbar -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-red-100 text-red-800 border border-red-200 shadow-2xs flex items-center gap-1.5">
+                  <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-red-600"></i> ข้อมูลตอบสนอง Service Plan
+                </span>
+                <span class="px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                  สาขาโรคไม่ติดต่อ (NCD DM, HT, CVD)
+                </span>
+                <span class="px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 num-font">
+                  70 รายงานมาตรฐาน HDC
+                </span>
+              </div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900 mt-1 flex items-center gap-2 flex-wrap">
+                <span id="ncd-active-report-title">ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน</span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-2 flex-wrap">
+                <span id="ncd-active-meta">ตารางแหล่งข้อมูล: <code class="bg-slate-100 text-rose-700 px-1 py-0.5 rounded text-[11px] font-mono">s_dm_screen</code></span>
+                <span>•</span>
+                <span>ระบบ HDC อำเภอสารภี จังหวัดเชียงใหม่ (14 หน่วยบริการ)</span>
+              </p>
+            </div>
+
+            <!-- External Link & Actions -->
+            <div class="flex items-center gap-2 shrink-0">
+              <a id="ncd-hdc-link" href="https://hdc.moph.go.th/cmi/public/standard-report-detail/626c89f6b8d9f7ed90c72c719775eb07" target="_blank" rel="noopener noreferrer" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-emerald-700 px-3 py-1.5 rounded-xl border border-slate-200 transition flex items-center gap-1.5 font-medium shadow-2xs" title="เปิดดูรายงานต้นฉบับบนระบบ HDC กระทรวงสาธารณสุข">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+                <span>ตรวจสอบบน HDC สธ.</span>
+              </a>
+              <button type="button" id="ncd-btn-reset" onclick="window.resetNcdFilters()" class="text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 px-2.5 py-1.5 rounded-xl border border-slate-200 transition flex items-center gap-1 font-medium" title="รีเซ็ตตัวกรอง">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>รีเซ็ต</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Pills Filter Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap" id="ncd-category-pills">
+              <button type="button" class="ncd-cat-btn px-3 py-1 rounded-xl text-xs font-bold transition shadow-2xs bg-rose-600 text-white" data-cat="ALL" onclick="window.switchNcdCategory('ALL')">
+                ทั้งหมด (70)
+              </button>
+              <button type="button" class="ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition" data-cat="DM" onclick="window.switchNcdCategory('DM')">
+                เบาหวาน DM (33)
+              </button>
+              <button type="button" class="ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition" data-cat="HT" onclick="window.switchNcdCategory('HT')">
+                ความดันโลหิตสูง HT (26)
+              </button>
+              <button type="button" class="ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition" data-cat="CVD" onclick="window.switchNcdCategory('CVD')">
+                หลอดเลือดหัวใจ CVD (6)
+              </button>
+              <button type="button" class="ncd-cat-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition" data-cat="CKD" onclick="window.switchNcdCategory('CKD')">
+                ไตเรื้อรัง CKD (5)
+              </button>
+            </div>
+
+            <!-- Year Switcher Buttons -->
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold shrink-0" id="ncd-year-pills">
+              <button type="button" id="btn-ncd-yr-2569" onclick="window.switchNcdYear('2569')" class="px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white">
+                2569
+              </button>
+              <button type="button" id="btn-ncd-yr-2568" onclick="window.switchNcdYear('2568')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">
+                2568
+              </button>
+              <button type="button" id="btn-ncd-yr-2567" onclick="window.switchNcdYear('2567')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">
+                2567
+              </button>
+            </div>
+          </div>
+
+          <!-- Report Selector & Unit Filter Bar -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <!-- Search & Select Report (Span 8) -->
+            <div class="md:col-span-8 flex flex-col sm:flex-row gap-2">
+              <div class="relative w-full sm:w-1/3">
+                <input type="text" id="ncd-search-input" placeholder="พิมพ์ค้นหารายงานหรือตาราง..." oninput="window.filterNcdReportList()" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none transition">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+              </div>
+              <div class="w-full sm:w-2/3">
+                <select id="ncd-report-select" onchange="window.switchNcdReport(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-rose-500 focus:outline-none transition truncate shadow-2xs">
+                  <!-- Dynamically populated 70 reports -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Select Unit Filter (Span 4) -->
+            <div class="md:col-span-4">
+              <select id="ncd-unit-select" onchange="window.switchNcdUnit(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-rose-500 focus:outline-none transition shadow-2xs">
+                <option value="all">🏥 ทุกหน่วยบริการ (รวมทั้งอำเภอสารภี)</option>
+                <!-- Dynamically populated 14 units -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Bento KPI Cards Container -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="ncd-kpi-cards">
+          <!-- Card 1: Numerator (A) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">ผลงาน (ตัวตั้ง A)</span>
+              <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-2">
+              <div class="text-2xl sm:text-3xl font-extrabold text-blue-700 num-font" id="ncd-kpi-result">0</div>
+              <div class="text-xs text-slate-400 mt-0.5 truncate" id="ncd-kpi-result-sub">ผู้ได้รับการคัดกรอง / ให้บริการ</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Denominator (B) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">เป้าหมาย (ตัวหาร B)</span>
+              <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i data-lucide="target" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-2">
+              <div class="text-2xl sm:text-3xl font-extrabold text-amber-700 num-font" id="ncd-kpi-target">0</div>
+              <div class="text-xs text-slate-400 mt-0.5 truncate" id="ncd-kpi-target-sub">ประชากรกลุ่มเป้าหมายทั้งหมด</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Rate % -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">ร้อยละผลงาน (Rate %)</span>
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i data-lucide="percent" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-2">
+              <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 num-font flex items-baseline gap-1">
+                <span id="ncd-kpi-rate">0.00</span>
+                <span class="text-base font-semibold text-slate-500">%</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+                <div id="ncd-kpi-rate-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Top Performing Unit -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">หน่วยบริการผลงานสูงสุด</span>
+              <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <i data-lucide="award" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-2">
+              <div class="text-base font-bold text-purple-900 truncate" id="ncd-kpi-top-unit">-</div>
+              <div class="flex items-center gap-1.5 mt-1">
+                <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 num-font" id="ncd-kpi-top-rate">0.00%</span>
+                <span class="text-xs text-slate-400" id="ncd-kpi-top-sub">อันดับ 1 ของอำเภอ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Interactive Visualizations (Bento Charts) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Chart 1: Unit Rate Comparison (Horizontal Bar) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                  <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-600"></i>
+                  <span>เปรียบเทียบร้อยละผลงานรายหน่วยบริการ 14 แห่ง</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">เรียงลำดับจากร้อยละผลงานสูงสุดไปต่ำสุด</p>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font" id="ncd-chart1-badge">Rate %</span>
+            </div>
+            <div class="relative h-[340px] w-full">
+              <canvas id="ncd-unit-rate-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Numerator vs Denominator (Grouped Bar) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                  <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-600"></i>
+                  <span>เปรียบเทียบ ผลงาน (A) vs เป้าหมาย (B) รายหน่วยบริการ</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">ตัวตั้ง A (ผลงานบริการ) และตัวหาร B (ประชากรกลุ่มเป้าหมาย)</p>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font" id="ncd-chart2-badge">A vs B</span>
+            </div>
+            <div class="relative h-[340px] w-full">
+              <canvas id="ncd-unit-compare-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 3: 3-Year Trend (Full Width) -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <i data-lucide="trending-up" class="w-4 h-4 text-purple-600"></i>
+                <span id="ncd-trend-chart-title">แนวโน้มย้อนหลัง 3 ปี (ปีงบ 2567 - 2569)</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">การเปรียบเทียบผลงาน ผลลัพธ์ และอัตราความครอบคลุมย้อนหลัง 3 ปีงบประมาณ</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-slate-500">ขอบเขต:</span>
+              <span class="text-xs font-bold px-2 py-0.5 bg-purple-50 text-purple-700 rounded border border-purple-200" id="ncd-trend-scope-badge">ภาพรวมอำเภอสารภี</span>
+            </div>
+          </div>
+          <div class="relative h-[260px] w-full">
+            <canvas id="ncd-trend-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- HDC Standard Data Table Section -->
+        <div class="glass-card rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 bg-white space-y-0">
+          <div class="p-4 sm:px-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <i data-lucide="table-2" class="w-4 h-4 text-slate-600"></i>
+                <span id="ncd-table-header-title">ตารางข้อมูล HDC รายหน่วยบริการ อำเภอสารภี (14 แห่ง)</span>
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5">ข้อมูลผลงาน ตัวตั้ง (A) ตัวหาร (B) และร้อยละผลงานรายสถานบริการสุขภาพ</p>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <div class="relative">
+                <input type="text" id="ncd-table-search" oninput="window.filterNcdTable(this.value)" placeholder="ค้นหา รพ.สต. หรือ ตำบล..." class="bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none w-48 sm:w-56">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2"></i>
+              </div>
+              <button id="ncd-table-export-btn" onclick="window.exportNcdTableCsv()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-300 transition flex items-center gap-1 font-medium shadow-2xs">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse custom-table">
+              <thead>
+                <tr class="bg-slate-50/80 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                  <th class="py-2.5 px-4 w-14 text-center">อันดับ</th>
+                  <th class="py-2.5 px-4 w-24">รหัส</th>
+                  <th class="py-2.5 px-4">ชื่อหน่วยบริการ</th>
+                  <th class="py-2.5 px-4">ตำบล</th>
+                  <th class="py-2.5 px-4 text-right">ผลงาน (ตัวตั้ง A)</th>
+                  <th class="py-2.5 px-4 text-right">เป้าหมาย (ตัวหาร B)</th>
+                  <th class="py-2.5 px-4 text-right">ร้อยละผลงาน</th>
+                  <th class="py-2.5 px-4 text-center w-28">สถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="ncd-table-tbody" class="text-xs divide-y divide-slate-100 font-medium">
+                <!-- Dynamically populated 14 units -->
+              </tbody>
+              <tfoot id="ncd-table-tfoot" class="bg-rose-50/50 font-bold text-xs border-t-2 border-rose-300">
+                <!-- Dynamically populated district total -->
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Table Footer Info -->
+          <div class="p-3 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
+            <div>
+              <span>แหล่งข้อมูล: Open Data กระทรวงสาธารณสุข • ข้อมูลตอบสนอง Service Plan NCDs</span>
+            </div>
+            <div>
+              <span>ระบบประมวลผลข้อมูล HDC อำเภอสารภี จังหวัดเชียงใหม่</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- DETAILED DATA TABLE -->
       <div id="standard-table-section" class="glass-card rounded-2xl overflow-hidden shadow-sm">
         <div class="p-4 sm:px-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
@@ -3824,6 +4120,6 @@
 
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=4.3"></script>
+  <script src="app.js?v=4.5"></script>
 </body>
 </html>
