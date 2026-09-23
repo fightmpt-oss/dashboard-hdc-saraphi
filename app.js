@@ -13975,392 +13975,755 @@ document.addEventListener('DOMContentLoaded', async () => {
           return b.rate - a.rate;
         });
 
-    // --- CHART 1: Horizontal Bar Chart of Unit Rates / 100% Stacked Bar ---
+    // Check if a specific single health unit is selected
+    const isSingleUnit = (currentNcdUnit !== 'all');
+    const selUnit = isSingleUnit ? (unitsMap[currentNcdUnit] || {}) : null;
+    const selMeta = isSingleUnit ? (SARAPHI_UNITS_MAP[currentNcdUnit] || {}) : null;
+    const unitFullName = selMeta ? `${currentNcdUnit} ${selMeta.name || selUnit.name || currentNcdUnit}` : currentNcdUnit;
+    const unitShortName = selMeta ? `${currentNcdUnit} ${selMeta.short || currentNcdUnit}` : currentNcdUnit;
+
+    // --- CHART 1: Unit Rate Comparison / 100% Stacked Bar / Unit Risk Donut ---
     const canvasRate = document.getElementById('ncd-unit-rate-chart');
+    const center1 = document.getElementById('ncd-chart1-center');
+    const extra1 = document.getElementById('ncd-chart1-extra');
+    const title1 = document.getElementById('ncd-chart1-title');
+    const sub1 = document.getElementById('ncd-chart1-sub');
+    const badge1 = document.getElementById('ncd-chart1-badge');
+
     if (canvasRate) {
       if (ncdUnitRateChartInstance) {
         ncdUnitRateChartInstance.destroy();
         ncdUnitRateChartInstance = null;
       }
 
-      let labels1 = [];
-      let datasets1 = [];
+      if (isRisk && isSingleUnit && selUnit) {
+        // --- CASE 1A: Dedicated Single-Unit Risk Breakdown Donut (Modern UX/UI) ---
+        const u = selUnit;
+        const target = Number(u.target || 0);
+        const result = Number(u.result || 0);
+        const rate = Number(u.rate || 0);
+        const normal = Number(u.normal || 0);
+        const normal_rate = Number(u.normal_rate || 0);
+        const risk = Number(u.risk || 0);
+        const risk_rate = Number(u.risk_rate || 0);
+        const high_risk = Number(u.high_risk || 0);
+        const high_risk_rate = Number(u.high_risk_rate || 0);
+        const ill_doctor = Number(u.ill_doctor || 0);
+        const ill_doctor_rate = Number(u.ill_doctor_rate || 0);
+        const out_of_bounds = Number(u.out_of_bounds || 0);
+        const out_of_bounds_rate = Number(u.out_of_bounds_rate || 0);
 
-      if (isRisk) {
-        // 100% Horizontal Stacked Bar Chart (Matching HDC media_1790181009912.png)
-        labels1 = sortedUnits.map(u => `${u.hospcode}:${u.fullName}`);
-        const badge = document.getElementById('ncd-chart1-badge');
-        if (badge) badge.textContent = '100% Stacked Bar (สัดส่วนกลุ่มเสี่ยง)';
-
-        if (report.risk_type === 'ht') {
-          datasets1 = [
-            {
-              label: 'ปกติ',
-              data: sortedUnits.map(u => u.normal_rate),
-              backgroundColor: '#38bdf8', // Light Blue
-              borderColor: '#0284c7',
-              borderWidth: 0.5
-            },
-            {
-              label: 'เสี่ยง',
-              data: sortedUnits.map(u => u.risk_rate),
-              backgroundColor: '#818cf8', // Indigo / Purple
-              borderColor: '#6366f1',
-              borderWidth: 0.5
-            },
-            {
-              label: 'สงสัยป่วย',
-              data: sortedUnits.map(u => u.high_risk_rate),
-              backgroundColor: '#34d399', // Emerald Green
-              borderColor: '#10b981',
-              borderWidth: 0.5
-            },
-            {
-              label: 'ป่วย (ส่งพบแพทย์)',
-              data: sortedUnits.map(u => u.ill_doctor_rate),
-              backgroundColor: '#f87171', // Red / Rose
-              borderColor: '#ef4444',
-              borderWidth: 0.5
-            },
-            {
-              label: 'นอกเกณฑ์',
-              data: sortedUnits.map(u => u.out_of_bounds_rate),
-              backgroundColor: '#fb923c', // Orange
-              borderColor: '#f97316',
-              borderWidth: 0.5
-            }
-          ];
-        } else {
-          // DM (Diabetes)
-          datasets1 = [
-            {
-              label: 'ปกติ',
-              data: sortedUnits.map(u => u.normal_rate),
-              backgroundColor: '#38bdf8', // Light Blue
-              borderColor: '#0284c7',
-              borderWidth: 0.5
-            },
-            {
-              label: 'เสี่ยง',
-              data: sortedUnits.map(u => u.risk_rate),
-              backgroundColor: '#818cf8', // Indigo / Purple
-              borderColor: '#6366f1',
-              borderWidth: 0.5
-            },
-            {
-              label: 'สงสัยป่วย',
-              data: sortedUnits.map(u => u.high_risk_rate),
-              backgroundColor: '#34d399', // Emerald Green
-              borderColor: '#10b981',
-              borderWidth: 0.5
-            },
-            {
-              label: 'นอกเกณฑ์',
-              data: sortedUnits.map(u => u.out_of_bounds_rate),
-              backgroundColor: '#fb923c', // Orange
-              borderColor: '#f97316',
-              borderWidth: 0.5
-            }
-          ];
+        if (title1) title1.textContent = `สัดส่วนผลการคัดกรองจำแนกกลุ่มเสี่ยง: ${unitFullName}`;
+        if (sub1) sub1.textContent = `จำแนกตามเกณฑ์ระดับความเสี่ยง (จากผู้ได้รับการคัดกรองทั้งหมด ${result.toLocaleString()} คน)`;
+        if (badge1) {
+          badge1.textContent = `${unitShortName} (${result.toLocaleString()} คน)`;
+          badge1.className = 'text-xs font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 num-font';
         }
 
-      } else if (isCompare) {
-        labels1 = sortedUnits.map(u => u.name);
-        datasets1 = [
-          {
-            label: 'ในเขตรับผิดชอบ (Typearea 1,3 %)',
-            data: sortedUnits.map(u => u.rate),
-            backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)'),
-            borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#d97706' : '#059669'),
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'ผู้มารับบริการจริง (ChronicFU %)',
-            data: sortedUnits.map(u => u.rate_fu),
-            backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#fbbf24' : 'rgba(99, 102, 241, 0.85)'),
-            borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5'),
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-        const badge = document.getElementById('ncd-chart1-badge');
-        if (badge) badge.textContent = 'เปรียบเทียบ Typearea vs ChronicFU %';
-      } else if (isFuOnly) {
-        labels1 = sortedUnits.map(u => u.name);
-        datasets1 = [{
-          label: 'ร้อยละผู้มารับบริการจริง (ChronicFU %)',
-          data: sortedUnits.map(u => u.rate_fu),
-          backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(99, 102, 241, 0.85)')),
-          borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5')),
-          borderWidth: 1,
-          borderRadius: 6
-        }];
-        const badge = document.getElementById('ncd-chart1-badge');
-        if (badge) badge.textContent = 'ChronicFU Rate %';
-      } else {
-        labels1 = sortedUnits.map(u => u.name);
-        datasets1 = [{
-          label: 'ร้อยละในเขตรับผิดชอบ (Typearea 1,3 %)',
-          data: sortedUnits.map(u => u.rate),
-          backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)')),
-          borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669')),
-          borderWidth: 1,
-          borderRadius: 6
-        }];
-        const badge = document.getElementById('ncd-chart1-badge');
-        if (badge) badge.textContent = 'Typearea Rate %';
-      }
+        if (center1) {
+          center1.classList.remove('hidden');
+          center1.innerHTML = `
+            <div class="text-center px-4 py-2 rounded-2xl bg-white/85 backdrop-blur-xs shadow-2xs border border-slate-100">
+              <div class="text-2xl sm:text-3xl font-black text-slate-800 num-font">${result.toLocaleString()}</div>
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">คัดกรองแล้ว (คน)</div>
+              <div class="text-[10.5px] font-semibold text-emerald-600 mt-0.5">ครอบคลุม ${rate.toFixed(1)}%</div>
+            </div>
+          `;
+        }
 
-      const ctx1 = canvasRate.getContext('2d');
-      ncdUnitRateChartInstance = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-          labels: labels1,
-          datasets: datasets1
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: isRisk || isCompare,
-              position: isRisk ? 'bottom' : 'top',
-              labels: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' },
-                boxWidth: isRisk ? 12 : 20,
-                usePointStyle: isRisk
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(ctx) {
-                  const idx = ctx.dataIndex;
-                  const item = sortedUnits[idx];
-                  if (isRisk) {
-                    const pct = ctx.raw || 0;
-                    let count = 0;
-                    if (ctx.dataset.label === 'ปกติ') count = item.normal;
-                    else if (ctx.dataset.label === 'เสี่ยง') count = item.risk;
-                    else if (ctx.dataset.label === 'สงสัยป่วย') count = item.high_risk;
-                    else if (ctx.dataset.label.includes('ป่วย')) count = item.ill_doctor;
-                    else if (ctx.dataset.label === 'นอกเกณฑ์') count = item.out_of_bounds;
-                    return [
-                      ` ${ctx.dataset.label}: ${pct.toFixed(2)}% (${Number(count).toLocaleString()} คน)`,
-                      ` คัดกรองทั้งหมด: ${Number(item.result).toLocaleString()} คน (เป้าหมาย ${Number(item.target).toLocaleString()} คน)`
-                    ];
+        const isHT = (report.risk_type === 'ht');
+        const donutLabels = isHT 
+          ? ['ปกติ (BP < 120/80)', 'กลุ่มเสี่ยง (BP 120-139/80-89)', 'สงสัยป่วย (BP ≥ 140/90)', 'ป่วย (ส่งพบแพทย์)', 'นอกเกณฑ์']
+          : ['ปกติ (70 - <100 mg%)', 'กลุ่มเสี่ยง (100 - <126 mg%)', 'สงสัยป่วย (≥ 126 mg%)', 'นอกเกณฑ์ (< 70 mg%)'];
+        
+        const donutData = isHT
+          ? [normal, risk, high_risk, ill_doctor, out_of_bounds]
+          : [normal, risk, high_risk, out_of_bounds];
+
+        const donutBg = isHT
+          ? ['#38bdf8', '#818cf8', '#34d399', '#f87171', '#fb923c']
+          : ['#38bdf8', '#818cf8', '#34d399', '#fb923c'];
+
+        const donutBorder = isHT
+          ? ['#0284c7', '#6366f1', '#10b981', '#ef4444', '#f97316']
+          : ['#0284c7', '#6366f1', '#10b981', '#f97316'];
+
+        const ctx1 = canvasRate.getContext('2d');
+        ncdUnitRateChartInstance = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: donutLabels,
+            datasets: [{
+              data: donutData,
+              backgroundColor: donutBg,
+              borderColor: donutBorder,
+              borderWidth: 2,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' },
+                  boxWidth: 12,
+                  usePointStyle: true,
+                  padding: 10
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const pct = result > 0 ? ((val / result) * 100).toFixed(2) : 0;
+                    return ` ${ctx.label}: ${Number(val).toLocaleString()} คน (${pct}%)`;
                   }
-                  if (ctx.dataset.label.includes('ChronicFU')) {
-                    return [
-                      ` ${ctx.dataset.label}: ${item.rate_fu.toFixed(2)}%`,
-                      ` ตรวจแล้ว (A2): ${item.result_fu.toLocaleString()} คน`,
-                      ` ผู้ป่วยคลินิก (B2): ${item.target_fu.toLocaleString()} คน`
-                    ];
-                  }
-                  return [
-                    ` ${ctx.dataset.label}: ${item.rate.toFixed(2)}%`,
-                    ` ตรวจแล้ว (A1): ${item.result.toLocaleString()} คน`,
-                    ` ผู้ป่วยในเขต (B1): ${item.target.toLocaleString()} คน`
-                  ];
                 }
               }
             }
-          },
-          scales: {
-            x: {
-              stacked: isRisk,
-              beginAtZero: true,
-              max: isRisk ? 100 : undefined,
-              ticks: {
-                callback: function(v) { return v + '%'; },
-                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+          }
+        });
+
+        // Extra Metric Chips below Donut Chart
+        if (extra1) {
+          extra1.classList.remove('hidden');
+          if (isHT) {
+            extra1.innerHTML = `
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+                <div class="p-2.5 rounded-xl bg-sky-50/90 border border-sky-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-sky-800">
+                    <span class="w-2 h-2 rounded-full bg-sky-400"></span> ปกติ
+                  </div>
+                  <div class="text-base font-black text-sky-900 num-font mt-1">${normal.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-sky-700">${normal_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-indigo-50/90 border border-indigo-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-indigo-800">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400"></span> กลุ่มเสี่ยง
+                  </div>
+                  <div class="text-base font-black text-indigo-900 num-font mt-1">${risk.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-indigo-700">${risk_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> สงสัยป่วย
+                  </div>
+                  <div class="text-base font-black text-emerald-900 num-font mt-1">${high_risk.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-emerald-700">${high_risk_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-rose-800">
+                    <span class="w-2 h-2 rounded-full bg-rose-400"></span> ป่วย (พบแพทย์)
+                  </div>
+                  <div class="text-base font-black text-rose-900 num-font mt-1">${ill_doctor.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-rose-700">${ill_doctor_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200 col-span-2 sm:col-span-1">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-amber-800">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> นอกเกณฑ์
+                  </div>
+                  <div class="text-base font-black text-amber-900 num-font mt-1">${out_of_bounds.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-amber-700">${out_of_bounds_rate.toFixed(2)}%</div>
+                </div>
+              </div>
+            `;
+          } else {
+            // DM
+            extra1.innerHTML = `
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                <div class="p-2.5 rounded-xl bg-sky-50/90 border border-sky-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-sky-800">
+                    <span class="w-2 h-2 rounded-full bg-sky-400"></span> ปกติ
+                  </div>
+                  <div class="text-base font-black text-sky-900 num-font mt-1">${normal.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-sky-700">${normal_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-indigo-50/90 border border-indigo-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-indigo-800">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400"></span> กลุ่มเสี่ยง
+                  </div>
+                  <div class="text-base font-black text-indigo-900 num-font mt-1">${risk.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-indigo-700">${risk_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> สงสัยป่วย
+                  </div>
+                  <div class="text-base font-black text-emerald-900 num-font mt-1">${high_risk.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-emerald-700">${high_risk_rate.toFixed(2)}%</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-amber-800">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> นอกเกณฑ์
+                  </div>
+                  <div class="text-base font-black text-amber-900 num-font mt-1">${out_of_bounds.toLocaleString()}</div>
+                  <div class="text-[10.5px] font-semibold text-amber-700">${out_of_bounds_rate.toFixed(2)}%</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+      } else {
+        // --- CASE 1B: Overview of 14 Units or Non-Risk Indicators ---
+        if (center1) center1.classList.add('hidden');
+        if (extra1) extra1.classList.add('hidden');
+
+        if (title1) title1.textContent = isRisk ? 'เปรียบเทียบสัดส่วนกลุ่มเสี่ยงรายหน่วยบริการ (14 แห่ง)' : 'เปรียบเทียบร้อยละผลงานรายหน่วยบริการ 14 แห่ง';
+        if (sub1) sub1.textContent = isRisk ? 'แผนภูมิแท่งแนวนอน 100% สัดส่วนกลุ่มเสี่ยงตามเกณฑ์ HDC สธ.' : 'เรียงลำดับจากร้อยละผลงานสูงสุดไปต่ำสุด';
+
+        let labels1 = [];
+        let datasets1 = [];
+
+        if (isRisk) {
+          // 100% Horizontal Stacked Bar Chart (Matching HDC media_1790181009912.png)
+          labels1 = sortedUnits.map(u => `${u.hospcode}:${u.fullName}`);
+          if (badge1) {
+            badge1.textContent = '100% Stacked Bar (สัดส่วนกลุ่มเสี่ยง)';
+            badge1.className = 'text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font';
+          }
+
+          if (report.risk_type === 'ht') {
+            datasets1 = [
+              {
+                label: 'ปกติ',
+                data: sortedUnits.map(u => u.normal_rate),
+                backgroundColor: '#38bdf8', // Light Blue
+                borderColor: '#0284c7',
+                borderWidth: 0.5
               },
-              grid: { color: '#f1f5f9' }
+              {
+                label: 'เสี่ยง',
+                data: sortedUnits.map(u => u.risk_rate),
+                backgroundColor: '#818cf8', // Indigo / Purple
+                borderColor: '#6366f1',
+                borderWidth: 0.5
+              },
+              {
+                label: 'สงสัยป่วย',
+                data: sortedUnits.map(u => u.high_risk_rate),
+                backgroundColor: '#34d399', // Emerald Green
+                borderColor: '#10b981',
+                borderWidth: 0.5
+              },
+              {
+                label: 'ป่วย (ส่งพบแพทย์)',
+                data: sortedUnits.map(u => u.ill_doctor_rate),
+                backgroundColor: '#f87171', // Red / Rose
+                borderColor: '#ef4444',
+                borderWidth: 0.5
+              },
+              {
+                label: 'นอกเกณฑ์',
+                data: sortedUnits.map(u => u.out_of_bounds_rate),
+                backgroundColor: '#fb923c', // Orange
+                borderColor: '#f97316',
+                borderWidth: 0.5
+              }
+            ];
+          } else {
+            // DM (Diabetes)
+            datasets1 = [
+              {
+                label: 'ปกติ',
+                data: sortedUnits.map(u => u.normal_rate),
+                backgroundColor: '#38bdf8', // Light Blue
+                borderColor: '#0284c7',
+                borderWidth: 0.5
+              },
+              {
+                label: 'เสี่ยง',
+                data: sortedUnits.map(u => u.risk_rate),
+                backgroundColor: '#818cf8', // Indigo / Purple
+                borderColor: '#6366f1',
+                borderWidth: 0.5
+              },
+              {
+                label: 'สงสัยป่วย',
+                data: sortedUnits.map(u => u.high_risk_rate),
+                backgroundColor: '#34d399', // Emerald Green
+                borderColor: '#10b981',
+                borderWidth: 0.5
+              },
+              {
+                label: 'นอกเกณฑ์',
+                data: sortedUnits.map(u => u.out_of_bounds_rate),
+                backgroundColor: '#fb923c', // Orange
+                borderColor: '#f97316',
+                borderWidth: 0.5
+              }
+            ];
+          }
+
+        } else if (isCompare) {
+          labels1 = sortedUnits.map(u => u.name);
+          datasets1 = [
+            {
+              label: 'ในเขตรับผิดชอบ (Typearea 1,3 %)',
+              data: sortedUnits.map(u => u.rate),
+              backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)'),
+              borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#d97706' : '#059669'),
+              borderWidth: 1,
+              borderRadius: 4
             },
-            y: {
-              stacked: isRisk,
-              ticks: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: isRisk ? 9 : 10 }
-              },
-              grid: { display: false }
+            {
+              label: 'ผู้มารับบริการจริง (ChronicFU %)',
+              data: sortedUnits.map(u => u.rate_fu),
+              backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#fbbf24' : 'rgba(99, 102, 241, 0.85)'),
+              borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5'),
+              borderWidth: 1,
+              borderRadius: 4
             }
+          ];
+          if (badge1) {
+            badge1.textContent = 'เปรียบเทียบ Typearea vs ChronicFU %';
+            badge1.className = 'text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font';
+          }
+        } else if (isFuOnly) {
+          labels1 = sortedUnits.map(u => u.name);
+          datasets1 = [{
+            label: 'ร้อยละผู้มารับบริการจริง (ChronicFU %)',
+            data: sortedUnits.map(u => u.rate_fu),
+            backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(99, 102, 241, 0.85)')),
+            borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5')),
+            borderWidth: 1,
+            borderRadius: 6
+          }];
+          if (badge1) {
+            badge1.textContent = 'ChronicFU Rate %';
+            badge1.className = 'text-xs font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 num-font';
+          }
+        } else {
+          labels1 = sortedUnits.map(u => u.name);
+          datasets1 = [{
+            label: 'ร้อยละในเขตรับผิดชอบ (Typearea 1,3 %)',
+            data: sortedUnits.map(u => u.rate),
+            backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)')),
+            borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669')),
+            borderWidth: 1,
+            borderRadius: 6
+          }];
+          if (badge1) {
+            badge1.textContent = 'Typearea Rate %';
+            badge1.className = 'text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font';
+          }
+        }
+
+        const ctx1 = canvasRate.getContext('2d');
+        ncdUnitRateChartInstance = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: labels1,
+            datasets: datasets1
           },
-          onClick: (evt, elements) => {
-            if (elements && elements.length > 0) {
-              const elIndex = elements[0].index;
-              const target = sortedUnits[elIndex];
-              if (target) {
-                const uSel = document.getElementById('ncd-unit-select');
-                if (uSel) uSel.value = target.hospcode;
-                window.switchNcdUnit(target.hospcode);
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: isRisk || isCompare,
+                position: isRisk ? 'bottom' : 'top',
+                labels: {
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' },
+                  boxWidth: isRisk ? 12 : 20,
+                  usePointStyle: isRisk
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    const idx = ctx.dataIndex;
+                    const item = sortedUnits[idx];
+                    if (isRisk) {
+                      const pct = ctx.raw || 0;
+                      let count = 0;
+                      if (ctx.dataset.label === 'ปกติ') count = item.normal;
+                      else if (ctx.dataset.label === 'เสี่ยง') count = item.risk;
+                      else if (ctx.dataset.label === 'สงสัยป่วย') count = item.high_risk;
+                      else if (ctx.dataset.label.includes('ป่วย')) count = item.ill_doctor;
+                      else if (ctx.dataset.label === 'นอกเกณฑ์') count = item.out_of_bounds;
+                      return [
+                        ` ${ctx.dataset.label}: ${pct.toFixed(2)}% (${Number(count).toLocaleString()} คน)`,
+                        ` คัดกรองทั้งหมด: ${Number(item.result).toLocaleString()} คน (เป้าหมาย ${Number(item.target).toLocaleString()} คน)`
+                      ];
+                    }
+                    if (ctx.dataset.label.includes('ChronicFU')) {
+                      return [
+                        ` ${ctx.dataset.label}: ${item.rate_fu.toFixed(2)}%`,
+                        ` ตรวจแล้ว (A2): ${item.result_fu.toLocaleString()} คน`,
+                        ` ผู้ป่วยคลินิก (B2): ${item.target_fu.toLocaleString()} คน`
+                      ];
+                    }
+                    return [
+                      ` ${ctx.dataset.label}: ${item.rate.toFixed(2)}%`,
+                      ` ตรวจแล้ว (A1): ${item.result.toLocaleString()} คน`,
+                      ` ผู้ป่วยในเขต (B1): ${item.target.toLocaleString()} คน`
+                    ];
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                stacked: isRisk,
+                beginAtZero: true,
+                max: isRisk ? 100 : undefined,
+                ticks: {
+                  callback: function(v) { return v + '%'; },
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+                },
+                grid: { color: '#f1f5f9' }
+              },
+              y: {
+                stacked: isRisk,
+                ticks: {
+                  font: { family: "'Noto Sans Thai', sans-serif", size: isRisk ? 9 : 10 }
+                },
+                grid: { display: false }
+              }
+            },
+            onClick: (evt, elements) => {
+              if (elements && elements.length > 0) {
+                const elIndex = elements[0].index;
+                const target = sortedUnits[elIndex];
+                if (target) {
+                  const uSel = document.getElementById('ncd-unit-select');
+                  if (uSel) uSel.value = target.hospcode;
+                  window.switchNcdUnit(target.hospcode);
+                }
               }
             }
           }
-        }
-      });
+        });
+      }
     }
 
-    // --- CHART 2: Grouped Bar Chart Numerator vs Denominator ---
+    // --- CHART 2: Grouped Bar Chart / Unit Target Coverage Donut ---
     const canvasCompare = document.getElementById('ncd-unit-compare-chart');
+    const center2 = document.getElementById('ncd-chart2-center');
+    const extra2 = document.getElementById('ncd-chart2-extra');
+    const title2 = document.getElementById('ncd-chart2-title');
+    const sub2 = document.getElementById('ncd-chart2-sub');
+    const badge2 = document.getElementById('ncd-chart2-badge');
+
     if (canvasCompare) {
       if (ncdUnitCompareChartInstance) {
         ncdUnitCompareChartInstance.destroy();
         ncdUnitCompareChartInstance = null;
       }
 
-      let labels2 = unitsList.map(u => u.name);
-      let datasets2 = [];
+      if (isRisk && isSingleUnit && selUnit) {
+        // --- CASE 2A: Dedicated Single-Unit Screening Coverage Donut (Modern UX/UI) ---
+        const u = selUnit;
+        const target = Number(u.target || 0);
+        const result = Number(u.result || 0);
+        const rate = Number(u.rate || 0);
+        const unscreened = Math.max(0, target - result);
+        const unscreened_rate = target > 0 ? (unscreened / target) * 100 : 0;
+        const dist = yrData.district || {};
+        const distRate = Number(dist.rate || 0);
 
-      if (isRisk) {
-        const riskUnits2 = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({
-          hospcode: code,
-          name: SARAPHI_UNITS_MAP[code]?.short || code,
-          target: unitsMap[code]?.target || 0,
-          result: unitsMap[code]?.result || 0,
-          rate: unitsMap[code]?.rate || 0
-        }));
-        labels2 = riskUnits2.map(u => u.name);
-        datasets2 = [
-          {
-            label: 'ผลงานคัดกรองแล้ว (ตัวตั้ง A)',
-            data: riskUnits2.map(u => u.result),
-            backgroundColor: 'rgba(56, 189, 248, 0.85)',
-            borderColor: '#0284c7',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'เป้าหมายประชากร 35+ (ตัวหาร B)',
-            data: riskUnits2.map(u => u.target),
-            backgroundColor: 'rgba(245, 158, 11, 0.75)',
-            borderColor: '#d97706',
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-        const badge2 = document.getElementById('ncd-chart2-badge');
-        if (badge2) badge2.textContent = 'คัดกรอง (A) vs เป้าหมาย (B)';
-      } else if (isCompare) {
-        datasets2 = [
-          {
-            label: 'ผลงานตรวจในเขต (A1)',
-            data: unitsList.map(u => u.result),
-            backgroundColor: 'rgba(16, 185, 129, 0.85)',
-            borderColor: '#059669',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'ผลงานตรวจคลินิกจริง (A2)',
-            data: unitsList.map(u => u.result_fu),
-            backgroundColor: 'rgba(99, 102, 241, 0.85)',
-            borderColor: '#4f46e5',
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-        const badge2 = document.getElementById('ncd-chart2-badge');
-        if (badge2) badge2.textContent = 'ผลงาน A1 vs A2';
-      } else if (isFuOnly) {
-        datasets2 = [
-          {
-            label: 'ผลงานตรวจคลินิกจริง (A2)',
-            data: unitsList.map(u => u.result_fu),
-            backgroundColor: 'rgba(99, 102, 241, 0.85)',
-            borderColor: '#4f46e5',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'ผู้ป่วยคลินิกจริง (B2)',
-            data: unitsList.map(u => u.target_fu),
-            backgroundColor: 'rgba(245, 158, 11, 0.75)',
-            borderColor: '#d97706',
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-        const badge2 = document.getElementById('ncd-chart2-badge');
-        if (badge2) badge2.textContent = 'A2 vs B2 (ChronicFU)';
-      } else {
-        datasets2 = [
-          {
-            label: 'ผลงาน (ตัวตั้ง A1)',
-            data: unitsList.map(u => u.result),
-            backgroundColor: 'rgba(59, 130, 246, 0.85)',
-            borderColor: '#2563eb',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'เป้าหมาย (ตัวหาร B1)',
-            data: unitsList.map(u => u.target),
-            backgroundColor: 'rgba(245, 158, 11, 0.75)',
-            borderColor: '#d97706',
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-        const badge2 = document.getElementById('ncd-chart2-badge');
-        if (badge2) badge2.textContent = 'A1 vs B1 (Typearea)';
-      }
+        if (title2) title2.textContent = `ความครอบคลุมการคัดกรองจากกลุ่มเป้าหมายทั้งหมด: ${unitFullName}`;
+        if (sub2) sub2.textContent = `เป้าหมายประชากร 35+ ทั้งหมด ${target.toLocaleString()} คน • คัดกรองแล้ว ${result.toLocaleString()} คน (${rate.toFixed(2)}%)`;
+        if (badge2) {
+          const isPassed = rate >= 90;
+          badge2.textContent = `Coverage ${rate.toFixed(2)}%`;
+          badge2.className = isPassed 
+            ? 'text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font'
+            : 'text-xs font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200 num-font';
+        }
 
-      const ctx2 = canvasCompare.getContext('2d');
-      ncdUnitCompareChartInstance = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: labels2,
-          datasets: datasets2
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(ctx) {
-                  const val = ctx.raw || 0;
-                  return ` ${ctx.dataset.label}: ${val.toLocaleString()} คน`;
+        if (center2) {
+          center2.classList.remove('hidden');
+          const isPassed = rate >= 90;
+          center2.innerHTML = `
+            <div class="text-center px-4 py-2 rounded-2xl bg-white/85 backdrop-blur-xs shadow-2xs border border-slate-100">
+              <div class="text-2xl sm:text-3xl font-black ${isPassed ? 'text-emerald-600' : 'text-amber-600'} num-font">${rate.toFixed(2)}%</div>
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">ความครอบคลุม</div>
+              <div class="text-[10px] font-bold ${isPassed ? 'text-emerald-700 bg-emerald-100/70' : 'text-amber-700 bg-amber-100/70'} px-2 py-0.5 rounded-full mt-1">
+                ${isPassed ? 'ผ่านเกณฑ์ สธ. (≥90%)' : 'ต่ำกว่าเกณฑ์ สธ.'}
+              </div>
+            </div>
+          `;
+        }
+
+        const ctx2 = canvasCompare.getContext('2d');
+        ncdUnitCompareChartInstance = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: ['คัดกรองแล้ว (Screened)', 'ยังไม่ได้รับการคัดกรอง (คงเหลือ)'],
+            datasets: [{
+              data: [result, unscreened],
+              backgroundColor: ['rgba(16, 185, 129, 0.9)', 'rgba(226, 232, 240, 0.85)'],
+              borderColor: ['#059669', '#cbd5e1'],
+              borderWidth: 2,
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' },
+                  boxWidth: 12,
+                  usePointStyle: true,
+                  padding: 10
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    const pct = target > 0 ? ((val / target) * 100).toFixed(2) : 0;
+                    return [
+                      ` ${ctx.label}: ${Number(val).toLocaleString()} คน (${pct}%)`,
+                      ` ประชากรเป้าหมาย 35+ ทั้งหมด: ${target.toLocaleString()} คน`
+                    ];
+                  }
                 }
               }
             }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function(v) { return Number(v).toLocaleString(); },
-                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
-              },
-              grid: { color: '#f1f5f9' }
+          }
+        });
+
+        // Extra Benchmark Comparison Card below Coverage Donut
+        if (extra2) {
+          extra2.classList.remove('hidden');
+          const diffDist = (rate - distRate).toFixed(2);
+          const isAboveDist = rate >= distRate;
+          const isPassedKpi = rate >= 90;
+
+          extra2.innerHTML = `
+            <div class="space-y-2.5 text-xs">
+              <div class="flex items-center justify-between text-slate-700">
+                <span class="font-bold flex items-center gap-1.5 text-slate-800">
+                  <i class="fa-solid fa-chart-line text-emerald-600"></i> การเปรียบเทียบระดับผลงาน (Benchmark)
+                </span>
+                <span class="font-semibold text-slate-500">เป้าหมาย 35+ ทั้งหมด: <b class="num-font text-slate-800">${target.toLocaleString()}</b> คน</span>
+              </div>
+
+              <!-- Progress Bar of Target Completion -->
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-slate-600">
+                  <span>คัดกรองแล้ว <b>${result.toLocaleString()}</b> คน (${rate.toFixed(2)}%)</span>
+                  <span>คงเหลือ <b>${unscreened.toLocaleString()}</b> คน (${unscreened_rate.toFixed(2)}%)</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden flex">
+                  <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2.5 rounded-l-full transition-all duration-500" style="width: ${Math.min(100, Math.max(0, rate))}%"></div>
+                  <div class="bg-slate-200 h-2.5 rounded-r-full transition-all duration-500" style="width: ${Math.min(100, Math.max(0, unscreened_rate))}%"></div>
+                </div>
+              </div>
+
+              <!-- 2 Comparison Pills -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full ${isAboveDist ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
+                    <span class="text-slate-600 font-medium">เทียบเฉลี่ยอำเภอสารภี:</span>
+                  </div>
+                  <div class="font-bold ${isAboveDist ? 'text-emerald-700' : 'text-amber-700'} num-font flex items-center gap-1">
+                    <span>${distRate.toFixed(2)}%</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isAboveDist ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                      ${isAboveDist ? '+' : ''}${diffDist}%
+                    </span>
+                  </div>
+                </div>
+
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full ${isPassedKpi ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                    <span class="text-slate-600 font-medium">เกณฑ์เป้าหมาย สธ. (90%):</span>
+                  </div>
+                  <div class="font-bold ${isPassedKpi ? 'text-emerald-700' : 'text-rose-700'} num-font flex items-center gap-1">
+                    <span>90.00%</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isPassedKpi ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                      ${isPassedKpi ? '✅ ผ่านเกณฑ์' : '⚠️ ต่ำกว่าเกณฑ์'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+      } else {
+        // --- CASE 2B: Overview of 14 Units or Non-Risk Indicators ---
+        if (center2) center2.classList.add('hidden');
+        if (extra2) extra2.classList.add('hidden');
+
+        if (title2) title2.textContent = isRisk ? 'เปรียบเทียบ ผลงานคัดกรอง (A) vs เป้าหมาย (B) รายหน่วยบริการ' : (isCompare ? 'เปรียบเทียบผลงาน A1 vs A2' : 'เปรียบเทียบ ผลงาน (A) vs เป้าหมาย (B) รายหน่วยบริการ');
+        if (sub2) sub2.textContent = 'ตัวตั้ง A (ผลงานบริการ) และตัวหาร B (ประชากรกลุ่มเป้าหมาย)';
+
+        let labels2 = unitsList.map(u => u.name);
+        let datasets2 = [];
+
+        if (isRisk) {
+          const riskUnits2 = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({
+            hospcode: code,
+            name: SARAPHI_UNITS_MAP[code]?.short || code,
+            target: unitsMap[code]?.target || 0,
+            result: unitsMap[code]?.result || 0,
+            rate: unitsMap[code]?.rate || 0
+          }));
+          labels2 = riskUnits2.map(u => u.name);
+          datasets2 = [
+            {
+              label: 'ผลงานคัดกรองแล้ว (ตัวตั้ง A)',
+              data: riskUnits2.map(u => u.result),
+              backgroundColor: 'rgba(56, 189, 248, 0.85)',
+              borderColor: '#0284c7',
+              borderWidth: 1,
+              borderRadius: 4
             },
-            x: {
-              ticks: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: 9 },
-                maxRotation: 45,
-                minRotation: 25
-              },
-              grid: { display: false }
+            {
+              label: 'เป้าหมายประชากร 35+ (ตัวหาร B)',
+              data: riskUnits2.map(u => u.target),
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
+              borderColor: '#d97706',
+              borderWidth: 1,
+              borderRadius: 4
             }
+          ];
+          if (badge2) {
+            badge2.textContent = 'คัดกรอง (A) vs เป้าหมาย (B)';
+            badge2.className = 'text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font';
+          }
+        } else if (isCompare) {
+          datasets2 = [
+            {
+              label: 'ผลงานตรวจในเขต (A1)',
+              data: unitsList.map(u => u.result),
+              backgroundColor: 'rgba(16, 185, 129, 0.85)',
+              borderColor: '#059669',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'ผลงานตรวจคลินิกจริง (A2)',
+              data: unitsList.map(u => u.result_fu),
+              backgroundColor: 'rgba(99, 102, 241, 0.85)',
+              borderColor: '#4f46e5',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ];
+          if (badge2) {
+            badge2.textContent = 'ผลงาน A1 vs A2';
+            badge2.className = 'text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font';
+          }
+        } else if (isFuOnly) {
+          datasets2 = [
+            {
+              label: 'ผลงานตรวจคลินิกจริง (A2)',
+              data: unitsList.map(u => u.result_fu),
+              backgroundColor: 'rgba(99, 102, 241, 0.85)',
+              borderColor: '#4f46e5',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'ผู้ป่วยคลินิกจริง (B2)',
+              data: unitsList.map(u => u.target_fu),
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
+              borderColor: '#d97706',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ];
+          if (badge2) {
+            badge2.textContent = 'A2 vs B2 (ChronicFU)';
+            badge2.className = 'text-xs font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 num-font';
+          }
+        } else {
+          datasets2 = [
+            {
+              label: 'ผลงาน (ตัวตั้ง A1)',
+              data: unitsList.map(u => u.result),
+              backgroundColor: 'rgba(59, 130, 246, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'เป้าหมาย (ตัวหาร B1)',
+              data: unitsList.map(u => u.target),
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
+              borderColor: '#d97706',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ];
+          if (badge2) {
+            badge2.textContent = 'A1 vs B1 (Typearea)';
+            badge2.className = 'text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font';
+          }
+        }
+
+        const ctx2 = canvasCompare.getContext('2d');
+        ncdUnitCompareChartInstance = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: labels2,
+            datasets: datasets2
           },
-          onClick: (evt, elements) => {
-            if (elements && elements.length > 0) {
-              const elIndex = elements[0].index;
-              const target = isRisk ? Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({ hospcode: code }))[elIndex] : unitsList[elIndex];
-              if (target) {
-                const uSel = document.getElementById('ncd-unit-select');
-                if (uSel) uSel.value = target.hospcode;
-                window.switchNcdUnit(target.hospcode);
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw || 0;
+                    return ` ${ctx.dataset.label}: ${val.toLocaleString()} คน`;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(v) { return Number(v).toLocaleString(); },
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+                },
+                grid: { color: '#f1f5f9' }
+              },
+              x: {
+                ticks: {
+                  font: { family: "'Noto Sans Thai', sans-serif", size: 9 },
+                  maxRotation: 45,
+                  minRotation: 25
+                },
+                grid: { display: false }
+              }
+            },
+            onClick: (evt, elements) => {
+              if (elements && elements.length > 0) {
+                const elIndex = elements[0].index;
+                const target = isRisk ? Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({ hospcode: code }))[elIndex] : unitsList[elIndex];
+                if (target) {
+                  const uSel = document.getElementById('ncd-unit-select');
+                  if (uSel) uSel.value = target.hospcode;
+                  window.switchNcdUnit(target.hospcode);
+                }
               }
             }
           }
-        }
-      });
+        });
+      }
     }
 
     // --- CHART 3: 3-Year Trend (2567 - 2568 - 2569) ---

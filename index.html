@@ -3774,38 +3774,46 @@
 
         <!-- 3 Interactive Visualizations (Bento Charts) -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Chart 1: Unit Rate Comparison (Horizontal Bar) -->
+          <!-- Chart 1: Unit Rate Comparison (Horizontal Bar / Unit Risk Donut) -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                   <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-600"></i>
-                  <span>เปรียบเทียบร้อยละผลงานรายหน่วยบริการ 14 แห่ง</span>
+                  <span id="ncd-chart1-title">เปรียบเทียบร้อยละผลงานรายหน่วยบริการ 14 แห่ง</span>
                 </h3>
-                <p class="text-xs text-slate-500 mt-0.5">เรียงลำดับจากร้อยละผลงานสูงสุดไปต่ำสุด</p>
+                <p class="text-xs text-slate-500 mt-0.5" id="ncd-chart1-sub">เรียงลำดับจากร้อยละผลงานสูงสุดไปต่ำสุด</p>
               </div>
               <span class="text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font" id="ncd-chart1-badge">Rate %</span>
             </div>
-            <div class="relative h-[340px] w-full">
+            <div class="relative h-[340px] w-full flex items-center justify-center" id="ncd-chart1-container">
               <canvas id="ncd-unit-rate-chart"></canvas>
+              <!-- Center Stat Overlay for Single-Unit Doughnut Chart -->
+              <div id="ncd-chart1-center" class="hidden pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none"></div>
             </div>
+            <!-- Dynamic Unit Risk Stats Chips Container (Visible when single unit selected) -->
+            <div id="ncd-chart1-extra" class="hidden pt-3 border-t border-slate-100"></div>
           </div>
 
-          <!-- Chart 2: Numerator vs Denominator (Grouped Bar) -->
+          <!-- Chart 2: Numerator vs Denominator (Grouped Bar / Unit Target Coverage) -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                   <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-600"></i>
-                  <span>เปรียบเทียบ ผลงาน (A) vs เป้าหมาย (B) รายหน่วยบริการ</span>
+                  <span id="ncd-chart2-title">เปรียบเทียบ ผลงาน (A) vs เป้าหมาย (B) รายหน่วยบริการ</span>
                 </h3>
-                <p class="text-xs text-slate-500 mt-0.5">ตัวตั้ง A (ผลงานบริการ) และตัวหาร B (ประชากรกลุ่มเป้าหมาย)</p>
+                <p class="text-xs text-slate-500 mt-0.5" id="ncd-chart2-sub">ตัวตั้ง A (ผลงานบริการ) และตัวหาร B (ประชากรกลุ่มเป้าหมาย)</p>
               </div>
               <span class="text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font" id="ncd-chart2-badge">A vs B</span>
             </div>
-            <div class="relative h-[340px] w-full">
+            <div class="relative h-[340px] w-full flex items-center justify-center" id="ncd-chart2-container">
               <canvas id="ncd-unit-compare-chart"></canvas>
+              <!-- Center Stat Overlay for Single-Unit Coverage Chart -->
+              <div id="ncd-chart2-center" class="hidden pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none"></div>
             </div>
+            <!-- Dynamic Unit Coverage Benchmarks Container (Visible when single unit selected) -->
+            <div id="ncd-chart2-extra" class="hidden pt-3 border-t border-slate-100"></div>
           </div>
         </div>
 
