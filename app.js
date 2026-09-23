@@ -13584,6 +13584,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderServicePlanNcdPanel();
   };
 
+  function getFilteredNcdReports() {
+    const list = getNcdReportsList();
+    return list.filter(r => {
+      const matchCat = (currentNcdCategory === 'ALL' || r.category === currentNcdCategory);
+      const matchQ = !currentNcdSearchQuery || 
+        (r.name && r.name.toLowerCase().includes(currentNcdSearchQuery)) ||
+        (r.table_name && r.table_name.toLowerCase().includes(currentNcdSearchQuery));
+      return matchCat && matchQ;
+    });
+  }
+
+  window.navigateNcdReport = function(step) {
+    const list = getFilteredNcdReports();
+    if (!list || !list.length) return;
+    let curIdx = list.findIndex(r => r.id === currentNcdReportId);
+    if (curIdx === -1) curIdx = 0;
+    let nextIdx = (curIdx + step + list.length) % list.length;
+    const targetReport = list[nextIdx];
+    if (targetReport) {
+      currentNcdReportId = targetReport.id;
+      const select = document.getElementById('ncd-report-select');
+      if (select) select.value = targetReport.id;
+      renderServicePlanNcdPanel();
+    }
+  };
+
   window.switchNcdDatasetMode = function(mode) {
     currentNcdDatasetMode = mode;
     ['typearea', 'chronicfu', 'compare'].forEach(m => {
@@ -13665,14 +13691,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const select = document.getElementById('ncd-report-select');
     if (!select) return;
 
-    const list = getNcdReportsList();
-    const filtered = list.filter(r => {
-      const matchCat = (currentNcdCategory === 'ALL' || r.category === currentNcdCategory);
-      const matchQ = !currentNcdSearchQuery || 
-        (r.name && r.name.toLowerCase().includes(currentNcdSearchQuery)) ||
-        (r.table_name && r.table_name.toLowerCase().includes(currentNcdSearchQuery));
-      return matchCat && matchQ;
-    });
+    const filtered = getFilteredNcdReports();
 
     select.innerHTML = '';
     if (!filtered.length) {
@@ -13776,6 +13795,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentNcdDatasetMode = 'typearea';
       }
     }
+
+    // Update Criteria Callout Box for Risk Screening Indicators
+    updateNcdCriteriaBox(report);
 
     // Render 4 Bento Cards
     renderNcdKpis(report);
@@ -13914,6 +13936,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isCompare = hasFu && currentNcdDatasetMode === 'compare';
     const isFuOnly = hasFu && currentNcdDatasetMode === 'chronicfu';
 
+    const isRisk = !!report.is_risk_screen;
+
     // Map units
     const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
       const u = unitsMap[code] || {};
@@ -13926,20 +13950,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         target: u.target || 0,
         result: u.result || 0,
         rate: u.rate || 0,
+        normal: u.normal || 0,
+        normal_rate: u.normal_rate || 0,
+        risk: u.risk || 0,
+        risk_rate: u.risk_rate || 0,
+        high_risk: u.high_risk || 0,
+        high_risk_rate: u.high_risk_rate || 0,
+        ill_doctor: u.ill_doctor || 0,
+        ill_doctor_rate: u.ill_doctor_rate || 0,
+        out_of_bounds: u.out_of_bounds || 0,
+        out_of_bounds_rate: u.out_of_bounds_rate || 0,
         target_fu: u.target_fu || 0,
         result_fu: u.result_fu || 0,
         rate_fu: u.rate_fu || 0
       };
     });
 
-    // Sort units
-    const sortedByRate = [...unitsList].sort((a, b) => {
-      if (isFuOnly) return b.rate_fu - a.rate_fu;
-      if (isCompare) return (b.rate_fu + b.rate) - (a.rate_fu + a.rate);
-      return b.rate - a.rate;
-    });
+    // Sort units: For risk screen, sort by hospcode (06014..99758) matching HDC screenshot
+    const sortedUnits = isRisk
+      ? [...unitsList].sort((a, b) => a.hospcode.localeCompare(b.hospcode))
+      : [...unitsList].sort((a, b) => {
+          if (isFuOnly) return b.rate_fu - a.rate_fu;
+          if (isCompare) return (b.rate_fu + b.rate) - (a.rate_fu + a.rate);
+          return b.rate - a.rate;
+        });
 
-    // --- CHART 1: Horizontal Bar Chart of Unit Rates (%) ---
+    // --- CHART 1: Horizontal Bar Chart of Unit Rates / 100% Stacked Bar ---
     const canvasRate = document.getElementById('ncd-unit-rate-chart');
     if (canvasRate) {
       if (ncdUnitRateChartInstance) {
@@ -13947,24 +13983,103 @@ document.addEventListener('DOMContentLoaded', async () => {
         ncdUnitRateChartInstance = null;
       }
 
-      const labels1 = sortedByRate.map(u => u.name);
+      let labels1 = [];
       let datasets1 = [];
 
-      if (isCompare) {
+      if (isRisk) {
+        // 100% Horizontal Stacked Bar Chart (Matching HDC media_1790181009912.png)
+        labels1 = sortedUnits.map(u => `${u.hospcode}:${u.fullName}`);
+        const badge = document.getElementById('ncd-chart1-badge');
+        if (badge) badge.textContent = '100% Stacked Bar (สัดส่วนกลุ่มเสี่ยง)';
+
+        if (report.risk_type === 'ht') {
+          datasets1 = [
+            {
+              label: 'ปกติ',
+              data: sortedUnits.map(u => u.normal_rate),
+              backgroundColor: '#38bdf8', // Light Blue
+              borderColor: '#0284c7',
+              borderWidth: 0.5
+            },
+            {
+              label: 'เสี่ยง',
+              data: sortedUnits.map(u => u.risk_rate),
+              backgroundColor: '#818cf8', // Indigo / Purple
+              borderColor: '#6366f1',
+              borderWidth: 0.5
+            },
+            {
+              label: 'สงสัยป่วย',
+              data: sortedUnits.map(u => u.high_risk_rate),
+              backgroundColor: '#34d399', // Emerald Green
+              borderColor: '#10b981',
+              borderWidth: 0.5
+            },
+            {
+              label: 'ป่วย (ส่งพบแพทย์)',
+              data: sortedUnits.map(u => u.ill_doctor_rate),
+              backgroundColor: '#f87171', // Red / Rose
+              borderColor: '#ef4444',
+              borderWidth: 0.5
+            },
+            {
+              label: 'นอกเกณฑ์',
+              data: sortedUnits.map(u => u.out_of_bounds_rate),
+              backgroundColor: '#fb923c', // Orange
+              borderColor: '#f97316',
+              borderWidth: 0.5
+            }
+          ];
+        } else {
+          // DM (Diabetes)
+          datasets1 = [
+            {
+              label: 'ปกติ',
+              data: sortedUnits.map(u => u.normal_rate),
+              backgroundColor: '#38bdf8', // Light Blue
+              borderColor: '#0284c7',
+              borderWidth: 0.5
+            },
+            {
+              label: 'เสี่ยง',
+              data: sortedUnits.map(u => u.risk_rate),
+              backgroundColor: '#818cf8', // Indigo / Purple
+              borderColor: '#6366f1',
+              borderWidth: 0.5
+            },
+            {
+              label: 'สงสัยป่วย',
+              data: sortedUnits.map(u => u.high_risk_rate),
+              backgroundColor: '#34d399', // Emerald Green
+              borderColor: '#10b981',
+              borderWidth: 0.5
+            },
+            {
+              label: 'นอกเกณฑ์',
+              data: sortedUnits.map(u => u.out_of_bounds_rate),
+              backgroundColor: '#fb923c', // Orange
+              borderColor: '#f97316',
+              borderWidth: 0.5
+            }
+          ];
+        }
+
+      } else if (isCompare) {
+        labels1 = sortedUnits.map(u => u.name);
         datasets1 = [
           {
             label: 'ในเขตรับผิดชอบ (Typearea 1,3 %)',
-            data: sortedByRate.map(u => u.rate),
-            backgroundColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)'),
-            borderColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#d97706' : '#059669'),
+            data: sortedUnits.map(u => u.rate),
+            backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)'),
+            borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#d97706' : '#059669'),
             borderWidth: 1,
             borderRadius: 4
           },
           {
             label: 'ผู้มารับบริการจริง (ChronicFU %)',
-            data: sortedByRate.map(u => u.rate_fu),
-            backgroundColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#fbbf24' : 'rgba(99, 102, 241, 0.85)'),
-            borderColor: sortedByRate.map(u => u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5'),
+            data: sortedUnits.map(u => u.rate_fu),
+            backgroundColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#fbbf24' : 'rgba(99, 102, 241, 0.85)'),
+            borderColor: sortedUnits.map(u => u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5'),
             borderWidth: 1,
             borderRadius: 4
           }
@@ -13972,22 +14087,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const badge = document.getElementById('ncd-chart1-badge');
         if (badge) badge.textContent = 'เปรียบเทียบ Typearea vs ChronicFU %';
       } else if (isFuOnly) {
+        labels1 = sortedUnits.map(u => u.name);
         datasets1 = [{
           label: 'ร้อยละผู้มารับบริการจริง (ChronicFU %)',
-          data: sortedByRate.map(u => u.rate_fu),
-          backgroundColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(99, 102, 241, 0.85)')),
-          borderColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5')),
+          data: sortedUnits.map(u => u.rate_fu),
+          backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(99, 102, 241, 0.85)')),
+          borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#4f46e5')),
           borderWidth: 1,
           borderRadius: 6
         }];
         const badge = document.getElementById('ncd-chart1-badge');
         if (badge) badge.textContent = 'ChronicFU Rate %';
       } else {
+        labels1 = sortedUnits.map(u => u.name);
         datasets1 = [{
           label: 'ร้อยละในเขตรับผิดชอบ (Typearea 1,3 %)',
-          data: sortedByRate.map(u => u.rate),
-          backgroundColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)')),
-          borderColor: sortedByRate.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669')),
+          data: sortedUnits.map(u => u.rate),
+          backgroundColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#f59e0b' : 'rgba(16, 185, 129, 0.85)')),
+          borderColor: sortedUnits.map(u => (u.hospcode === currentNcdUnit ? '#b45309' : '#059669')),
           borderWidth: 1,
           borderRadius: 6
         }];
@@ -14008,15 +14125,32 @@ document.addEventListener('DOMContentLoaded', async () => {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: isCompare,
-              position: 'top',
-              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
+              display: isRisk || isCompare,
+              position: isRisk ? 'bottom' : 'top',
+              labels: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' },
+                boxWidth: isRisk ? 12 : 20,
+                usePointStyle: isRisk
+              }
             },
             tooltip: {
               callbacks: {
                 label: function(ctx) {
                   const idx = ctx.dataIndex;
-                  const item = sortedByRate[idx];
+                  const item = sortedUnits[idx];
+                  if (isRisk) {
+                    const pct = ctx.raw || 0;
+                    let count = 0;
+                    if (ctx.dataset.label === 'ปกติ') count = item.normal;
+                    else if (ctx.dataset.label === 'เสี่ยง') count = item.risk;
+                    else if (ctx.dataset.label === 'สงสัยป่วย') count = item.high_risk;
+                    else if (ctx.dataset.label.includes('ป่วย')) count = item.ill_doctor;
+                    else if (ctx.dataset.label === 'นอกเกณฑ์') count = item.out_of_bounds;
+                    return [
+                      ` ${ctx.dataset.label}: ${pct.toFixed(2)}% (${Number(count).toLocaleString()} คน)`,
+                      ` คัดกรองทั้งหมด: ${Number(item.result).toLocaleString()} คน (เป้าหมาย ${Number(item.target).toLocaleString()} คน)`
+                    ];
+                  }
                   if (ctx.dataset.label.includes('ChronicFU')) {
                     return [
                       ` ${ctx.dataset.label}: ${item.rate_fu.toFixed(2)}%`,
@@ -14035,7 +14169,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           },
           scales: {
             x: {
+              stacked: isRisk,
               beginAtZero: true,
+              max: isRisk ? 100 : undefined,
               ticks: {
                 callback: function(v) { return v + '%'; },
                 font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
@@ -14043,8 +14179,9 @@ document.addEventListener('DOMContentLoaded', async () => {
               grid: { color: '#f1f5f9' }
             },
             y: {
+              stacked: isRisk,
               ticks: {
-                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+                font: { family: "'Noto Sans Thai', sans-serif", size: isRisk ? 9 : 10 }
               },
               grid: { display: false }
             }
@@ -14052,7 +14189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           onClick: (evt, elements) => {
             if (elements && elements.length > 0) {
               const elIndex = elements[0].index;
-              const target = sortedByRate[elIndex];
+              const target = sortedUnits[elIndex];
               if (target) {
                 const uSel = document.getElementById('ncd-unit-select');
                 if (uSel) uSel.value = target.hospcode;
@@ -14072,10 +14209,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         ncdUnitCompareChartInstance = null;
       }
 
-      const labels2 = unitsList.map(u => u.name);
+      let labels2 = unitsList.map(u => u.name);
       let datasets2 = [];
 
-      if (isCompare) {
+      if (isRisk) {
+        const riskUnits2 = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({
+          hospcode: code,
+          name: SARAPHI_UNITS_MAP[code]?.short || code,
+          target: unitsMap[code]?.target || 0,
+          result: unitsMap[code]?.result || 0,
+          rate: unitsMap[code]?.rate || 0
+        }));
+        labels2 = riskUnits2.map(u => u.name);
+        datasets2 = [
+          {
+            label: 'ผลงานคัดกรองแล้ว (ตัวตั้ง A)',
+            data: riskUnits2.map(u => u.result),
+            backgroundColor: 'rgba(56, 189, 248, 0.85)',
+            borderColor: '#0284c7',
+            borderWidth: 1,
+            borderRadius: 4
+          },
+          {
+            label: 'เป้าหมายประชากร 35+ (ตัวหาร B)',
+            data: riskUnits2.map(u => u.target),
+            backgroundColor: 'rgba(245, 158, 11, 0.75)',
+            borderColor: '#d97706',
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ];
+        const badge2 = document.getElementById('ncd-chart2-badge');
+        if (badge2) badge2.textContent = 'คัดกรอง (A) vs เป้าหมาย (B)';
+      } else if (isCompare) {
         datasets2 = [
           {
             label: 'ผลงานตรวจในเขต (A1)',
@@ -14185,7 +14351,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           onClick: (evt, elements) => {
             if (elements && elements.length > 0) {
               const elIndex = elements[0].index;
-              const target = unitsList[elIndex];
+              const target = isRisk ? Object.keys(SARAPHI_UNITS_MAP).sort().map(code => ({ hospcode: code }))[elIndex] : unitsList[elIndex];
               if (target) {
                 const uSel = document.getElementById('ncd-unit-select');
                 if (uSel) uSel.value = target.hospcode;
@@ -14242,7 +14408,98 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       let trendDatasets = [];
-      if (hasFu) {
+      if (isRisk) {
+        const trendRiskRate = [];
+        const trendHighRiskRate = [];
+        const trendIllRate = [];
+
+        years.forEach(y => {
+          const yObj = report.years?.[y] || {};
+          const src = isAll ? (yObj.district || {}) : (yObj.units?.[currentNcdUnit] || {});
+          trendRiskRate.push(src.risk_rate || 0);
+          trendHighRiskRate.push(src.high_risk_rate || 0);
+          trendIllRate.push(src.ill_doctor_rate || 0);
+        });
+
+        trendDatasets = [
+          {
+            type: 'line',
+            label: 'ร้อยละการคัดกรอง (% คัดกรอง)',
+            data: trendRate,
+            borderColor: '#0284c7',
+            backgroundColor: 'rgba(2, 132, 199, 0.1)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 3,
+            pointRadius: 6,
+            pointBackgroundColor: '#0284c7',
+            yAxisID: 'y1'
+          },
+          {
+            type: 'line',
+            label: 'ร้อยละกลุ่มเสี่ยง (% เสี่ยง)',
+            data: trendRiskRate,
+            borderColor: '#818cf8',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointBackgroundColor: '#818cf8',
+            yAxisID: 'y1'
+          },
+          {
+            type: 'line',
+            label: 'ร้อยละสงสัยป่วย (% สงสัย)',
+            data: trendHighRiskRate,
+            borderColor: '#10b981',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointBackgroundColor: '#10b981',
+            yAxisID: 'y1'
+          }
+        ];
+
+        if (report.risk_type === 'ht') {
+          trendDatasets.push({
+            type: 'line',
+            label: 'ร้อยละป่วยส่งพบแพทย์ (%)',
+            data: trendIllRate,
+            borderColor: '#ef4444',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointBackgroundColor: '#ef4444',
+            yAxisID: 'y1'
+          });
+        }
+
+        trendDatasets.push(
+          {
+            type: 'bar',
+            label: 'คัดกรองแล้ว (คน)',
+            data: trendResult,
+            backgroundColor: 'rgba(56, 189, 248, 0.5)',
+            borderColor: '#0284c7',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          },
+          {
+            type: 'bar',
+            label: 'เป้าหมายประชากร (คน)',
+            data: trendTarget,
+            backgroundColor: 'rgba(203, 213, 225, 0.6)',
+            borderColor: '#94a3b8',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          }
+        );
+
+      } else if (hasFu) {
         trendDatasets = [
           {
             type: 'line',
@@ -14398,9 +14655,80 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  function updateNcdCriteriaBox(report) {
+    const callout = document.getElementById('ncd-criteria-callout');
+    if (!callout) return;
+    if (!report || !report.is_risk_screen) {
+      callout.classList.add('hidden');
+      return;
+    }
+    callout.classList.remove('hidden');
+    const titleEl = document.getElementById('ncd-criteria-title');
+    const contentEl = document.getElementById('ncd-criteria-content');
+
+    if (report.risk_type === 'ht') {
+      if (titleEl) titleEl.textContent = 'เกณฑ์การคัดกรองและจำแนกกลุ่มเสี่ยงโรคความดันโลหิตสูง (HT) ตามมาตรฐาน HDC';
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+            <strong>ปกติ:</strong> กลุ่มเสี่ยง = 0 (ความดันปกติ)
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <strong>กลุ่มเสี่ยง:</strong> กลุ่มเสี่ยง = 1
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <strong>สงสัยป่วย:</strong> กลุ่มเสี่ยง = 2
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <strong>ป่วย (ส่งพบแพทย์):</strong> กลุ่มเสี่ยง = 3
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <strong>นอกเกณฑ์:</strong> อื่นๆ ที่ไม่เข้าเกณฑ์ข้างต้น
+          </span>
+          <span class="inline-flex items-center gap-1 text-[11px] text-slate-500 font-normal ml-auto">
+            * คัดกรอง = ปกติ + เสี่ยง + สงสัยป่วย + ป่วย + นอกเกณฑ์ | ร้อยละกลุ่ม = (กลุ่ม / คัดกรอง) &times; 100
+          </span>
+        `;
+      }
+    } else {
+      // DM
+      if (titleEl) titleEl.textContent = 'เกณฑ์การคัดกรองและจำแนกกลุ่มเสี่ยงโรคเบาหวาน (DM) ตามมาตรฐาน HDC';
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+            <strong>ปกติ:</strong> น้ำตาลในเลือด 70 - &lt;100 mg%
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <strong>กลุ่มเสี่ยง:</strong> น้ำตาลในเลือด 100 - &lt;126 mg%
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <strong>สงสัยป่วย:</strong> น้ำตาลในเลือด &ge; 126 mg%
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <strong>นอกเกณฑ์:</strong> น้ำตาลในเลือด &lt; 70 mg%
+          </span>
+          <span class="inline-flex items-center gap-1 text-[11px] text-slate-500 font-normal ml-auto">
+            * คัดกรอง = ปกติ + เสี่ยง + สงสัยป่วย + นอกเกณฑ์ | ร้อยละกลุ่ม = (กลุ่ม / คัดกรอง) &times; 100
+          </span>
+        `;
+      }
+    }
+  }
+
   function renderNcdTable(report) {
     if (!report) report = getActiveNcdReport();
     if (!report) return;
+
+    updateNcdCriteriaBox(report);
 
     const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
     const unitsMap = yrData.units || {};
@@ -14410,6 +14738,224 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!tbody || !tfoot) return;
 
     const hasFu = report.has_fu;
+    const isRisk = !!report.is_risk_screen;
+    const dist = yrData.district || {};
+
+    if (isRisk) {
+      // 1. Set Table Header Title
+      const tblTitle = document.getElementById('ncd-table-header-title');
+      if (tblTitle) {
+        tblTitle.innerHTML = `<span>ตารางแจกแจงผลการคัดกรองและการจำแนกกลุ่มเสี่ยง HDC รายหน่วยบริการ (14 แห่ง)</span>`;
+      }
+
+      // Sort by hospcode matching HDC standard (06014 to 99758)
+      const riskList = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => {
+        const u = unitsMap[code] || {};
+        const meta = SARAPHI_UNITS_MAP[code] || {};
+        return {
+          hospcode: code,
+          name: meta.name || u.name || code,
+          subdistrict: meta.subdistrict || u.subdistrict || '',
+          target: u.target || 0,
+          result: u.result || 0,
+          rate: u.rate || 0,
+          normal: u.normal || 0,
+          normal_rate: u.normal_rate || 0,
+          risk: u.risk || 0,
+          risk_rate: u.risk_rate || 0,
+          high_risk: u.high_risk || 0,
+          high_risk_rate: u.high_risk_rate || 0,
+          ill_doctor: u.ill_doctor || 0,
+          ill_doctor_rate: u.ill_doctor_rate || 0,
+          out_of_bounds: u.out_of_bounds || 0,
+          out_of_bounds_rate: u.out_of_bounds_rate || 0
+        };
+      });
+
+      const filteredRisk = riskList.filter(u => {
+        if (!currentNcdTableSearch) return true;
+        return (
+          u.hospcode.includes(currentNcdTableSearch) ||
+          u.name.toLowerCase().includes(currentNcdTableSearch) ||
+          u.subdistrict.toLowerCase().includes(currentNcdTableSearch)
+        );
+      });
+
+      const isHT = (report.risk_type === 'ht');
+
+      // 2. THEAD: HDC Green Double Header
+      if (thead) {
+        if (isHT) {
+          thead.innerHTML = `
+            <tr class="bg-emerald-900 text-white text-xs font-bold border-b border-emerald-800">
+              <th rowspan="2" class="py-3 px-3 w-12 text-center border-r border-emerald-800">ลำดับ</th>
+              <th rowspan="2" class="py-3 px-4 min-w-[220px] border-r border-emerald-800">หน่วยบริการ</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-800">เป้าหมาย</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-800">คัดกรอง</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-700 bg-emerald-800 font-extrabold text-emerald-200">ร้อยละ</th>
+              <th colspan="10" class="py-2.5 px-3 text-center bg-emerald-950 font-extrabold text-[12px]">
+                <i class="fa-solid fa-notes-medical mr-1.5 text-emerald-300"></i> ผลการคัดกรอง
+              </th>
+            </tr>
+            <tr class="bg-emerald-950 text-white text-[11px] font-semibold border-b border-emerald-800">
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80">ปกติ</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-sky-200">ร้อยละ</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80">เสี่ยง</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-indigo-200">ร้อยละ</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80">สงสัยป่วย</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-emerald-200">ร้อยละ</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80">ป่วย(ส่งพบแพทย์)</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-rose-200">ร้อยละ</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80">นอกเกณฑ์</th>
+              <th class="py-2 px-2 text-right bg-emerald-900/90 font-extrabold text-amber-200">ร้อยละ</th>
+            </tr>
+          `;
+        } else {
+          // DM
+          thead.innerHTML = `
+            <tr class="bg-emerald-900 text-white text-xs font-bold border-b border-emerald-800">
+              <th rowspan="2" class="py-3 px-3 w-12 text-center border-r border-emerald-800">ลำดับ</th>
+              <th rowspan="2" class="py-3 px-4 min-w-[220px] border-r border-emerald-800">หน่วยบริการ</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-800">เป้าหมาย</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-800">คัดกรอง</th>
+              <th rowspan="2" class="py-3 px-2.5 text-right border-r border-emerald-700 bg-emerald-800 font-extrabold text-emerald-200">ร้อยละ</th>
+              <th colspan="8" class="py-2.5 px-3 text-center bg-emerald-950 font-extrabold text-[12px]">
+                <i class="fa-solid fa-notes-medical mr-1.5 text-emerald-300"></i> ผลการคัดกรอง
+              </th>
+            </tr>
+            <tr class="bg-emerald-950 text-white text-[11px] font-semibold border-b border-emerald-800">
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80">ปกติ</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-sky-200">ร้อยละ</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80">เสี่ยง</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-indigo-200">ร้อยละ</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80">สงสัยป่วย</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-extrabold text-emerald-200">ร้อยละ</th>
+              <th class="py-2 px-2.5 text-right border-r border-emerald-800/80">นอกเกณฑ์</th>
+              <th class="py-2 px-2.5 text-right bg-emerald-900/90 font-extrabold text-amber-200">ร้อยละ</th>
+            </tr>
+          `;
+        }
+      }
+
+      // 3. TBODY: Risk Rows
+      tbody.innerHTML = '';
+      if (!filteredRisk.length) {
+        tbody.innerHTML = `<tr><td colspan="${isHT ? 15 : 13}" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>`;
+      } else {
+        filteredRisk.forEach((u, idx) => {
+          const isSelected = (u.hospcode === currentNcdUnit);
+          const rowClass = isSelected ? 'bg-amber-50/90 font-semibold ring-1 ring-amber-300' : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/70' : 'bg-slate-50/40 hover:bg-slate-100/60');
+
+          const tr = document.createElement('tr');
+          tr.className = `${rowClass} text-xs transition border-b border-slate-100`;
+          tr.style.cursor = 'pointer';
+          tr.onclick = () => {
+            const uSel = document.getElementById('ncd-unit-select');
+            if (uSel) uSel.value = u.hospcode;
+            window.switchNcdUnit(u.hospcode);
+          };
+
+          if (isHT) {
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 text-center text-slate-400 num-font border-r border-slate-200/60">${idx + 1}</td>
+              <td class="py-2.5 px-4 font-bold text-slate-900 border-r border-slate-200/60">
+                <span class="font-mono text-slate-500 font-semibold">${u.hospcode}:</span>
+                <span>${u.name}</span>
+                <span class="text-[11px] text-slate-400 font-normal ml-1">ต.${u.subdistrict}</span>
+              </td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-200/60">${Number(u.target).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-emerald-800 border-r border-slate-200/60">${Number(u.result).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-extrabold text-emerald-700 border-r border-slate-300 bg-emerald-50/40">${Number(u.rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.normal).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-sky-700 border-r border-slate-200/60 bg-sky-50/30">${Number(u.normal_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.risk).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-indigo-700 border-r border-slate-200/60 bg-indigo-50/30">${Number(u.risk_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.high_risk).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-emerald-700 border-r border-slate-200/60 bg-emerald-50/30">${Number(u.high_risk_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font text-rose-700 border-r border-slate-200/60">${Number(u.ill_doctor).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-rose-700 border-r border-slate-200/60 bg-rose-50/30">${Number(u.ill_doctor_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font text-amber-700 border-r border-slate-200/60">${Number(u.out_of_bounds).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-amber-700 bg-amber-50/30">${Number(u.out_of_bounds_rate).toFixed(2)}</td>
+            `;
+          } else {
+            // DM
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 text-center text-slate-400 num-font border-r border-slate-200/60">${idx + 1}</td>
+              <td class="py-2.5 px-4 font-bold text-slate-900 border-r border-slate-200/60">
+                <span class="font-mono text-slate-500 font-semibold">${u.hospcode}:</span>
+                <span>${u.name}</span>
+                <span class="text-[11px] text-slate-400 font-normal ml-1">ต.${u.subdistrict}</span>
+              </td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-200/60">${Number(u.target).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-emerald-800 border-r border-slate-200/60">${Number(u.result).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-extrabold text-emerald-700 border-r border-slate-300 bg-emerald-50/40">${Number(u.rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.normal).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-sky-700 border-r border-slate-200/60 bg-sky-50/30">${Number(u.normal_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.risk).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-indigo-700 border-r border-slate-200/60 bg-indigo-50/30">${Number(u.risk_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60">${Number(u.high_risk).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-emerald-700 border-r border-slate-200/60 bg-emerald-50/30">${Number(u.high_risk_rate).toFixed(2)}</td>
+              <td class="py-2.5 px-2.5 text-right num-font text-amber-700 border-r border-slate-200/60">${Number(u.out_of_bounds).toLocaleString()}</td>
+              <td class="py-2.5 px-2.5 text-right num-font font-bold text-amber-700 bg-amber-50/30">${Number(u.out_of_bounds_rate).toFixed(2)}</td>
+            `;
+          }
+          tbody.appendChild(tr);
+        });
+      }
+
+      // 4. TFOOT: District Totals matching HDC Screenshots
+      if (isHT) {
+        tfoot.innerHTML = `
+          <tr class="bg-gradient-to-r from-emerald-100/90 to-teal-100/90 text-slate-900 border-t-2 border-emerald-600 font-bold text-xs">
+            <td class="py-3 px-3 text-center num-font font-extrabold text-emerald-950 border-r border-slate-300">-</td>
+            <td class="py-3 px-4 font-extrabold text-emerald-950 text-sm border-r border-slate-300">
+              รวมทั้งอำเภอสารภี (5019)
+            </td>
+            <td class="py-3 px-2.5 text-right num-font font-extrabold text-slate-900 border-r border-slate-300">${Number(dist.target || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-extrabold text-emerald-900 border-r border-slate-300">${Number(dist.result || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-emerald-800 text-[13px] border-r border-slate-400 bg-emerald-200/80">${Number(dist.rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.normal || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-sky-800 border-r border-slate-300 bg-sky-100/70">${Number(dist.normal_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.risk || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-indigo-800 border-r border-slate-300 bg-indigo-100/70">${Number(dist.risk_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.high_risk || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-emerald-800 border-r border-slate-300 bg-emerald-100/70">${Number(dist.high_risk_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-bold text-rose-800 border-r border-slate-300">${Number(dist.ill_doctor || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-rose-800 border-r border-slate-300 bg-rose-100/70">${Number(dist.ill_doctor_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-bold text-amber-800 border-r border-slate-300">${Number(dist.out_of_bounds || 0).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-amber-800 bg-amber-100/70">${Number(dist.out_of_bounds_rate || 0).toFixed(2)}</td>
+          </tr>
+        `;
+      } else {
+        // DM
+        tfoot.innerHTML = `
+          <tr class="bg-gradient-to-r from-emerald-100/90 to-teal-100/90 text-slate-900 border-t-2 border-emerald-600 font-bold text-xs">
+            <td class="py-3 px-3 text-center num-font font-extrabold text-emerald-950 border-r border-slate-300">-</td>
+            <td class="py-3 px-4 font-extrabold text-emerald-950 text-sm border-r border-slate-300">
+              รวมทั้งอำเภอสารภี (5019)
+            </td>
+            <td class="py-3 px-2.5 text-right num-font font-extrabold text-slate-900 border-r border-slate-300">${Number(dist.target || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-extrabold text-emerald-900 border-r border-slate-300">${Number(dist.result || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-emerald-800 text-[13px] border-r border-slate-400 bg-emerald-200/80">${Number(dist.rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.normal || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-sky-800 border-r border-slate-300 bg-sky-100/70">${Number(dist.normal_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.risk || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-indigo-800 border-r border-slate-300 bg-indigo-100/70">${Number(dist.risk_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300">${Number(dist.high_risk || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-emerald-800 border-r border-slate-300 bg-emerald-100/70">${Number(dist.high_risk_rate || 0).toFixed(2)}</td>
+            <td class="py-3 px-2.5 text-right num-font font-bold text-amber-800 border-r border-slate-300">${Number(dist.out_of_bounds || 0).toLocaleString()}</td>
+            <td class="py-3 px-2.5 text-right num-font font-black text-amber-800 bg-amber-100/70">${Number(dist.out_of_bounds_rate || 0).toFixed(2)}</td>
+          </tr>
+        `;
+      }
+      return;
+    }
+
+    // Default Non-Risk Standard / Dual Dataset Table
+    const tblTitle = document.getElementById('ncd-table-header-title');
+    if (tblTitle) {
+      tblTitle.innerHTML = `<span>ตารางข้อมูล HDC รายหน่วยบริการ อำเภอสารภี (14 แห่ง)</span>`;
+    }
 
     const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
       const u = unitsMap[code] || {};
@@ -14469,8 +15015,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         u.subdistrict.toLowerCase().includes(currentNcdTableSearch)
       );
     });
-
-    const dist = yrData.district || {};
 
     if (hasFu) {
       // 1. RENDER DUAL-GROUP THEAD (Exact Match to HDC Screenshot)
@@ -14649,11 +15193,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yrData = report.years?.[currentNcdYear] || { district: { target: 0, result: 0, rate: 0 }, units: {} };
     const unitsMap = yrData.units || {};
     const hasFu = report.has_fu;
+    const isRisk = !!report.is_risk_screen;
 
     let csvContent = `\uFEFFรายงานมาตรฐาน Service Plan NCDs: ${report.name}\n`;
     csvContent += `ตาราง HDC: ${report.table_name},ปีงบประมาณ: ${currentNcdYear},หมวดหมู่: ${report.category}\n\n`;
 
-    if (hasFu) {
+    if (isRisk) {
+      const isHT = (report.risk_type === 'ht');
+      if (isHT) {
+        csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,เป้าหมาย,คัดกรอง,ร้อยละคัดกรอง (%),ปกติ,ร้อยละปกติ (%),เสี่ยง,ร้อยละเสี่ยง (%),สงสัยป่วย,ร้อยละสงสัยป่วย (%),ป่วยส่งพบแพทย์,ร้อยละป่วย (%),นอกเกณฑ์,ร้อยละนอกเกณฑ์ (%)\n`;
+      } else {
+        csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,เป้าหมาย,คัดกรอง,ร้อยละคัดกรอง (%),ปกติ,ร้อยละปกติ (%),เสี่ยง,ร้อยละเสี่ยง (%),สงสัยป่วย,ร้อยละสงสัยป่วย (%),นอกเกณฑ์,ร้อยละนอกเกณฑ์ (%)\n`;
+      }
+
+      const riskUnits = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => {
+        const u = unitsMap[code] || {};
+        const meta = SARAPHI_UNITS_MAP[code] || {};
+        return {
+          hospcode: code,
+          name: meta.name || u.name || code,
+          subdistrict: meta.subdistrict || u.subdistrict || '',
+          target: u.target || 0,
+          result: u.result || 0,
+          rate: u.rate || 0,
+          normal: u.normal || 0,
+          normal_rate: u.normal_rate || 0,
+          risk: u.risk || 0,
+          risk_rate: u.risk_rate || 0,
+          high_risk: u.high_risk || 0,
+          high_risk_rate: u.high_risk_rate || 0,
+          ill_doctor: u.ill_doctor || 0,
+          ill_doctor_rate: u.ill_doctor_rate || 0,
+          out_of_bounds: u.out_of_bounds || 0,
+          out_of_bounds_rate: u.out_of_bounds_rate || 0
+        };
+      });
+
+      riskUnits.forEach((u, idx) => {
+        if (isHT) {
+          csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.target},${u.result},${u.rate.toFixed(2)},${u.normal},${u.normal_rate.toFixed(2)},${u.risk},${u.risk_rate.toFixed(2)},${u.high_risk},${u.high_risk_rate.toFixed(2)},${u.ill_doctor},${u.ill_doctor_rate.toFixed(2)},${u.out_of_bounds},${u.out_of_bounds_rate.toFixed(2)}\n`;
+        } else {
+          csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.target},${u.result},${u.rate.toFixed(2)},${u.normal},${u.normal_rate.toFixed(2)},${u.risk},${u.risk_rate.toFixed(2)},${u.high_risk},${u.high_risk_rate.toFixed(2)},${u.out_of_bounds},${u.out_of_bounds_rate.toFixed(2)}\n`;
+        }
+      });
+
+      const d = yrData.district || {};
+      if (isHT) {
+        csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.target || 0},${d.result || 0},${(d.rate || 0).toFixed(2)},${d.normal || 0},${(d.normal_rate || 0).toFixed(2)},${d.risk || 0},${(d.risk_rate || 0).toFixed(2)},${d.high_risk || 0},${(d.high_risk_rate || 0).toFixed(2)},${d.ill_doctor || 0},${(d.ill_doctor_rate || 0).toFixed(2)},${d.out_of_bounds || 0},${(d.out_of_bounds_rate || 0).toFixed(2)}\n`;
+      } else {
+        csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${d.target || 0},${d.result || 0},${(d.rate || 0).toFixed(2)},${d.normal || 0},${(d.normal_rate || 0).toFixed(2)},${d.risk || 0},${(d.risk_rate || 0).toFixed(2)},${d.high_risk || 0},${(d.high_risk_rate || 0).toFixed(2)},${d.out_of_bounds || 0},${(d.out_of_bounds_rate || 0).toFixed(2)}\n`;
+      }
+
+    } else if (hasFu) {
       csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,เป้าหมายในเขต (B1),ผลงานในเขต (A1),ร้อยละในเขต (%),ผลปกติ (Typearea),ผลผิดปกติ (Typearea),เป้าหมายคลินิก (B2),ผลงานคลินิก (A2),ร้อยละคลินิก (%),ผลปกติ (ChronicFU),ผลผิดปกติ (ChronicFU)\n`;
 
       const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
