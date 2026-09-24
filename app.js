@@ -13587,12 +13587,51 @@ document.addEventListener('DOMContentLoaded', async () => {
   function getFilteredNcdReports() {
     const list = getNcdReportsList();
     return list.filter(r => {
-      const matchCat = (currentNcdCategory === 'ALL' || r.category === currentNcdCategory);
+      const cat = (r.category || '').toUpperCase();
+      let matchCat = (currentNcdCategory === 'ALL');
+      if (currentNcdCategory === 'DM') matchCat = (cat === 'DM' || cat.includes('เบาหวาน'));
+      else if (currentNcdCategory === 'HT') matchCat = (cat === 'HT' || cat.includes('ความดัน'));
+      else if (currentNcdCategory === 'CVD') matchCat = (cat === 'CVD' || cat.includes('หัวใจ'));
+      else if (currentNcdCategory === 'CKD') matchCat = (cat === 'CKD' || cat.includes('ไต'));
+
       const matchQ = !currentNcdSearchQuery || 
         (r.name && r.name.toLowerCase().includes(currentNcdSearchQuery)) ||
         (r.table_name && r.table_name.toLowerCase().includes(currentNcdSearchQuery));
       return matchCat && matchQ;
     });
+  }
+
+  function updateNcdCategoryCounts() {
+    const list = getNcdReportsList();
+    const totalCount = list.length;
+    let dmCount = 0, htCount = 0, cvdCount = 0, ckdCount = 0;
+
+    list.forEach(r => {
+      const c = (r.category || '').toUpperCase();
+      if (c === 'DM' || c.includes('เบาหวาน')) dmCount++;
+      else if (c === 'HT' || c.includes('ความดัน')) htCount++;
+      else if (c === 'CVD' || c.includes('หัวใจ')) cvdCount++;
+      else if (c === 'CKD' || c.includes('ไต')) ckdCount++;
+    });
+
+    const badge = document.getElementById('ncd-report-count-badge');
+    if (badge) badge.textContent = `${totalCount} รายงานมาตรฐาน HDC`;
+    const sidebarBadge = document.getElementById('ncd-sidebar-badge');
+    if (sidebarBadge) sidebarBadge.textContent = totalCount;
+
+    const pillContainer = document.getElementById('ncd-category-pills');
+    if (pillContainer) {
+      const btnAll = pillContainer.querySelector('button[data-cat="ALL"]');
+      if (btnAll) btnAll.textContent = `ทั้งหมด (${totalCount})`;
+      const btnDm = pillContainer.querySelector('button[data-cat="DM"]');
+      if (btnDm) btnDm.textContent = `เบาหวาน DM (${dmCount})`;
+      const btnHt = pillContainer.querySelector('button[data-cat="HT"]');
+      if (btnHt) btnHt.textContent = `ความดันโลหิตสูง HT (${htCount})`;
+      const btnCvd = pillContainer.querySelector('button[data-cat="CVD"]');
+      if (btnCvd) btnCvd.textContent = `หลอดเลือดหัวใจ CVD (${cvdCount})`;
+      const btnCkd = pillContainer.querySelector('button[data-cat="CKD"]');
+      if (btnCkd) btnCkd.textContent = `ไตเรื้อรัง CKD (${ckdCount})`;
+    }
   }
 
   window.navigateNcdReport = function(step) {
@@ -13740,13 +13779,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             <i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i>
           </div>
           <h3 class="text-base font-bold text-slate-800">กำลังโหลดข้อมูล Service Plan NCDs...</h3>
-          <p class="text-xs text-slate-500">ระบบกำลังโหลดไฟล์มาสเตอร์ 70 รายงาน</p>
+          <p class="text-xs text-slate-500">ระบบกำลังโหลดไฟล์มาสเตอร์ 37 รายงาน</p>
         </div>
       `;
       if (window.lucide) window.lucide.createIcons();
       return;
     }
 
+    updateNcdCategoryCounts();
     populateNcdReportDropdown();
     populateNcdUnitDropdown();
     const unitSelect = document.getElementById('ncd-unit-select');
