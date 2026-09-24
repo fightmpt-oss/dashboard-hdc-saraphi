@@ -16,6 +16,22 @@
     "cat_name": "ข้อมูลเพื่อตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
   },
   {
+    "id": 637,
+    "report_id": 146,
+    "report_name": "ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี",
+    "cat_id": "b2b59e64c4e6c92d4b1ec16a599d882b",
+    "source_table": "s_ht_control",
+    "main_report_id": "02e752187c7282ebc9315123aa1cabbe",
+    "category_name": "ความดันโลหิตสูง (HT)",
+    "main_report_name": "ข้อมูลตอบสนอง Service Plan",
+    "opendata_id": "2e3813337b6b5377c2f68affe247d5f9",
+    "view_count": 650,
+    "last_synced_at": "2026-09-24T22:00:00.000Z",
+    "created_at": "2026-05-22T09:10:07.000Z",
+    "updated_at": "2026-09-24T22:00:00.000Z",
+    "cat_name": "ข้อมูลตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
+  },
+  {
     "id": 177,
     "report_id": 148,
     "report_name": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวาน",

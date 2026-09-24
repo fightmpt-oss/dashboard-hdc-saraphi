@@ -13988,15 +13988,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         d2: u.d2 ?? 0,
         hba1c_no_com2: u.hba1c_no_com2 ?? 0,
         c2: u.c2 ?? 0,
-        rate_c2: u.rate_c2 ?? 0
+        rate_c2: u.rate_c2 ?? 0,
+        // s_ht_control specific fields
+        bp_1x_1: u.bp_1x_1 ?? 0,
+        bp_ge2_1: u.bp_ge2_1 ?? 0,
+        rate_bp_ge2_1: u.rate_bp_ge2_1 ?? 0,
+        fu_ge2_2: u.fu_ge2_2 ?? 0,
+        bp_1x_2: u.bp_1x_2 ?? 0,
+        bp_ge2_2: u.bp_ge2_2 ?? 0,
+        rate_bp_ge2_2: u.rate_bp_ge2_2 ?? 0
       };
     });
 
     const isHba1c = !!(report.has_hba1c || report.table_name === 's_dm_hba1c');
     const isDmControl = !!(report.is_dm_control || report.table_name === 's_dm_control');
+    const isHtControl = !!(report.is_ht_control || report.table_name === 's_ht_control');
 
-    // Sort units: For risk screen or DM control, sort by hospcode (06014..99758) matching HDC screenshot
-    const sortedUnits = (isRisk || isDmControl)
+    // Sort units: For risk screen or DM/HT control, sort by hospcode (06014..99758) matching HDC screenshot
+    const sortedUnits = (isRisk || isDmControl || isHtControl)
       ? [...unitsList].sort((a, b) => a.hospcode.localeCompare(b.hospcode))
       : [...unitsList].sort((a, b) => {
           if (isFuOnly) return b.rate_fu - a.rate_fu;
@@ -14027,6 +14036,34 @@ document.addEventListener('DOMContentLoaded', async () => {
           ctx.textAlign = 'right';
           ctx.textBaseline = 'middle';
           ctx.fillText('เป้าหมาย 40', chartArea.left - 4, yVal);
+          ctx.restore();
+        }
+      }
+    };
+
+    // Target 60% threshold plugin (for s_ht_control)
+    const target60Plugin = {
+      id: 'target60LinePlugin',
+      afterDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        const yScale = scales.y;
+        if (!yScale || !chartArea) return;
+        const yVal = yScale.getPixelForValue(60);
+        if (yVal >= chartArea.top && yVal <= chartArea.bottom) {
+          ctx.save();
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, yVal);
+          ctx.lineTo(chartArea.right, yVal);
+          ctx.stroke();
+
+          ctx.fillStyle = '#dc2626';
+          ctx.font = 'bold 10px "Noto Sans Thai", sans-serif';
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('เป้าหมาย 60', chartArea.left - 4, yVal);
           ctx.restore();
         }
       }
@@ -14266,12 +14303,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (center1) center1.classList.add('hidden');
 
-        if (title1) title1.textContent = isDmControl
+        if (title1) title1.textContent = isHtControl
+          ? `เปรียบเทียบร้อยละการควบคุมความดันโลหิต: ${unitFullName}`
+          : isDmControl
           ? `เปรียบเทียบร้อยละการควบคุมระดับน้ำตาล: ${unitFullName}`
           : isHba1c
           ? `เปรียบเทียบร้อยละการตรวจ HbA1c: ${unitFullName}`
           : `เปรียบเทียบร้อยละ Typearea vs ChronicFU: ${unitFullName}`;
-        if (sub1) sub1.textContent = isDmControl
+        if (sub1) sub1.textContent = isHtControl
+          ? `เปรียบเทียบระหว่าง ผู้ป่วยในเขตรับผิดชอบ (Typearea 1,3) vs ผู้มารับบริการคลินิก (ChronicFU)`
+          : isDmControl
           ? `เปรียบเทียบระหว่าง ผู้ป่วยในเขตรับผิดชอบ (Typearea 1,3) vs ผู้มารับบริการคลินิก (ChronicFU)`
           : isHba1c
           ? `เปรียบเทียบระหว่าง ผู้ป่วยในเขตรับผิดชอบ (Typearea 1,3) vs ผู้มารับบริการคลินิก (ChronicFU)`
@@ -14282,16 +14323,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           badge1.className = 'text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 num-font';
         }
 
-        const chart1Labels = isDmControl
+        const chart1Labels = isHtControl
+          ? ['ควบคุมความดันได้ดี ครั้งสุดท้าย A (%)', 'ควบคุมความดันได้ดี 2 ครั้งสุดท้าย C (%)', 'วัดความดัน 2 ครั้งขึ้นไป (%)']
+          : isDmControl
           ? ['ควบคุมน้ำตาลได้ดี รวม (%)', 'ควบคุมได้ดี ไม่มีโรคร่วม (%)', 'ตรวจ HbA1c อย่างน้อย 1 ครั้ง (%)']
           : isHba1c
           ? ['ตรวจ HbA1c อย่างน้อย 1 ครั้ง/ปี', 'ตรวจ HbA1c อย่างน้อย 2 ครั้ง/ปี']
           : ['ร้อยละผลงานการตรวจคัดกรอง'];
 
-        const chart1Data1 = isDmControl
+        const chart1Data1 = isHtControl
+          ? [Number(u.rate1 ?? 0), Number(u.rate_c1 ?? 0), Number(u.rate_bp_ge2_1 ?? 0)]
+          : isDmControl
           ? [Number(u.rate1 ?? 0), Number(u.rate_c1 ?? 0), Number(u.rate_hba1c1 ?? 0)]
           : isHba1c ? [rate1, rate3] : [rate1];
-        const chart1Data2 = isDmControl
+        const chart1Data2 = isHtControl
+          ? [Number(u.rate2 ?? 0), Number(u.rate_c2 ?? 0), Number(u.rate_bp_ge2_2 ?? 0)]
+          : isDmControl
           ? [Number(u.rate2 ?? 0), Number(u.rate_c2 ?? 0), Number(u.rate_hba1c2 ?? 0)]
           : isHba1c ? [rate2, rate4] : [rate2];
 
@@ -14333,6 +14380,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 callbacks: {
                   label: function(ctx) {
                     const val = ctx.raw || 0;
+                    if (isHtControl) {
+                      const isType = (ctx.datasetIndex === 0);
+                      const dIdx = ctx.dataIndex;
+                      if (dIdx === 0) {
+                        const cnt = isType ? u.a1 : u.a2;
+                        const den = isType ? u.b1 : u.b2;
+                        return ` ${ctx.dataset.label}: ${val.toFixed(2)}% (${Number(cnt).toLocaleString()} / ${Number(den).toLocaleString()} คน)`;
+                      } else if (dIdx === 1) {
+                        const cnt = isType ? u.c1 : u.c2;
+                        const den = isType ? u.b1 : u.b2;
+                        return ` ${ctx.dataset.label}: ${val.toFixed(2)}% (${Number(cnt).toLocaleString()} / ${Number(den).toLocaleString()} คน)`;
+                      } else {
+                        const cnt = isType ? u.bp_ge2_1 : u.bp_ge2_2;
+                        const den = isType ? u.b1 : u.b2;
+                        return ` ${ctx.dataset.label}: ${val.toFixed(2)}% (${Number(cnt).toLocaleString()} / ${Number(den).toLocaleString()} คน)`;
+                      }
+                    }
                     if (isDmControl) {
                       const isType = (ctx.datasetIndex === 0);
                       const dIdx = ctx.dataIndex;
@@ -14383,13 +14447,61 @@ document.addEventListener('DOMContentLoaded', async () => {
               }
             }
           },
-          plugins: isDmControl ? [target40Plugin] : []
+          plugins: isHtControl ? [target60Plugin] : (isDmControl ? [target40Plugin] : [])
         });
 
         // Extra Metric Chips below Chart 1
         if (extra1) {
           extra1.classList.remove('hidden');
-          if (isDmControl) {
+          if (isHtControl) {
+            const diff1 = (Number(u.rate2 ?? 0) - Number(u.rate1 ?? 0)).toFixed(2);
+            const diff2 = (Number(u.rate_c2 ?? 0) - Number(u.rate_c1 ?? 0)).toFixed(2);
+            const isPos1 = Number(u.rate2 ?? 0) >= Number(u.rate1 ?? 0);
+            const isPos2 = Number(u.rate_c2 ?? 0) >= Number(u.rate_c1 ?? 0);
+
+            extra1.innerHTML = `
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                <div class="p-2.5 rounded-xl bg-sky-50/90 border border-sky-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-sky-800">
+                    <span class="w-2 h-2 rounded-full bg-sky-500"></span> Typearea คุมได้ดี ครั้งสุดท้าย (A1)
+                  </div>
+                  <div class="text-base font-black text-sky-900 num-font mt-1">${Number(u.rate1 ?? 0).toFixed(2)}%</div>
+                  <div class="text-[10.5px] font-semibold text-sky-700">${Number(u.a1 ?? 0).toLocaleString()} / ${Number(u.b1 ?? 0).toLocaleString()} คน</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> ChronicFU คุมได้ดี ครั้งสุดท้าย (A2)
+                  </div>
+                  <div class="text-base font-black text-emerald-900 num-font mt-1">${Number(u.rate2 ?? 0).toFixed(2)}%</div>
+                  <div class="text-[10.5px] font-semibold text-emerald-700 flex items-center justify-center gap-1">
+                    <span>${Number(u.a2 ?? 0).toLocaleString()} / ${Number(u.b2 ?? 0).toLocaleString()} คน</span>
+                    <span class="text-[9.5px] px-1 py-0.2 rounded-full ${isPos1 ? 'bg-emerald-200/80 text-emerald-900' : 'bg-rose-200/80 text-rose-900'} font-bold">
+                      ${isPos1 ? '+' : ''}${diff1}%
+                    </span>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-teal-800">
+                    <span class="w-2 h-2 rounded-full bg-teal-500"></span> Typearea คุมได้ดี 2 ครั้ง (C1)
+                  </div>
+                  <div class="text-base font-black text-teal-900 num-font mt-1">${Number(u.rate_c1 ?? 0).toFixed(2)}%</div>
+                  <div class="text-[10.5px] font-semibold text-teal-700">${Number(u.c1 ?? 0).toLocaleString()} / ${Number(u.b1 ?? 0).toLocaleString()} คน</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-200">
+                  <div class="flex items-center justify-center gap-1 text-[11px] font-bold text-purple-800">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> ChronicFU คุมได้ดี 2 ครั้ง (C2)
+                  </div>
+                  <div class="text-base font-black text-purple-900 num-font mt-1">${Number(u.rate_c2 ?? 0).toFixed(2)}%</div>
+                  <div class="text-[10.5px] font-semibold text-purple-700 flex items-center justify-center gap-1">
+                    <span>${Number(u.c2 ?? 0).toLocaleString()} / ${Number(u.b2 ?? 0).toLocaleString()} คน</span>
+                    <span class="text-[9.5px] px-1 py-0.2 rounded-full ${isPos2 ? 'bg-purple-200/80 text-purple-900' : 'bg-rose-200/80 text-rose-900'} font-bold">
+                      ${isPos2 ? '+' : ''}${diff2}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            `;
+          } else if (isDmControl) {
             const diff1 = (Number(u.rate2 ?? 0) - Number(u.rate1 ?? 0)).toFixed(2);
             const diff2 = (Number(u.rate_c2 ?? 0) - Number(u.rate_c1 ?? 0)).toFixed(2);
             const isPos1 = Number(u.rate2 ?? 0) >= Number(u.rate1 ?? 0);
@@ -14610,6 +14722,127 @@ document.addEventListener('DOMContentLoaded', async () => {
               }
             },
             plugins: [target40Plugin, barValuePlugin]
+          });
+
+        } else if (isHtControl) {
+          // --- HT CONTROL DEDICATED OVERVIEW (HDC Screenshot media_1790263140606.png Left Chart) ---
+          if (title1) title1.textContent = 'แผนภูมิแสดง ผู้ป่วยในเขตรับผิดชอบ';
+          if (sub1) sub1.textContent = 'ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี (เกณฑ์เป้าหมาย ≥ 60.0%)';
+          if (badge1) {
+            badge1.textContent = 'Typearea 1,3 (เป้าหมาย 60%)';
+            badge1.className = 'text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 num-font';
+          }
+          canvasRate.style.width = '100%';
+          const htLabels1 = ['รวม', ...sortedUnits.map(u => `${u.hospcode}:${u.fullName}`)];
+          const distRate1 = Number(dist.rate1 ?? dist.rate ?? 31.10);
+          const htData1 = [distRate1, ...sortedUnits.map(u => Number(u.rate1 ?? 0))];
+          const htColors1 = htData1.map((v, idx) => {
+            if (idx > 0 && currentNcdUnit !== 'all' && sortedUnits[idx - 1].hospcode === currentNcdUnit) {
+              return '#f59e0b';
+            }
+            return v >= 60.0 ? '#86efac' : '#ffb07c';
+          });
+          const htBorders1 = htData1.map((v, idx) => {
+            if (idx > 0 && currentNcdUnit !== 'all' && sortedUnits[idx - 1].hospcode === currentNcdUnit) {
+              return '#d97706';
+            }
+            return v >= 60.0 ? '#10b981' : '#f97316';
+          });
+
+          const ctx1 = canvasRate.getContext('2d');
+          ncdUnitRateChartInstance = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+              labels: htLabels1,
+              datasets: [{
+                label: 'ร้อยละผู้ป่วยในเขตที่คุมได้ดี (Typearea %)',
+                data: htData1,
+                backgroundColor: htColors1,
+                borderColor: htBorders1,
+                borderWidth: 1,
+                borderRadius: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    title: function(items) {
+                      const idx = items[0].dataIndex;
+                      if (idx === 0) return 'รวมทั้งอำเภอสารภี (HDC 5019)';
+                      const u = sortedUnits[idx - 1];
+                      return `${u.hospcode}: ${u.fullName}`;
+                    },
+                    label: function(ctx) {
+                      const idx = ctx.dataIndex;
+                      const val = ctx.raw || 0;
+                      if (idx === 0) {
+                        return [
+                          ` ร้อยละควบคุมได้ดี: ${val.toFixed(2)}%`,
+                          ` ควบคุมได้ดี ครั้งสุดท้าย (A1): ${Number(dist.a1 ?? dist.result ?? 0).toLocaleString()} คน`,
+                          ` ควบคุมได้ดี 2 ครั้งสุดท้าย (C1): ${Number(dist.c1 ?? 0).toLocaleString()} คน`,
+                          ` ผู้ป่วยทั้งหมด (B1): ${Number(dist.b1 ?? dist.target ?? 0).toLocaleString()} คน`
+                        ];
+                      }
+                      const u = sortedUnits[idx - 1];
+                      return [
+                        ` ร้อยละควบคุมได้ดี: ${val.toFixed(2)}%`,
+                        ` ควบคุมได้ดี ครั้งสุดท้าย (A1): ${Number(u.a1).toLocaleString()} คน`,
+                        ` ควบคุมได้ดี 2 ครั้งสุดท้าย (C1): ${Number(u.c1).toLocaleString()} คน`,
+                        ` ผู้ป่วยทั้งหมด (B1): ${Number(u.b1).toLocaleString()} คน`
+                      ];
+                    }
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 80,
+                  ticks: {
+                    stepSize: 20,
+                    callback: function(v) { return v + '%'; },
+                    font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+                  },
+                  grid: { color: '#f1f5f9' }
+                },
+                x: {
+                  ticks: {
+                    font: { family: "'Noto Sans Thai', sans-serif", size: 9 },
+                    maxRotation: 45,
+                    minRotation: 45,
+                    callback: function(val, index) {
+                      const label = this.getLabelForValue(val);
+                      if (index === 0) return 'รวม';
+                      if (label && label.length > 18) return label.slice(0, 18) + '...';
+                      return label;
+                    }
+                  },
+                  grid: { display: false }
+                }
+              },
+              onClick: (evt, elements) => {
+                if (elements && elements.length > 0) {
+                  const elIndex = elements[0].index;
+                  if (elIndex === 0) {
+                    const uSel = document.getElementById('ncd-unit-select');
+                    if (uSel) uSel.value = 'all';
+                    window.switchNcdUnit('all');
+                  } else {
+                    const target = sortedUnits[elIndex - 1];
+                    if (target) {
+                      const uSel = document.getElementById('ncd-unit-select');
+                      if (uSel) uSel.value = target.hospcode;
+                      window.switchNcdUnit(target.hospcode);
+                    }
+                  }
+                }
+              }
+            },
+            plugins: [target60Plugin, barValuePlugin]
           });
 
         } else {
@@ -15011,21 +15244,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (center2) center2.classList.add('hidden');
 
-        if (title2) title2.textContent = isDmControl
+        if (title2) title2.textContent = isHtControl
+          ? `เปรียบเทียบจำนวนผู้ป่วยและการควบคุม (คน): ${unitFullName}`
+          : isDmControl
           ? `เปรียบเทียบจำนวนผู้ป่วยและการควบคุม (คน): ${unitFullName}`
           : isHba1c
           ? `เปรียบเทียบจำนวนผู้ป่วยและผลงานตรวจจริง (คน): ${unitFullName}`
           : `เปรียบเทียบจำนวนกลุ่มเป้าหมายและผลงาน (คน): ${unitFullName}`;
-        if (sub2) sub2.textContent = isDmControl
+        if (sub2) sub2.textContent = isHtControl
+          ? `ผู้ป่วยความดันโลหิตสูง (B1 vs B2), วัดความดัน ≥ 2 ครั้ง, ควบคุมได้ดี ครั้งสุดท้าย (A1 vs A2) และ 2 ครั้งสุดท้าย (C1 vs C2)`
+          : isDmControl
           ? `ผู้ป่วยเบาหวาน (B1 vs B2), ตรวจ HbA1c, ควบคุมได้ดี รวม (A1 vs A2) และไม่มีโรคร่วม (C1 vs C2)`
           : isHba1c
           ? `ตัวหารผู้ป่วย (B1 vs B2), ตรวจ HbA1c ≥ 1 ครั้ง (A1 vs A2) และตรวจ ≥ 2 ครั้ง (A3 vs A4)`
           : `ตัวหารผู้ป่วย (B1 vs B2) และตัวตั้งผลงาน (A1 vs A2)`;
 
         if (badge2) {
-          const kpiTarget = isDmControl ? 40 : 70;
+          const kpiTarget = isHtControl ? 60 : (isDmControl ? 40 : 70);
           const isPassed = rate2 >= kpiTarget;
-          badge2.textContent = (isDmControl || isHba1c)
+          badge2.textContent = (isHtControl || isDmControl || isHba1c)
             ? (isPassed ? `ChronicFU ผ่านเกณฑ์ (${rate2.toFixed(1)}%)` : `ChronicFU ${rate2.toFixed(1)}% (ต่ำกว่า ${kpiTarget}%)`)
             : `B1: ${b1.toLocaleString()} / B2: ${b2.toLocaleString()}`;
           badge2.className = isPassed
@@ -15033,16 +15270,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             : 'text-xs font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200 num-font';
         }
 
-        const chart2Labels = isDmControl
+        const chart2Labels = isHtControl
+          ? ['ผู้ป่วยความดันฯ ทั้งหมด (B)', 'วัดความดัน ≥ 2 ครั้ง', 'ควบคุมได้ดี ครั้งสุดท้าย (A)', 'ควบคุมได้ดี 2 ครั้งสุดท้าย (C)']
+          : isDmControl
           ? ['ผู้ป่วยเบาหวานทั้งหมด (B)', 'ได้รับการตรวจ HbA1c', 'ควบคุมน้ำตาลได้ดี รวม (A)', 'ไม่มีโรคร่วม คุมได้ดี (C)']
           : isHba1c
           ? ['จำนวนผู้ป่วยทั้งหมด (คน)', 'ตรวจ HbA1c ≥ 1 ครั้ง (คน)', 'ตรวจ HbA1c ≥ 2 ครั้ง (คน)']
           : ['ผู้ป่วยทั้งหมด (ตัวหาร B)', 'ได้รับการตรวจ (ตัวตั้ง A)'];
 
-        const chart2Data1 = isDmControl
+        const chart2Data1 = isHtControl
+          ? [Number(u.b1 ?? 0), Number(u.bp_ge2_1 ?? 0), Number(u.a1 ?? 0), Number(u.c1 ?? 0)]
+          : isDmControl
           ? [Number(u.b1 ?? 0), Number(u.hba1c1 ?? 0), Number(u.a1 ?? 0), Number(u.c1 ?? 0)]
           : isHba1c ? [b1, a1, a3] : [b1, a1];
-        const chart2Data2 = isDmControl
+        const chart2Data2 = isHtControl
+          ? [Number(u.b2 ?? 0), Number(u.bp_ge2_2 ?? 0), Number(u.a2 ?? 0), Number(u.c2 ?? 0)]
+          : isDmControl
           ? [Number(u.b2 ?? 0), Number(u.hba1c2 ?? 0), Number(u.a2 ?? 0), Number(u.c2 ?? 0)]
           : isHba1c ? [b2, a2, a4] : [b2, a2];
 
@@ -15109,7 +15352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Extra Benchmark Comparison Card below Chart 2
         if (extra2) {
           extra2.classList.remove('hidden');
-          const kpiTarget = isDmControl ? 40.0 : 70.0;
+          const kpiTarget = isHtControl ? 60.0 : (isDmControl ? 40.0 : 70.0);
           const isPassedTypearea = rate1 >= kpiTarget;
           const isPassedChronicFu = rate2 >= kpiTarget;
           const diffDist1 = (rate1 - distRate1).toFixed(2);
@@ -15298,6 +15541,127 @@ document.addEventListener('DOMContentLoaded', async () => {
               }
             },
             plugins: [target40Plugin, barValuePlugin]
+          });
+
+        } else if (isHtControl) {
+          // --- HT CONTROL DEDICATED OVERVIEW (HDC Screenshot media_1790263140606.png Right Chart) ---
+          if (title2) title2.textContent = 'แผนภูมิแสดง ผู้ป่วยที่มารับบริการ';
+          if (sub2) sub2.textContent = 'ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี (เกณฑ์เป้าหมาย ≥ 60.0%)';
+          if (badge2) {
+            badge2.textContent = 'ChronicFU (เป้าหมาย 60%)';
+            badge2.className = 'text-xs font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 num-font';
+          }
+          canvasCompare.style.width = '100%';
+          const htLabels2 = ['รวม', ...sortedUnits.map(u => `${u.hospcode}:${u.fullName}`)];
+          const distRate2 = Number(dist.rate2 ?? dist.rate_fu ?? 64.63);
+          const htData2 = [distRate2, ...sortedUnits.map(u => Number(u.rate2 ?? 0))];
+          const htColors2 = htData2.map((v, idx) => {
+            if (idx > 0 && currentNcdUnit !== 'all' && sortedUnits[idx - 1].hospcode === currentNcdUnit) {
+              return '#f59e0b';
+            }
+            return v >= 60.0 ? '#86efac' : '#ffb07c';
+          });
+          const htBorders2 = htData2.map((v, idx) => {
+            if (idx > 0 && currentNcdUnit !== 'all' && sortedUnits[idx - 1].hospcode === currentNcdUnit) {
+              return '#d97706';
+            }
+            return v >= 60.0 ? '#10b981' : '#f97316';
+          });
+
+          const ctx2 = canvasCompare.getContext('2d');
+          ncdUnitCompareChartInstance = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+              labels: htLabels2,
+              datasets: [{
+                label: 'ร้อยละผู้ป่วยคลินิกที่คุมได้ดี (ChronicFU %)',
+                data: htData2,
+                backgroundColor: htColors2,
+                borderColor: htBorders2,
+                borderWidth: 1,
+                borderRadius: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    title: function(items) {
+                      const idx = items[0].dataIndex;
+                      if (idx === 0) return 'รวมทั้งอำเภอสารภี (HDC 5019)';
+                      const u = sortedUnits[idx - 1];
+                      return `${u.hospcode}: ${u.fullName}`;
+                    },
+                    label: function(ctx) {
+                      const idx = ctx.dataIndex;
+                      const val = ctx.raw || 0;
+                      if (idx === 0) {
+                        return [
+                          ` ร้อยละควบคุมได้ดี: ${val.toFixed(2)}%`,
+                          ` ควบคุมได้ดี ครั้งสุดท้าย (A2): ${Number(dist.a2 ?? dist.result_fu ?? 0).toLocaleString()} คน`,
+                          ` ควบคุมได้ดี 2 ครั้งสุดท้าย (C2): ${Number(dist.c2 ?? 0).toLocaleString()} คน`,
+                          ` ผู้ป่วยทั้งหมด (B2): ${Number(dist.b2 ?? dist.target_fu ?? 0).toLocaleString()} คน`
+                        ];
+                      }
+                      const u = sortedUnits[idx - 1];
+                      return [
+                        ` ร้อยละควบคุมได้ดี: ${val.toFixed(2)}%`,
+                        ` ควบคุมได้ดี ครั้งสุดท้าย (A2): ${Number(u.a2).toLocaleString()} คน`,
+                        ` ควบคุมได้ดี 2 ครั้งสุดท้าย (C2): ${Number(u.c2).toLocaleString()} คน`,
+                        ` ผู้ป่วยทั้งหมด (B2): ${Number(u.b2).toLocaleString()} คน`
+                      ];
+                    }
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    stepSize: 25,
+                    callback: function(v) { return v + '%'; },
+                    font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+                  },
+                  grid: { color: '#f1f5f9' }
+                },
+                x: {
+                  ticks: {
+                    font: { family: "'Noto Sans Thai', sans-serif", size: 9 },
+                    maxRotation: 45,
+                    minRotation: 45,
+                    callback: function(val, index) {
+                      const label = this.getLabelForValue(val);
+                      if (index === 0) return 'รวม';
+                      if (label && label.length > 18) return label.slice(0, 18) + '...';
+                      return label;
+                    }
+                  },
+                  grid: { display: false }
+                }
+              },
+              onClick: (evt, elements) => {
+                if (elements && elements.length > 0) {
+                  const elIndex = elements[0].index;
+                  if (elIndex === 0) {
+                    const uSel = document.getElementById('ncd-unit-select');
+                    if (uSel) uSel.value = 'all';
+                    window.switchNcdUnit('all');
+                  } else {
+                    const target = sortedUnits[elIndex - 1];
+                    if (target) {
+                      const uSel = document.getElementById('ncd-unit-select');
+                      if (uSel) uSel.value = target.hospcode;
+                      window.switchNcdUnit(target.hospcode);
+                    }
+                  }
+                }
+              }
+            },
+            plugins: [target60Plugin, barValuePlugin]
           });
 
         } else {
@@ -15600,7 +15964,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         );
 
-      } else if (isDmControl) {
+      } else if (isDmControl || isHtControl) {
         trendDatasets = [
           {
             type: 'line',
@@ -15751,13 +16115,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         ];
       }
 
-      const trendTarget40Plugin = isDmControl ? [{
-        id: 'trendTarget40LinePlugin',
+      const trendTargetVal = isHtControl ? 60 : (isDmControl ? 40 : 0);
+      const trendTargetPlugin = (isDmControl || isHtControl) ? [{
+        id: 'trendTargetLinePlugin',
         afterDraw(chart) {
           const { ctx, chartArea, scales } = chart;
           const y1Scale = scales.y1;
           if (!y1Scale || !chartArea) return;
-          const yVal = y1Scale.getPixelForValue(40);
+          const yVal = y1Scale.getPixelForValue(trendTargetVal);
           if (yVal >= chartArea.top && yVal <= chartArea.bottom) {
             ctx.save();
             ctx.strokeStyle = '#10b981';
@@ -15772,7 +16137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ctx.font = 'bold 10px "Noto Sans Thai", sans-serif';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'bottom';
-            ctx.fillText('เป้าหมาย 40%', chartArea.right - 6, yVal - 4);
+            ctx.fillText(`เป้าหมาย ${trendTargetVal}%`, chartArea.right - 6, yVal - 4);
             ctx.restore();
           }
         }
@@ -15834,7 +16199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           }
         },
-        plugins: trendTarget40Plugin
+        plugins: trendTargetPlugin
       });
     }
   }
@@ -15844,7 +16209,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!callout) return;
     const isHba1c = !!(report && (report.has_hba1c || report.table_name === 's_dm_hba1c'));
     const isDmControl = !!(report && (report.is_dm_control || report.table_name === 's_dm_control'));
-    if (!report || (!report.is_risk_screen && !isHba1c && !isDmControl)) {
+    const isHtControl = !!(report && (report.is_ht_control || report.table_name === 's_ht_control'));
+    if (!report || (!report.is_risk_screen && !isHba1c && !isDmControl && !isHtControl)) {
       callout.classList.add('hidden');
       return;
     }
@@ -15852,7 +16218,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const titleEl = document.getElementById('ncd-criteria-title');
     const contentEl = document.getElementById('ncd-criteria-content');
 
-    if (isDmControl) {
+    if (isHtControl) {
+      if (titleEl) titleEl.textContent = 'เกณฑ์มาตรฐานตัวชี้วัด: ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี (s_ht_control) ตามมาตรฐาน HDC สธ.';
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <strong>เกณฑ์เป้าหมาย สธ.:</strong> &ge; 60.0%
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+            <strong>กลุ่มเป้าหมาย (B):</strong> ผู้ป่วยโรคความดันโลหิตสูงทั้งหมด
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <strong>ควบคุมได้ดี ครั้งสุดท้าย (A):</strong> ผู้ป่วยความดันฯ ที่ควบคุมได้ดี (BP &lt; 140/90 mmHg) ในการวัดครั้งสุดท้าย
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-medium">
+            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+            <strong>ควบคุมได้ดี 2 ครั้งสุดท้าย (C):</strong> ผู้ป่วยความดันฯ ที่ควบคุมได้ดี (BP &lt; 140/90 mmHg) ทั้ง 2 ครั้งสุดท้าย
+          </span>
+          <span class="inline-flex items-center gap-1 text-[11px] text-slate-500 font-normal ml-auto">
+            * Typearea 1,3: ในเขตรับผิดชอบ | ChronicFU: มารับบริการที่หน่วยบริการ
+          </span>
+        `;
+      }
+    } else if (isDmControl) {
       if (titleEl) titleEl.textContent = 'เกณฑ์มาตรฐานตัวชี้วัด: ร้อยละผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดี (s_dm_control) ตามมาตรฐาน HDC สธ.';
       if (contentEl) {
         contentEl.innerHTML = `
@@ -16190,9 +16581,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Default Non-Risk Standard / Dual Dataset Table
     const isHba1c = !!(report.has_hba1c || report.table_name === 's_dm_hba1c');
     const isDmControl = !!(report.is_dm_control || report.table_name === 's_dm_control');
+    const isHtControl = !!(report.is_ht_control || report.table_name === 's_ht_control');
     const tblTitle = document.getElementById('ncd-table-header-title');
     if (tblTitle) {
-      if (isDmControl) {
+      if (isHtControl) {
+        tblTitle.innerHTML = `<span>ตารางแจกแจงผลการควบคุมความดันโลหิตสูง (s_ht_control) Typearea 1,3 vs ChronicFU HDC สธ. (14 แห่ง)</span>`;
+      } else if (isDmControl) {
         tblTitle.innerHTML = `<span>ตารางแจกแจงผลการควบคุมระดับน้ำตาลผู้ป่วยเบาหวาน (s_dm_control) Typearea 1,3 vs ChronicFU HDC สธ. (14 แห่ง)</span>`;
       } else if (isHba1c) {
         tblTitle.innerHTML = `<span>ตารางแจกแจงผลการตรวจ HbA1c ผู้ป่วยเบาหวาน Typearea 1,3 vs ChronicFU HDC สธ. (14 แห่ง)</span>`;
@@ -16240,7 +16634,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         d2: u.d2 ?? 0,
         hba1c_no_com2: u.hba1c_no_com2 ?? 0,
         c2: u.c2 ?? 0,
-        rate_c2: u.rate_c2 ?? 0
+        rate_c2: u.rate_c2 ?? 0,
+        // s_ht_control specific fields
+        bp_1x_1: u.bp_1x_1 ?? 0,
+        bp_ge2_1: u.bp_ge2_1 ?? 0,
+        rate_bp_ge2_1: u.rate_bp_ge2_1 ?? 0,
+        fu_ge2_2: u.fu_ge2_2 ?? 0,
+        bp_1x_2: u.bp_1x_2 ?? 0,
+        bp_ge2_2: u.bp_ge2_2 ?? 0,
+        rate_bp_ge2_2: u.rate_bp_ge2_2 ?? 0
       };
     });
 
@@ -16283,13 +16685,20 @@ document.addEventListener('DOMContentLoaded', async () => {
           d2: u.d2 ?? 0,
           hba1c_no_com2: u.hba1c_no_com2 ?? 0,
           c2: u.c2 ?? 0,
-          rate_c2: u.rate_c2 ?? 0
+          rate_c2: u.rate_c2 ?? 0,
+          bp_1x_1: u.bp_1x_1 ?? 0,
+          bp_ge2_1: u.bp_ge2_1 ?? 0,
+          rate_bp_ge2_1: u.rate_bp_ge2_1 ?? 0,
+          fu_ge2_2: u.fu_ge2_2 ?? 0,
+          bp_1x_2: u.bp_1x_2 ?? 0,
+          bp_ge2_2: u.bp_ge2_2 ?? 0,
+          rate_bp_ge2_2: u.rate_bp_ge2_2 ?? 0
         });
       }
     });
 
-    // Sort: For DM Control, sort by hospcode ascending matching HDC screenshot; else by rate descending
-    if (isDmControl) {
+    // Sort: For DM/HT Control, sort by hospcode ascending matching HDC screenshot; else by rate descending
+    if (isDmControl || isHtControl) {
       unitsList.sort((a, b) => a.hospcode.localeCompare(b.hospcode));
     } else if (hasFu && currentNcdDatasetMode === 'chronicfu') {
       unitsList.sort((a, b) => (b.rate2 || b.rate_fu) - (a.rate2 || a.rate_fu));
@@ -16308,7 +16717,163 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     if (hasFu) {
-      if (isDmControl) {
+      if (isHtControl) {
+        // 1. RENDER HT CONTROL DUAL-GROUP THEAD (Exact Match to HDC Screenshot media_1790263146867.png)
+        if (thead) {
+          thead.innerHTML = `
+            <tr class="bg-emerald-900 text-white text-xs font-bold border-b border-emerald-800">
+              <th rowspan="3" class="py-3 px-3 w-12 text-center border-r border-emerald-800">ลำดับ</th>
+              <th rowspan="3" class="py-3 px-3 w-20 border-r border-emerald-800">รหัส</th>
+              <th rowspan="3" class="py-3 px-4 min-w-[200px] border-r border-emerald-800">หน่วยบริการ</th>
+              <th colspan="8" class="py-2.5 px-3 text-center border-r-2 border-emerald-700 bg-emerald-800 font-extrabold text-[12px]">
+                <i class="fa-solid fa-house-chimney mr-1 text-emerald-300"></i> ที่อยู่ในเขตรับผิดชอบ Typearea 1,3
+              </th>
+              <th colspan="9" class="py-2.5 px-3 text-center bg-indigo-900 font-extrabold text-[12px]">
+                <i class="fa-solid fa-hospital-user mr-1 text-indigo-300"></i> ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU
+              </th>
+            </tr>
+            <tr class="bg-emerald-950 text-white text-[11px] font-semibold border-b border-emerald-800">
+              <!-- Typearea 1,3 -->
+              <th rowspan="2" class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/90 font-bold text-emerald-100">จำนวนผู้ป่วย<br>(B1)</th>
+              <th colspan="3" class="py-2 px-2 text-center border-r border-emerald-800/80 bg-emerald-900/80 font-bold text-teal-100">การได้รับการวัดความดันโลหิต</th>
+              <th colspan="4" class="py-2 px-2 text-center border-r-2 border-emerald-700 bg-emerald-800 font-bold text-emerald-100">ควบคุมความดันได้ดี</th>
+              <!-- ChronicFU -->
+              <th rowspan="2" class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-900/90 font-bold text-indigo-100">จำนวนผู้ป่วย<br>มารับบริการ<br>ทั้งหมด (B2)</th>
+              <th rowspan="2" class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-900/90 font-bold text-indigo-100">จำนวนผู้ป่วย<br>รับบริการ 2<br>ครั้งขึ้นไป</th>
+              <th colspan="3" class="py-2 px-2 text-center border-r border-indigo-800/80 bg-indigo-950/80 font-bold text-purple-100">การได้รับการวัดความดันโลหิต</th>
+              <th colspan="4" class="py-2 px-2 text-center bg-indigo-950 font-bold text-indigo-100">ควบคุมความดันได้ดี</th>
+            </tr>
+            <tr class="bg-emerald-950/90 text-white text-[10.5px] font-semibold border-b border-emerald-800">
+              <!-- Typearea วัดความดัน -->
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/80">ไม่พบประวัติ<br>(D1)</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/80">1 ครั้งในปี</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/80">2 ครั้ง<br>ขึ้นไปในปี</th>
+              <!-- Typearea ควบคุมได้ดี -->
+              <th class="py-2 px-2 text-right border-r border-emerald-800 bg-emerald-800 font-extrabold text-emerald-200">ครั้งสุดท้าย<br>(A1)</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800 bg-emerald-800 font-extrabold text-emerald-200">%</th>
+              <th class="py-2 px-2 text-right border-r border-emerald-800/80 bg-emerald-900/80">2 ครั้งสุดท้าย<br>(C1)</th>
+              <th class="py-2 px-2 text-right border-r-2 border-emerald-700 bg-emerald-900/80 font-extrabold text-teal-200">%</th>
+              <!-- ChronicFU วัดความดัน -->
+              <th class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-950/80">ไม่พบประวัติ<br>(D2)</th>
+              <th class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-950/80">1 ครั้งในปี</th>
+              <th class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-950/80">2 ครั้ง<br>ขึ้นไปในปี</th>
+              <!-- ChronicFU ควบคุมได้ดี -->
+              <th class="py-2 px-2 text-right border-r border-indigo-800 bg-indigo-950 font-extrabold text-indigo-200">ครั้งสุดท้าย<br>(A2)</th>
+              <th class="py-2 px-2 text-right border-r border-indigo-800 bg-indigo-950 font-extrabold text-indigo-200">%</th>
+              <th class="py-2 px-2 text-right border-r border-indigo-800/80 bg-indigo-950/80">2 ครั้งสุดท้าย<br>(C2)</th>
+              <th class="py-2 px-2 text-right bg-indigo-950 font-extrabold text-purple-200">%</th>
+            </tr>
+          `;
+        }
+
+        // 2. RENDER HT CONTROL TBODY
+        tbody.innerHTML = '';
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="20" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
+        } else {
+          filtered.forEach((u, idx) => {
+            const isSelected = (u.hospcode === currentNcdUnit);
+            const rowClass = isSelected ? 'bg-amber-50/80 font-semibold ring-1 ring-amber-300' : (idx % 2 === 0 ? 'bg-white hover:bg-slate-50/70' : 'bg-slate-50/40 hover:bg-slate-100/60');
+
+            const tr = document.createElement('tr');
+            tr.className = `${rowClass} text-xs transition border-b border-slate-100`;
+            tr.style.cursor = 'pointer';
+            tr.onclick = () => {
+              const uSel = document.getElementById('ncd-unit-select');
+              if (uSel) uSel.value = u.hospcode;
+              window.switchNcdUnit(u.hospcode);
+            };
+
+            const rate1Val = Number(u.rate1 || 0);
+            const rateC1Val = Number(u.rate_c1 || 0);
+            const rate2Val = Number(u.rate2 || 0);
+            const rateC2Val = Number(u.rate_c2 || 0);
+
+            const rate1Cls = rate1Val >= 60.0 ? 'text-emerald-700 bg-emerald-100/50' : 'text-amber-800 bg-amber-50/50';
+            const rateC1Cls = rateC1Val >= 60.0 ? 'text-teal-700 bg-emerald-100/50' : 'text-amber-800 bg-amber-50/50';
+            const rate2Cls = rate2Val >= 60.0 ? 'text-indigo-700 bg-indigo-100/50' : 'text-amber-800 bg-amber-50/50';
+            const rateC2Cls = rateC2Val >= 60.0 ? 'text-purple-700 bg-indigo-100/50' : 'text-amber-800 bg-amber-50/50';
+
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 text-center text-slate-400 num-font border-r border-slate-200/60">${idx + 1}</td>
+              <td class="py-2.5 px-3 font-mono text-slate-600 text-xs border-r border-slate-200/60">${u.hospcode}</td>
+              <td class="py-2.5 px-4 font-bold text-slate-900 border-r border-slate-200/60 whitespace-nowrap">
+                <span>${u.name}</span>
+                <span class="text-[11px] text-slate-400 font-normal ml-1">ต.${u.subdistrict}</span>
+              </td>
+              <!-- Typearea 1,3 -->
+              <td class="py-2.5 px-2 text-right num-font font-bold text-slate-800 border-r border-slate-200/60 bg-emerald-50/20">${Number(u.b1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-emerald-50/10">${Number(u.d1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-emerald-50/10">${Number(u.bp_1x_1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-emerald-50/10">${Number(u.bp_ge2_1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-emerald-800 border-r border-slate-200/60 bg-emerald-50/30">${Number(u.a1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-extrabold border-r border-slate-200/60 ${rate1Cls}">${rate1Val.toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-teal-800 border-r border-slate-200/60 bg-emerald-50/20">${Number(u.c1).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-extrabold border-r-2 border-slate-300 ${rateC1Cls}">${rateC1Val.toFixed(2)}</td>
+              <!-- ChronicFU -->
+              <td class="py-2.5 px-2 text-right num-font font-bold text-slate-800 border-r border-slate-200/60 bg-indigo-50/20">${Number(u.b2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.fu_ge2_2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.d2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.bp_1x_2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.bp_ge2_2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-indigo-800 border-r border-slate-200/60 bg-indigo-50/30">${Number(u.a2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-extrabold border-r border-slate-200/60 ${rate2Cls}">${rate2Val.toFixed(2)}</td>
+              <td class="py-2.5 px-2 text-right num-font font-bold text-purple-800 border-r border-slate-200/60 bg-indigo-50/20">${Number(u.c2).toLocaleString()}</td>
+              <td class="py-2.5 px-2 text-right num-font font-extrabold ${rateC2Cls}">${rateC2Val.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        // 3. RENDER HT CONTROL TFOOT (District 5019)
+        const dB1 = dist.b1 ?? dist.target ?? 0;
+        const dD1 = dist.d1 ?? 0;
+        const d_bp_1x_1 = dist.bp_1x_1 ?? 0;
+        const d_bp_ge2_1 = dist.bp_ge2_1 ?? 0;
+        const dA1 = dist.a1 ?? dist.result ?? 0;
+        const dRate1 = dist.rate1 ?? dist.rate ?? 0;
+        const dC1 = dist.c1 ?? 0;
+        const dRateC1 = dist.rate_c1 ?? 0;
+
+        const dB2 = dist.b2 ?? dist.target_fu ?? 0;
+        const d_fu_ge2_2 = dist.fu_ge2_2 ?? 0;
+        const dD2 = dist.d2 ?? 0;
+        const d_bp_1x_2 = dist.bp_1x_2 ?? 0;
+        const d_bp_ge2_2 = dist.bp_ge2_2 ?? 0;
+        const dA2 = dist.a2 ?? dist.result_fu ?? 0;
+        const dRate2 = dist.rate2 ?? dist.rate_fu ?? 0;
+        const dC2 = dist.c2 ?? 0;
+        const dRateC2 = dist.rate_c2 ?? 0;
+
+        tfoot.innerHTML = `
+          <tr class="bg-gradient-to-r from-emerald-100/90 to-indigo-100/90 text-slate-900 border-t-2 border-emerald-600 font-bold text-xs">
+            <td class="py-3 px-3 text-center num-font font-extrabold text-emerald-950 border-r border-slate-300">-</td>
+            <td class="py-3 px-3 font-mono text-emerald-950 font-extrabold text-xs border-r border-slate-300">5019</td>
+            <td class="py-3 px-4 font-extrabold text-emerald-950 text-sm border-r border-slate-300 whitespace-nowrap">
+              รวมทั้งอำเภอสารภี (HDC สธ.)
+            </td>
+            <!-- District Typearea 1,3 -->
+            <td class="py-3 px-2 text-right num-font font-extrabold text-slate-900 border-r border-slate-300 bg-emerald-100/80">${Number(dB1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-emerald-100/60">${Number(dD1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-emerald-100/60">${Number(d_bp_1x_1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-emerald-100/60">${Number(d_bp_ge2_1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-extrabold text-emerald-900 border-r border-slate-300 bg-emerald-100/90">${Number(dA1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-emerald-800 text-[13px] border-r border-slate-300 bg-emerald-200/70">${Number(dRate1).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-extrabold text-teal-900 border-r border-slate-300 bg-emerald-100/90">${Number(dC1).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-teal-800 text-[13px] border-r-2 border-slate-400 bg-emerald-200/70">${Number(dRateC1).toFixed(2)}</td>
+            <!-- District ChronicFU -->
+            <td class="py-3 px-2 text-right num-font font-extrabold text-slate-900 border-r border-slate-300 bg-indigo-100/80">${Number(dB2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(d_fu_ge2_2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(dD2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(d_bp_1x_2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(d_bp_ge2_2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-extrabold text-indigo-900 border-r border-slate-300 bg-indigo-100/90">${Number(dA2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-indigo-800 text-[13px] border-r border-slate-300 bg-indigo-200/70">${Number(dRate2).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right num-font font-extrabold text-purple-900 border-r border-slate-300 bg-indigo-100/90">${Number(dC2).toLocaleString()}</td>
+            <td class="py-3 px-2 text-right num-font font-black text-purple-800 text-[13px] bg-indigo-200/70">${Number(dRateC2).toFixed(2)}</td>
+          </tr>
+        `;
+      } else if (isDmControl) {
         // 1. RENDER DM CONTROL DUAL-GROUP THEAD (Exact Match to HDC Screenshot media_1790239832669.png)
         if (thead) {
           thead.innerHTML = `
@@ -16807,6 +17372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
     } else if (hasFu) {
+      const isHtControl = !!(report.is_ht_control || report.table_name === 's_ht_control');
       const isDmControl = !!(report.is_dm_control || report.table_name === 's_dm_control');
       const isHba1c = !!(report.has_hba1c || report.table_name === 's_dm_hba1c');
       const unitsList = Object.keys(SARAPHI_UNITS_MAP).map(code => {
@@ -16847,11 +17413,18 @@ document.addEventListener('DOMContentLoaded', async () => {
           d2: u.d2 ?? 0,
           hba1c_no_com2: u.hba1c_no_com2 ?? 0,
           c2: u.c2 ?? 0,
-          rate_c2: u.rate_c2 ?? 0
+          rate_c2: u.rate_c2 ?? 0,
+          bp_1x_1: u.bp_1x_1 ?? 0,
+          bp_ge2_1: u.bp_ge2_1 ?? 0,
+          rate_bp_ge2_1: u.rate_bp_ge2_1 ?? 0,
+          fu_ge2_2: u.fu_ge2_2 ?? 0,
+          bp_1x_2: u.bp_1x_2 ?? 0,
+          bp_ge2_2: u.bp_ge2_2 ?? 0,
+          rate_bp_ge2_2: u.rate_bp_ge2_2 ?? 0
         };
       });
 
-      if (isDmControl) {
+      if (isDmControl || isHtControl) {
         unitsList.sort((a, b) => a.hospcode.localeCompare(b.hospcode));
       } else if (currentNcdDatasetMode === 'chronicfu') {
         unitsList.sort((a, b) => (b.rate2 || b.rate_fu) - (a.rate2 || a.rate_fu));
@@ -16859,7 +17432,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         unitsList.sort((a, b) => (b.rate1 || b.rate) - (a.rate1 || a.rate));
       }
 
-      if (isDmControl) {
+      if (isHtControl) {
+        csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,Typearea ผู้ป่วยความดัน (B1),Typearea ไม่พบประวัติวัด BP (D1),Typearea วัด BP 1 ครั้ง,Typearea วัด BP 2 ครั้งขึ้นไป,Typearea ควบคุมได้ดี ครั้งสุดท้าย (A1),Typearea ร้อยละควบคุมได้ดี ครั้งสุดท้าย (%),Typearea ควบคุมได้ดี 2 ครั้งสุดท้าย (C1),Typearea ร้อยละควบคุมได้ดี 2 ครั้งสุดท้าย (%),ChronicFU ผู้ป่วยมารับบริการทั้งหมด (B2),ChronicFU ผู้ป่วยรับบริการ 2 ครั้งขึ้นไป,ChronicFU ไม่พบประวัติวัด BP (D2),ChronicFU วัด BP 1 ครั้ง,ChronicFU วัด BP 2 ครั้งขึ้นไป,ChronicFU ควบคุมได้ดี ครั้งสุดท้าย (A2),ChronicFU ร้อยละควบคุมได้ดี ครั้งสุดท้าย (%),ChronicFU ควบคุมได้ดี 2 ครั้งสุดท้าย (C2),ChronicFU ร้อยละควบคุมได้ดี 2 ครั้งสุดท้าย (%)\n`;
+
+        unitsList.forEach((u, idx) => {
+          csvContent += `${idx + 1},"${u.hospcode}","${u.name}","${u.subdistrict}",${u.b1},${u.d1},${u.bp_1x_1},${u.bp_ge2_1},${u.a1},${Number(u.rate1).toFixed(2)},${u.c1},${Number(u.rate_c1).toFixed(2)},${u.b2},${u.fu_ge2_2},${u.d2},${u.bp_1x_2},${u.bp_ge2_2},${u.a2},${Number(u.rate2).toFixed(2)},${u.c2},${Number(u.rate_c2).toFixed(2)}\n`;
+        });
+
+        const d = yrData.district || {};
+        const dB1 = d.b1 ?? d.target ?? 0;
+        const dD1 = d.d1 ?? 0;
+        const d_bp_1x_1 = d.bp_1x_1 ?? 0;
+        const d_bp_ge2_1 = d.bp_ge2_1 ?? 0;
+        const dA1 = d.a1 ?? d.result ?? 0;
+        const dRate1 = d.rate1 ?? d.rate ?? 0;
+        const dC1 = d.c1 ?? 0;
+        const dRateC1 = d.rate_c1 ?? 0;
+
+        const dB2 = d.b2 ?? d.target_fu ?? 0;
+        const d_fu_ge2_2 = d.fu_ge2_2 ?? 0;
+        const dD2 = d.d2 ?? 0;
+        const d_bp_1x_2 = d.bp_1x_2 ?? 0;
+        const d_bp_ge2_2 = d.bp_ge2_2 ?? 0;
+        const dA2 = d.a2 ?? d.result_fu ?? 0;
+        const dRate2 = d.rate2 ?? d.rate_fu ?? 0;
+        const dC2 = d.c2 ?? 0;
+        const dRateC2 = d.rate_c2 ?? 0;
+
+        csvContent += `-,5019,"รวมทั้งอำเภอสารภี","12 ตำบล",${dB1},${dD1},${d_bp_1x_1},${d_bp_ge2_1},${dA1},${Number(dRate1).toFixed(2)},${dC1},${Number(dRateC1).toFixed(2)},${dB2},${d_fu_ge2_2},${dD2},${d_bp_1x_2},${d_bp_ge2_2},${dA2},${Number(dRate2).toFixed(2)},${dC2},${Number(dRateC2).toFixed(2)}\n`;
+      } else if (isDmControl) {
         csvContent += `ลำดับ,รหัสสถานพยาบาล,ชื่อหน่วยบริการ,ตำบล,Typearea ผู้ป่วยเบาหวาน (B1),Typearea ได้รับการตรวจน้ำตาล,Typearea ร้อยละการตรวจ (%),Typearea ควบคุมได้ดี (A1),Typearea ร้อยละควบคุมได้ดี (%),Typearea ไม่มีโรคร่วม (D1),Typearea ไม่มีโรคร่วม ได้รับการตรวจ,Typearea ไม่มีโรคร่วม คุมได้ดี (C1),Typearea ไม่มีโรคร่วม ร้อยละ (%),ChronicFU ผู้ป่วยเบาหวาน (B2),ChronicFU ได้รับการตรวจน้ำตาล,ChronicFU ร้อยละการตรวจ (%),ChronicFU ควบคุมได้ดี (A2),ChronicFU ร้อยละควบคุมได้ดี (%),ChronicFU ไม่มีโรคร่วม (D2),ChronicFU ไม่มีโรคร่วม ได้รับการตรวจ,ChronicFU ไม่มีโรคร่วม คุมได้ดี (C2),ChronicFU ไม่มีโรคร่วม ร้อยละ (%)\n`;
 
         unitsList.forEach((u, idx) => {
