@@ -1,25 +1,30 @@
 import json
 import os
+import sys
+from datetime import datetime, timezone
 
-data_dir = r"d:\PROJECTS\Dashboard HDC Saraphi\data"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS, KPI_TARGETS, clean_num
+
+data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
 out_file = os.path.join(data_dir, "saraphi_complete_master.json")
 
-SARAPHI_UNITS = {
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง', 'type': 'รพ.สต.'},
-    '06015': {'name': 'รพ.สต.บ้านพญาชมภู', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านพญาชมภู', 'subdistrict': 'ชมภู', 'type': 'รพ.สต.'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน', 'type': 'รพ.สต.'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง', 'subdistrict': 'ขัวมุง', 'type': 'รพ.สต.'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองแฝก', 'subdistrict': 'หนองแฝก', 'type': 'รพ.สต.'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง', 'subdistrict': 'ท่ากว้าง', 'type': 'รพ.สต.'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว', 'type': 'รพ.สต.'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล', 'type': 'รพ.สต.'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา', 'subdistrict': 'สันทราย', 'type': 'รพ.สต.'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู', 'subdistrict': 'ป่าบง', 'type': 'รพ.สต.'},
-    '11135': {'name': 'โรงพยาบาลสารภี', 'full_name': 'โรงพยาบาลสารภี (แม่ข่าย)', 'subdistrict': 'สารภี', 'type': 'รพช.'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านท่าต้นกวาว', 'subdistrict': 'ชมภู', 'type': 'รพ.สต.'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'full_name': 'โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง', 'type': 'รพ.สต.'},
-    '99758': {'name': 'ศสม.สารภี', 'full_name': 'ศูนย์สุขภาพชุมชนตำบลสารภี', 'subdistrict': 'สารภี', 'type': 'ศสม.'}
-}
+
+def clean_int(v):
+    return int(clean_num(v))
+
+
+def alias_field(row, *names):
+    """Return the first field value that is not None.
+
+    Unlike `a or b`, a legitimate 0 in an earlier field is not skipped.
+    """
+    for n in names:
+        v = row.get(n)
+        if v is not None:
+            return v
+    return None
+
 
 HERB_NAMES = {
     "410000000479150020182750": "ฟ้าทะลายโจรแคปซูล 500 mg",
@@ -277,11 +282,6 @@ def resolve_clean_herb_name(did, raw_name, group_name=""):
     if cleaned_did in TTM4_HDC_GROUPS:
         return TTM4_HDC_GROUPS[cleaned_did]
     return f"ยาสมุนไพร (รหัส {cleaned_did[:12]}...)"
-
-def clean_num(v):
-    if v is None: return 0.0
-    try: return float(v)
-    except: return 0.0
 
 def load_json(name):
     path = os.path.join(data_dir, name)
@@ -636,7 +636,7 @@ for y in years:
                 "num": int(all_vs),
                 "den": int(all_it),
                 "rate": item_ratio_all,
-                "pass": True,
+                "pass": int(all_it) > 0,
                 "all_visits": int(all_vs),
                 "all_items": int(all_it),
                 "uc_visits": int(uc_vs),
@@ -690,7 +690,7 @@ for y in years:
         "num": int(dist_all_vs),
         "den": int(dist_all_it),
         "rate": dist_ratio_all,
-        "pass": True,
+        "pass": int(dist_all_it) > 0,
         "date_com": date_com,
         "all_visits": int(dist_all_vs),
         "all_items": int(dist_all_it),
@@ -816,6 +816,7 @@ for y in years:
         "pass": dist_rate >= 20.0,
         "growth": 0.0,
         "quarters": dist_quarters,
+        "date_com": max((str(r.get('date_com') or '') for r in rows), default=''),
         "units": unit_data
     }
 
@@ -1082,7 +1083,8 @@ for y in years:
         "num": int(dist_hat_sum),
         "den": int(dist_tot["vs"]["all"]),
         "rate": int(dist_hat_sum),
-        "pass": True,
+        "pass": dist_hat_sum > 0,
+        "date_com": max((str(r.get('date_com') or '') for r in rows), default=''),
         "in": dist_in,
         "out": dist_out,
         "tot": dist_tot,
@@ -1118,12 +1120,16 @@ for y in years:
         except:
             pass
 
-# Default Chiang Mai summary by year if not in cache
-DEFAULT_CM_SUMMARY = {
-    "2567": {"total_units": 322, "total_num": 22059335.19, "total_den": 355206, "rate": 22059335.19},
-    "2568": {"total_units": 320, "total_num": 25827014.04, "total_den": 491064, "rate": 25827014.04},
-    "2569": {"total_units": 318, "total_num": 33008872.65, "total_den": 584595, "rate": 33008872.65}
-}
+# Chiang Mai province summary lives in data/chiangmai_summary.json (provenance
+# in-file); no longer hardcoded here.
+DEFAULT_CM_SUMMARY = {}
+_cm_summary_path = os.path.join(data_dir, "chiangmai_summary.json")
+if os.path.exists(_cm_summary_path):
+    try:
+        with open(_cm_summary_path, "r", encoding="utf-8") as _f:
+            DEFAULT_CM_SUMMARY = json.load(_f).get("by_year", {})
+    except (json.JSONDecodeError, OSError):
+        DEFAULT_CM_SUMMARY = {}
 
 for y in years:
     cache_d = ttm4_year_caches.get(y, {})
@@ -1553,34 +1559,47 @@ master["indicators"]["pcc_dm_control"] = {
     "table": "s_dm_control",
     "domain": "pcc",
     "domain_label": "💰 งบ PCC (4 ตัวชี้วัด)",
-    "desc": "ร้อยละของผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดีตามเกณฑ์",
-    "target": 40.0,
+    "desc": "ร้อยละของผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดีตามเกณฑ์ — กลุ่มเป้าหมายหลัก Typearea 1,3 (แสดงกลุ่ม ChronicFU แยกในฟิลด์ fu ตรงตาม HDC ซึ่งไม่รวมสองกลุ่มเข้าด้วยกัน)",
+    "target": KPI_TARGETS["pcc_dm_control"],
     "unit": "%",
-    "num_label": "ควบคุมได้ดี (คน)",
-    "den_label": "ผู้ป่วยเบาหวาน (คน)",
+    "num_label": "ควบคุมได้ดี - Typearea 1,3 (คน)",
+    "den_label": "ผู้ป่วยเบาหวาน - Typearea 1,3 (คน)",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_dm_control_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    # s_dm_control: target/result = กลุ่ม Typearea 1,3, target1/result1 = กลุ่ม
+    # ChronicFU ( HDC แสดงสองกลุ่มแยกกัน ห้ามผสม — เดิมใช้ `result or result1`
+    # ทำให้หน่วยที่ไม่มีข้อมูล Typearea ถูกแทนด้วยค่า ChronicFU และผลลัพธ์ 0
+    # ถูกข้ามไปดึงค่าอีกฟิลด์)
+    unit_agg = {hc: {"num": 0, "den": 0, "fu_num": 0, "fu_den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["num"] += clean_int(r.get('result'))
+            unit_agg[hc]["den"] += clean_int(r.get('target'))
+            unit_agg[hc]["fu_num"] += clean_int(r.get('result1'))
+            unit_agg[hc]["fu_den"] += clean_int(r.get('target1'))
     unit_data = []
     tot_num = 0; tot_den = 0
+    tot_fu_num = 0; tot_fu_den = 0
     for hc, d in unit_agg.items():
         rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        fu_rate = round((d["fu_num"] / d["fu_den"] * 100), 2) if d["fu_den"] > 0 else 0.0
         tot_num += d["num"]; tot_den += d["den"]
+        tot_fu_num += d["fu_num"]; tot_fu_den += d["fu_den"]
         unit_data.append({
             "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 40.0
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= KPI_TARGETS["pcc_dm_control"],
+            "fu_num": d["fu_num"], "fu_den": d["fu_den"], "fu_rate": fu_rate
         })
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    dist_fu_rate = round((tot_fu_num / tot_fu_den * 100), 2) if tot_fu_den > 0 else 0.0
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["pcc_dm_control"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 40.0, "units": unit_data
+        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= KPI_TARGETS["pcc_dm_control"],
+        "fu": {"num": tot_fu_num, "den": tot_fu_den, "rate": dist_fu_rate},
+        "units": unit_data
     }
 
 # 2.3 HT ควบคุมได้ดี
@@ -1590,34 +1609,49 @@ master["indicators"]["pcc_ht_control"] = {
     "table": "s_ht_control",
     "domain": "pcc",
     "domain_label": "💰 งบ PCC (4 ตัวชี้วัด)",
-    "desc": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดีตามเกณฑ์",
-    "target": 50.0,
+    "desc": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดีตามเกณฑ์ — กลุ่มเป้าหมายหลัก Typearea 1,3 (แสดงกลุ่ม ChronicFU แยกในฟิลด์ fu ตรงตาม HDC ซึ่งไม่รวมสองกลุ่มเข้าด้วยกัน)",
+    "target": KPI_TARGETS["pcc_ht_control"],
     "unit": "%",
-    "num_label": "ควบคุมได้ดี (คน)",
-    "den_label": "ผู้ป่วยความดันโลหิตสูง (คน)",
+    "num_label": "ควบคุมได้ดี - Typearea 1,3 (คน)",
+    "den_label": "ผู้ป่วยความดันโลหิตสูง - Typearea 1,3 (คน)",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_ht_control_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    # s_ht_control ใช้สคีมา 20 คอลัมน์ของ HDC ต่างจาก s_dm_control:
+    #   กลุ่ม Typearea 1,3: B1=target, D1=no_bp_d (ไม่ได้วัด), bp1_d (วัด 1 ครั้ง),
+    #     bp (วัด ≥2 ครั้ง), A1=result_bp1_d (ควบคุมได้ดี — ค่าหลักของตัวชี้วัด),
+    #     C1=result (ค่าเสริม)
+    #   กลุ่ม ChronicFU: B2=target1, A2=result_bp1_f, C2=result1
+    # (ตรวจยืนยันความสัมพันธ์ B1 = D1 + bp1_d + bp จากข้อมูลจริงทุกปี)
+    unit_agg = {hc: {"num": 0, "den": 0, "fu_num": 0, "fu_den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('bp') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["num"] += clean_int(r.get('result_bp1_d'))
+            unit_agg[hc]["den"] += clean_int(r.get('target'))
+            unit_agg[hc]["fu_num"] += clean_int(r.get('result_bp1_f'))
+            unit_agg[hc]["fu_den"] += clean_int(r.get('target1'))
     unit_data = []
     tot_num = 0; tot_den = 0
+    tot_fu_num = 0; tot_fu_den = 0
     for hc, d in unit_agg.items():
         rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        fu_rate = round((d["fu_num"] / d["fu_den"] * 100), 2) if d["fu_den"] > 0 else 0.0
         tot_num += d["num"]; tot_den += d["den"]
+        tot_fu_num += d["fu_num"]; tot_fu_den += d["fu_den"]
         unit_data.append({
             "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 50.0
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= KPI_TARGETS["pcc_ht_control"],
+            "fu_num": d["fu_num"], "fu_den": d["fu_den"], "fu_rate": fu_rate
         })
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    dist_fu_rate = round((tot_fu_num / tot_fu_den * 100), 2) if tot_fu_den > 0 else 0.0
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["pcc_ht_control"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 50.0, "units": unit_data
+        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= KPI_TARGETS["pcc_ht_control"],
+        "fu": {"num": tot_fu_num, "den": tot_fu_den, "rate": dist_fu_rate},
+        "units": unit_data
     }
 
 # 2.4 DM/HT ภาวะแทรกซ้อน (s_dm_hypo)
@@ -1627,34 +1661,48 @@ master["indicators"]["pcc_complication"] = {
     "table": "s_dm_hypo",
     "domain": "pcc",
     "domain_label": "💰 งบ PCC (4 ตัวชี้วัด)",
-    "desc": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวานและความดัน",
+    "desc": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวานและความดัน — กลุ่มเป้าหมายหลัก Typearea 1,3 (แสดงกลุ่ม ChronicFU แยกในฟิลด์ fu)",
     "target": 5.0,
     "unit": "%",
-    "num_label": "เกิดภาวะแทรกซ้อน (คน)",
-    "den_label": "ผู้ป่วยทั้งหมด (คน)",
+    "num_label": "เกิดภาวะแทรกซ้อน - Typearea 1,3 (คน)",
+    "den_label": "ผู้ป่วยทั้งหมด - Typearea 1,3 (คน)",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_dm_hypo_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
+    # สำคัญ: s_dm_hypo สลับคอลัมน์เทียบกับ s_dm_control (ตรวจยืนยนรายหน่วยแล้ว):
+    #   s_dm_hypo.target   == s_dm_control.target1  (กลุ่ม ChronicFU)
+    #   s_dm_hypo.target_1 == s_dm_control.target   (กลุ่ม Typearea 1,3)
+    # result1..result12 เป็นฟิลด์ breakdown ไม่ใช่กลุ่มเป้าหมาย — เดิม
+    # `result or hypo or result1` จึงดึงตัวเลข breakdown เข้าตัวตั้งเมื่อ result เป็น null
+    unit_agg = {hc: {"num": 0, "den": 0, "fu_num": 0, "fu_den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('hypo') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["num"] += clean_int(r.get('result_1'))
+            unit_agg[hc]["den"] += clean_int(r.get('target_1'))
+            unit_agg[hc]["fu_num"] += clean_int(r.get('result'))
+            unit_agg[hc]["fu_den"] += clean_int(r.get('target'))
     unit_data = []
     tot_num = 0; tot_den = 0
+    tot_fu_num = 0; tot_fu_den = 0
     for hc, d in unit_agg.items():
         rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        fu_rate = round((d["fu_num"] / d["fu_den"] * 100), 2) if d["fu_den"] > 0 else 0.0
         tot_num += d["num"]; tot_den += d["den"]
+        tot_fu_num += d["fu_num"]; tot_fu_den += d["fu_den"]
         unit_data.append({
             "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate <= 5.0
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate <= 5.0,
+            "fu_num": d["fu_num"], "fu_den": d["fu_den"], "fu_rate": fu_rate
         })
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    dist_fu_rate = round((tot_fu_num / tot_fu_den * 100), 2) if tot_fu_den > 0 else 0.0
     unit_data.sort(key=lambda x: x['rate'])
     master["indicators"]["pcc_complication"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate <= 5.0, "units": unit_data
+        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate <= 5.0,
+        "fu": {"num": tot_fu_num, "den": tot_fu_den, "rate": dist_fu_rate},
+        "units": unit_data
     }
 
 # ----------------------------------------------------
@@ -1684,8 +1732,8 @@ for y in years:
             n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
             d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
             if d == 0:
-                n = int(clean_num(r.get('result') or r.get('screen') or 0))
-                d = int(clean_num(r.get('target') or r.get('pop') or 0))
+                n = int(clean_num(alias_field(r, 'result', 'screen')))
+                d = int(clean_num(alias_field(r, 'target', 'pop')))
             unit_agg[hc]["num"] += n
             unit_agg[hc]["den"] += d
     unit_data = []
@@ -1838,7 +1886,7 @@ for y in years:
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('1B0280')))
+            unit_agg[hc]["num"] += int(clean_num(alias_field(r, 'result', '1B0280')))
             unit_agg[hc]["den"] += int(clean_num(r.get('target')))
     unit_data = []
     tot_num = 0; tot_den = 0
@@ -1877,9 +1925,11 @@ for y in years:
     unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
+        # รพ.สารภีถูกบันทึกใน HDC ภายใต้รหัสสำนักงาน 11999 (ไม่มีแถว 11135)
+        if hc == '11999': hc = '11135'
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["num"] += int(clean_num(alias_field(r, 'result', 'result1')))
+            unit_agg[hc]["den"] += int(clean_num(alias_field(r, 'target', 'target1')))
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
@@ -1914,9 +1964,11 @@ for y in years:
     unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
     for r in rows:
         hc = r.get('hospcode')
+        # รพ.สารภีถูกบันทึกใน HDC ภายใต้รหัสสำนักงาน 11999 (ไม่มีแถว 11135)
+        if hc == '11999': hc = '11135'
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('adl_all') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('pop') or r.get('target1')))
+            unit_agg[hc]["num"] += int(clean_num(alias_field(r, 'result', 'adl_all', 'result1')))
+            unit_agg[hc]["den"] += int(clean_num(alias_field(r, 'target', 'pop', 'target1')))
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
@@ -1935,44 +1987,12 @@ for y in years:
 # ----------------------------------------------------
 # 5. อนามัยแม่และเด็ก (MCH)
 # ----------------------------------------------------
-# 5.1 ฝากครรภ์ครั้งแรก <= 12 สัปดาห์
-master["indicators"]["mch_anc12"] = {
-    "code": "MCH-1",
-    "name": "หญิงตั้งครรภ์ฝากครรภ์ครั้งแรกเมื่ออายุครรภ์ ≤ 12 สัปดาห์",
-    "table": "s_anc12ga",
-    "domain": "mch",
-    "domain_label": "👶 อนามัยแม่และเด็ก",
-    "desc": "ร้อยละของหญิงตั้งครรภ์ได้รับการฝากครรภ์ครั้งแรกก่อนหรือเท่ากับ 12 สัปดาห์",
-    "target": 80.0,
-    "unit": "%",
-    "num_label": "ฝากครรภ์ ≤12 สัปดาห์ (คน)",
-    "den_label": "หญิงตั้งครรภ์ทั้งหมด (คน)",
-    "years": {}
-}
-for y in years:
-    rows = load_json(f"s_anc12ga_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
-    for r in rows:
-        hc = r.get('hospcode')
-        if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('target') or r.get('result') or 0))
-            unit_agg[hc]["den"] += int(clean_num(r.get('total') or r.get('anc_all') or 0))
-    unit_data = []
-    tot_num = 0; tot_den = 0
-    for hc, d in unit_agg.items():
-        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
-        tot_num += d["num"]; tot_den += d["den"]
-        unit_data.append({
-            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 80.0
-        })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
-    master["indicators"]["mch_anc12"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 80.0, "units": unit_data
-    }
-
-# 5.2 นมแม่อย่างเดียว 6 เดือน
+# หมายเหตุ: ตัวชี้วัด "ฝากครรภ์ครั้งแรก ≤ 12 สัปดาห์" ถูกถอดออก (เดิม mch_anc12)
+# เพราะตาราง HDC s_anc12ga เป็นรายงาน "อายุครรภ์เฉลี่ย" ของหญิงที่ฝากครรภ์ครั้งแรก
+# ≤12 สัปดาห์ ไม่ใช่ร้อยละความครอบคลุม (target ในตารางไม่ใช่ตัวตั้งของ %) และใน
+# แคตตาล็อก OpenData MoPH ทั้ง 1,028 รายงานไม่มีตารางที่วัด % ความครอบคลุม
+# ANC ครั้งแรก ≤12 สัปดาห์โดยตรง — การแสดง 45/449 = 10.02% เป็นตัวเลขไร้ความหมาย
+# 5.1 นมแม่อย่างเดียว 6 เดือน
 master["indicators"]["mch_breastfeeding"] = {
     "code": "MCH-2",
     "name": "เด็กแรกเกิด - 6 เดือน กินนมแม่อย่างเดียว",
@@ -1992,8 +2012,8 @@ for y in years:
     for r in rows:
         hc = r.get('hospcode')
         if hc in unit_agg:
-            unit_agg[hc]["num"] += int(clean_num(r.get('result') or r.get('breast_milk') or r.get('result1')))
-            unit_agg[hc]["den"] += int(clean_num(r.get('target') or r.get('target1')))
+            unit_agg[hc]["num"] += int(clean_num(alias_field(r, 'result', 'breast_milk', 'result1')))
+            unit_agg[hc]["den"] += int(clean_num(alias_field(r, 'target', 'target1')))
     unit_data = []
     tot_num = 0; tot_den = 0
     for hc, d in unit_agg.items():
@@ -2072,8 +2092,8 @@ for y in years:
             n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
             d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
             if d == 0:
-                n = int(clean_num(r.get('result') or r.get('screen') or 0))
-                d = int(clean_num(r.get('target') or r.get('pop') or 0))
+                n = int(clean_num(alias_field(r, 'result', 'screen')))
+                d = int(clean_num(alias_field(r, 'target', 'pop')))
             unit_agg[hc]["num"] += n
             unit_agg[hc]["den"] += d
     unit_data = []
@@ -2115,8 +2135,8 @@ for y in years:
             n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
             d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
             if d == 0:
-                n = int(clean_num(r.get('result') or r.get('follow') or 0))
-                d = int(clean_num(r.get('target') or 0))
+                n = int(clean_num(alias_field(r, 'result', 'follow')))
+                d = int(clean_num(alias_field(r, 'target')))
             unit_agg[hc]["num"] += n
             unit_agg[hc]["den"] += d
     unit_data = []
@@ -2126,13 +2146,27 @@ for y in years:
         tot_num += d["num"]; tot_den += d["den"]
         unit_data.append({
             "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0 or (d["den"] == 0 and d["num"] == 0)
+            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0
         })
     dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
     unit_data.sort(key=lambda x: x['rate'], reverse=True)
     master["indicators"]["mch_childdev_follow"]["years"][y] = {
         "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 85.0, "units": unit_data
     }
+
+# Mark "no data" years/units so the UI can show ไม่มีข้อมูล instead of a
+# misleading 0.0% — a year with num=0 and den=0 means HDC returned no rows.
+for ind in master["indicators"].values():
+    for yd in (ind.get("years") or {}).values():
+        if not isinstance(yd, dict):
+            continue
+        if yd.get("num") == 0 and yd.get("den") == 0:
+            yd["no_data"] = True
+        for u in (yd.get("units") or []):
+            if isinstance(u, dict) and u.get("num") == 0 and u.get("den") == 0:
+                u["no_data"] = True
+
+master["metadata"]["generated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 # Save Complete Master Data
 with open(out_file, "w", encoding="utf-8") as f:

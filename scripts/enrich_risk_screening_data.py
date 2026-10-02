@@ -5,22 +5,21 @@ import sys
 import time
 from collections import defaultdict
 
-SARAPHI_MAP = {
-    '11135': {'name': 'รพ.สารภี', 'subdistrict': 'สารภี'},
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง'},
-    '06015': {'name': 'รพ.สต.บ้านพญาชมภู', 'subdistrict': 'ชมภู'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'subdistrict': 'ขัวมุง'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'subdistrict': 'หนองแฝก'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'subdistrict': 'ท่ากว้าง'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'subdistrict': 'สันทราย'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'subdistrict': 'ป่าบง'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'subdistrict': 'ชมภู'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง'},
-    '99758': {'name': 'ศสม.สารภี', 'subdistrict': 'สารภี'}
-}
+sys.stdout.reconfigure(encoding='utf-8')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS, fetch_opendata_rows
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
+
+def _write_raw_snapshot(table, year, rows):
+    """Persist fetched rows to data/s_<table>_<year>.json so that
+    build_saraphi_master.py aggregates the SAME snapshot as this view."""
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    out = os.path.join(data_dir, f'{table}_{year}.json')
+    with open(out, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False)
+    print(f'  wrote raw snapshot {out} ({len(rows)} rows)')
+
 
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']
@@ -56,30 +55,10 @@ NEW_INDICATORS = [
 ]
 
 def fetch_table_rows(table, year, max_retries=3):
-    payload = {
-        'tableName': table,
-        'year': str(year),
-        'province': '50',
-        'type': 'json',
-        'offset': 0,
-        'limit': 5000
-    }
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Content-Type': 'application/json'
-    }
-    for attempt in range(max_retries):
-        try:
-            req = urllib.request.Request(URL, data=json.dumps(payload).encode('utf-8'), headers=headers)
-            with urllib.request.urlopen(req, timeout=35) as res:
-                if res.status in (200, 201):
-                    data = json.loads(res.read().decode('utf-8'))
-                    rows = data.get('data', [])
-                    return [r for r in rows if str(r.get('areacode', '')).startswith('5019')]
-        except Exception as e:
-            print(f"  [Attempt {attempt+1}] Error fetching {table} ({year}): {e}")
-            time.sleep(2)
-    return []
+    """Fetch all rows for a table/year — paginated with backoff (shared helper)."""
+    rows = fetch_opendata_rows(table, year)
+    _write_raw_snapshot(table, year, rows)
+    return rows
 
 def aggregate_risk_data(rows, risk_type):
     by_hosp = defaultdict(lambda: {
@@ -159,13 +138,15 @@ def aggregate_risk_data(rows, risk_type):
             'result2_fu': 0
         }
 
-    # District Totals from ALL Saraphi records
-    dist_t = sum(u['target'] for u in by_hosp.values())
-    dist_res = sum(u['result'] for u in by_hosp.values())
-    dist_norm = sum(u['normal'] for u in by_hosp.values())
-    dist_risk = sum(u['risk'] for u in by_hosp.values())
-    dist_high = sum(u['high_risk'] for u in by_hosp.values())
-    dist_ill = sum(u['ill_doctor'] for u in by_hosp.values())
+    # District Totals — เฉพาะ 14 หน่วยบริการเท่านั้น (เดิมรวมทุก hospcode 5019
+    # ทำให้ยอดอำเภอไม่ตรงกับ dashboard หลัก)
+    dist_units = [u for code, u in by_hosp.items() if code in SARAPHI_MAP]
+    dist_t = sum(u['target'] for u in dist_units)
+    dist_res = sum(u['result'] for u in dist_units)
+    dist_norm = sum(u['normal'] for u in dist_units)
+    dist_risk = sum(u['risk'] for u in dist_units)
+    dist_high = sum(u['high_risk'] for u in dist_units)
+    dist_ill = sum(u['ill_doctor'] for u in dist_units)
     if risk_type == 'ht':
         dist_oob = max(0, dist_res - (dist_norm + dist_risk + dist_high + dist_ill))
     else:

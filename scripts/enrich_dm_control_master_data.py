@@ -4,46 +4,30 @@ import json
 import os
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 sys.stdout.reconfigure(encoding='utf-8')
 
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']
 
-SARAPHI_MAP = {
-    '11135': {'name': 'รพ.สารภี', 'subdistrict': 'สารภี'},
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง'},
-    '06015': {'name': 'รพ.สต.บ้านพญาชมภู', 'subdistrict': 'ชมภู'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'subdistrict': 'ขัวมุง'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'subdistrict': 'หนองแฝก'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'subdistrict': 'ท่ากว้าง'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'subdistrict': 'สันทราย'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'subdistrict': 'ป่าบง'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'subdistrict': 'ชมภู'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง'},
-    '99758': {'name': 'ศสม.สารภี', 'subdistrict': 'สารภี'}
-}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS, fetch_opendata_rows
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
+
+def _write_raw_snapshot(table, year, rows):
+    """Persist fetched rows to data/s_<table>_<year>.json so that
+    build_saraphi_master.py aggregates the SAME snapshot as this view."""
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    out = os.path.join(data_dir, f'{table}_{year}.json')
+    with open(out, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False)
+    print(f'  wrote raw snapshot {out} ({len(rows)} rows)')
+
 
 def fetch_year_data(year):
-    payload = {
-        'tableName': 's_dm_control',
-        'year': str(year),
-        'province': '50',
-        'type': 'json',
-        'offset': 0,
-        'limit': 5000
-    }
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Content-Type': 'application/json'
-    }
-    req = urllib.request.Request(URL, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    with urllib.request.urlopen(req, timeout=30) as res:
-        data = json.loads(res.read().decode('utf-8'))
-        rows = data.get('data', [])
-        saraphi = [r for r in rows if str(r.get('areacode', '')).startswith('5019')]
+    saraphi = fetch_opendata_rows('s_dm_control', year)
+    _write_raw_snapshot('s_dm_control', year, saraphi)
 
     units = defaultdict(lambda: {
         'b1': 0, 'hba1c1': 0, 'a1': 0, 't_com1': 0, 'h_com1': 0, 'r_com1': 0,
@@ -56,7 +40,8 @@ def fetch_year_data(year):
 
     for r in saraphi:
         h = r.get('hospcode')
-        if not h or h == '11999': continue
+        # เขตรั้งสโคปให้ตรงกับ dashboard หลัก: 14 หน่วยบริการเท่านั้น
+        if not h or h == '11999' or h not in SARAPHI_MAP: continue
         b1 = int(r.get('target') or 0)
         hba1c1 = int(r.get('hba1c') or 0)
         a1 = int(r.get('result') or 0)
@@ -220,9 +205,9 @@ def main():
         'main_report_name': 'ข้อมูลตอบสนอง Service Plan',
         'opendata_id': '137a726340e4dfde7bbbc5d8aeee3ac3',
         'view_count': 640,
-        'last_synced_at': '2026-09-24T16:00:00.000Z',
+        'last_synced_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'),
         'created_at': '2026-05-22T09:10:07.000Z',
-        'updated_at': '2026-09-24T16:00:00.000Z',
+        'updated_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'),
         'cat_name': 'ข้อมูลตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)'
     }
     existing_cat = [c for c in catalog if c.get('source_table') == 's_dm_control']
@@ -279,50 +264,14 @@ def main():
 
     master['reports'] = reports
     master['total_reports'] = len(reports)
-    master['last_updated'] = '2026-09-24'
+    master['last_updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
     with open(master_path, 'w', encoding='utf-8') as f:
         json.dump(master, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved {master_path} with {len(reports)} reports!")
 
-    # 3. Synchronize with data/saraphi_complete_master.json (pcc_dm_control)
-    comp_path = 'data/saraphi_complete_master.json'
-    if os.path.exists(comp_path):
-        with open(comp_path, 'r', encoding='utf-8') as f:
-            comp_master = json.load(f)
-
-        if 'indicators' in comp_master and 'pcc_dm_control' in comp_master['indicators']:
-            pcc = comp_master['indicators']['pcc_dm_control']
-            for yr in YEARS:
-                d = years_data[yr]['district']
-                units_list = []
-                for h, u in years_data[yr]['units'].items():
-                    units_list.append({
-                        'hospcode': h,
-                        'name': u['name'],
-                        'subdistrict': u['subdistrict'],
-                        'num': u['a1'],
-                        'den': u['b1'],
-                        'rate': u['rate1'],
-                        'pass': u['rate1'] >= 40.0,
-                        'b1': u['b1'],
-                        'a1': u['a1'],
-                        'rate1': u['rate1'],
-                        'b2': u['b2'],
-                        'a2': u['a2'],
-                        'rate2': u['rate2']
-                    })
-                pcc['years'][yr] = {
-                    'num': d['a1'],
-                    'den': d['b1'],
-                    'rate': d['rate1'],
-                    'pass': d['rate1'] >= 40.0,
-                    'units': units_list
-                }
-            comp_master['indicators']['pcc_dm_control'] = pcc
-            with open(comp_path, 'w', encoding='utf-8') as f:
-                json.dump(comp_master, f, ensure_ascii=False, indent=2)
-            print(f"Synchronized pcc_dm_control in {comp_path} successfully!")
+    # หมายเหตุ: ไม่แตะ data/saraphi_complete_master.json (pcc_dm_control) —
+    # build_saraphi_master.py เป็นผู้สร้างฝ่ายเดียว (dual-group Typearea/ChronicFU)
 
 if __name__ == '__main__':
     main()

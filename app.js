@@ -282,6 +282,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         pass: u.kpi4.score >= 3
       }));
 
+      // pass = อยู่ในช่วงคะแนนดาว (bracket) ของ PCC 2569, null = ไม่มีข้อมูล
+      // (เดิม fallback เป็นตัวเลข hardcode และ pass: true ตายตัว)
       masterData.indicators['pcc69_kpi1'] = {
         id: 'pcc69_kpi1',
         code: 'KPI 1',
@@ -291,7 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         domain: 'pcc_2569',
         target: 56.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi1?.rate || 47.87, num: dist.kpi1?.a || 10239, den: dist.kpi1?.b || 21391, pass: true, units: uKpi1 } }
+        years: { '2569': { rate: dist.kpi1?.rate ?? null, num: dist.kpi1?.a ?? null, den: dist.kpi1?.b ?? null, pass: dist.kpi1 ? (dist.kpi1.rate >= 56 && dist.kpi1.rate <= 92) : null, units: uKpi1 } }
       };
       masterData.indicators['pcc69_kpi2'] = {
         id: 'pcc69_kpi2',
@@ -302,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         domain: 'pcc_2569',
         target: 35.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi2?.rate || 3.34, num: dist.kpi2?.a || 75, den: dist.kpi2?.b || 2248, pass: true, units: uKpi2 } }
+        years: { '2569': { rate: dist.kpi2?.rate ?? null, num: dist.kpi2?.a ?? null, den: dist.kpi2?.b ?? null, pass: dist.kpi2 ? (dist.kpi2.rate >= 35 && dist.kpi2.rate <= 65) : null, units: uKpi2 } }
       };
       masterData.indicators['pcc69_kpi3'] = {
         id: 'pcc69_kpi3',
@@ -313,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         domain: 'pcc_2569',
         target: 57.0,
         unit: '%',
-        years: { '2569': { rate: dist.kpi3?.rate || 52.92, num: dist.kpi3?.a || 8242, den: dist.kpi3?.b || 15575, pass: true, units: uKpi3 } }
+        years: { '2569': { rate: dist.kpi3?.rate ?? null, num: dist.kpi3?.a ?? null, den: dist.kpi3?.b ?? null, pass: dist.kpi3 ? (dist.kpi3.rate >= 57 && dist.kpi3.rate <= 93) : null, units: uKpi3 } }
       };
       masterData.indicators['pcc69_kpi4'] = {
         id: 'pcc69_kpi4',
@@ -324,7 +326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         domain: 'pcc_2569',
         target: 6.3,
         unit: '%',
-        years: { '2569': { rate: dist.kpi4?.rate || 4.59, num: dist.kpi4?.a || 13, den: dist.kpi4?.b || 283, pass: true, units: uKpi4 } }
+        years: { '2569': { rate: dist.kpi4?.rate ?? null, num: dist.kpi4?.a ?? null, den: dist.kpi4?.b ?? null, pass: dist.kpi4 ? (dist.kpi4.rate >= 6.3 && dist.kpi4.rate <= 10.8) : null, units: uKpi4 } }
       };
     }
   } catch (err) {
@@ -533,6 +535,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const dt = nhso.aggregated.district_total || {};
     const unitsData = nhso.aggregated.units || {};
+
+    // ยอดรวมจริง 4 เมนูจากชุดข้อมูล multiyear ของ สปสช. — คืน null ถ้าไม่มีข้อมูลเลย
+    const my = nhso.multiyear || {};
+    const myS3 = my.sheet3_service || {};
+    const myS4 = my.sheet4_herb55 || {};
+    const myS5 = my.sheet5_herb9 || {};
+    const myS6 = my.sheet6_herb32 || {};
+    const mySum = (yr) => {
+      const vals = [myS3[yr]?.district_total, myS4[yr]?.district_total, myS5[yr]?.district_total, myS6[yr]?.district_total];
+      if (vals.every(v => v == null)) return null;
+      return vals.reduce((s, v) => s + (Number(v) || 0), 0);
+    };
+    const myUnitSum = (yr, hc) => {
+      const vals = [myS3[yr]?.units?.[hc], myS4[yr]?.units?.[hc], myS5[yr]?.units?.[hc], myS6[yr]?.units?.[hc]];
+      if (vals.every(v => v == null)) return 0;
+      return vals.reduce((s, v) => s + (Number(v) || 0), 0);
+    };
+
     const unitsList = Object.keys(SARAPHI_UNITS_MAP).sort().map(code => {
       const u = unitsData[code] || {};
       const meta = SARAPHI_UNITS_MAP[code];
@@ -568,10 +588,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       den_label: 'Point รวมสะสม (Point)',
       years: {
         '2569': {
-          rate: dt.total_bath || 1291563,
-          num: dt.total_bath || 1291563,
-          den: dt.total_point || 979138,
-          pass: true,
+          rate: dt.total_bath ?? null,
+          num: dt.total_bath ?? null,
+          den: dt.total_point ?? null,
+          pass: dt.total_bath != null,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
@@ -593,43 +613,39 @@ document.addEventListener('DOMContentLoaded', async () => {
           }))
         },
         '2568': {
-          rate: 1774167,
-          num: 1774167,
-          den: 1664268,
-          pass: true,
+          // ยอดจริงจากชุดข้อมูล multiyear ของ สปสช. (รวม 4 เมนู) — ถ้าไม่มีข้อมูล
+          // ให้แสดง "ไม่มีข้อมูล" ห้ามประมาณจากปีอื่น (เดิมคูณ 1.37/1.70 เป็นตัวเลขปลอม)
+          rate: mySum('2568'),
+          num: mySum('2568'),
+          den: mySum('2568'),
+          pass: mySum('2568') != null,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.total_bath * 1.37),
-            den: Math.round(u.total_point * 1.70),
-            rate: Math.round(u.total_bath * 1.37),
+            num: myUnitSum('2568', u.hospcode),
+            den: myUnitSum('2568', u.hospcode),
+            rate: myUnitSum('2568', u.hospcode),
             pass: u.pass
           }))
         },
         '2567': {
-          rate: 1418040,
-          num: 1418040,
-          den: 1408680,
-          pass: true,
+          rate: mySum('2567'),
+          num: mySum('2567'),
+          den: mySum('2567'),
+          pass: mySum('2567') != null,
           units: unitsList.map(u => ({
             hospcode: u.hospcode,
             name: u.name,
             subdistrict: u.subdistrict,
-            num: Math.round(u.total_bath * 1.10),
-            den: Math.round(u.total_point * 1.44),
-            rate: Math.round(u.total_bath * 1.10),
+            num: myUnitSum('2567', u.hospcode),
+            den: myUnitSum('2567', u.hospcode),
+            rate: myUnitSum('2567', u.hospcode),
             pass: u.pass
           }))
         }
       }
     };
-
-    const my = nhso.multiyear || {};
-    const myS3 = my.sheet3_service || {};
-    const myS4 = my.sheet4_herb55 || {};
-    const myS5 = my.sheet5_herb9 || {};
-    const myS6 = my.sheet6_herb32 || {};
 
     // 2. NHSO Menu 3 (บริการแพทย์แผนไทย หัตถการ Point & บาท)
     const procData = nhso.procedure_types || {};
@@ -647,9 +663,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       procedureData: procData,
       years: {
         '2569': {
-          rate: procData['2569']?.districtTotal || dt.sheet3_service_point || 976330,
-          num: procData['2569']?.districtTotal || dt.sheet3_service_point || 976330,
-          den: procData['2569']?.districtTotal || dt.sheet3_service_bath || 976330,
+          rate: procData['2569']?.districtTotal ?? dt.sheet3_service_point ?? null,
+          num: procData['2569']?.districtTotal ?? dt.sheet3_service_point ?? null,
+          den: procData['2569']?.districtTotal ?? dt.sheet3_service_bath ?? null,
           pass: true,
           units: unitsList.map(u => {
             const pt = procData['2569']?.units?.[u.hospcode]?.totalPoint ?? (u.sheet3_service_point || 0);
@@ -665,9 +681,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2568': {
-          rate: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
-          num: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
-          den: procData['2568']?.districtTotal || myS3['2568']?.district_total || 1663330,
+          rate: procData['2568']?.districtTotal ?? myS3['2568']?.district_total ?? null,
+          num: procData['2568']?.districtTotal ?? myS3['2568']?.district_total ?? null,
+          den: procData['2568']?.districtTotal ?? myS3['2568']?.district_total ?? null,
           pass: true,
           units: unitsList.map(u => {
             const pt = procData['2568']?.units?.[u.hospcode]?.totalPoint ?? (myS3['2568']?.units?.[u.hospcode] || 0);
@@ -683,9 +699,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2567': {
-          rate: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
-          num: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
-          den: procData['2567']?.districtTotal || myS3['2567']?.district_total || 1541350,
+          rate: procData['2567']?.districtTotal ?? myS3['2567']?.district_total ?? null,
+          num: procData['2567']?.districtTotal ?? myS3['2567']?.district_total ?? null,
+          den: procData['2567']?.districtTotal ?? myS3['2567']?.district_total ?? null,
           pass: true,
           units: unitsList.map(u => {
             const pt = procData['2567']?.units?.[u.hospcode]?.totalPoint ?? (myS3['2567']?.units?.[u.hospcode] || 0);
@@ -719,9 +735,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       herb55Data: herb55Monthly,
       years: {
         '2569': {
-          rate: herb55Monthly['2569']?.districtTotalPoint || dt.sheet4_herb55_point || 2808,
-          num: herb55Monthly['2569']?.districtTotalPoint || dt.sheet4_herb55_point || 2808,
-          den: herb55Monthly['2569']?.districtTotalBath || dt.sheet4_herb55_bath || 2808,
+          rate: herb55Monthly['2569']?.districtTotalPoint ?? dt.sheet4_herb55_point ?? null,
+          num: herb55Monthly['2569']?.districtTotalPoint ?? dt.sheet4_herb55_point ?? null,
+          den: herb55Monthly['2569']?.districtTotalBath ?? dt.sheet4_herb55_bath ?? null,
           pass: true,
           units: unitsList.map(u => {
             const pt = herb55Monthly['2569']?.units?.[u.hospcode]?.totalPoint ?? (u.sheet4_herb55_point || 0);
@@ -737,9 +753,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2568': {
-          rate: herb55Monthly['2568']?.districtTotalPoint || myS4['2568']?.district_total || 938,
-          num: herb55Monthly['2568']?.districtTotalPoint || myS4['2568']?.district_total || 938,
-          den: herb55Monthly['2568']?.districtTotalBath || myS4['2568']?.district_total || 938,
+          rate: herb55Monthly['2568']?.districtTotalPoint ?? myS4['2568']?.district_total ?? null,
+          num: herb55Monthly['2568']?.districtTotalPoint ?? myS4['2568']?.district_total ?? null,
+          den: herb55Monthly['2568']?.districtTotalBath ?? myS4['2568']?.district_total ?? null,
           pass: true,
           units: unitsList.map(u => {
             const pt = herb55Monthly['2568']?.units?.[u.hospcode]?.totalPoint ?? (myS4['2568']?.units?.[u.hospcode] || 0);
@@ -755,19 +771,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2567': {
-          rate: 0,
-          num: 0,
-          den: 0,
-          pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: 0,
-            den: 0,
-            rate: 0,
-            pass: false
-          }))
+          rate: herb55Monthly['2567']?.districtTotalPoint ?? myS4['2567']?.district_total ?? null,
+          num: herb55Monthly['2567']?.districtTotalPoint ?? myS4['2567']?.district_total ?? null,
+          den: herb55Monthly['2567']?.districtTotalBath ?? myS4['2567']?.district_total ?? null,
+          pass: (herb55Monthly['2567']?.districtTotalPoint ?? myS4['2567']?.district_total) != null,
+          units: unitsList.map(u => {
+            const pt = herb55Monthly['2567']?.units?.[u.hospcode]?.totalPoint ?? (myS4['2567']?.units?.[u.hospcode] || 0);
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: pt,
+              den: pt,
+              rate: pt,
+              pass: pt > 0
+            };
+          })
         }
       }
     };
@@ -806,9 +825,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2568': {
-          rate: herb9Monthly['2568']?.districtTotalCount || dt.sheet5_herb9_count || 98,
-          num: herb9Monthly['2568']?.districtTotalCount || dt.sheet5_herb9_count || 98,
-          den: herb9Monthly['2568']?.districtTotalBath || dt.sheet5_herb9_bath || 5880,
+          rate: herb9Monthly['2568']?.districtTotalCount ?? dt.sheet5_herb9_count ?? null,
+          num: herb9Monthly['2568']?.districtTotalCount ?? dt.sheet5_herb9_count ?? null,
+          den: herb9Monthly['2568']?.districtTotalBath ?? dt.sheet5_herb9_bath ?? null,
           pass: true,
           units: unitsList.map(u => {
             const cnt = herb9Monthly['2568']?.units?.[u.hospcode]?.totalCount ?? (u.sheet5_herb9_count || 0);
@@ -824,12 +843,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2567': {
-          rate: herb9Monthly['2567']?.districtTotalCount || 156,
-          num: herb9Monthly['2567']?.districtTotalCount || 156,
-          den: herb9Monthly['2567']?.districtTotalBath || 9360,
+          rate: herb9Monthly['2567']?.districtTotalCount ?? myS5['2567']?.district_total ?? null,
+          num: herb9Monthly['2567']?.districtTotalCount ?? myS5['2567']?.district_total ?? null,
+          den: herb9Monthly['2567']?.districtTotalBath ?? myS5['2567']?.district_total ?? null,
           pass: true,
           units: unitsList.map(u => {
-            const cnt = herb9Monthly['2567']?.units?.[u.hospcode]?.totalCount || 0;
+            const cnt = herb9Monthly['2567']?.units?.[u.hospcode]?.totalCount ?? (myS5['2567']?.units?.[u.hospcode] || 0);
             return {
               hospcode: u.hospcode,
               name: u.name,
@@ -860,9 +879,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       herb32Data: herb32Monthly,
       years: {
         '2569': {
-          rate: herb32Monthly['2569']?.districtTotalCount || dt.sheet6_herb32_count || 4836,
-          num: herb32Monthly['2569']?.districtTotalCount || dt.sheet6_herb32_count || 4836,
-          den: herb32Monthly['2569']?.districtTotalBath || dt.sheet6_herb32_bath || 312425,
+          rate: herb32Monthly['2569']?.districtTotalCount ?? dt.sheet6_herb32_count ?? null,
+          num: herb32Monthly['2569']?.districtTotalCount ?? dt.sheet6_herb32_count ?? null,
+          den: herb32Monthly['2569']?.districtTotalBath ?? dt.sheet6_herb32_bath ?? null,
           pass: true,
           units: unitsList.map(u => {
             const cnt = herb32Monthly['2569']?.units?.[u.hospcode]?.totalCount ?? (u.sheet6_herb32_count || 0);
@@ -879,9 +898,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2568': {
-          rate: herb32Monthly['2568']?.districtTotalCount || myS6['2568']?.district_total || 1595,
-          num: herb32Monthly['2568']?.districtTotalCount || myS6['2568']?.district_total || 1595,
-          den: herb32Monthly['2568']?.districtTotalBath || 103445,
+          rate: herb32Monthly['2568']?.districtTotalCount ?? myS6['2568']?.district_total ?? null,
+          num: herb32Monthly['2568']?.districtTotalCount ?? myS6['2568']?.district_total ?? null,
+          den: herb32Monthly['2568']?.districtTotalBath ?? myS6['2568']?.district_total ?? null,
           pass: true,
           units: unitsList.map(u => {
             const cnt = herb32Monthly['2568']?.units?.[u.hospcode]?.totalCount ?? (myS6['2568']?.units?.[u.hospcode] || 0);
@@ -898,19 +917,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         },
         '2567': {
-          rate: 0,
-          num: 0,
-          den: 0,
-          pass: true,
-          units: unitsList.map(u => ({
-            hospcode: u.hospcode,
-            name: u.name,
-            subdistrict: u.subdistrict,
-            num: 0,
-            den: 0,
-            rate: 0,
-            pass: false
-          }))
+          rate: herb32Monthly['2567']?.districtTotalCount ?? myS6['2567']?.district_total ?? null,
+          num: herb32Monthly['2567']?.districtTotalCount ?? myS6['2567']?.district_total ?? null,
+          den: herb32Monthly['2567']?.districtTotalBath ?? myS6['2567']?.district_total ?? null,
+          pass: (herb32Monthly['2567']?.districtTotalCount ?? myS6['2567']?.district_total) != null,
+          units: unitsList.map(u => {
+            const cnt = herb32Monthly['2567']?.units?.[u.hospcode]?.totalCount ?? (myS6['2567']?.units?.[u.hospcode] || 0);
+            return {
+              hospcode: u.hospcode,
+              name: u.name,
+              subdistrict: u.subdistrict,
+              num: cnt,
+              den: cnt * 55,
+              rate: cnt,
+              pass: cnt > 0
+            };
+          })
         }
       }
     };
@@ -992,6 +1014,39 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     };
   }
+
+  // Mark years with no real data so the UI shows "ไม่มีข้อมูล" instead of a
+  // misleading 0 or a stale hardcoded number (เดิมมี fallback ตัวเลข hardcode
+  // ปิดบังข้อมูลที่หาย). A year counts as no-data when the rate is null or
+  // when both num and den are zero.
+  Object.values(masterData.indicators).forEach(ind => {
+    Object.entries(ind.years || {}).forEach(([yr, yd]) => {
+      if (!yd || typeof yd !== 'object') return;
+      const isNoData = (yd.rate === null || yd.rate === undefined) ||
+        (Number(yd.num) === 0 && Number(yd.den) === 0 && (yd.rate === 0 || yd.rate === '0'));
+      if (isNoData) {
+        yd.no_data = true;
+        yd.pass = null;
+      }
+    });
+  });
+
+  // Fill per-panel HDC compile dates from the master data so the labels can
+  // never go stale (เดิมเป็นข้อความ hardcode "วันที่ประมวลผล ...")
+  const THAI_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const formatHdcDate = (dc) => {
+    const s = String(dc || '');
+    if (s.length < 8) return null;
+    const d = s.slice(6, 8), m = Number(s.slice(4, 6)), y = Number(s.slice(0, 4));
+    if (!d || !m || !y) return null;
+    return `${Number(d)} ${THAI_MONTHS[m - 1]} ${y + 543}`;
+  };
+  [['ttm_cases', 'ttm2-date-label'], ['ttm_common_dis', 'commondis-date-label'], ['ttm_massage', 'ttm8-date-label']].forEach(([indId, elId]) => {
+    const el = document.getElementById(elId);
+    const dc = masterData.indicators?.[indId]?.years?.['2569']?.date_com;
+    const txt = formatHdcDate(dc);
+    if (el && txt) el.textContent = `วันที่ประมวลผล ${txt}`;
+  });
 
   // Integrate NHSO data into master
   try {
@@ -1091,7 +1146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     indicators.forEach(ind => {
       const yData = ind.years && ind.years[yr];
-      if (!yData) return;
+      if (!yData || yData.no_data) return;
       if (currentUnit === 'all') {
         if (yData.pass) passedCount++; else failedCount++;
       } else {
@@ -1135,10 +1190,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (elCard1Sub) elCard1Sub.textContent = 'ยอดรวมข้อผิดพลาดส่งเบิก';
     } else if (currentDomain === 'nhso_ttm') {
       const nhsoOverview = masterData.indicators['nhso_overview']?.years[yr];
-      const totBath = nhsoOverview ? nhsoOverview.rate : 1225269;
-      const totPoint = nhsoOverview ? nhsoOverview.den : 978654;
+      const totBath = nhsoOverview ? nhsoOverview.rate : null;
+      const totPoint = nhsoOverview ? nhsoOverview.den : null;
+      const fmtNum = (v) => (v == null ? '—' : Number(v).toLocaleString());
 
-      if (elPassed) elPassed.textContent = `${Number(totBath).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+      if (elPassed) elPassed.textContent = fmtNum(totBath);
       const elPassedUnit = elPassed?.nextElementSibling;
       if (elPassedUnit) elPassedUnit.textContent = 'บาท';
 
@@ -1147,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         elPassRateBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-white/25 text-white border border-white/30 backdrop-blur-md shadow-xs num-font';
       }
 
-      if (elFailed) elFailed.textContent = `${Number(totPoint).toLocaleString()} Point`;
+      if (elFailed) elFailed.textContent = `${fmtNum(totPoint)} Point`;
       const elFailedLabel = elFailed?.previousElementSibling;
       if (elFailedLabel) elFailedLabel.textContent = 'Point สะสมรวม';
       const elCard1Sub = elPassed?.parentElement?.previousElementSibling;
@@ -1250,45 +1306,57 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } else if (isTTM4) {
       const summary = (yData && yData.saraphi_summary) || {};
-      const totalCost = summary.price_all || 934735.29;
-      const totalVisits = summary.visits_all || 16190;
+      const totalCost = summary.price_all ?? null;
+      const totalVisits = summary.visits_all ?? null;
       if (elCard2Badge) elCard2Badge.textContent = '95 รายการยา (DIDSTD)';
       if (elCard2Title) elCard2Title.textContent = 'มูลค่าการใช้ยาสมุนไพรรวม';
-      if (elCard2Val) elCard2Val.textContent = `${Number(totalCost).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} บาท`;
+      if (elCard2Val) elCard2Val.textContent = totalCost == null ? 'ไม่มีข้อมูล'
+        : `${Number(totalCost).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} บาท`;
       if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'รวมการสั่งจ่าย';
       if (elCard2GapBadge) {
-        elCard2GapBadge.textContent = `${Number(totalVisits).toLocaleString()} ครั้ง`;
+        elCard2GapBadge.textContent = totalVisits == null ? '—' : `${Number(totalVisits).toLocaleString()} ครั้ง`;
         elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
       }
     } else if (ind) {
       const targetVal = ind.target || 0;
-      if (elCard2Badge) {
-        elCard2Badge.textContent = targetVal > 0 ? `เกณฑ์ ≥ ${targetVal} ${ind.unit}` : 'ผลงานสะสม / Workload';
-      }
-      if (elCard2Title) elCard2Title.textContent = `อัตราผลงาน (${ind.unit})`;
-      if (elCard2Val) elCard2Val.textContent = `${Number(currentRate).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${ind.unit}`;
-      
-      if (targetVal > 0) {
-        if (currentPass) {
-          const gap = (currentRate - targetVal).toFixed(1);
-          if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'สถานะผลงาน';
-          if (elCard2GapBadge) {
-            elCard2GapBadge.textContent = `✓ สูงกว่าเป้า +${gap} ${ind.unit}`;
-            elCard2GapBadge.className = 'font-bold text-white bg-emerald-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
-          }
-        } else {
-          const gap = (targetVal - currentRate).toFixed(1);
-          if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ส่วนต่างเป้าหมาย';
-          if (elCard2GapBadge) {
-            elCard2GapBadge.textContent = `✕ ขาดอีก ${gap} ${ind.unit}`;
-            elCard2GapBadge.className = 'font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
-          }
+      if (yData && yData.no_data) {
+        if (elCard2Badge) elCard2Badge.textContent = 'สถานะข้อมูล';
+        if (elCard2Title) elCard2Title.textContent = `อัตราผลงาน (${ind.unit})`;
+        if (elCard2Val) elCard2Val.textContent = 'ไม่มีข้อมูล';
+        if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'หมายเหตุ';
+        if (elCard2GapBadge) {
+          elCard2GapBadge.textContent = `HDC ยังไม่มีข้อมูลปี ${yr} สำหรับตัวชี้วัดนี้`;
+          elCard2GapBadge.className = 'font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-[11px] border border-slate-200 num-font shadow-xs';
         }
       } else {
-        if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ประเภทข้อมูล';
-        if (elCard2GapBadge) {
-          elCard2GapBadge.textContent = `ผลงานสะสมปี ${yr}`;
-          elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+        if (elCard2Badge) {
+          elCard2Badge.textContent = targetVal > 0 ? `เกณฑ์ ≥ ${targetVal} ${ind.unit}` : 'ผลงานสะสม / Workload';
+        }
+        if (elCard2Title) elCard2Title.textContent = `อัตราผลงาน (${ind.unit})`;
+        if (elCard2Val) elCard2Val.textContent = `${Number(currentRate).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${ind.unit}`;
+
+        if (targetVal > 0) {
+          if (currentPass) {
+            const gap = (currentRate - targetVal).toFixed(1);
+            if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'สถานะผลงาน';
+            if (elCard2GapBadge) {
+              elCard2GapBadge.textContent = `✓ สูงกว่าเป้า +${gap} ${ind.unit}`;
+              elCard2GapBadge.className = 'font-bold text-white bg-emerald-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
+            }
+          } else {
+            const gap = (targetVal - currentRate).toFixed(1);
+            if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ส่วนต่างเป้าหมาย';
+            if (elCard2GapBadge) {
+              elCard2GapBadge.textContent = `✕ ขาดอีก ${gap} ${ind.unit}`;
+              elCard2GapBadge.className = 'font-bold text-white bg-rose-500/90 px-2 py-0.5 rounded-md text-[11px] border border-white/20 num-font shadow-xs';
+            }
+          }
+        } else {
+          if (elCard2FooterLabel) elCard2FooterLabel.textContent = 'ประเภทข้อมูล';
+          if (elCard2GapBadge) {
+            elCard2GapBadge.textContent = `ผลงานสะสมปี ${yr}`;
+            elCard2GapBadge.className = 'font-bold text-white bg-white/20 px-2 py-0.5 rounded-md text-[11px] border border-white/25 num-font shadow-xs';
+          }
         }
       }
     }
@@ -1495,7 +1563,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ppb: 'หมวด: 🎯 งบ PPB (บริการพื้นฐาน Workload)',
       elderly: 'หมวด: 👵 ผู้สูงอายุ & NCDs',
       mch: 'หมวด: 👶 อนามัยแม่และเด็ก',
-      explorer: 'หมวด: 🌐 OpenData MoPH (51 หมวด)'
+      explorer: 'หมวด: 🌐 OpenData MoPH Explorer'
     };
     const elViewTitle = document.getElementById('view-title');
     if (elViewTitle) elViewTitle.textContent = domainTitles[currentDomain] || 'แดชบอร์ดสุขภาพ';
@@ -2625,6 +2693,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       tableFoot.innerHTML = '';
       return;
     }
+    if (yData.no_data) {
+      tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400">📂 HDC ยังไม่มีข้อมูลปีงบประมาณ ${yr} สำหรับตัวชี้วัดนี้</td></tr>`;
+      tableFoot.innerHTML = '';
+      return;
+    }
 
     const searchQuery = tableSearch.value.trim().toLowerCase();
     const filteredUnits = yData.units.filter(u => {
@@ -2652,9 +2725,18 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${u.sheet3_service_point ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-800 font-medium border border-cyan-200/60">สปสช.: ${Number(u.sheet3_service_point).toLocaleString()} pts</span>` : ''}
         </div>`;
       }
+      // กลุ่มเป้าหมาย ChronicFU (เสริม) สำหรับตัวชี้วัด PCC ที่แยกกลุ่มตาม HDC
+      if ((u.fu_den > 0 || u.fu_num > 0) && ind.target > 0) {
+        hdcCompBadge += `<div class="text-[10.5px] text-slate-500 mt-1">
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-800 font-medium border border-indigo-200/60">กลุ่ม ChronicFU: ${Number(u.fu_num).toLocaleString()}/${Number(u.fu_den).toLocaleString()} (${Number(u.fu_rate || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}%)</span>
+        </div>`;
+      }
 
-      const statusBadge = currentDomain === 'nhso_ttm'
-        ? (u.rate > 0 
+      const unitNoData = !!u.no_data || (Number(u.num) === 0 && Number(u.den) === 0 && ind.target > 0);
+      const statusBadge = unitNoData && ind.target > 0
+        ? '<span class="bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-slate-200">ไม่มีข้อมูล</span>'
+        : currentDomain === 'nhso_ttm'
+        ? (u.rate > 0
             ? '<span class="bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-cyan-200">อนุมัติชดเชย</span>'
             : '<span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px]">ไม่มีเบิกจ่าย</span>')
         : (ind.target === 0
@@ -2675,9 +2757,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${hdcCompBadge}
         </td>
         <td class="py-2.5 px-4 text-slate-500">ต.${displaySub}</td>
-        <td class="py-2.5 px-4 text-right num-font font-semibold text-slate-700">${Number(u.num).toLocaleString()}</td>
-        <td class="py-2.5 px-4 text-right num-font text-slate-500">${Number(u.den).toLocaleString()}</td>
-        <td class="py-2.5 px-4 text-right num-font font-bold ${u.pass ? 'text-emerald-600' : 'text-slate-800'}">${Number(u.rate).toLocaleString()} ${ind.unit}</td>
+        <td class="py-2.5 px-4 text-right num-font font-semibold text-slate-700">${unitNoData && ind.target > 0 ? '<span class="text-slate-400">—</span>' : Number(u.num).toLocaleString()}</td>
+        <td class="py-2.5 px-4 text-right num-font text-slate-500">${unitNoData && ind.target > 0 ? '<span class="text-slate-400">—</span>' : Number(u.den).toLocaleString()}</td>
+        <td class="py-2.5 px-4 text-right num-font font-bold ${u.pass ? 'text-emerald-600' : 'text-slate-800'}">${unitNoData && ind.target > 0 ? '<span class="text-slate-400 font-medium">ไม่มีข้อมูล</span>' : `${Number(u.rate).toLocaleString()} ${ind.unit}`}</td>
         <td class="py-2.5 px-4 text-center">${statusBadge}</td>
       `;
       tableBody.appendChild(tr);
@@ -2694,6 +2776,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <tr>
         <td colspan="4" class="py-3 px-4 text-slate-800 font-bold">
           🏥 ภาพรวมอำเภอสารภีทั้งหมด (${filteredUnits.length} หน่วยบริการ)
+          ${yData.fu ? `<div class="text-[11px] font-medium text-indigo-700 mt-1">กลุ่ม ChronicFU: ${Number(yData.fu.num).toLocaleString()}/${Number(yData.fu.den).toLocaleString()} (${Number(yData.fu.rate).toLocaleString(undefined, { maximumFractionDigits: 2 })}%) — ตาม HDC ที่แยกกลุ่มเป้าหมาย Typearea 1,3 และ ChronicFU</div>` : ''}
         </td>
         <td class="py-3 px-4 text-right num-font font-bold text-slate-900">${Number(yData.num).toLocaleString()}</td>
         <td class="py-3 px-4 text-right num-font font-bold text-slate-600">${Number(yData.den).toLocaleString()}</td>
@@ -6944,7 +7027,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (text) text.textContent = 'ดึงข้อมูล สปสช. ล่าสุด (Live Sync)';
       if (icon) icon.classList.remove('animate-spin');
       if (btn) btn.disabled = false;
-      alert('⚠️ ไม่สามารถเชื่อมต่อระบบ Live Sync ได้ (กรุณารัน python scripts/server.py)');
+      // /api/nhso-live-sync มีเฉพาะเมื่อรันผ่าน scripts/server.py ในเครื่อง —
+      // บนเว็บที่ deploy (Vercel/GitHub Pages) ไม่มี backend ให้เรียก
+      alert('⚠️ ปุ่ม Live Sync ใช้ได้เฉพาะเมื่อรันเว็บผ่าน "python scripts/server.py" ในเครื่องของท่านเท่านั้น (เว็บไซต์ที่ deploy แล้วจะแสดงข้อมูลล่าสุดจากการ commit ข้อมูลใหม่ลง GitHub)');
     }
   };
 
@@ -6959,7 +7044,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const timeText = document.getElementById('nhso-sync-last-time-text');
         if (timeText && meta.last_sync_thai) {
-          timeText.textContent = `ซิงค์ข้อมูลล่าสุดเมื่อ: ${meta.last_sync_thai} (ประมวลผล สปสช.: ${meta.process_date || '15 ก.ย. 2569'})`;
+          timeText.textContent = `ซิงค์ข้อมูลล่าสุดเมื่อ: ${meta.last_sync_thai}${meta.process_date ? ` (ประมวลผล สปสช.: ${meta.process_date})` : ''}`;
         }
       }
     } catch (e) {
@@ -13099,6 +13184,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (elUc35) elUc35.textContent = `${Number(uc35).toLocaleString()} คน`;
     if (elRankVal) elRankVal.textContent = rankVal;
 
+    // Subtitle ของกราฟงบ — sync กับข้อมูลจริงแทนข้อความ hardcode ใน index.html
+    const elChartSub = document.getElementById('pcc69-chart1-subtitle');
+    if (elChartSub && !selData && dist.total_budget != null) {
+      elChartSub.textContent = `งบประมาณรวมทั้งอำเภอ ${Number(dist.total_budget).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ.`;
+    }
+
     // 3. Render Charts
     renderPcc69Charts();
 
@@ -17786,7 +17877,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function initExplorerFilters() {
     const subCatSelect = document.getElementById('catalog-sub-cat');
     const cats = [...new Set(catalogData.map(r => r.cat_name).filter(Boolean))].sort();
-    subCatSelect.innerHTML = '<option value="all">ทุกหมวดหมู่ย่อย (51 หมวด)</option>';
+    subCatSelect.innerHTML = `<option value="all">ทุกหมวดหมู่ย่อย (${cats.length} หมวด)</option>`;
     cats.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c;

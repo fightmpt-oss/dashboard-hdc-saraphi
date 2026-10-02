@@ -6,22 +6,10 @@ import sys
 import time
 from collections import defaultdict
 
-SARAPHI_MAP = {
-    '11135': {'name': 'รพ.สารภี', 'subdistrict': 'สารภี'},
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง'},
-    '06015': {'name': 'รพ.สต.บ้านปากกอง', 'subdistrict': 'สารภี'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'subdistrict': 'ขัวมุง'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'subdistrict': 'หนองแฝก'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'subdistrict': 'ท่ากว้าง'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'subdistrict': 'สันทราย'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'subdistrict': 'ป่าบง'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'subdistrict': 'ชมภู'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง'},
-    '99758': {'name': 'ศสม.สารภี', 'subdistrict': 'สารภี'}
-}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
 
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']

@@ -4,50 +4,35 @@ import json
 import os
 import sys
 from collections import defaultdict
+sys.stdout.reconfigure(encoding='utf-8')
 
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']
 
-SARAPHI_MAP = {
-    '11135': {'name': 'รพ.สารภี', 'subdistrict': 'สารภี'},
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง'},
-    '06015': {'name': 'รพ.สต.บ้านพญาชมภู', 'subdistrict': 'ชมภู'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'subdistrict': 'ขัวมุง'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'subdistrict': 'หนองแฝก'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'subdistrict': 'ท่ากว้าง'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'subdistrict': 'สันทราย'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'subdistrict': 'ป่าบง'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'subdistrict': 'ชมภู'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง'},
-    '99758': {'name': 'ศสม.สารภี', 'subdistrict': 'สารภี'}
-}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS, fetch_opendata_rows
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
+
+def _write_raw_snapshot(table, year, rows):
+    """Persist fetched rows to data/s_<table>_<year>.json so that
+    build_saraphi_master.py aggregates the SAME snapshot as this view."""
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    out = os.path.join(data_dir, f'{table}_{year}.json')
+    with open(out, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False)
+    print(f'  wrote raw snapshot {out} ({len(rows)} rows)')
+
 
 def fetch_year_data(year):
-    payload = {
-        'tableName': 's_dm_hba1c',
-        'year': str(year),
-        'province': '50',
-        'type': 'json',
-        'offset': 0,
-        'limit': 5000
-    }
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Content-Type': 'application/json'
-    }
-    req = urllib.request.Request(URL, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    with urllib.request.urlopen(req, timeout=30) as res:
-        data = json.loads(res.read().decode('utf-8'))
-        rows = data.get('data', [])
-        saraphi = [r for r in rows if str(r.get('areacode', '')).startswith('5019')]
+    saraphi = fetch_opendata_rows('s_dm_hba1c', year)
+    _write_raw_snapshot('s_dm_hba1c', year, saraphi)
 
     units = defaultdict(lambda: {'b1': 0, 'a1': 0, 'a3': 0, 'b2': 0, 'a2': 0, 'a4': 0})
     for r in saraphi:
         h = r.get('hospcode')
-        if not h: continue
+        # เขตรั้งสโคปให้ตรงกับ dashboard หลัก: 14 หน่วยบริการเท่านั้น
+        if not h or h == '11999' or h not in SARAPHI_MAP: continue
         units[h]['b1'] += int(r.get('target') or 0)
         units[h]['a1'] += int(r.get('result') or 0)
         units[h]['a3'] += int(r.get('result_2') or 0)
@@ -146,7 +131,7 @@ def main():
     print("Enriching s_dm_hba1c Data in ncd_service_plan_master.json")
     print("==================================================================")
     
-    ncd_path = r'd:\PROJECTS\Dashboard HDC Saraphi\data\ncd_service_plan_master.json'
+    ncd_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "ncd_service_plan_master.json"))
     with open(ncd_path, 'r', encoding='utf-8') as f:
         master = json.load(f)
 

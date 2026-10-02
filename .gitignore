@@ -7,3 +7,6 @@ captured_apis.json
 meta_data.json
 9-es2015.64e2ecc2704863615da3.js
 ~$*
+
+backup_*.zip
+.zcodeignore

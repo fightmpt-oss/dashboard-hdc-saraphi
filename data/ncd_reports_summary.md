@@ -1,4 +1,9 @@
-# NCD Service Plan Reports (70 Reports)
+# NCD Service Plan Reports — Raw Extraction Log (70 รายการดิบ → เก็บใช้จริง 37 รายการ)
+
+> **หมายเหตุ:** ไฟล์นี้คือบันทึกผลการสำรวจ (extraction log) รายงาน NCD ทั้ง 70 รายการที่พบตอนดึงข้อมูลครั้งแรก
+> ระบบแสดงผลจริงเฉพาะ **37 รายการที่มีข้อมูล** (DM: 17, HT: 14, CVD: 1, CKD: 5) ตามที่ระบุใน
+> `data/ncd_service_plan_master.json` — รายการที่เหลือเป็นรายงานซ้ำ/ไม่มีข้อมูล (เช่น s_dm_complication ปรากฏทั้ง #31 และ #65)
+> และถูกตัดออกโดย `scripts/cleanup_ncd_zero_reports.py`
 
 | # | Report ID | Source Table | Report Name | HDC Report Link | OpenData ID |
 |---|---|---|---|---|---|
@@ -10,7 +15,8 @@
 | 6 | 201 | `s_dm_ckd` | ร้อยละของผู้ป่วยเบาหวานที่ยังไม่มีภาวะแทรกซ้อนทางไตได้รับการตรวจภาวะแทรกซ้อนทางไต | [4787b961...](https://hdc.moph.go.th/cmi/public/standard-report-detail/4787b961e9782d2de685bf65bb23b8f1) | `4787b961e9782d2de685bf65bb23b8f1` |
 | 7 | 202 | `s_dm_ckd1` | ร้อยละของผู้ป่วยเบาหวานได้รับการตรวจภาวะแทรกซ้อนทางไต | [151a52b8...](https://hdc.moph.go.th/cmi/public/standard-report-detail/151a52b8783f69e3a309c9f625a27e40) | `151a52b8783f69e3a309c9f625a27e40` |
 | 8 | 204 | `s_hosp_bp180_4` | ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg ได้รับการวินิจฉัยเป็นผู้ป่วย โรคความดันโลหิตสูง I10 – I15 จากการค้นหาในโรงพยาบาล ในวันนั้น จำแนกรายเดือน (ไม่รวม ER) | [291f5759...](https://hdc.moph.go.th/cmi/public/standard-report-detail/291f57594cc6c0fdd5514a59c20c8904) | `291f57594cc6c0fdd5514a59c20c8904` |
-| 9 | 219 | `s_hosp_bp180_2` | ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล (ไม่นับรวม ER)
+| 9 | 219 | `s_hosp_bp180_2` | ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล (ไม่นับรวม ER)
+
  | [12f733a3...](https://hdc.moph.go.th/cmi/public/standard-report-detail/12f733a3842f9039c809968779faa971) | `12f733a3842f9039c809968779faa971` |
 | 10 | 235 | `s_ncd_ldl_n1` | ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL | [0f233184...](https://hdc.moph.go.th/cmi/public/standard-report-detail/0f23318497737af76b19e98304dbcec7) | `0f23318497737af76b19e98304dbcec7` |
 | 11 | 467 | `s_dmht_incidence` | อัตราผู้ป่วยความดันโลหิตสูงและเบาหวานรายใหม่ | [418ae93a...](https://hdc.moph.go.th/cmi/public/standard-report-detail/418ae93a872547ebe2fbf0ff4f73e65e) | `418ae93a872547ebe2fbf0ff4f73e65e` |

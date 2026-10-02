@@ -5,13 +5,14 @@ Fetches s_ht_control (2e3813337b6b5377c2f68affe247d5f9) from OpenData MOPH API f
 Enriches data/ncd_service_plan_master.json and data/ncd_service_plan_catalog.json with full 20-column HDC schema:
   Typearea 1,3: B1, D1, bp_1x_1, bp_ge2_1, rate_bp_ge2_1, A1, rate1, C1, rate_c1
   ChronicFU: B2, fu_ge2_2, D2, bp_1x_2, bp_ge2_2, rate_bp_ge2_2, A2, rate2, C2, rate_c2
-KPI Target: 60.0%
+KPI Target: 50.0% (เกณฑ์คุณภาพ สปสช.)
 """
 import urllib.request
 import json
 import os
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -19,41 +20,24 @@ if hasattr(sys.stdout, 'reconfigure'):
 URL = 'https://opendata.moph.go.th/api/report_data'
 YEARS = ['2569', '2568', '2567']
 
-SARAPHI_MAP = {
-    '11135': {'name': 'รพ.สารภี', 'subdistrict': 'สารภี'},
-    '06014': {'name': 'รพ.สต.บ้านยางเนิ้ง', 'subdistrict': 'ยางเนิ้ง'},
-    '06015': {'name': 'รพ.สต.บ้านพญาชมภู', 'subdistrict': 'ชมภู'},
-    '06016': {'name': 'รพ.สต.บ้านศรีสองเมือง', 'subdistrict': 'ไชยสถาน'},
-    '06017': {'name': 'รพ.สต.บ้านหัวดง', 'subdistrict': 'ขัวมุง'},
-    '06018': {'name': 'รพ.สต.บ้านหนองแฝก', 'subdistrict': 'หนองแฝก'},
-    '06020': {'name': 'รพ.สต.บ้านแคว (ท่ากว้าง)', 'subdistrict': 'ท่ากว้าง'},
-    '06021': {'name': 'รพ.สต.บ้านสันต้นกอก', 'subdistrict': 'ดอนแก้ว'},
-    '06022': {'name': 'รพ.สต.บ้านบวกครกเหนือ', 'subdistrict': 'ท่าวังตาล'},
-    '06023': {'name': 'รพ.สต.บ้านป่าสา', 'subdistrict': 'สันทราย'},
-    '06024': {'name': 'รพ.สต.บ้านศรีคำชมภู', 'subdistrict': 'ป่าบง'},
-    '13994': {'name': 'รพ.สต.บ้านท่าต้นกวาว', 'subdistrict': 'ชมภู'},
-    '14461': {'name': 'รพ.สต.บ้านหนองผึ้ง', 'subdistrict': 'หนองผึ้ง'},
-    '99758': {'name': 'ศสม.สารภี', 'subdistrict': 'สารภี'}
-}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS, fetch_opendata_rows
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
+
+def _write_raw_snapshot(table, year, rows):
+    """Persist fetched rows to data/s_<table>_<year>.json so that
+    build_saraphi_master.py aggregates the SAME snapshot as this view."""
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    out = os.path.join(data_dir, f'{table}_{year}.json')
+    with open(out, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False)
+    print(f'  wrote raw snapshot {out} ({len(rows)} rows)')
+
 
 def fetch_year_data(year):
-    payload = {
-        'tableName': 's_ht_control',
-        'year': str(year),
-        'province': '50',
-        'type': 'json',
-        'offset': 0,
-        'limit': 5000
-    }
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Content-Type': 'application/json'
-    }
-    req = urllib.request.Request(URL, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    with urllib.request.urlopen(req, timeout=30) as res:
-        data = json.loads(res.read().decode('utf-8'))
-        rows = data.get('data', [])
-        saraphi = [r for r in rows if str(r.get('areacode', '')).startswith('5019')]
+    saraphi = fetch_opendata_rows('s_ht_control', year)
+    _write_raw_snapshot('s_ht_control', year, saraphi)
 
     # Raw field aggregation per unit
     raw_units = defaultdict(lambda: {
@@ -69,7 +53,8 @@ def fetch_year_data(year):
 
     for r in saraphi:
         h = r.get('hospcode')
-        if not h or h == '11999': continue
+        # เขตรั้งสโคปให้ตรงกับ dashboard หลัก: 14 หน่วยบริการเท่านั้น
+        if not h or h == '11999' or h not in SARAPHI_MAP: continue
         for k in raw_dist.keys():
             v = int(r.get(k) or 0) if r.get(k) is not None else 0
             raw_units[h][k] += v
@@ -226,7 +211,7 @@ def main():
             'opendata_url': 'https://opendata.moph.go.th/api/report_data',
             'has_fu': True,
             'is_ht_control': True,
-            'kpi_target': 60.0,
+            'kpi_target': 50.0,
             'years': {}
         }
         master['reports'].insert(1, report_entry) # Put right after ncd_dm_control or at top
@@ -241,7 +226,7 @@ def main():
         report_entry['hdc_url'] = 'https://hdc.moph.go.th/cmi/public/standard-report-detail/2e3813337b6b5377c2f68affe247d5f9'
         report_entry['has_fu'] = True
         report_entry['is_ht_control'] = True
-        report_entry['kpi_target'] = 60.0
+        report_entry['kpi_target'] = 50.0
         print("Updated existing report entry 'ncd_ht_control' in master.")
 
     report_entry['years'] = all_years
@@ -256,7 +241,7 @@ def main():
             r['hdc_url'] = 'https://hdc.moph.go.th/cmi/public/standard-report-detail/2e3813337b6b5377c2f68affe247d5f9'
             r['has_fu'] = True
             r['is_ht_control'] = True
-            r['kpi_target'] = 60.0
+            r['kpi_target'] = 50.0
             r['years'] = all_years
             print("Also updated ncd_18 to point to s_ht_control HDC data.")
             break
@@ -289,9 +274,9 @@ def main():
             "main_report_name": "ข้อมูลตอบสนอง Service Plan",
             "opendata_id": "2e3813337b6b5377c2f68affe247d5f9",
             "view_count": 650,
-            "last_synced_at": "2026-09-24T22:00:00.000Z",
+            "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
             "created_at": "2026-05-22T09:10:07.000Z",
-            "updated_at": "2026-09-24T22:00:00.000Z",
+            "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
             "cat_name": "ข้อมูลตอบสนอง Service Plan สาขาโรคไม่ติดต่อ (NCD DM,HT,CVD)"
         }
         catalog.insert(1, cat_entry)

@@ -2,22 +2,12 @@ import asyncio
 import json
 from playwright.async_api import async_playwright
 
-SARAPHI_MAP = {
-    '11135': 'รพ.สารภี',
-    '06014': 'รพ.สต.บ้านยางเนิ้ง',
-    '06015': 'รพ.สต.บ้านปากกอง',
-    '06016': 'รพ.สต.บ้านศรีสองเมือง',
-    '06017': 'รพ.สต.บ้านหัวดง',
-    '06018': 'รพ.สต.บ้านหนองแฝก',
-    '06020': 'รพ.สต.บ้านแคว (ท่ากว้าง)',
-    '06021': 'รพ.สต.บ้านสันต้นกอก',
-    '06022': 'รพ.สต.บ้านบวกครกเหนือ',
-    '06023': 'รพ.สต.บ้านป่าสา',
-    '06024': 'รพ.สต.บ้านศรีคำชมภู',
-    '13994': 'รพ.สต.บ้านท่าต้นกวาว',
-    '14461': 'รพ.สต.บ้านหนองผึ้ง',
-    '99758': 'ศสม.สารภี'
-}
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from saraphi_config import SARAPHI_UNITS
+
+SARAPHI_MAP = {hc: {'name': u['name'], 'subdistrict': u['subdistrict']} for hc, u in SARAPHI_UNITS.items()}
 
 async def main():
     with open('data/nhso/nhso_herb32_monthly.json', encoding='utf-8') as f:

@@ -1,56 +1,36 @@
-﻿import urllib.request, json, time, os
+import urllib.request, json, time, os, sys
 
-url = 'https://opendata.moph.go.th/api/report_data'
-output_dir = r"d:\PROJECTS\Dashboard HDC Saraphi\data"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+from saraphi_config import fetch_opendata_rows
+
+output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
 os.makedirs(output_dir, exist_ok=True)
 
 indicators = ['s_ttm7', 's_ttm10', 's_ttm32', 's_ttm2', 's_ttm34', 's_ttm4', 's_common_diseases_thai_drug']
 years = ['2567', '2568', '2569']
 
-def fetch_indicator_year(table, year):
-    target_file = os.path.join(output_dir, f"{table}_{year}.json")
-    if os.path.exists(target_file):
-        print(f"Already exists: {target_file}")
-        return
-        
-    offset = 0
-    all_rows = []
-    total = 0
-    while True:
-        payload = json.dumps({
-            'tableName': table,
-            'year': str(year),
-            'province': '50',
-            'type': 'json',
-            'offset': offset,
-            'limit': 1000
-        }).encode('utf-8')
-        req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
-        try:
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                res = json.loads(resp.read().decode('utf-8'))
-        except Exception as e:
-            print(f"Error fetching {table} {year} offset {offset}: {e}")
-            break
-            
-        total = int(res.get('total', 0))
-        data = res.get('data', [])
-        if not data:
-            break
-        for r in data:
-            if str(r.get('areacode', '')).startswith('5019'):
-                all_rows.append(r)
-        offset += len(data)
-        if offset >= total:
-            break
-        time.sleep(0.2)
-        
-    print(f"Saved {table} {year}: {len(all_rows)} Saraphi rows (total CM was {total})")
-    with open(target_file, "w", encoding="utf-8") as f:
-        json.dump(all_rows, f, ensure_ascii=False, indent=2)
-
+failures = []
 for t in indicators:
     for y in years:
-        fetch_indicator_year(t, y)
+        # No skip-if-exists: files are always refreshed so snapshots stay consistent
+        # (เดิมข้ามไฟล์เก่า ทำให้ re-run ไม่มีวันอัปเดตข้อมูล และไฟล์ว่างไม่ถูกดึงใหม่)
+        print(f"Fetching {t} {y} ...")
+        try:
+            all_rows = fetch_opendata_rows(t, y)
+        except Exception as e:
+            print(f"  ERROR fetching {t} {y}: {e}")
+            failures.append((t, y, str(e)))
+            continue
+        target_file = os.path.join(output_dir, f"{t}_{y}.json")
+        with open(target_file, "w", encoding="utf-8") as f:
+            json.dump(all_rows, f, ensure_ascii=False, indent=2)
+        print(f"  Saved {t} {y}: {len(all_rows)} Saraphi rows")
+        time.sleep(0.3)
+
+if failures:
+    print("\nFAILED table/year fetches (existing files were left untouched):")
+    for t, y, msg in failures:
+        print(f"  - {t} {y}: {msg}")
+    sys.exit(1)
 
 print("Data fetch completed!")

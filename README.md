@@ -39,15 +39,18 @@
    - คัดกรองสุขภาพผู้สูงอายุ 9 ด้านตามเกณฑ์ สธ. (s_aged9)
    - ประเมินความสามารถในการดำเนินชีวิตประจำวัน ADL (ติดสังคม/ติดบ้าน/ติดเตียง) (s_ageing)
 
-5. **👶 อนามัยแม่และเด็ก (5 ตัวชี้วัด)**
-   - หญิงตั้งครรภ์ฝากครรภ์ครั้งแรกก่อนหรือเท่ากับ 12 สัปดาห์ (s_anc12ga)
+5. **👶 อนามัยแม่และเด็ก (4 ตัวชี้วัด)**
    - เด็กอายุ 6 เดือน ดื่มนมแม่อย่างเดียว (s_kpi_food)
    - เด็กอายุ 0-5 ปี มีการเจริญเติบโตสมส่วน (น้ำหนักตามเกณฑ์ส่วนสูง) (s_nutrition_11)
    - การคัดกรองพัฒนาการเด็กปฐมวัยตามช่วงอายุ 9, 18, 30, 42, 60 เดือน (s_childdev_specialpp)
    - เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ TEDA4I/DAIM (s_childdev_specialpp48)
 
+   > ℹ️ ตัวชี้วัด "ฝากครรภ์ครั้งแรก ≤ 12 สัปดาห์" ถูกถอดออก เพราะตาราง HDC `s_anc12ga`
+   > เป็นรายงาน "อายุครรภ์เฉลี่ย" ไม่ใช่ร้อยละความครอบคลุม และไม่มีตาราง HDC OpenData
+   > ที่วัด % นี้โดยตรง — การแสดงผลเดิมเป็นตัวเลขที่ไม่มีความหมาย
+
 6. **🔍 OpenData MoPH Explorer (1,028 รายงาน)**
-   - แคตตาล็อกค้นหาตาราง HDC Open Data ทั้งหมด 5 หมวดหมู่หลัก 51 หมวดหมู่ย่อย
+   - แคตตาล็อกค้นหาตาราง HDC Open Data ทั้งหมด 5 หมวดหมู่หลัก 44 หมวดหมู่ย่อย
    - มี Modal แสดงตัวอย่าง **cURL** และ **JavaScript Fetch API** ให้พร้อมนำไปพัฒนาระบบต่อได้ทันที
 
 ---
@@ -118,16 +121,52 @@
 
 ---
 
-## 🔄 การอัปเดตข้อมูลปีงบประมาณถัดไป
+## 🔄 แหล่งข้อมูล & ความถี่การอัปเดต (อ่านก่อนใช้ข้อมูล)
 
-เมื่อขึ้นปีงบประมาณใหม่ หรือต้องการดึงข้อมูลล่าสุดจากกระทรวงสาธารณสุข:
-1. เรียก Script ดึงข้อมูลจาก API HDC Open Data:
-   `ash
-   python fetch_all_saraphi_data.py
-   python fetch_additional_kpis.py
-   `
-2. รัน Script รวมและคำนวณ Master JSON:
-   `ash
-   python scripts/build_saraphi_master.py
-   `
-3. Commit และ Push ขึ้น Git เว็บไซต์บน Vercel/Cloudflare จะอัปเดตอัตโนมัติทันที
+**ระบบนี้ไม่ได้ดึงข้อมูลแบบ realtime** — ทุกตัวเลขบนเว็บไซต์มาจากไฟล์ JSON snapshot
+ที่ commit ลง git (ผู้ดูแลระบบต้องรันสคริปต์ดึงข้อมูลแล้ว push ข้อมูลจึงจะอัปเดต)
+วันที่ข้อมูลล่าสุดดูได้จาก `metadata.generated_at` ใน `data/saraphi_complete_master.json`
+และ `last_updated` ใน `data/ncd_service_plan_master.json`
+
+### ลำดับการรันเมื่อต้องการรีเฟรชข้อมูล
+
+```bash
+# 1) ดึงข้อมูลดิบ 4 ตาราง PCC จาก OpenData MoPH (paginated, fail-loud)
+python scripts/refresh_pcc_data.py
+
+# 2) ดึงข้อมูลดิบตาราง TTM/PPB/ผู้สูงอายุ/MCH ที่เหลือ
+python fetch_all_saraphi_data.py
+python fetch_additional_kpis.py
+
+# 3) อัปเดตมุมมอง Service Plan (NCD) — enricher แต่ละตัว fetch เองและเขียน
+#    raw snapshot ลง data/ ให้ทุกมุมมองใช้ข้อมูลชุดเดียวกัน
+python scripts/enrich_hba1c_master_data.py
+python scripts/enrich_dm_control_master_data.py
+python scripts/enrich_ht_control_master_data.py
+python scripts/enrich_risk_screening_data.py
+python scripts/patch_ncd_hypo.py
+
+# 4) สร้าง master ของหน้าหลักจากไฟล์ดิบ (offline)
+python scripts/build_saraphi_master.py
+
+# 5) สร้างงบ PCC 2569 จาก Excel R.1 และแคชยาสมุนไพร s_ttm4 (provenance)
+python scripts/build_pcc_2569_master.py
+python scripts/build_ttm4_cache.py --write   # รัน --dry-run (ค่า default) ก่อนเสมอ
+
+# 6) Commit + Push — Vercel/GitHub Pages จะ deploy อัตโนมัติ
+git add data/ && git commit -m "data: refresh HDC snapshots" && git push
+```
+
+### ข้อมูล สปสช. MeData (กองทุนแพทย์แผนไทย)
+
+ดึงด้วย `python scripts/sync_nhso_medata_realtime.py` (สคริปต์สกัดหน้าจอ Tableau
+MeData ด้วย Playwright) หรือกดปุ่ม **Live Sync** บนหน้าเว็บ — ปุ่มนี้ทำงานเฉพาะเมื่อ
+รันเว็บผ่าน `python scripts/server.py` ในเครื่องเท่านั้น (บนเว็บที่ deploy แล้วไม่มี
+backend ให้เรียก) และแม้ซิงค์สำเร็จก็ต้อง commit + push ข้อมูลจึงจะถึงผู้ใช้บนเว็บ
+
+### ข้อกำหนดการคำนวณที่ใช้ร่วมกัน
+
+- เกณฑ์ผ่าน: DM control ≥ 40%, HT control ≥ 50%, HbA1c ตรวจ ≥ 70% (ดู `scripts/saraphi_config.py`)
+- ตัวชี้วัด DM/HT control และภาวะแทรกซ้อนแยกกลุ่มเป้าหมาย **Typearea 1,3** (ค่าหลัก)
+  และ **ChronicFU** (ค่าเสริม) ตาม HDC — ไม่รวมสองกลุ่มเข้าด้วยกัน
+- ยอดรวมอำเภอคิดจาก 14 หน่วยบริการเท่านั้น (ไม่รวม hospcode สำนักงาน 11999)
