@@ -2204,18 +2204,18 @@ for y in years:
     rows = load_json(f"s_childdev_specialpp_{y}.json")
     master["indicators"]["mch_childdev"]["years"][y] = process_childdev_data(rows)
 
-# 5.5 เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (s_childdev_specialpp48)
+# 5.5 ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์ (s_childdev_specialpp48)
 master["indicators"]["mch_childdev_follow"] = {
     "code": "MCH-5",
-    "name": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+    "name": "ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์",
     "table": "s_childdev_specialpp48",
     "domain": "mch",
     "domain_label": "👶 อนามัยแม่และเด็ก",
-    "desc": "ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์ / เด็กอายุ 9, 18, 30, 42 เดือน ที่พบพัฒนาการสงสัยล่าช้าได้รับการติดตามและกระตุ้นพัฒนาการ (เกณฑ์ สธ. ≥ 85.0%)",
+    "desc": "ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์ (เกณฑ์ สธ. ≥ 85.0%)",
     "target": 85.0,
     "unit": "%",
-    "num_label": "ได้รับการติดตามประเมินซ้ำ (คน)",
-    "den_label": "เด็กที่สงสัยล่าช้า (คน)",
+    "num_label": "คัดกรองพัฒนาการสมวัย (คน)",
+    "den_label": "เป้าหมายเด็กอายุ 0-5 ปี (คน)",
     "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8f756c2dbc5f525f853d898dfaef0c14",
     "years": {}
 }

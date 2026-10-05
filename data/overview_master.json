@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "ภาพรวมตัวชี้วัดทั้งหมด อำเภอสารภี",
-    "generated_at": "2026-10-05T16:35:44Z",
+    "generated_at": "2026-10-05T16:46:00Z",
     "source_masters": [
       "saraphi_complete_master.json",
       "ncd_service_plan_master.json"
@@ -5794,7 +5794,7 @@
     },
     {
       "id": "mch_childdev_follow",
-      "name": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+      "name": "ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์",
       "table": "s_childdev_specialpp48",
       "group": "overview_mch",
       "unit": "%",

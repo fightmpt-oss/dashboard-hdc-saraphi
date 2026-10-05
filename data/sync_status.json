@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-05T16:35:49Z",
+  "generated_at": "2026-10-05T16:46:08Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-05T16:34:39Z",
+    "saraphi_complete_master": "2026-10-05T16:45:52Z",
     "ncd_service_plan_master": "2026-10-05",
     "ncd_total_reports": 36
   },
@@ -520,7 +520,7 @@
     {
       "id": "mch_childdev_follow",
       "table": "s_childdev_specialpp48",
-      "label": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+      "label": "ร้อยละของเด็กอายุ 0-5 ปี มีพัฒนาการสมวัย (DSPM) ช่วงรณรงค์",
       "group": "👶 อนามัยแม่และเด็ก",
       "source": "opendata",
       "years": {
