@@ -16578,6 +16578,96 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // ── Reusable trend components (Task 2) ──────────────────────────────────
+  // ออกแบบให้หน้า "ภาพรวมตัวชี้วัด" นำไปใช้ซ้ำได้ — ทำงานกับ report entry
+  // รูปแบบเดียวกับ ncd_service_plan_master.json (years → district/units)
+  const NCD_TREND_YEARS = ['2567', '2568', '2569'];
+
+  // อัตราผลงานของหน่วยบริการหนึ่งหน่วยครบ 3 ปี — เลือกกลุ่มเป้าหมายตาม dataset
+  // mode (Typearea/ChronicFU) และ fallback ไป ChronicFU เมื่อกลุ่มหลักไม่มี
+  // ข้อมูล (เช่น รพ.สารภี) เดียวกับ logic ของการ์ดสรุป 4 สถานะ
+  function ncdUnitRateSeries(report, hospcode) {
+    return NCD_TREND_YEARS.map(y => {
+      const yd = report.years?.[y];
+      if (!yd) return { year: y, rate: null, num: 0, den: 0 };
+      const scope = (hospcode === 'all') ? (yd.district || {}) : (yd.units?.[hospcode] || null);
+      if (!scope) return { year: y, rate: null, num: 0, den: 0 };
+      const isFu = report.has_fu && currentNcdDatasetMode === 'chronicfu';
+      let num = Number((isFu ? (scope.result_fu ?? scope.result) : scope.result)) || 0;
+      let den = Number((isFu ? (scope.target_fu ?? scope.target) : scope.target)) || 0;
+      let rate = Number(isFu ? (scope.rate_fu ?? scope.rate) : scope.rate);
+      if (!isFu && report.has_fu && den === 0 && num === 0) {
+        const fuNum = Number(scope.result_fu) || 0;
+        const fuDen = Number(scope.target_fu) || 0;
+        if (fuDen !== 0 || fuNum !== 0) {
+          num = fuNum;
+          den = fuDen;
+          rate = Number(scope.rate_fu);
+        }
+      }
+      // ไม่มีข้อมูลเลย (ตัวตั้งและตัวหารเป็นศูนย์) → ถือว่าไม่มีค่า ไม่ใช่ 0%
+      if (den === 0 && num === 0) rate = null;
+      return { year: y, rate: Number.isFinite(rate) ? rate : null, num, den };
+    });
+  }
+
+  // Inline SVG sparkline (กราฟเส้นจิ๋ว) — ค่าที่หาย (null) จะเว้นช่องตามตำแหน่งปี
+  function buildSparklineSvg(values, opts = {}) {
+    const w = opts.width || 72;
+    const h = opts.height || 26;
+    const color = opts.color || '#64748b';
+    const pts = values.map((v, i) => ({ v: Number(v), i })).filter(p => Number.isFinite(p.v));
+    if (!pts.length) return '<span class="text-slate-300 text-xs">–</span>';
+    if (pts.length === 1) {
+      return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" class="inline-block align-middle" aria-hidden="true"><circle cx="${w / 2}" cy="${h / 2}" r="2.2" fill="${color}"/></svg>`;
+    }
+    const xOf = (i) => 4 + (i * (w - 8)) / (values.length - 1);
+    const min = Math.min(...pts.map(p => p.v));
+    const max = Math.max(...pts.map(p => p.v));
+    const yOf = (v) => (max === min) ? h / 2 : 3 + (max - v) * (h - 6) / (max - min);
+    const coords = pts.map(p => `${xOf(p.i).toFixed(1)},${yOf(p.v).toFixed(1)}`).join(' ');
+    const last = pts[pts.length - 1];
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" class="inline-block align-middle" aria-hidden="true">
+      <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <circle cx="${xOf(last.i).toFixed(1)}" cy="${yOf(last.v).toFixed(1)}" r="2.2" fill="${color}"/>
+    </svg>`;
+  }
+
+  // ป้ายเทียบปีก่อน (Delta = Rate ปีปัจจุบัน − Rate ปีก่อน) — ทิศทาง "ดี" ขึ้นกับ
+  // lower_is_better (ตัวชี้วัดแบบยิ่งน้อยยิ่งดี เช่น s_dm_hypo: ลดลง = เขียว)
+  function formatDeltaBadge(delta, lowerBetter) {
+    if (delta === null || delta === undefined || !Number.isFinite(delta)) {
+      return '<span class="text-slate-300 num-font">–</span>';
+    }
+    const rounded = Math.round(delta * 10) / 10;
+    if (Math.abs(rounded) < 0.05) {
+      return '<span class="inline-flex px-1.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-500 text-[10.5px] font-bold num-font">±0.0</span>';
+    }
+    const up = delta > 0;
+    const good = lowerBetter ? !up : up;
+    const arrow = up ? '▲' : '▼';
+    const cls = good ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200';
+    return `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border text-[10.5px] font-bold num-font ${cls}">${arrow} ${up ? '+' : ''}${rounded.toFixed(1)}</span>`;
+  }
+
+  // รวมข้อมูลแนวโน้ม + Delta ของหนึ่งขอบเขต (หน่วยบริการ หรือ 'all' = ทั้งอำเภอ)
+  function ncdTrendCellData(report, hospcode) {
+    const series = ncdUnitRateSeries(report, hospcode);
+    const rates = series.map(p => p.rate);
+    const cur = series[series.length - 1];
+    const prev = series[series.length - 2];
+    const delta = (Number.isFinite(cur?.rate) && Number.isFinite(prev?.rate)) ? cur.rate - prev.rate : null;
+    const lowerBetter = report.lower_is_better === true || NCD_LOWER_IS_BETTER_FALLBACK.has(report.table_name);
+    let color = '#94a3b8';
+    if (delta !== null && Math.abs(delta) >= 0.05) {
+      const good = lowerBetter ? delta < 0 : delta > 0;
+      color = good ? '#059669' : '#e11d48';
+    } else if (rates.some(Number.isFinite)) {
+      color = '#64748b';
+    }
+    return { series, rates, delta, lowerBetter, sparkline: buildSparklineSvg(rates, { color }) };
+  }
+
   function renderNcdTable(report) {
     if (!report) report = getActiveNcdReport();
     if (!report) return;
@@ -17383,6 +17473,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th colspan="5" class="py-2.5 px-3 text-center bg-indigo-900 font-extrabold text-[12px]">
               <i class="fa-solid fa-hospital-user mr-1 text-indigo-300"></i> ผู้ป่วยที่มารับบริการของหน่วยบริการจากแฟ้ม ChronicFU
             </th>
+            <th rowspan="2" class="py-2.5 px-3 text-center border-l border-emerald-700 bg-slate-800 font-extrabold text-[11px] w-[84px]">แนวโน้ม<br>3 ปี</th>
+            <th rowspan="2" class="py-2.5 px-3 text-center bg-slate-800 font-extrabold text-[11px] w-[92px]">เทียบ<br>ปีก่อน</th>
           </tr>
           <tr class="bg-emerald-950 text-white text-[11px] font-semibold border-b border-emerald-800">
             <th class="py-2 px-2.5 text-right border-r border-emerald-800/80 bg-emerald-900/90">จำนวนผู้ป่วย (B1)</th>
@@ -17435,7 +17527,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="py-2.5 px-2.5 text-right num-font font-bold text-indigo-800 border-r border-slate-200/60 bg-indigo-50/30">${Number(u.result_fu).toLocaleString()}</td>
             <td class="py-2.5 px-2.5 text-right num-font font-extrabold text-indigo-700 border-r border-slate-200/60 bg-indigo-100/40">${Number(u.rate_fu).toFixed(2)}</td>
             <td class="py-2.5 px-2.5 text-right num-font text-slate-700 border-r border-slate-200/60 bg-indigo-50/10">${Number(u.result1_fu).toLocaleString()}</td>
-            <td class="py-2.5 px-2.5 text-right num-font text-rose-700 bg-indigo-50/10">${Number(u.result2_fu).toLocaleString()}</td>
+            <td class="py-2.5 px-2.5 text-right num-font text-rose-700 border-r border-slate-300 bg-indigo-50/10">${Number(u.result2_fu).toLocaleString()}</td>
+            <!-- แนวโน้ม 3 ปี + เทียบปีก่อน (คำนวณจากกลุ่มหลัก Typearea พร้อม fallback ChronicFU) -->
+            ${(() => {
+              const trend = ncdTrendCellData(report, u.hospcode);
+              return `<td class="py-2.5 px-2.5 text-center bg-slate-50/40">${trend.sparkline}</td>
+            <td class="py-2.5 px-2.5 text-center">${formatDeltaBadge(trend.delta, trend.lowerBetter)}</td>`;
+            })()}
           `;
           tbody.appendChild(tr);
         });
@@ -17460,7 +17558,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="py-3 px-2.5 text-right num-font font-extrabold text-indigo-900 border-r border-slate-300 bg-indigo-100/90">${Number(dist.result_fu || 0).toLocaleString()}</td>
           <td class="py-3 px-2.5 text-right num-font font-black text-indigo-800 text-[13px] border-r border-slate-300 bg-indigo-200/70">${Number(dist.rate_fu || 0).toFixed(2)}</td>
           <td class="py-3 px-2.5 text-right num-font font-bold text-slate-800 border-r border-slate-300 bg-indigo-100/60">${Number(dist.result1_fu || 0).toLocaleString()}</td>
-          <td class="py-3 px-2.5 text-right num-font font-bold text-rose-800 bg-indigo-100/60">${Number(dist.result2_fu || 0).toLocaleString()}</td>
+          <td class="py-3 px-2.5 text-right num-font font-bold text-rose-800 border-r border-slate-300 bg-indigo-100/60">${Number(dist.result2_fu || 0).toLocaleString()}</td>
+          ${(() => {
+            const distTrend = ncdTrendCellData(report, 'all');
+            return `<td class="py-3 px-2.5 text-center bg-slate-100/60">${distTrend.sparkline}</td>
+          <td class="py-3 px-2.5 text-center">${formatDeltaBadge(distTrend.delta, distTrend.lowerBetter)}</td>`;
+          })()}
         </tr>
       `;
       }
@@ -17477,6 +17580,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <th class="py-2.5 px-4 text-right">ผลงาน (ตัวตั้ง A)</th>
             <th class="py-2.5 px-4 text-right">เป้าหมาย (ตัวหาร B)</th>
             <th class="py-2.5 px-4 text-right">ร้อยละผลงาน</th>
+            <th class="py-2.5 px-4 text-center w-[84px]">แนวโน้ม 3 ปี</th>
+            <th class="py-2.5 px-4 text-center w-[92px]">เทียบปีก่อน</th>
             <th class="py-2.5 px-4 text-center w-28">สถานะ</th>
           </tr>
         `;
@@ -17484,16 +17589,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       tbody.innerHTML = '';
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-6 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>';
       } else {
         const distRate = dist.rate || 0;
         filtered.forEach((u, idx) => {
           const isSelected = (u.hospcode === currentNcdUnit);
           const rowClass = isSelected ? 'bg-amber-50/70 font-semibold' : 'hover:bg-slate-50/70 transition';
           const isAboveAvg = (u.rate >= distRate && u.target > 0);
-          const statusBadge = isAboveAvg 
+          const statusBadge = isAboveAvg
             ? `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">ผลงานเด่น</span>`
             : `<span class="px-2 py-0.5 rounded-full text-[10.5px] font-medium bg-slate-100 text-slate-600">ปกติ</span>`;
+          const trend = ncdTrendCellData(report, u.hospcode);
 
           const tr = document.createElement('tr');
           tr.className = rowClass;
@@ -17512,6 +17618,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="py-2.5 px-4 text-right num-font font-bold text-blue-700">${Number(u.result).toLocaleString()}</td>
             <td class="py-2.5 px-4 text-right num-font text-slate-700">${Number(u.target).toLocaleString()}</td>
             <td class="py-2.5 px-4 text-right num-font font-extrabold ${u.rate >= distRate ? 'text-emerald-700' : 'text-slate-800'}">${Number(u.rate).toFixed(2)}%</td>
+            <td class="py-2.5 px-4 text-center">${trend.sparkline}</td>
+            <td class="py-2.5 px-4 text-center">${formatDeltaBadge(trend.delta, trend.lowerBetter)}</td>
             <td class="py-2.5 px-4 text-center">${statusBadge}</td>
           `;
           tbody.appendChild(tr);
@@ -17532,6 +17640,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="py-3 px-4 text-right num-font font-extrabold text-blue-900 text-sm">${Number(distResult).toLocaleString()}</td>
           <td class="py-3 px-4 text-right num-font font-extrabold text-amber-900 text-sm">${Number(distTarget).toLocaleString()}</td>
           <td class="py-3 px-4 text-right num-font font-extrabold text-emerald-800 text-base">${Number(distRate).toFixed(2)}%</td>
+          ${(() => {
+            const distTrend = ncdTrendCellData(report, 'all');
+            return `<td class="py-3 px-4 text-center">${distTrend.sparkline}</td>
+          <td class="py-3 px-4 text-center">${formatDeltaBadge(distTrend.delta, distTrend.lowerBetter)}</td>`;
+          })()}
           <td class="py-3 px-4 text-center">
             <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-200/80 text-rose-900 border border-rose-300 shadow-2xs">ภาพรวมอำเภอ</span>
           </td>
