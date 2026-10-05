@@ -125,3 +125,10 @@ def fetch_opendata_rows(table, year, province="50", areacode_prefix="5019",
         if len(page) < limit:
             return rows
         offset += limit
+
+
+# รายงานมาตรฐาน HDC สสจ.เชียงใหม่ ที่ไม่มี opendata_id ใน moph_catalog.json หรือต้องการ override
+STATIC_HDC_URLS = {
+    "s_childdev_specialpp": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
+    "s_childdev_specialpp48": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8f756c2dbc5f525f853d898dfaef0c14",
+}

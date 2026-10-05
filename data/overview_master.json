@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "ภาพรวมตัวชี้วัดทั้งหมด อำเภอสารภี",
-    "generated_at": "2026-10-05T15:46:56Z",
+    "generated_at": "2026-10-05T16:35:44Z",
     "source_masters": [
       "saraphi_complete_master.json",
       "ncd_service_plan_master.json"
@@ -3301,7 +3301,7 @@
       "goal_pct": 85.0,
       "higher_is_better": true,
       "show_pct": true,
-      "hdc_url": null,
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
       "years": {
         "2567": {
           "district": {
@@ -5551,7 +5551,7 @@
       "goal_pct": 85.0,
       "higher_is_better": true,
       "show_pct": true,
-      "hdc_url": null,
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
       "years": {
         "2567": {
           "district": {
@@ -5801,7 +5801,7 @@
       "goal_pct": 85.0,
       "higher_is_better": true,
       "show_pct": true,
-      "hdc_url": null,
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8f756c2dbc5f525f853d898dfaef0c14",
       "years": {
         "2567": {
           "district": {

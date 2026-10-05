@@ -99,6 +99,26 @@ def load_catalog_urls():
                 urls[st] = f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{oid}"
     except (json.JSONDecodeError, OSError):
         pass
+
+    # Explicit manual mapping for reports whose opendata_id is not in catalog
+    from saraphi_config import STATIC_HDC_URLS
+    for st, u in STATIC_HDC_URLS.items():
+        urls[st] = u
+
+    # Auto-extract from raw snapshot files if id is a 32-char hex string
+    import glob, re
+    for path in glob.glob(os.path.join(DATA, "s_*_2569.json")):
+        tbl = os.path.basename(path).replace("_2569.json", "")
+        if tbl not in urls:
+            try:
+                with open(path, encoding="utf-8") as f:
+                    rows = json.load(f)
+                if rows and isinstance(rows, list):
+                    rid = rows[0].get("id")
+                    if rid and re.match(r"^[0-9a-f]{32}$", str(rid)):
+                        urls[tbl] = f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{rid}"
+            except Exception:
+                pass
     return urls
 
 

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-05T15:47:01Z",
+  "generated_at": "2026-10-05T16:35:49Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-05T15:46:47Z",
+    "saraphi_complete_master": "2026-10-05T16:34:39Z",
     "ncd_service_plan_master": "2026-10-05",
     "ncd_total_reports": 36
   },
@@ -537,7 +537,7 @@
           "date_com": "202411140923"
         }
       },
-      "hdc_url": null,
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8f756c2dbc5f525f853d898dfaef0c14",
       "ok": true
     },
     {
