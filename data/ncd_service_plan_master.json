@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-02",
+  "last_updated": "2026-10-05",
   "total_reports": 37,
   "years": [
     "2569",
@@ -2077,7 +2077,9 @@
             "has_fu": true
           }
         }
-      }
+      },
+      "kpi_target": 5.0,
+      "lower_is_better": true
     },
     {
       "id": "ncd_03",
@@ -28379,7 +28381,8 @@
           "a4_label": "ได้รับการตรวจ HbA1c อย่างน้อย 2 ครั้ง/ปี (A4)",
           "rate4_label": "ร้อยละ [A4/B2] x 100"
         }
-      }
+      },
+      "kpi_target": 70.0
     },
     {
       "id": "ncd_37",

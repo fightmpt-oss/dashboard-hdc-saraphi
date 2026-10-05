@@ -13883,6 +13883,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const unitSelect = document.getElementById('ncd-unit-select');
     if (unitSelect) unitSelect.value = currentNcdUnit;
 
+    // การ์ดสรุปสถานะเป้าหมาย 4 สถานะ (แบบ ncd.in.th) — คำนวณจากรายงานที่ผ่านตัวกรอง
+    renderNcdSummaryStatusCards();
+
     const report = getActiveNcdReport();
     if (!report) return;
 
@@ -13942,6 +13945,99 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderNcdTable(report);
 
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  // ── KPI Goal Summary Cards (4 สถานะ แบบ ncd.in.th) ──────────────────────
+  // สถานะของรายงานเดียวเทียบค่าเป้าหมาย (kpi_target) ของปีที่เลือก ณ ขอบเขตที่
+  // เลือก (ทั้งอำเภอ / หน่วยบริการ + กลุ่ม Typearea / ChronicFU):
+  //   met   ถึงเป้า        = ถึงค่าเป้าหมายแล้ว (≥ เป้า หรือ ≤ เป้าหากยิ่งน้อยยิ่งดี)
+  //   near  ใกล้เป้า       = ยังไม่ถึงแต่ห่างไม่เกิน 10% ของค่าเป้าหมาย
+  //   below ต่ำกว่าเป้า     = ห่างเกิน 10% ของค่าเป้าหมาย
+  //   none  ยังไม่ตั้งเป้า  = ไม่มี kpi_target หรือไม่มีข้อมูลผลงาน
+  const NCD_LOWER_IS_BETTER_FALLBACK = new Set(['s_dm_hypo']);
+
+  function ncdGoalStatus(report) {
+    const yrData = report.years?.[currentNcdYear];
+    if (!yrData) return 'none';
+
+    let scope = yrData.district || {};
+    if (currentNcdUnit !== 'all') {
+      scope = yrData.units?.[currentNcdUnit];
+      if (!scope) return 'none';
+    }
+
+    const isFu = report.has_fu && currentNcdDatasetMode === 'chronicfu';
+    let num = Number((isFu ? (scope.result_fu ?? scope.result) : scope.result)) || 0;
+    let den = Number((isFu ? (scope.target_fu ?? scope.target) : scope.target)) || 0;
+    let rate = Number(isFu ? (scope.rate_fu ?? scope.rate) : scope.rate);
+
+    // กลุ่มหลัก (Typearea) ไม่มีข้อมูลแต่กลุ่ม ChronicFU มี (เช่น รพ.สารภีที่
+    // รายงานเฉพาะแฟ้ม ChronicFU) — ใช้กลุ่มที่มีข้อมูลจริงแทนการนับเป็น "ไม่มีข้อมูล"
+    if (!isFu && report.has_fu && den === 0 && num === 0) {
+      const fuNum = Number(scope.result_fu) || 0;
+      const fuDen = Number(scope.target_fu) || 0;
+      if (fuDen !== 0 || fuNum !== 0) {
+        num = fuNum;
+        den = fuDen;
+        rate = Number(scope.rate_fu);
+      }
+    }
+
+    const target = Number(report.kpi_target);
+    if (!Number.isFinite(target) || target <= 0) return 'none';
+    if (!Number.isFinite(rate)) return 'none';
+    if (den === 0 && num === 0) return 'none';
+
+    const lowerBetter = report.lower_is_better === true || NCD_LOWER_IS_BETTER_FALLBACK.has(report.table_name);
+    const gap = lowerBetter ? (rate - target) : (target - rate);
+    if (gap <= 0) return 'met';
+    if (gap <= target * 0.10) return 'near';
+    return 'below';
+  }
+
+  function renderNcdSummaryStatusCards() {
+    const box = document.getElementById('ncd-summary-status-cards');
+    if (!box) return;
+
+    const list = getFilteredNcdReports();
+    const counts = { met: 0, near: 0, below: 0, none: 0 };
+    list.forEach(r => { counts[ncdGoalStatus(r)]++; });
+    const total = list.length;
+
+    const defs = [
+      { key: 'met',   label: 'ถึงเป้า',      icon: 'fa-circle-check',  num: 'text-emerald-700', grad: 'from-emerald-50 to-emerald-100/40',  border: 'border-emerald-200/80',  chip: 'bg-emerald-100 text-emerald-800 border-emerald-200',   bar: 'bg-emerald-500' },
+      { key: 'near',  label: 'ใกล้เป้า',     icon: 'fa-circle-half-stroke', num: 'text-amber-700', grad: 'from-amber-50 to-amber-100/40', border: 'border-amber-200/80',   chip: 'bg-amber-100 text-amber-800 border-amber-200',     bar: 'bg-amber-500' },
+      { key: 'below', label: 'ต่ำกว่าเป้า',  icon: 'fa-circle-xmark',  num: 'text-rose-700',   grad: 'from-rose-50 to-rose-100/40',    border: 'border-rose-200/80',     chip: 'bg-rose-100 text-rose-800 border-rose-200',        bar: 'bg-rose-500' },
+      { key: 'none',  label: 'ยังไม่ตั้งเป้า', icon: 'fa-circle-dashed', num: 'text-slate-600', grad: 'from-slate-50 to-slate-100/60', border: 'border-slate-200/80',    chip: 'bg-slate-100 text-slate-600 border-slate-200',     bar: 'bg-slate-400' }
+    ];
+
+    const scopeLabel = currentNcdUnit === 'all'
+      ? 'รวมทั้งอำเภอสารภี'
+      : (SARAPHI_UNITS_MAP[currentNcdUnit]?.name || currentNcdUnit);
+
+    box.innerHTML = defs.map(d => {
+      const pct = total ? Math.round((counts[d.key] / total) * 100) : 0;
+      return `
+        <div class="glass-card rounded-2xl p-4 bg-gradient-to-br ${d.grad} border ${d.border} shadow-2xs">
+          <div class="flex items-start justify-between gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border ${d.chip}">
+              <i class="fa-solid ${d.icon} text-[9px]"></i> ${d.label}
+            </span>
+            <span class="text-[10px] text-slate-400 font-bold num-font">${pct}%</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1.5 flex-wrap">
+            <span class="text-3xl leading-none font-black num-font ${d.num}">${counts[d.key]}</span>
+            <span class="text-[11px] text-slate-500 font-semibold">จาก ${total} ตัวชี้วัด</span>
+          </div>
+          <div class="mt-2.5 h-1.5 bg-white/70 rounded-full overflow-hidden">
+            <div class="${d.bar} h-full rounded-full transition-all duration-500" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }).join('') + `
+      <div class="col-span-2 lg:col-span-4 flex items-center justify-between flex-wrap gap-x-3 gap-y-0.5 text-[10.5px] text-slate-400 px-1">
+        <span>เกณฑ์: ถึงเป้า = ถึงค่าเป้าหมาย • ใกล้เป้า = ห่างไม่เกิน 10% ของเป้า • ต่ำกว่าเป้า = ห่างเกิน 10%</span>
+        <span>คำนวณจากปีงบ ${currentNcdYear} • ${scopeLabel} • นับเฉพาะตัวชี้วัดที่ผ่านตัวกรองหมวดหมู่ที่เลือก</span>
+      </div>`;
   }
 
   function renderNcdKpis(report) {
