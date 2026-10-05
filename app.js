@@ -13814,6 +13814,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isPassDelay = dlyRate <= 20.0;
       const isOverallPass = isPassScreen && isPassDelay;
 
+      const isSelected = (currentUnit === u.hospcode);
+
       const statusBadge = isOverallPass
         ? '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">ผ่านเกณฑ์</span>'
         : (!isPassScreen && !isPassDelay)
@@ -13822,28 +13824,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shadow-2xs">คัดกรองต่ำ</span>'
             : '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shadow-2xs">ล่าช้าสูง</span>';
 
+      const rowClass = isSelected
+        ? 'bg-amber-100/90 font-bold border-y-2 border-amber-400 shadow-xs'
+        : 'hover:bg-slate-50/80 transition text-xs border-b border-slate-100';
+
+      const selectBtn = isSelected
+        ? `<button type="button" onclick="event.stopPropagation(); window.selectDashboardUnit('all');" class="px-2 py-0.5 text-[10.5px] font-extrabold rounded-md bg-amber-500 hover:bg-amber-600 text-white shadow-2xs transition flex items-center gap-1 cursor-pointer" title="คลิกเพื่อยกเลิกการเลือก"><i class="fa-solid fa-check"></i> กำลังดู</button>`
+        : `<button type="button" onclick="event.stopPropagation(); window.selectDashboardUnit('${u.hospcode}');" class="px-2 py-0.5 text-[10.5px] font-bold rounded-md bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 transition cursor-pointer" title="คลิกเพื่อดูเฉพาะ รพ.สต.นี้">เลือก</button>`;
+
       tbodyHtml += `
-        <tr class="hover:bg-slate-50/80 transition text-xs border-b border-slate-100">
-          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
-          <td class="py-2.5 px-3 font-mono font-bold text-slate-600">${u.hospcode}</td>
+        <tr class="${rowClass}">
+          <td class="py-2.5 px-3 text-center ${isSelected ? 'text-amber-900 font-black' : 'text-slate-400 font-mono'}">${idx + 1}</td>
+          <td class="py-2.5 px-3 font-mono font-bold ${isSelected ? 'text-amber-900' : 'text-slate-600'}">${u.hospcode}</td>
           <td class="py-2.5 px-4 font-bold text-slate-800">
-            ${u.name}
+            <div class="flex items-center justify-between gap-1.5">
+              <button type="button" onclick="window.selectDashboardUnit('${u.hospcode}')" class="text-left font-bold ${isSelected ? 'text-amber-950 font-black' : 'text-slate-800 hover:text-emerald-700'} hover:underline flex items-center gap-1.5 cursor-pointer">
+                ${isSelected ? '<i class="fa-solid fa-location-dot text-amber-600 text-xs"></i>' : ''}
+                <span>${u.name}</span>
+              </button>
+              ${selectBtn}
+            </div>
           </td>
           <td class="py-2.5 px-3 text-center text-slate-600">${u.subdistrict}</td>
           <td class="py-2.5 px-3 text-right font-mono text-slate-700">${tar.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-mono font-bold text-sky-800 bg-sky-50/30">${res.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-mono font-black ${isPassScreen ? 'text-emerald-600' : 'text-amber-600'} bg-sky-50/50">
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-sky-800 ${isSelected ? 'bg-amber-200/50' : 'bg-sky-50/30'}">${res.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-black ${isPassScreen ? 'text-emerald-600' : 'text-amber-600'} ${isSelected ? 'bg-amber-200/70' : 'bg-sky-50/50'}">
             ${rate.toFixed(2)}%
           </td>
           <td class="py-2.5 px-3 text-right font-mono text-slate-700">${n1.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-mono font-bold text-amber-800 bg-amber-50/30">${dly.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-mono font-bold ${isPassDelay ? 'text-slate-700' : 'text-rose-600'} bg-amber-50/50">
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-amber-800 ${isSelected ? 'bg-amber-200/50' : 'bg-amber-50/30'}">${dly.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold ${isPassDelay ? 'text-slate-700' : 'text-rose-600'} ${isSelected ? 'bg-amber-200/70' : 'bg-amber-50/50'}">
             ${dlyRate.toFixed(2)}%
           </td>
           <td class="py-2.5 px-3 text-right font-mono text-slate-700">${fol.toLocaleString()}</td>
           <td class="py-2.5 px-3 text-right font-mono text-slate-700">${folRate.toFixed(2)}%</td>
-          <td class="py-2.5 px-3 text-right font-mono font-bold text-indigo-800 bg-indigo-50/30">${fnorm.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-mono font-black text-indigo-700 bg-indigo-50/50">${fnormRate.toFixed(2)}%</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-indigo-800 ${isSelected ? 'bg-amber-200/50' : 'bg-indigo-50/30'}">${fnorm.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-black text-indigo-700 ${isSelected ? 'bg-amber-200/70' : 'bg-indigo-50/50'}">${fnormRate.toFixed(2)}%</td>
           <td class="py-2.5 px-3 text-center">${statusBadge}</td>
         </tr>
       `;
@@ -13880,11 +13896,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const totPass = totRate >= 85.0 && totDlyRate <= 20.0;
 
     if (tfoot) {
+      const isAllSelected = (currentUnit === 'all');
       tfoot.innerHTML = `
-        <tr class="text-xs bg-slate-100 border-t-2 border-slate-300 font-extrabold text-slate-900">
+        <tr class="text-xs ${isAllSelected ? 'bg-emerald-50/90 border-t-2 border-emerald-400' : 'bg-slate-100 hover:bg-slate-200/70'} border-t-2 border-slate-300 font-extrabold text-slate-900 transition cursor-pointer" onclick="window.selectDashboardUnit('all')" title="คลิกเพื่อเลือกดูภาพรวมอำเภอ">
           <td class="py-3 px-3 text-center font-mono">Σ</td>
           <td class="py-3 px-3 font-mono">TOTAL</td>
-          <td class="py-3 px-4 font-black text-slate-900">รวมอำเภอสารภี</td>
+          <td class="py-3 px-4 font-black text-slate-900">
+            <div class="flex items-center justify-between gap-1.5">
+              <span>รวมอำเภอสารภี (14 หน่วยบริการ)</span>
+              ${isAllSelected 
+                ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-600 text-white shadow-2xs">ภาพรวม</span>'
+                : '<button type="button" onclick="event.stopPropagation(); window.selectDashboardUnit(\'all\');" class="px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-2xs cursor-pointer">กลับภาพรวม</button>'
+              }
+            </div>
+          </td>
           <td class="py-3 px-3 text-center text-slate-600">สารภี</td>
           <td class="py-3 px-3 text-right font-mono">${totTar.toLocaleString()}</td>
           <td class="py-3 px-3 text-right font-mono font-black text-sky-900 bg-sky-100/50">${totRes.toLocaleString()}</td>
@@ -13946,24 +13971,92 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yData = ind.years?.[yr];
     if (!yData) return;
 
-    const clin = yData.clinical || {};
-    let tar = clin.target || yData.den || 0;
-    let res = clin.screened || yData.num || 0;
-    let n1 = clin.normal_first || 0;
-    let dly = clin.suspect_delay || 0;
-    let fol = clin.followed || 0;
-    let n2 = clin.normal_follow || 0;
-    let fnorm = clin.normal_final || 0;
+    // Check if a specific health unit is selected
+    const isUnitSelected = (currentUnit !== 'all');
+    const selUnit = isUnitSelected ? (yData.units || []).find(u => u.hospcode === currentUnit) : null;
 
-    if (ms !== 'all' && yData.milestones?.[ms]) {
-      const dm = yData.milestones[ms];
-      tar = dm.target || 0;
-      res = dm.result || 0;
-      n1 = dm.normal_first || 0;
-      dly = dm.suspect_delay || 0;
-      fol = dm.followed || 0;
-      n2 = dm.normal_follow || 0;
-      fnorm = dm.normal_final || 0;
+    // 3. Active Unit Banner toggle
+    const unitBannerEl = document.getElementById('childdev-unit-banner');
+    if (unitBannerEl) {
+      if (isUnitSelected && selUnit) {
+        unitBannerEl.classList.remove('hidden');
+        unitBannerEl.innerHTML = `
+          <div class="p-3 sm:p-4 rounded-2xl bg-linear-to-r from-amber-500/10 via-amber-50 to-orange-500/10 border border-amber-300 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm shrink-0">
+                <i class="fa-solid fa-hospital-user"></i>
+              </span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-md">
+                    กำลังดูข้อมูลเฉพาะหน่วยบริการ
+                  </span>
+                  <span class="text-xs font-mono font-bold text-amber-800 bg-white/90 px-2 py-0.5 rounded-md border border-amber-200">
+                    รหัส ${selUnit.hospcode}
+                  </span>
+                  <span class="text-xs text-slate-600">
+                    (ช่วงอายุ: ${ms === 'all' ? 'รวม 5 ช่วงวัย' : ms + ' เดือน'})
+                  </span>
+                </div>
+                <h3 class="text-base font-black text-slate-900 mt-0.5">
+                  ${selUnit.name} <span class="text-xs font-semibold text-slate-500 font-normal">ตำบล${selUnit.subdistrict}</span>
+                </h3>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="window.selectDashboardUnit('all')" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-arrows-rotate"></i> กลับสู่ภาพรวมอำเภอ (14 แห่ง)
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        unitBannerEl.classList.add('hidden');
+        unitBannerEl.innerHTML = '';
+      }
+    }
+
+    // 4. Calculate numbers based on unit selection & milestone
+    let tar = 0, res = 0, n1 = 0, dly = 0, fol = 0, n2 = 0, fnorm = 0;
+    if (isUnitSelected && selUnit) {
+      if (ms === 'all') {
+        tar = selUnit.den || 0;
+        res = selUnit.num || 0;
+        n1 = selUnit.normal_first || 0;
+        dly = selUnit.suspect_delay || 0;
+        fol = selUnit.followed || 0;
+        n2 = selUnit.normal_follow || 0;
+        fnorm = selUnit.normal_final || 0;
+      } else {
+        const bm = selUnit.by_month?.[ms] || {};
+        tar = bm.target || 0;
+        res = bm.result || 0;
+        n1 = bm.normal_first || 0;
+        dly = bm.suspect_delay || 0;
+        fol = bm.followed || 0;
+        n2 = bm.normal_follow || 0;
+        fnorm = bm.normal_final || 0;
+      }
+    } else {
+      const clin = yData.clinical || {};
+      tar = clin.target || yData.den || 0;
+      res = clin.screened || yData.num || 0;
+      n1 = clin.normal_first || 0;
+      dly = clin.suspect_delay || 0;
+      fol = clin.followed || 0;
+      n2 = clin.normal_follow || 0;
+      fnorm = clin.normal_final || 0;
+
+      if (ms !== 'all' && yData.milestones?.[ms]) {
+        const dm = yData.milestones[ms];
+        tar = dm.target || 0;
+        res = dm.result || 0;
+        n1 = dm.normal_first || 0;
+        dly = dm.suspect_delay || 0;
+        fol = dm.followed || 0;
+        n2 = dm.normal_follow || 0;
+        fnorm = dm.normal_final || 0;
+      }
     }
 
     const screenRate = tar > 0 ? (res / tar * 100) : 0;
@@ -13973,7 +14066,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const folRate = dly > 0 ? (fol / dly * 100) : 0;
     const fnormRate = tar > 0 ? (fnorm / tar * 100) : 0;
 
-    // 3. Update 4 Bento Cards
+    // 5. Update 4 Bento Cards
     const screenRateEl = document.getElementById('childdev-card-screen-rate');
     if (screenRateEl) screenRateEl.textContent = `${screenRate.toFixed(2)}%`;
 
@@ -13994,6 +14087,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const screenBarEl = document.getElementById('childdev-card-screen-bar');
     if (screenBarEl) screenBarEl.style.width = `${Math.min(100, screenRate)}%`;
 
+    const cardScopeEl = document.getElementById('childdev-card-scope');
+    if (cardScopeEl) {
+      cardScopeEl.textContent = isUnitSelected && selUnit 
+        ? `เฉพาะ ${selUnit.name}`
+        : 'รวมทั้งอำเภอสารภี';
+    }
+
     // Card 2: Normal 1st
     const n1NumEl = document.getElementById('childdev-card-n1-num');
     if (n1NumEl) n1NumEl.textContent = `${n1.toLocaleString()} คน`;
@@ -14011,6 +14111,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (dlyRateEl) {
       dlyRateEl.textContent = `${dlyRate.toFixed(2)}%`;
       dlyRateEl.className = `px-2 py-0.5 rounded-md text-[11px] font-bold ${dlyRate <= 20.0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} num-font`;
+    }
+    const dlyStatusEl = document.getElementById('childdev-card-delay-status');
+    if (dlyStatusEl) {
+      dlyStatusEl.textContent = dlyRate <= 20.0 ? 'ผ่านเกณฑ์ควบคุม' : 'เกินเกณฑ์ควบคุม';
+      dlyStatusEl.className = dlyRate <= 20.0 ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold';
     }
     const dlyBarEl = document.getElementById('childdev-card-delay-bar');
     if (dlyBarEl) {
@@ -14032,27 +14137,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     const finalBarEl = document.getElementById('childdev-card-final-bar');
     if (finalBarEl) finalBarEl.style.width = `${Math.min(100, fnormRate)}%`;
 
-    // 4. Update 5 Milestones Quick Grid
+    // 6. Update Quick Grid Scope Header
+    const gridScopeEl = document.getElementById('childdev-grid-scope');
+    if (gridScopeEl) {
+      gridScopeEl.textContent = isUnitSelected && selUnit 
+        ? `เฉพาะ ${selUnit.name}`
+        : 'รวมทั้งอำเภอสารภี';
+      gridScopeEl.className = isUnitSelected 
+        ? 'text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300'
+        : 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200';
+    }
+
+    // 7. Update 5 Milestones Quick Grid (adapts to selected unit!)
     const msGridEl = document.getElementById('childdev-milestones-grid');
-    if (msGridEl && yData.milestones) {
+    if (msGridEl) {
       let gridHtml = '';
       [9, 18, 30, 42, 60].forEach(m => {
-        const dm = yData.milestones[String(m)] || {};
+        let dm = {};
+        if (isUnitSelected && selUnit) {
+          dm = selUnit.by_month?.[String(m)] || {};
+        } else if (yData.milestones) {
+          dm = yData.milestones[String(m)] || {};
+        }
+        const mTar = dm.target || 0;
+        const mRes = dm.result || 0;
+        const mRate = dm.rate ?? (mTar > 0 ? (mRes / mTar * 100) : 0);
+        const mDly = dm.suspect_delay || 0;
+        const mFinal = dm.normal_final || 0;
         const isActive = (ms === String(m));
+
         gridHtml += `
           <div onclick="window.switchChilddevMilestone('${m}')" class="p-3 rounded-2xl cursor-pointer transition border ${isActive ? 'bg-emerald-50/90 border-emerald-500 ring-2 ring-emerald-500/20 shadow-xs' : 'bg-white border-slate-200/80 hover:border-slate-300 shadow-2xs'}">
             <div class="flex items-center justify-between text-xs mb-1">
               <span class="font-extrabold text-slate-800 flex items-center gap-1">
                 <i class="fa-solid fa-child text-sky-500 text-[11px]"></i> ${m} เดือน
               </span>
-              <span class="font-black ${dm.rate >= 85 ? 'text-emerald-600' : 'text-amber-600'} num-font">${(dm.rate || 0).toFixed(1)}%</span>
+              <span class="font-black ${mRate >= 85 ? 'text-emerald-600' : 'text-amber-600'} num-font">${mRate.toFixed(1)}%</span>
             </div>
             <div class="text-[11px] text-slate-500 font-medium">
-              คัดกรอง <strong>${dm.result || 0}</strong>/${dm.target || 0}
+              คัดกรอง <strong>${mRes}</strong>/${mTar} คน
             </div>
             <div class="text-[10px] text-slate-400 mt-1 flex justify-between items-center">
-              <span>ล่าช้า ${dm.suspect_delay || 0}</span>
-              <span class="text-indigo-600 font-bold">สมวัยรวม ${dm.normal_final || 0}</span>
+              <span>ล่าช้า ${mDly}</span>
+              <span class="text-indigo-600 font-bold">สมวัย ${mFinal}</span>
             </div>
           </div>
         `;
@@ -14060,7 +14187,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       msGridEl.innerHTML = gridHtml;
     }
 
-    // 5. Update Pathway list
+    // 8. Update Pathway Scope & list
+    const pwScopeEl = document.getElementById('childdev-pw-scope');
+    if (pwScopeEl) {
+      pwScopeEl.textContent = isUnitSelected && selUnit ? selUnit.name : 'ทั้งอำเภอ';
+      pwScopeEl.className = isUnitSelected 
+        ? 'text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300'
+        : 'text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200';
+    }
+
     const pwB = document.getElementById('childdev-pw-b');
     if (pwB) pwB.textContent = `${tar.toLocaleString()} คน`;
     const pwA = document.getElementById('childdev-pw-a');
@@ -14080,7 +14215,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pwFnormRate = document.getElementById('childdev-pw-fnorm-rate');
     if (pwFnormRate) pwFnormRate.textContent = `${fnormRate.toFixed(2)}%`;
 
-    // 6. Update Chart
+    // 9. Update Chart
     const canvas = document.getElementById('childdev-unit-chart');
     if (canvas && typeof Chart !== 'undefined') {
       if (childdevUnitChartInstance) {
@@ -14123,6 +14258,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         return Number((u.den > 0 ? u.normal_final / u.den * 100 : 0).toFixed(2));
       });
 
+      // Update Chart subtitle
+      const chartSubEl = document.getElementById('childdev-chart-sub');
+      if (chartSubEl) {
+        if (isUnitSelected && selUnit) {
+          chartSubEl.textContent = `กำลังเน้น: ${selUnit.name} (คลิกแท่งอื่นเพื่อสลับ หรือคลิกซ้ำเพื่อกลับสู่ภาพรวมอำเภอ)`;
+        } else {
+          chartSubEl.textContent = 'เทียบร้อยละการคัดกรอง (เกณฑ์ ≥ 85%) และร้อยละสงสัยล่าช้า (เกณฑ์ ≤ 20%) — คลิกที่แท่งเพื่อเลือกหน่วยบริการ';
+        }
+      }
+
       childdevUnitChartInstance = new Chart(canvas, {
         type: 'bar',
         data: {
@@ -14131,18 +14276,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             {
               label: 'ร้อยละคัดกรอง (A/B)',
               data: screenRates,
-              backgroundColor: screenRates.map(r => r >= 85 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(56, 189, 248, 0.85)'),
-              borderColor: screenRates.map(r => r >= 85 ? '#059669' : '#0284c7'),
-              borderWidth: 1,
+              backgroundColor: unitList.map((u, idx) => {
+                if (isUnitSelected && u.hospcode === currentUnit) {
+                  return 'rgba(245, 158, 11, 0.95)'; // Highlight active unit in gold/amber
+                }
+                const r = screenRates[idx];
+                return r >= 85 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(56, 189, 248, 0.85)';
+              }),
+              borderColor: unitList.map((u, idx) => {
+                if (isUnitSelected && u.hospcode === currentUnit) {
+                  return '#b45309';
+                }
+                const r = screenRates[idx];
+                return r >= 85 ? '#059669' : '#0284c7';
+              }),
+              borderWidth: unitList.map(u => (isUnitSelected && u.hospcode === currentUnit) ? 3 : 1),
               borderRadius: 6,
               order: 2
             },
             {
               label: 'ร้อยละสมวัยรวม (ต่อเป้าหมาย)',
               data: finalNormRates,
-              backgroundColor: 'rgba(99, 102, 241, 0.65)',
+              backgroundColor: unitList.map(u => (isUnitSelected && u.hospcode === currentUnit) ? 'rgba(99, 102, 241, 0.9)' : 'rgba(99, 102, 241, 0.65)'),
               borderColor: '#4f46e5',
-              borderWidth: 1,
+              borderWidth: unitList.map(u => (isUnitSelected && u.hospcode === currentUnit) ? 3 : 1),
               borderRadius: 6,
               order: 3
             },
@@ -14160,6 +14317,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (evt, activeEls) => {
+            if (activeEls && activeEls.length > 0) {
+              const elIdx = activeEls[0].index;
+              const target = unitList[elIdx];
+              if (target) {
+                window.selectDashboardUnit(target.hospcode);
+              }
+            }
+          },
           plugins: {
             legend: {
               position: 'top',
@@ -14167,6 +14333,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             tooltip: {
               callbacks: {
+                title: function(items) {
+                  if (items && items.length > 0) {
+                    const u = unitList[items[0].dataIndex];
+                    return u ? `${u.name} (ต.${u.subdistrict})` : items[0].label;
+                  }
+                  return '';
+                },
                 label: function(ctx) {
                   return `${ctx.dataset.label}: ${ctx.raw}%`;
                 }
@@ -14196,7 +14369,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    // 7. Update Table
+    // 10. Update Table
     renderChilddevTableOnly();
   }
 
@@ -17417,6 +17590,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelector(`.sidebar-item[data-domain="${domain}"]`)?.classList.add('active');
     updateDashboardView();
   };
+
+  window.switchIndicator = function(indId, domainId) {
+    if (domainId) {
+      currentDomain = domainId;
+      sidebarItems.forEach(i => i.classList.remove('active'));
+      document.querySelector(`.sidebar-item[data-domain="${domainId}"]`)?.classList.add('active');
+      populateIndicatorDropdown();
+    }
+    currentIndicatorId = indId;
+    if (indicatorSelect) indicatorSelect.value = currentIndicatorId;
+    updateIndicatorNavButtons();
+    updateDashboardView();
+  };
+  window.selectIndicator = window.switchIndicator;
 
   // ── สถานะการดึงข้อมูลล่าสุด (OpenData MoPH menu) ─────────────────────────
   function renderExplorerSyncStatus() {
