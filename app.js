@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let ncdUnitRateChartInstance = null;
   let ncdUnitCompareChartInstance = null;
   let ncdTrendChartInstance = null;
+  let currentPcc69View = 'budget'; // 'budget', 'kpi1', 'kpi2', 'kpi3', 'kpi4'
   let currentPcc69Sort = 'budget_desc'; // 'budget_desc', 'rate_desc', 'code'
   let pcc69SearchQuery = '';
   let pcc69ChartBudgetInstance = null;
