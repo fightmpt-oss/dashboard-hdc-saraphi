@@ -54,6 +54,13 @@ def load_catalog_urls():
             oid = it.get("opendata_id")
             if st and oid and st not in urls:
                 urls[st] = f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{oid}"
+        # Explicit manual mapping for reports whose opendata_id is not in catalog
+        STATIC_HDC_URLS = {
+            "s_childdev_specialpp": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
+        }
+        for st, u in STATIC_HDC_URLS.items():
+            if st not in urls or not urls[st]:
+                urls[st] = u
     except (json.JSONDecodeError, OSError):
         pass
     return urls

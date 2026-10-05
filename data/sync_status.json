@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-05T13:44:14Z",
+  "generated_at": "2026-10-05T15:47:01Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-05T13:44:00Z",
+    "saraphi_complete_master": "2026-10-05T15:46:47Z",
     "ncd_service_plan_master": "2026-10-05",
     "ncd_total_reports": 36
   },
@@ -319,7 +319,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 549,
-          "date_com": "202609071400"
+          "date_com": "202610051410"
         },
         "2568": {
           "saraphi_rows": 607,
@@ -330,7 +330,7 @@
           "date_com": "202411140923"
         }
       },
-      "hdc_url": null,
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
       "ok": true
     },
     {
@@ -526,7 +526,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 55,
-          "date_com": "202609071400"
+          "date_com": "202610051411"
         },
         "2568": {
           "saraphi_rows": 60,

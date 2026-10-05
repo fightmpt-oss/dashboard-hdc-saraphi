@@ -1708,6 +1708,147 @@ for y in years:
 # ----------------------------------------------------
 # 3. งบ PPB (5 Indicators)
 # ----------------------------------------------------
+# Helper for Child Development DSPM (s_childdev_specialpp)
+def process_childdev_data(rows):
+    months = [9, 18, 30, 42, 60]
+    unit_agg = {
+        hc: {
+            "num": 0, "den": 0,
+            "normal_first": 0, "suspect_delay": 0, "followed": 0, "normal_follow": 0, "normal_final": 0,
+            "by_month": {
+                str(m): {
+                    "target": 0, "result": 0, "normal_first": 0,
+                    "suspect_delay": 0, "followed": 0, "normal_follow": 0, "normal_final": 0
+                } for m in months
+            }
+        } for hc in SARAPHI_UNITS
+    }
+
+    for r in rows:
+        hc = r.get('hospcode')
+        if hc == '11999': hc = '11135'
+        if hc in unit_agg:
+            u = unit_agg[hc]
+            for m in months:
+                sm = str(m)
+                tm = int(clean_num(r.get(f'target_{m}', 0)))
+                rm = int(clean_num(r.get(f'result_{m}', 0)))
+                n1 = int(clean_num(r.get(f'1b260_1_{m}', 0)))
+                dly = max(0, rm - n1)
+                fol = int(clean_num(r.get(f'follow_{m}', 0)))
+                n2 = int(clean_num(r.get(f'1b260_2_{m}', 0)))
+
+                u["by_month"][sm]["target"] += tm
+                u["by_month"][sm]["result"] += rm
+                u["by_month"][sm]["normal_first"] += n1
+                u["by_month"][sm]["suspect_delay"] += dly
+                u["by_month"][sm]["followed"] += fol
+                u["by_month"][sm]["normal_follow"] += n2
+                u["by_month"][sm]["normal_final"] += (n1 + n2)
+
+                u["num"] += rm
+                u["den"] += tm
+                u["normal_first"] += n1
+                u["suspect_delay"] += dly
+                u["followed"] += fol
+                u["normal_follow"] += n2
+                u["normal_final"] += (n1 + n2)
+
+    unit_data = []
+    tot_num = 0; tot_den = 0
+    tot_n1 = 0; tot_dly = 0; tot_fol = 0; tot_n2 = 0; tot_final = 0
+    dist_months = {
+        str(m): {
+            "age_label": f"{m} เดือน",
+            "target": 0, "result": 0, "rate": 0.0,
+            "normal_first": 0, "normal_first_rate": 0.0,
+            "suspect_delay": 0, "suspect_delay_rate": 0.0,
+            "followed": 0, "follow_rate": 0.0,
+            "normal_follow": 0,
+            "normal_final": 0, "normal_final_rate": 0.0
+        } for m in months
+    }
+
+    for hc, d in unit_agg.items():
+        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+        suspect_rate = round((d["suspect_delay"] / d["num"] * 100), 2) if d["num"] > 0 else 0.0
+        follow_rate = round((d["followed"] / d["suspect_delay"] * 100), 2) if d["suspect_delay"] > 0 else 0.0
+        normal_final_rate = round((d["normal_final"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
+
+        for m in months:
+            sm = str(m)
+            bm = d["by_month"][sm]
+            bm["rate"] = round((bm["result"] / bm["target"] * 100), 2) if bm["target"] > 0 else 0.0
+            dist_months[sm]["target"] += bm["target"]
+            dist_months[sm]["result"] += bm["result"]
+            dist_months[sm]["normal_first"] += bm["normal_first"]
+            dist_months[sm]["suspect_delay"] += bm["suspect_delay"]
+            dist_months[sm]["followed"] += bm["followed"]
+            dist_months[sm]["normal_follow"] += bm["normal_follow"]
+            dist_months[sm]["normal_final"] += bm["normal_final"]
+
+        tot_num += d["num"]
+        tot_den += d["den"]
+        tot_n1 += d["normal_first"]
+        tot_dly += d["suspect_delay"]
+        tot_fol += d["followed"]
+        tot_n2 += d["normal_follow"]
+        tot_final += d["normal_final"]
+
+        unit_data.append({
+            "hospcode": hc,
+            "name": SARAPHI_UNITS[hc]["name"],
+            "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
+            "num": d["num"],
+            "den": d["den"],
+            "rate": rate,
+            "pass": rate >= 85.0,
+            "normal_first": d["normal_first"],
+            "suspect_delay": d["suspect_delay"],
+            "suspect_rate": suspect_rate,
+            "followed": d["followed"],
+            "follow_rate": follow_rate,
+            "normal_follow": d["normal_follow"],
+            "normal_final": d["normal_final"],
+            "normal_final_rate": normal_final_rate,
+            "by_month": d["by_month"]
+        })
+
+    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
+    for sm, dm in dist_months.items():
+        dm["rate"] = round((dm["result"] / dm["target"] * 100), 2) if dm["target"] > 0 else 0.0
+        dm["normal_first_rate"] = round((dm["normal_first"] / dm["target"] * 100), 2) if dm["target"] > 0 else 0.0
+        dm["suspect_delay_rate"] = round((dm["suspect_delay"] / dm["result"] * 100), 2) if dm["result"] > 0 else 0.0
+        dm["follow_rate"] = round((dm["followed"] / dm["suspect_delay"] * 100), 2) if dm["suspect_delay"] > 0 else 0.0
+        dm["normal_final_rate"] = round((dm["normal_final"] / dm["target"] * 100), 2) if dm["target"] > 0 else 0.0
+
+    unit_data.sort(key=lambda x: x['rate'], reverse=True)
+
+    clinical_summary = {
+        "target": tot_den,
+        "screened": tot_num,
+        "screen_rate": dist_rate,
+        "normal_first": tot_n1,
+        "normal_first_rate": round((tot_n1 / tot_den * 100), 2) if tot_den > 0 else 0.0,
+        "suspect_delay": tot_dly,
+        "suspect_delay_rate": round((tot_dly / tot_num * 100), 2) if tot_num > 0 else 0.0,
+        "followed": tot_fol,
+        "follow_rate": round((tot_fol / tot_dly * 100), 2) if tot_dly > 0 else 0.0,
+        "normal_follow": tot_n2,
+        "normal_final": tot_final,
+        "normal_final_rate": round((tot_final / tot_den * 100), 2) if tot_den > 0 else 0.0
+    }
+
+    return {
+        "num": tot_num,
+        "den": tot_den,
+        "rate": dist_rate,
+        "pass": dist_rate >= 85.0,
+        "clinical": clinical_summary,
+        "milestones": dist_months,
+        "units": unit_data
+    }
+
 # 3.1 ตรวจพัฒนาการเด็ก 0-5 ปี (s_childdev_specialpp)
 master["indicators"]["ppb_child_develop"] = {
     "code": "PPB-1",
@@ -1715,41 +1856,17 @@ master["indicators"]["ppb_child_develop"] = {
     "table": "s_childdev_specialpp",
     "domain": "ppb",
     "domain_label": "🎯 งบ PPB (5 ตัวชี้วัด)",
-    "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการด้วยเครื่องมือ DSPM ตามเกณฑ์ specialpp",
+    "desc": "ร้อยละของเด็กอายุ 9, 18, 30, 42 และ 60 เดือน ได้รับการคัดกรองพัฒนาการด้วยเครื่องมือ DSPM ตามเกณฑ์ specialpp (เกณฑ์ สธ. ≥ 85.0%)",
     "target": 85.0,
     "unit": "%",
     "num_label": "ได้รับการคัดกรอง (คน)",
     "den_label": "เด็กตามช่วงอายุ (คน)",
+    "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_childdev_specialpp_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
-    for r in rows:
-        hc = r.get('hospcode')
-        if hc == '11999': hc = '11135'
-        if hc in unit_agg:
-            n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
-            d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
-            if d == 0:
-                n = int(clean_num(alias_field(r, 'result', 'screen')))
-                d = int(clean_num(alias_field(r, 'target', 'pop')))
-            unit_agg[hc]["num"] += n
-            unit_agg[hc]["den"] += d
-    unit_data = []
-    tot_num = 0; tot_den = 0
-    for hc, d in unit_agg.items():
-        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
-        tot_num += d["num"]; tot_den += d["den"]
-        unit_data.append({
-            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0
-        })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
-    master["indicators"]["ppb_child_develop"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 85.0, "units": unit_data
-    }
+    master["indicators"]["ppb_child_develop"]["years"][y] = process_childdev_data(rows)
 
 # 3.2 เด็ก 6-12 ปี ชั่งน้ำหนักวัดส่วนสูง
 master["indicators"]["ppb_weight_height"] = {
@@ -2080,36 +2197,12 @@ master["indicators"]["mch_childdev"] = {
     "unit": "%",
     "num_label": "ได้รับการคัดกรอง (คน)",
     "den_label": "เด็กตามช่วงอายุ (คน)",
+    "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5",
     "years": {}
 }
 for y in years:
     rows = load_json(f"s_childdev_specialpp_{y}.json")
-    unit_agg = {hc: {"num": 0, "den": 0} for hc in SARAPHI_UNITS}
-    for r in rows:
-        hc = r.get('hospcode')
-        if hc == '11999': hc = '11135'
-        if hc in unit_agg:
-            n = sum(int(clean_num(r.get(f'result_{m}', 0))) for m in [9, 18, 30, 42, 60])
-            d = sum(int(clean_num(r.get(f'target_{m}', 0))) for m in [9, 18, 30, 42, 60])
-            if d == 0:
-                n = int(clean_num(alias_field(r, 'result', 'screen')))
-                d = int(clean_num(alias_field(r, 'target', 'pop')))
-            unit_agg[hc]["num"] += n
-            unit_agg[hc]["den"] += d
-    unit_data = []
-    tot_num = 0; tot_den = 0
-    for hc, d in unit_agg.items():
-        rate = round((d["num"] / d["den"] * 100), 2) if d["den"] > 0 else 0.0
-        tot_num += d["num"]; tot_den += d["den"]
-        unit_data.append({
-            "hospcode": hc, "name": SARAPHI_UNITS[hc]["name"], "subdistrict": SARAPHI_UNITS[hc]["subdistrict"],
-            "num": d["num"], "den": d["den"], "rate": rate, "pass": rate >= 85.0
-        })
-    dist_rate = round((tot_num / tot_den * 100), 2) if tot_den > 0 else 0.0
-    unit_data.sort(key=lambda x: x['rate'], reverse=True)
-    master["indicators"]["mch_childdev"]["years"][y] = {
-        "num": tot_num, "den": tot_den, "rate": dist_rate, "pass": dist_rate >= 85.0, "units": unit_data
-    }
+    master["indicators"]["mch_childdev"]["years"][y] = process_childdev_data(rows)
 
 # 5.5 เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (s_childdev_specialpp48)
 master["indicators"]["mch_childdev_follow"] = {

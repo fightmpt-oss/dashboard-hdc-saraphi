@@ -445,9 +445,12 @@
       <div id="standard-indicator-header" class="glass-card rounded-2xl p-4 sm:p-5 relative overflow-hidden bg-gradient-to-r from-white via-white to-emerald-50/40">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 flex-wrap gap-y-1">
               <span id="ind-code-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded num-font" style="display:none;"></span>
               <span id="ind-table-badge" class="text-xs text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-md num-font">table: s_ttm7</span>
+              <a id="ind-hdc-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md transition shadow-2xs" title="คลิกเพื่อเปิดรายงานนี้ในระบบ HDC กระทรวงสาธารณสุข">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px]"></i> HDC สธ.
+              </a>
             </div>
             <h3 id="ind-name-text" class="text-lg sm:text-xl font-bold text-slate-900 mt-1.5">ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)</h3>
             <p id="ind-desc-text" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">มูลค่าการใช้ยาสมุนไพรเทียบกับมูลค่ายาทั้งหมดของผู้ป่วยนอก (เป้าหมาย สธ. >= 5.0%)</p>
@@ -3550,6 +3553,293 @@
           </div>
           <div id="err-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
             <!-- Dynamically populated error cards -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SPECIAL PANEL FOR CHILD DEVELOPMENT DSPM (s_childdev_specialpp) -->
+      <!-- ======================================================== -->
+      <div id="childdev-panel" class="hidden space-y-4">
+
+        <!-- Filter Bar: Milestone Selector, Year Selector, Search & HDC Link -->
+        <div class="glass-card rounded-2xl p-4 bg-white flex flex-col xl:flex-row xl:items-center justify-between gap-4 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-baby text-pink-500"></i> ช่วงอายุคัดกรอง:
+            </span>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold flex-wrap gap-1" id="childdev-milestone-buttons">
+              <button type="button" onclick="window.switchChilddevMilestone('all')" id="btn-childdev-ms-all" class="px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">
+                <i class="fa-solid fa-layer-group mr-1"></i> ทุกช่วงวัย (9-60 ด.)
+              </button>
+              <button type="button" onclick="window.switchChilddevMilestone('9')" id="btn-childdev-ms-9" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                9 เดือน
+              </button>
+              <button type="button" onclick="window.switchChilddevMilestone('18')" id="btn-childdev-ms-18" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                18 เดือน
+              </button>
+              <button type="button" onclick="window.switchChilddevMilestone('30')" id="btn-childdev-ms-30" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                30 เดือน
+              </button>
+              <button type="button" onclick="window.switchChilddevMilestone('42')" id="btn-childdev-ms-42" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                42 เดือน
+              </button>
+              <button type="button" onclick="window.switchChilddevMilestone('60')" id="btn-childdev-ms-60" class="px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">
+                60 เดือน
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <!-- Year Selector -->
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold" id="childdev-year-buttons">
+              <button type="button" onclick="window.switchChilddevYear('2569')" id="btn-childdev-yr-2569" class="px-2.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white">2569</button>
+              <button type="button" onclick="window.switchChilddevYear('2568')" id="btn-childdev-yr-2568" class="px-2.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">2568</button>
+              <button type="button" onclick="window.switchChilddevYear('2567')" id="btn-childdev-yr-2567" class="px-2.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent">2567</button>
+            </div>
+
+            <!-- HDC Official Link -->
+            <a href="https://hdc.moph.go.th/cmi/public/standard-report-detail/2238b7879f442749bd1804032119e824?subcatalogId=1ed90bc32310b503b7ca9b32af425ae5" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs" title="เปิดดูรายงานต้นฉบับในระบบ HDC สธ. จังหวัดเชียงใหม่">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> เทียบ HDC สธ.
+            </a>
+
+            <!-- Export CSV -->
+            <button type="button" onclick="window.exportChilddevCsv()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-file-csv text-emerald-600"></i> ส่งออก CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Process Funnel & Outcome Bento Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Screening Coverage -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">1. ได้รับการคัดกรอง (A/B)</span>
+              <span class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-sm shadow-2xs">
+                <i class="fa-solid fa-clipboard-check"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="childdev-card-screen-rate" class="text-2xl font-black text-slate-900 num-font">80.57%</span>
+              <span id="childdev-card-screen-badge" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800">เกณฑ์ ≥ 85%</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 font-medium">
+              คัดกรองแล้ว <strong id="childdev-card-screen-num" class="text-slate-800 num-font">701</strong> จากเป้าหมาย <strong id="childdev-card-screen-den" class="text-slate-800 num-font">870</strong> คน
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="childdev-card-screen-bar" class="h-2 rounded-full bg-sky-500 transition-all duration-500" style="width: 80.57%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Normal 1st time -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">2. สมวัยรอบแรก</span>
+              <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-2xs">
+                <i class="fa-solid fa-face-smile"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="childdev-card-n1-num" class="text-2xl font-black text-emerald-600 num-font">612 คน</span>
+              <span id="childdev-card-n1-rate" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800 num-font">87.30%</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 font-medium">
+              คิดเป็น <strong id="childdev-card-n1-den-rate" class="text-slate-800 num-font">70.34%</strong> ของเด็กเป้าหมายทั้งหมด
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="childdev-card-n1-bar" class="h-2 rounded-full bg-emerald-500 transition-all duration-500" style="width: 87.30%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 3: Suspected Delay -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">3. สงสัยล่าช้า</span>
+              <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm shadow-2xs">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="childdev-card-delay-num" class="text-2xl font-black text-amber-600 num-font">89 คน</span>
+              <span id="childdev-card-delay-rate" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 num-font">12.70%</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 font-medium">
+              เกณฑ์ สธ. <strong class="text-emerald-700 font-bold">≤ 20.0%</strong> (ผ่านเกณฑ์ควบคุม)
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="childdev-card-delay-bar" class="h-2 rounded-full bg-amber-500 transition-all duration-500" style="width: 12.70%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 4: Follow-up & Final Normal -->
+          <div class="glass-card rounded-2xl p-4 bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">4. ติดตาม & สมวัยรวม</span>
+              <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-2xs">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="childdev-card-final-num" class="text-2xl font-black text-indigo-600 num-font">676 คน</span>
+              <span id="childdev-card-final-rate" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-100 text-indigo-800 num-font">77.70%</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 font-medium">
+              ติดตามได้ <strong id="childdev-card-fol-num" class="text-slate-800 num-font">67/89</strong> (<span id="childdev-card-fol-rate" class="num-font">75.28%</span>) • สมวัยเพิ่ม <strong id="childdev-card-n2-num" class="text-emerald-700 num-font">64</strong> คน
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="childdev-card-final-bar" class="h-2 rounded-full bg-indigo-500 transition-all duration-500" style="width: 77.70%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-Milestones Quick Grid -->
+        <div id="childdev-milestones-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <!-- Populated dynamically: 9, 18, 30, 42, 60 months -->
+        </div>
+
+        <!-- Charts Section: Screening vs Delay & Unit Comparison -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Main Chart -->
+          <div class="lg:col-span-8 glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h4 id="childdev-chart-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-column text-emerald-600"></i> ผลงานคัดกรองพัฒนาการ รายหน่วยบริการ (รพ.สต.)
+                </h4>
+                <p id="childdev-chart-sub" class="text-xs text-slate-500 mt-0.5">เทียบร้อยละการคัดกรอง (เกณฑ์ ≥ 85%) และร้อยละสงสัยล่าช้า (เกณฑ์ ≤ 20%)</p>
+              </div>
+            </div>
+            <div class="relative h-72 sm:h-80 w-full">
+              <canvas id="childdev-unit-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Clinical Funnel Summary -->
+          <div class="lg:col-span-4 glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2 mb-3">
+                <i class="fa-solid fa-route text-sky-600"></i> ลำดับขั้นตอนการดูแล (Clinical Pathway)
+              </h4>
+              <div class="space-y-3 text-xs" id="childdev-pathway-list">
+                <!-- Step 1 -->
+                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-700 font-bold flex items-center justify-center text-[11px]">1</span>
+                    <span class="font-bold text-slate-700">เป้าหมายเด็กช่วงอายุ</span>
+                  </div>
+                  <strong id="childdev-pw-b" class="text-slate-900 num-font font-black">870 คน</strong>
+                </div>
+                <!-- Step 2 -->
+                <div class="p-2.5 rounded-xl bg-sky-50/70 border border-sky-200 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-[11px]">2</span>
+                    <div>
+                      <div class="font-bold text-sky-900">ได้รับการคัดกรอง (A)</div>
+                      <div class="text-[10px] text-sky-600">อัตราคัดกรองสำเร็จ</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div id="childdev-pw-a" class="font-black text-sky-900 num-font">701 คน</div>
+                    <div id="childdev-pw-rate" class="text-[11px] font-bold text-sky-700 num-font">80.57%</div>
+                  </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-[11px]">3</span>
+                    <div>
+                      <div class="font-bold text-emerald-900">สมวัยรอบแรก (2.1)</div>
+                      <div class="text-[10px] text-emerald-600">ไม่ต้องติดตามซ้ำ</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div id="childdev-pw-n1" class="font-black text-emerald-900 num-font">612 คน</div>
+                    <div id="childdev-pw-n1-rate" class="text-[11px] font-bold text-emerald-700 num-font">87.30%</div>
+                  </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center text-[11px]">4</span>
+                    <div>
+                      <div class="font-bold text-amber-900">สงสัยล่าช้า (2.4)</div>
+                      <div class="text-[10px] text-amber-600">นัดกระตุ้น/ตรวจซ้ำใน 30 วัน</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div id="childdev-pw-dly" class="font-black text-amber-900 num-font">89 คน</div>
+                    <div id="childdev-pw-dly-rate" class="text-[11px] font-bold text-amber-700 num-font">12.70%</div>
+                  </div>
+                </div>
+                <!-- Step 5 -->
+                <div class="p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-200 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center text-[11px]">5</span>
+                    <div>
+                      <div class="font-bold text-indigo-900">ติดตามสำเร็จ & สมวัย</div>
+                      <div class="text-[10px] text-indigo-600">ติดตาม 67 คน • สมวัยเพิ่ม 64 คน</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div id="childdev-pw-fnorm" class="font-black text-indigo-900 num-font">รวม 676 คน</div>
+                    <div id="childdev-pw-fnorm-rate" class="text-[11px] font-bold text-indigo-700 num-font">77.70%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 p-2 rounded-xl bg-slate-50 border border-slate-200/60 text-[11px] text-slate-500 text-center">
+              💡 แหล่งข้อมูล: Open Data กระทรวงสาธารณสุข ตาราง <code>s_childdev_specialpp</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comprehensive HDC Table Section -->
+        <div class="glass-card rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/60">
+            <div>
+              <h4 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-table-list text-emerald-600"></i> ตารางวิเคราะห์ผลงานรายหน่วยบริการ (ตรงตามโครงสร้าง HDC 1:1)
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5">แสดงข้อมูลคัดกรอง สมวัยรอบแรก สงสัยล่าช้า การติดตาม และสมวัยรวม ตามเกณฑ์ สธ.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="childdev-table-search" placeholder="ค้นหา รพ.สต. หรือตำบล..." oninput="window.filterChilddevTable(this.value)" class="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs w-48 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 bg-white">
+              </div>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50/90 text-slate-600 border-b border-slate-200 font-bold uppercase tracking-wider text-[11px]">
+                  <th class="py-3 px-3 w-10 text-center">#</th>
+                  <th class="py-3 px-3 w-20">รหัส</th>
+                  <th class="py-3 px-4">หน่วยบริการ</th>
+                  <th class="py-3 px-3 text-center">ตำบล</th>
+                  <th class="py-3 px-3 text-right">เป้าหมาย (B)</th>
+                  <th class="py-3 px-3 text-right bg-sky-50/50">คัดกรอง (A)</th>
+                  <th class="py-3 px-3 text-right bg-sky-50/50 font-black">ร้อยละคัดกรอง</th>
+                  <th class="py-3 px-3 text-right">สมวัยรอบแรก</th>
+                  <th class="py-3 px-3 text-right bg-amber-50/50">สงสัยล่าช้า</th>
+                  <th class="py-3 px-3 text-right bg-amber-50/50 font-black">% สงสัยล่าช้า</th>
+                  <th class="py-3 px-3 text-right">ติดตามได้</th>
+                  <th class="py-3 px-3 text-right">% ติดตาม</th>
+                  <th class="py-3 px-3 text-right bg-indigo-50/50">สมวัยรวม</th>
+                  <th class="py-3 px-3 text-right bg-indigo-50/50 font-black">% สมวัยรวม</th>
+                  <th class="py-3 px-3 text-center">สถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="childdev-table-body" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Populated dynamically -->
+              </tbody>
+              <tfoot id="childdev-table-foot" class="bg-slate-100/90 border-t-2 border-slate-300 font-bold text-slate-900">
+                <!-- Totals populated dynamically -->
+              </tfoot>
+            </table>
           </div>
         </div>
 

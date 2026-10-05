@@ -12,9 +12,9 @@ tables_to_fetch = [
     # PCC
     's_dm_hba1c', 's_dm_control', 's_ht_control', 's_dm_hypo',
     # PPB
-    's_kpi_height614', 's_kpi_dental63', 's_kpi_dental64', 's_2q_adl_test',
+    's_childdev_specialpp', 's_kpi_height614', 's_kpi_dental63', 's_kpi_dental64', 's_2q_adl_test',
     # Elderly & MCH
-    's_aged9', 's_ageing', 's_kpi_food', 's_nutrition_11'
+    's_aged9', 's_ageing', 's_kpi_food', 's_nutrition_11', 's_childdev_specialpp48'
     # (ถอดออก: s_dm_complication / s_child0_5_pshyche_develop_workload /
     #  s_anc12ga / s_kpi_height05 — ไม่มีตัวชี้วัดไหนใช้ข้อมูลเหล่านี้)
 ]

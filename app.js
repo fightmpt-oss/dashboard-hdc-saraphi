@@ -63,8 +63,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ttmMassagePanel = document.getElementById('ttm-massage-panel');
   const dmHba1cPanel = document.getElementById('dm-hba1c-panel');
   const pcc2569Panel = document.getElementById('pcc-2569-panel');
+  const childdevPanel = document.getElementById('childdev-panel');
   const servicePlanNcdPanel = document.getElementById('service-plan-ncd-panel');
   const overviewPanel = document.getElementById('overview-panel');
+
+  let currentChilddevMilestone = 'all'; // 'all', '9', '18', '30', '42', '60'
+  let currentChilddevYear = '2569';
+  let currentChilddevSearch = '';
+  let childdevUnitChartInstance = null;
 
   let ncdMasterData = null;
   let currentNcdReportId = 'ncd_22'; // Default: s_dm_screen (ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน)
@@ -1615,7 +1621,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     const tablePrefix = (ind.domain === 'nhso_ttm' || (ind.table && ind.table.startsWith('MeData')) || ind.domain === 'pcc_2569') ? '' : 'HDC: ';
     const tableLabel = (ind.domain === 'pcc_2569') ? 'สปสช. เขต 1 เชียงใหม่ (R.1)' : `${tablePrefix}${ind.table}`;
-    document.getElementById('ind-table-badge').textContent = tableLabel;
+    const tableBadgeEl = document.getElementById('ind-table-badge');
+    if (tableBadgeEl) tableBadgeEl.textContent = tableLabel;
+
+    // Direct HDC Report Link
+    const hdcLinkEl = document.getElementById('ind-hdc-link');
+    if (hdcLinkEl) {
+      const hdcUrl = ind.hdc_url || syncStatusData?.tables?.find(t => t.table === ind.table)?.hdc_url;
+      if (hdcUrl) {
+        hdcLinkEl.href = hdcUrl;
+        hdcLinkEl.classList.remove('hidden');
+        hdcLinkEl.classList.add('inline-flex');
+      } else {
+        hdcLinkEl.classList.add('hidden');
+        hdcLinkEl.classList.remove('inline-flex');
+      }
+    }
     document.getElementById('ind-name-text').textContent = ind.name;
     document.getElementById('ind-desc-text').textContent = ind.desc;
     if (ind.id === 'nhso_error_code') {
@@ -13642,6 +13663,544 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // =========================================================================
+  // CHILD DEVELOPMENT DSPM (s_childdev_specialpp) - CONTROLLER & RENDER
+  // =========================================================================
+
+  window.switchChilddevMilestone = function(ms) {
+    currentChilddevMilestone = ms;
+    renderChilddevPanel();
+  };
+
+  window.switchChilddevYear = function(yr) {
+    currentChilddevYear = yr;
+    renderChilddevPanel();
+  };
+
+  window.filterChilddevTable = function(q) {
+    currentChilddevSearch = (q || '').trim().toLowerCase();
+    renderChilddevTableOnly();
+  };
+
+  window.exportChilddevCsv = function() {
+    const ind = masterData?.indicators?.['ppb_child_develop'] || masterData?.indicators?.['mch_childdev'];
+    if (!ind) return;
+    const yr = currentChilddevYear || '2569';
+    const yData = ind?.years?.[yr];
+    if (!yData) return;
+
+    const ms = currentChilddevMilestone;
+    const msLabel = ms === 'all' ? 'ทุกช่วงอายุ (9-60 ด.)' : `${ms} เดือน`;
+
+    let csv = '\uFEFFรายงานการคัดกรองพัฒนาการเด็กปฐมวัยตามช่วงอายุ (DSPM/SpecialPP)\n';
+    csv += `ปีงบประมาณ,${yr},ช่วงอายุ,${msLabel},แหล่งข้อมูล,HDC s_childdev_specialpp\n\n`;
+    csv += 'รหัสสถานบริการ,ชื่อหน่วยบริการ,ตำบล,เป้าหมาย (คน),คัดกรองแล้ว (คน),ร้อยละคัดกรอง,สมวัยรอบแรก (คน),% สมวัยรอบแรก,สงสัยล่าช้า (คน),% สงสัยล่าช้า,ติดตามได้ (คน),% ติดตาม,สมวัยหลังติดตาม (คน),สมวัยรวม (คน),% สมวัยรวม,สถานะ\n';
+
+    const clin = yData.clinical || {};
+    let totTar = clin.target || yData.den || 0;
+    let totRes = clin.screened || yData.num || 0;
+    let totN1 = clin.normal_first || 0;
+    let totDly = clin.suspect_delay || 0;
+    let totFol = clin.followed || 0;
+    let totN2 = clin.normal_follow || 0;
+    let totFinal = clin.normal_final || 0;
+
+    if (ms !== 'all' && yData.milestones?.[ms]) {
+      const dm = yData.milestones[ms];
+      totTar = dm.target || 0;
+      totRes = dm.result || 0;
+      totN1 = dm.normal_first || 0;
+      totDly = dm.suspect_delay || 0;
+      totFol = dm.followed || 0;
+      totN2 = dm.normal_follow || 0;
+      totFinal = dm.normal_final || 0;
+    }
+
+    const totRate = totTar > 0 ? (totRes / totTar * 100).toFixed(2) : '0.00';
+    const totN1Rate = totRes > 0 ? (totN1 / totRes * 100).toFixed(2) : '0.00';
+    const totDlyRate = totRes > 0 ? (totDly / totRes * 100).toFixed(2) : '0.00';
+    const totFolRate = totDly > 0 ? (totFol / totDly * 100).toFixed(2) : '0.00';
+    const totFinalRate = totTar > 0 ? (totFinal / totTar * 100).toFixed(2) : '0.00';
+    const totPass = Number(totRate) >= 85.0 && Number(totDlyRate) <= 20.0 ? 'ผ่านเกณฑ์' : 'รอการยกระดับ';
+
+    csv += `TOTAL,"รวมอำเภอสารภี","สารภี",${totTar},${totRes},${totRate}%,${totN1},${totN1Rate}%,${totDly},${totDlyRate}%,${totFol},${totFolRate}%,${totN2},${totFinal},${totFinalRate}%,${totPass}\n`;
+
+    (yData.units || []).forEach(u => {
+      let tar = u.den;
+      let res = u.num;
+      let n1 = u.normal_first;
+      let dly = u.suspect_delay;
+      let fol = u.followed;
+      let n2 = u.normal_follow;
+      let fnorm = u.normal_final;
+
+      if (ms !== 'all' && u.by_month?.[ms]) {
+        const bm = u.by_month[ms];
+        tar = bm.target;
+        res = bm.result;
+        n1 = bm.normal_first;
+        dly = bm.suspect_delay;
+        fol = bm.followed;
+        n2 = bm.normal_follow;
+        fnorm = bm.normal_final;
+      }
+
+      const rRate = tar > 0 ? (res / tar * 100).toFixed(2) : '0.00';
+      const rN1Rate = res > 0 ? (n1 / res * 100).toFixed(2) : '0.00';
+      const rDlyRate = res > 0 ? (dly / res * 100).toFixed(2) : '0.00';
+      const rFolRate = dly > 0 ? (fol / dly * 100).toFixed(2) : '0.00';
+      const rFnormRate = tar > 0 ? (fnorm / tar * 100).toFixed(2) : '0.00';
+      const rPass = Number(rRate) >= 85.0 && Number(rDlyRate) <= 20.0 ? 'ผ่านเกณฑ์' : 'ไม่ผ่านเกณฑ์';
+
+      csv += `"${u.hospcode}","${u.name}","${u.subdistrict}",${tar},${res},${rRate}%,${n1},${rN1Rate}%,${dly},${rDlyRate}%,${fol},${rFolRate}%,${n2},${fnorm},${rFnormRate}%,${rPass}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `HDC_DSPM_Saraphi_${yr}_${ms}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function renderChilddevTableOnly() {
+    const ind = masterData?.indicators?.['ppb_child_develop'] || masterData?.indicators?.['mch_childdev'];
+    if (!ind) return;
+    const yr = currentChilddevYear || '2569';
+    const yData = ind?.years?.[yr];
+    if (!yData) return;
+
+    const ms = currentChilddevMilestone;
+    const tbody = document.getElementById('childdev-table-body');
+    const tfoot = document.getElementById('childdev-table-foot');
+    if (!tbody) return;
+
+    const query = (currentChilddevSearch || '').toLowerCase();
+    const units = (yData.units || []).filter(u => {
+      if (!query) return true;
+      return (u.name || '').toLowerCase().includes(query) ||
+             (u.subdistrict || '').toLowerCase().includes(query) ||
+             (u.hospcode || '').includes(query);
+    });
+
+    let tbodyHtml = '';
+    units.forEach((u, idx) => {
+      let tar = u.den;
+      let res = u.num;
+      let n1 = u.normal_first;
+      let dly = u.suspect_delay;
+      let fol = u.followed;
+      let n2 = u.normal_follow;
+      let fnorm = u.normal_final;
+
+      if (ms !== 'all' && u.by_month?.[ms]) {
+        const bm = u.by_month[ms];
+        tar = bm.target;
+        res = bm.result;
+        n1 = bm.normal_first;
+        dly = bm.suspect_delay;
+        fol = bm.followed;
+        n2 = bm.normal_follow;
+        fnorm = bm.normal_final;
+      }
+
+      const rate = tar > 0 ? (res / tar * 100) : 0;
+      const n1Rate = res > 0 ? (n1 / res * 100) : 0;
+      const dlyRate = res > 0 ? (dly / res * 100) : 0;
+      const folRate = dly > 0 ? (fol / dly * 100) : 0;
+      const fnormRate = tar > 0 ? (fnorm / tar * 100) : 0;
+
+      const isPassScreen = rate >= 85.0;
+      const isPassDelay = dlyRate <= 20.0;
+      const isOverallPass = isPassScreen && isPassDelay;
+
+      const statusBadge = isOverallPass
+        ? '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">ผ่านเกณฑ์</span>'
+        : (!isPassScreen && !isPassDelay)
+          ? '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-rose-100 text-rose-800 border border-rose-200 shadow-2xs">ต้องเร่งรัด</span>'
+          : (!isPassScreen)
+            ? '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shadow-2xs">คัดกรองต่ำ</span>'
+            : '<span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shadow-2xs">ล่าช้าสูง</span>';
+
+      tbodyHtml += `
+        <tr class="hover:bg-slate-50/80 transition text-xs border-b border-slate-100">
+          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
+          <td class="py-2.5 px-3 font-mono font-bold text-slate-600">${u.hospcode}</td>
+          <td class="py-2.5 px-4 font-bold text-slate-800">
+            ${u.name}
+          </td>
+          <td class="py-2.5 px-3 text-center text-slate-600">${u.subdistrict}</td>
+          <td class="py-2.5 px-3 text-right font-mono text-slate-700">${tar.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-sky-800 bg-sky-50/30">${res.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-black ${isPassScreen ? 'text-emerald-600' : 'text-amber-600'} bg-sky-50/50">
+            ${rate.toFixed(2)}%
+          </td>
+          <td class="py-2.5 px-3 text-right font-mono text-slate-700">${n1.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-amber-800 bg-amber-50/30">${dly.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold ${isPassDelay ? 'text-slate-700' : 'text-rose-600'} bg-amber-50/50">
+            ${dlyRate.toFixed(2)}%
+          </td>
+          <td class="py-2.5 px-3 text-right font-mono text-slate-700">${fol.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono text-slate-700">${folRate.toFixed(2)}%</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-indigo-800 bg-indigo-50/30">${fnorm.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-mono font-black text-indigo-700 bg-indigo-50/50">${fnormRate.toFixed(2)}%</td>
+          <td class="py-2.5 px-3 text-center">${statusBadge}</td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = tbodyHtml || '<tr><td colspan="15" class="py-8 text-center text-slate-400">ไม่พบข้อมูลที่ค้นหา</td></tr>';
+
+    // Totals
+    const clin = yData.clinical || {};
+    let totTar = clin.target || yData.den || 0;
+    let totRes = clin.screened || yData.num || 0;
+    let totN1 = clin.normal_first || 0;
+    let totDly = clin.suspect_delay || 0;
+    let totFol = clin.followed || 0;
+    let totN2 = clin.normal_follow || 0;
+    let totFinal = clin.normal_final || 0;
+
+    if (ms !== 'all' && yData.milestones?.[ms]) {
+      const dm = yData.milestones[ms];
+      totTar = dm.target || 0;
+      totRes = dm.result || 0;
+      totN1 = dm.normal_first || 0;
+      totDly = dm.suspect_delay || 0;
+      totFol = dm.followed || 0;
+      totN2 = dm.normal_follow || 0;
+      totFinal = dm.normal_final || 0;
+    }
+
+    const totRate = totTar > 0 ? (totRes / totTar * 100) : 0;
+    const totN1Rate = totRes > 0 ? (totN1 / totRes * 100) : 0;
+    const totDlyRate = totRes > 0 ? (totDly / totRes * 100) : 0;
+    const totFolRate = totDly > 0 ? (totFol / totDly * 100) : 0;
+    const totFinalRate = totTar > 0 ? (totFinal / totTar * 100) : 0;
+    const totPass = totRate >= 85.0 && totDlyRate <= 20.0;
+
+    if (tfoot) {
+      tfoot.innerHTML = `
+        <tr class="text-xs bg-slate-100 border-t-2 border-slate-300 font-extrabold text-slate-900">
+          <td class="py-3 px-3 text-center font-mono">Σ</td>
+          <td class="py-3 px-3 font-mono">TOTAL</td>
+          <td class="py-3 px-4 font-black text-slate-900">รวมอำเภอสารภี</td>
+          <td class="py-3 px-3 text-center text-slate-600">สารภี</td>
+          <td class="py-3 px-3 text-right font-mono">${totTar.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono font-black text-sky-900 bg-sky-100/50">${totRes.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono font-black ${totRate >= 85 ? 'text-emerald-700' : 'text-amber-700'} bg-sky-100/70 text-sm">
+            ${totRate.toFixed(2)}%
+          </td>
+          <td class="py-3 px-3 text-right font-mono">${totN1.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono font-black text-amber-900 bg-amber-100/50">${totDly.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono font-black ${totDlyRate <= 20 ? 'text-emerald-700' : 'text-rose-700'} bg-amber-100/70 text-sm">
+            ${totDlyRate.toFixed(2)}%
+          </td>
+          <td class="py-3 px-3 text-right font-mono">${totFol.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono">${totFolRate.toFixed(2)}%</td>
+          <td class="py-3 px-3 text-right font-mono font-black text-indigo-900 bg-indigo-100/50">${totFinal.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right font-mono font-black text-indigo-800 bg-indigo-100/70 text-sm">${totFinalRate.toFixed(2)}%</td>
+          <td class="py-3 px-3 text-center">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${totPass ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'} shadow-xs">
+              ${totPass ? 'ผ่านเกณฑ์' : 'รอการยกระดับ'}
+            </span>
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function renderChilddevPanel() {
+    if (!childdevPanel) return;
+
+    const ind = masterData?.indicators?.['ppb_child_develop'] || masterData?.indicators?.['mch_childdev'];
+    if (!ind) return;
+
+    const yr = currentChilddevYear || '2569';
+    const ms = currentChilddevMilestone || 'all';
+
+    // 1. Sync Milestone buttons
+    ['all', '9', '18', '30', '42', '60'].forEach(m => {
+      const btn = document.getElementById(`btn-childdev-ms-${m}`);
+      if (btn) {
+        if (m === ms) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    // 2. Sync Year buttons
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-childdev-yr-${y}`);
+      if (btn) {
+        if (y === yr) {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-bold transition shadow-xs bg-emerald-600 text-white';
+        } else {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition bg-transparent';
+        }
+      }
+    });
+
+    const yData = ind.years?.[yr];
+    if (!yData) return;
+
+    const clin = yData.clinical || {};
+    let tar = clin.target || yData.den || 0;
+    let res = clin.screened || yData.num || 0;
+    let n1 = clin.normal_first || 0;
+    let dly = clin.suspect_delay || 0;
+    let fol = clin.followed || 0;
+    let n2 = clin.normal_follow || 0;
+    let fnorm = clin.normal_final || 0;
+
+    if (ms !== 'all' && yData.milestones?.[ms]) {
+      const dm = yData.milestones[ms];
+      tar = dm.target || 0;
+      res = dm.result || 0;
+      n1 = dm.normal_first || 0;
+      dly = dm.suspect_delay || 0;
+      fol = dm.followed || 0;
+      n2 = dm.normal_follow || 0;
+      fnorm = dm.normal_final || 0;
+    }
+
+    const screenRate = tar > 0 ? (res / tar * 100) : 0;
+    const n1Rate = res > 0 ? (n1 / res * 100) : 0;
+    const n1DenRate = tar > 0 ? (n1 / tar * 100) : 0;
+    const dlyRate = res > 0 ? (dly / res * 100) : 0;
+    const folRate = dly > 0 ? (fol / dly * 100) : 0;
+    const fnormRate = tar > 0 ? (fnorm / tar * 100) : 0;
+
+    // 3. Update 4 Bento Cards
+    const screenRateEl = document.getElementById('childdev-card-screen-rate');
+    if (screenRateEl) screenRateEl.textContent = `${screenRate.toFixed(2)}%`;
+
+    const screenBadgeEl = document.getElementById('childdev-card-screen-badge');
+    if (screenBadgeEl) {
+      if (screenRate >= 85.0) {
+        screenBadgeEl.className = 'px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800';
+        screenBadgeEl.textContent = 'ผ่านเกณฑ์ ≥ 85%';
+      } else {
+        screenBadgeEl.className = 'px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800';
+        screenBadgeEl.textContent = 'เกณฑ์ ≥ 85%';
+      }
+    }
+    const screenNumEl = document.getElementById('childdev-card-screen-num');
+    if (screenNumEl) screenNumEl.textContent = res.toLocaleString();
+    const screenDenEl = document.getElementById('childdev-card-screen-den');
+    if (screenDenEl) screenDenEl.textContent = tar.toLocaleString();
+    const screenBarEl = document.getElementById('childdev-card-screen-bar');
+    if (screenBarEl) screenBarEl.style.width = `${Math.min(100, screenRate)}%`;
+
+    // Card 2: Normal 1st
+    const n1NumEl = document.getElementById('childdev-card-n1-num');
+    if (n1NumEl) n1NumEl.textContent = `${n1.toLocaleString()} คน`;
+    const n1RateEl = document.getElementById('childdev-card-n1-rate');
+    if (n1RateEl) n1RateEl.textContent = `${n1Rate.toFixed(2)}%`;
+    const n1DenRateEl = document.getElementById('childdev-card-n1-den-rate');
+    if (n1DenRateEl) n1DenRateEl.textContent = `${n1DenRate.toFixed(2)}%`;
+    const n1BarEl = document.getElementById('childdev-card-n1-bar');
+    if (n1BarEl) n1BarEl.style.width = `${Math.min(100, n1Rate)}%`;
+
+    // Card 3: Suspected delay
+    const dlyNumEl = document.getElementById('childdev-card-delay-num');
+    if (dlyNumEl) dlyNumEl.textContent = `${dly.toLocaleString()} คน`;
+    const dlyRateEl = document.getElementById('childdev-card-delay-rate');
+    if (dlyRateEl) {
+      dlyRateEl.textContent = `${dlyRate.toFixed(2)}%`;
+      dlyRateEl.className = `px-2 py-0.5 rounded-md text-[11px] font-bold ${dlyRate <= 20.0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'} num-font`;
+    }
+    const dlyBarEl = document.getElementById('childdev-card-delay-bar');
+    if (dlyBarEl) {
+      dlyBarEl.style.width = `${Math.min(100, dlyRate)}%`;
+      dlyBarEl.className = `h-2 rounded-full ${dlyRate <= 20.0 ? 'bg-amber-500' : 'bg-rose-500'} transition-all duration-500`;
+    }
+
+    // Card 4: Final normal & follow-up
+    const finalNumEl = document.getElementById('childdev-card-final-num');
+    if (finalNumEl) finalNumEl.textContent = `${fnorm.toLocaleString()} คน`;
+    const finalRateEl = document.getElementById('childdev-card-final-rate');
+    if (finalRateEl) finalRateEl.textContent = `${fnormRate.toFixed(2)}%`;
+    const folNumEl = document.getElementById('childdev-card-fol-num');
+    if (folNumEl) folNumEl.textContent = `${fol}/${dly}`;
+    const folRateEl = document.getElementById('childdev-card-fol-rate');
+    if (folRateEl) folRateEl.textContent = `${folRate.toFixed(2)}%`;
+    const n2NumEl = document.getElementById('childdev-card-n2-num');
+    if (n2NumEl) n2NumEl.textContent = n2.toLocaleString();
+    const finalBarEl = document.getElementById('childdev-card-final-bar');
+    if (finalBarEl) finalBarEl.style.width = `${Math.min(100, fnormRate)}%`;
+
+    // 4. Update 5 Milestones Quick Grid
+    const msGridEl = document.getElementById('childdev-milestones-grid');
+    if (msGridEl && yData.milestones) {
+      let gridHtml = '';
+      [9, 18, 30, 42, 60].forEach(m => {
+        const dm = yData.milestones[String(m)] || {};
+        const isActive = (ms === String(m));
+        gridHtml += `
+          <div onclick="window.switchChilddevMilestone('${m}')" class="p-3 rounded-2xl cursor-pointer transition border ${isActive ? 'bg-emerald-50/90 border-emerald-500 ring-2 ring-emerald-500/20 shadow-xs' : 'bg-white border-slate-200/80 hover:border-slate-300 shadow-2xs'}">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-extrabold text-slate-800 flex items-center gap-1">
+                <i class="fa-solid fa-child text-sky-500 text-[11px]"></i> ${m} เดือน
+              </span>
+              <span class="font-black ${dm.rate >= 85 ? 'text-emerald-600' : 'text-amber-600'} num-font">${(dm.rate || 0).toFixed(1)}%</span>
+            </div>
+            <div class="text-[11px] text-slate-500 font-medium">
+              คัดกรอง <strong>${dm.result || 0}</strong>/${dm.target || 0}
+            </div>
+            <div class="text-[10px] text-slate-400 mt-1 flex justify-between items-center">
+              <span>ล่าช้า ${dm.suspect_delay || 0}</span>
+              <span class="text-indigo-600 font-bold">สมวัยรวม ${dm.normal_final || 0}</span>
+            </div>
+          </div>
+        `;
+      });
+      msGridEl.innerHTML = gridHtml;
+    }
+
+    // 5. Update Pathway list
+    const pwB = document.getElementById('childdev-pw-b');
+    if (pwB) pwB.textContent = `${tar.toLocaleString()} คน`;
+    const pwA = document.getElementById('childdev-pw-a');
+    if (pwA) pwA.textContent = `${res.toLocaleString()} คน`;
+    const pwRate = document.getElementById('childdev-pw-rate');
+    if (pwRate) pwRate.textContent = `${screenRate.toFixed(2)}%`;
+    const pwN1 = document.getElementById('childdev-pw-n1');
+    if (pwN1) pwN1.textContent = `${n1.toLocaleString()} คน`;
+    const pwN1Rate = document.getElementById('childdev-pw-n1-rate');
+    if (pwN1Rate) pwN1Rate.textContent = `${n1Rate.toFixed(2)}%`;
+    const pwDly = document.getElementById('childdev-pw-dly');
+    if (pwDly) pwDly.textContent = `${dly.toLocaleString()} คน`;
+    const pwDlyRate = document.getElementById('childdev-pw-dly-rate');
+    if (pwDlyRate) pwDlyRate.textContent = `${dlyRate.toFixed(2)}%`;
+    const pwFnorm = document.getElementById('childdev-pw-fnorm');
+    if (pwFnorm) pwFnorm.textContent = `รวม ${fnorm.toLocaleString()} คน`;
+    const pwFnormRate = document.getElementById('childdev-pw-fnorm-rate');
+    if (pwFnormRate) pwFnormRate.textContent = `${fnormRate.toFixed(2)}%`;
+
+    // 6. Update Chart
+    const canvas = document.getElementById('childdev-unit-chart');
+    if (canvas && typeof Chart !== 'undefined') {
+      if (childdevUnitChartInstance) {
+        childdevUnitChartInstance.destroy();
+        childdevUnitChartInstance = null;
+      }
+
+      const unitList = [...(yData.units || [])].sort((a, b) => {
+        let rA = a.den > 0 ? (a.num / a.den * 100) : 0;
+        let rB = b.den > 0 ? (b.num / b.den * 100) : 0;
+        if (ms !== 'all' && a.by_month?.[ms] && b.by_month?.[ms]) {
+          const bmA = a.by_month[ms];
+          const bmB = b.by_month[ms];
+          rA = bmA.target > 0 ? (bmA.result / bmA.target * 100) : 0;
+          rB = bmB.target > 0 ? (bmB.result / bmB.target * 100) : 0;
+        }
+        return rB - rA;
+      });
+
+      const labels = unitList.map(u => u.name.replace('รพ.สต.', '').trim());
+      const screenRates = unitList.map(u => {
+        if (ms !== 'all' && u.by_month?.[ms]) {
+          const bm = u.by_month[ms];
+          return bm.target > 0 ? Number((bm.result / bm.target * 100).toFixed(2)) : 0;
+        }
+        return Number((u.den > 0 ? u.num / u.den * 100 : 0).toFixed(2));
+      });
+      const delayRates = unitList.map(u => {
+        if (ms !== 'all' && u.by_month?.[ms]) {
+          const bm = u.by_month[ms];
+          return bm.result > 0 ? Number((bm.suspect_delay / bm.result * 100).toFixed(2)) : 0;
+        }
+        return Number((u.num > 0 ? u.suspect_delay / u.num * 100 : 0).toFixed(2));
+      });
+      const finalNormRates = unitList.map(u => {
+        if (ms !== 'all' && u.by_month?.[ms]) {
+          const bm = u.by_month[ms];
+          return bm.target > 0 ? Number((bm.normal_final / bm.target * 100).toFixed(2)) : 0;
+        }
+        return Number((u.den > 0 ? u.normal_final / u.den * 100 : 0).toFixed(2));
+      });
+
+      childdevUnitChartInstance = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'ร้อยละคัดกรอง (A/B)',
+              data: screenRates,
+              backgroundColor: screenRates.map(r => r >= 85 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(56, 189, 248, 0.85)'),
+              borderColor: screenRates.map(r => r >= 85 ? '#059669' : '#0284c7'),
+              borderWidth: 1,
+              borderRadius: 6,
+              order: 2
+            },
+            {
+              label: 'ร้อยละสมวัยรวม (ต่อเป้าหมาย)',
+              data: finalNormRates,
+              backgroundColor: 'rgba(99, 102, 241, 0.65)',
+              borderColor: '#4f46e5',
+              borderWidth: 1,
+              borderRadius: 6,
+              order: 3
+            },
+            {
+              label: 'ร้อยละสงสัยล่าช้า (ต่อที่ตรวจ)',
+              data: delayRates,
+              backgroundColor: delayRates.map(r => r <= 20 ? 'rgba(245, 158, 11, 0.75)' : 'rgba(239, 68, 68, 0.85)'),
+              borderColor: delayRates.map(r => r <= 20 ? '#d97706' : '#dc2626'),
+              borderWidth: 1,
+              borderRadius: 6,
+              order: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { family: "'Noto Sans Thai', sans-serif", size: 11, weight: 'bold' } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return `${ctx.dataset.label}: ${ctx.raw}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(v) { return v + '%'; },
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 }
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              ticks: {
+                font: { family: "'Noto Sans Thai', sans-serif", size: 10 },
+                maxRotation: 45,
+                minRotation: 30
+              },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // 7. Update Table
+    renderChilddevTableOnly();
+  }
+
+  // =========================================================================
   // SERVICE PLAN (NCD DM, HT, CVD, CKD) - CONTROLLER & RENDER
   // =========================================================================
 
@@ -18313,6 +18872,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
       if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
       if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+      if (childdevPanel) childdevPanel.classList.add('hidden');
 
       const standardIndHeader = document.getElementById('standard-indicator-header');
       if (standardIndHeader) standardIndHeader.classList.add('hidden');
@@ -18342,6 +18902,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
       if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
       if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+      if (childdevPanel) childdevPanel.classList.add('hidden');
 
       if (servicePlanNcdPanel) servicePlanNcdPanel.classList.remove('hidden');
       renderServicePlanNcdPanel();
@@ -18372,6 +18933,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isTtmCommon = (currentIndicatorId === 'ttm_common_dis');
       const isTtmMassage = (currentIndicatorId === 'ttm_massage');
       const isDmHba1c = (currentIndicatorId === 'pcc_dm_hba1c');
+      const isChildDev = (currentIndicatorId === 'ppb_child_develop' || currentIndicatorId === 'mch_childdev');
       const standardChartsSection = document.getElementById('standard-charts-section');
       const standardTableSection = document.getElementById('standard-table-section');
 
@@ -18380,6 +18942,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (standardChartsSection) standardChartsSection.classList.add('hidden');
         if (standardTableSection) standardTableSection.classList.add('hidden');
         if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+        if (childdevPanel) childdevPanel.classList.add('hidden');
         if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
         if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
         if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
@@ -18411,6 +18974,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideSpecialPanels();
         if (dmHba1cPanel) dmHba1cPanel.classList.remove('hidden');
         renderDmHba1cPanel();
+      } else if (isChildDev) {
+        hideSpecialPanels();
+        if (childdevPanel) childdevPanel.classList.remove('hidden');
+        renderChilddevPanel();
       } else if (isTtmMassage) {
         hideSpecialPanels();
         if (ttmMassagePanel) ttmMassagePanel.classList.remove('hidden');
