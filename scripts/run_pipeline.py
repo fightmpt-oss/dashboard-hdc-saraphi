@@ -47,6 +47,7 @@ STEPS = [
     ("build_ttm4", [sys.executable, "scripts/build_ttm4_cache.py", "--write"]),
     ("build_overview", [sys.executable, "scripts/build_overview_master.py"]),
     ("build_sync", [sys.executable, "scripts/build_sync_status.py"]),
+    ("verify", [sys.executable, "scripts/verify_integrity.py"]),
 ]
 
 

@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ภาพรวมตัวชี้วัด + สถานะการดึงข้อมูล (โหลดแยกหลัง master หลัก)
   let overviewData = null;
   let syncStatusData = null;
+  let verificationData = null;
   let overviewYear = '2569';
   let overviewGroup = 'all';
   let overviewSearch = '';
@@ -348,12 +349,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   (async () => {
     const cb = `?t=${Date.now()}`;
     try {
-      const [rOv, rSync] = await Promise.all([
+      const [rOv, rSync, rVer] = await Promise.all([
         fetch(`data/overview_master.json${cb}`, { cache: 'no-cache' }).catch(() => null),
-        fetch(`data/sync_status.json${cb}`, { cache: 'no-cache' }).catch(() => null)
+        fetch(`data/sync_status.json${cb}`, { cache: 'no-cache' }).catch(() => null),
+        fetch(`data/verification_status.json${cb}`, { cache: 'no-cache' }).catch(() => null)
       ]);
       if (rOv && rOv.ok) overviewData = await rOv.json();
       if (rSync && rSync.ok) syncStatusData = await rSync.json();
+      if (rVer && rVer.ok) verificationData = await rVer.json();
     } catch (e) {
       console.warn('overview/sync status load failed:', e);
     }
@@ -16725,7 +16728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tr.innerHTML = `
       <td class="py-2 px-3">
         <button type="button" class="text-left font-semibold text-slate-800 hover:text-blue-700 leading-snug" onclick="window.openOverviewIndicator('${entry.id}')" title="เปิดหน้ารายงานเต็มของตัวชี้วัดนี้">${entry.name}</button>
-        <div class="text-[10px] text-slate-400 font-mono mt-0.5">${entry.table}</div>
+        <div class="text-[10px] text-slate-400 font-mono mt-0.5">${entry.table}${entry.hdc_url ? ` <a href="${entry.hdc_url}" target="_blank" rel="noopener noreferrer" class="text-emerald-500 hover:text-emerald-700" title="เทียบตัวเลขกับรายงานต้นฉบับ HDC"><i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i></a>` : ''}</div>
       </td>
       <td class="py-2 px-2 text-center">${goalTxt}</td>
       <td class="py-2 px-2 text-center">${overviewRateCell(entry, dist)}</td>
@@ -16862,6 +16865,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!syncStatusData) { box.innerHTML = ''; return; }
     const n = syncStatusData.counts.tables;
     const ok = syncStatusData.counts.ok;
+    const ver = verificationData;
+    const verBadge = ver ? (() => {
+      const pass = ver.overall === 'pass';
+      const warn = ver.counts.warnings || 0;
+      const cls = pass ? (warn > 0 ? 'bg-blue-500 text-white' : 'bg-blue-600 text-white') : 'bg-rose-600 text-white';
+      const txt = pass ? (warn > 0 ? `ผ่านทุกรายการ • ข้อสังเกต ${warn}` : 'ผ่านทุกรายการ') : `ไม่ผ่าน ${ver.counts.checks_failed} จุด`;
+      return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold ${cls}" title="ตรวจสอบอัตโนมัติเมื่อ ${formatThaiDateTime(ver.generated_at)} — ความครบถ้วน / คณิตศาสตร์ / ความสอดคล้องข้ามมุมมอง / สคีมา HDC">
+        <i class="fa-solid ${pass ? 'fa-shield-halved' : 'fa-triangle-exclamation'}"></i> ตรวจสอบความถูกต้อง: ${txt}</span>`;
+    })() : '';
+    const verWarnBlock = (ver && (ver.counts.warnings || 0) > 0) ? `<details class="mt-2">
+          <summary class="cursor-pointer text-[11px] font-bold text-amber-700 hover:text-amber-800 select-none">ข้อสังเกตข้อมูลต้นทาง HDC (${ver.counts.warnings} จุด — ตรวจยืนยันแล้วว่าไม่ใช่การคำนวณผิดของระบบ)</summary>
+          <ul class="mt-1.5 space-y-0.5 text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2.5 max-h-40 overflow-y-auto list-disc pl-6">
+            ${ver.sections.filter(s => s.name === 'hdc_source_warnings').map(s => s.failures.map(f => `<li>${f}</li>`).join('')).join('')}
+          </ul>
+        </details>` : '';
+    const verFailuresBlock = (ver && ver.overall !== 'pass') ? `<details class="mt-2">
+          <summary class="cursor-pointer text-[11px] font-bold text-rose-700 hover:text-rose-800 select-none">รายการตรวจที่ไม่ผ่าน (${ver.counts.checks_failed} จุด) — ข้อมูลชุดนี้ยังไม่ควรใช้อ้างอิง</summary>
+          <ul class="mt-1.5 space-y-0.5 text-[11px] text-rose-700 bg-rose-50 border border-rose-200 rounded-lg p-2.5 max-h-56 overflow-y-auto list-disc pl-6">
+            ${ver.sections.filter(s => s.failure_count > 0 && s.name !== 'hdc_source_warnings').map(s => s.failures.map(f => `<li><span class="font-bold">[${s.name}]</span> ${f}</li>`).join('')).join('')}
+          </ul>
+        </details>` : '';
     const rows = syncStatusData.tables.map(t => {
       const y9 = t.years['2569'] || {};
       const dc = y9.date_com ? formatThaiDateTime(y9.date_com) : '–';
@@ -16870,7 +16894,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         : Number(y9.saraphi_rows || 0).toLocaleString();
       return `<tr class="hover:bg-slate-50">
         <td class="py-1.5 px-2.5 font-semibold text-slate-800">${t.label || t.table}</td>
-        <td class="py-1.5 px-2 font-mono text-rose-700">${t.table}</td>
+        <td class="py-1.5 px-2 font-mono text-rose-700">${t.table}${t.hdc_url ? ` <a href="${t.hdc_url}" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:text-emerald-800" title="เปิดรายงานต้นฉบับบน HDC กระทรวงสาธารณสุข เพื่อเทียบตัวเลข"><i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i></a>` : ''}</td>
         <td class="py-1.5 px-2 text-slate-500">${t.group || ''}</td>
         <td class="py-1.5 px-2 text-center num-font font-bold text-slate-700">${rowsTxt}</td>
         <td class="py-1.5 px-2 text-center num-font text-slate-500">${dc}</td>
@@ -16885,7 +16909,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           </span>
           <span class="font-bold text-slate-700">ข้อมูลล่าสุด: <span class="num-font text-emerald-700">${formatThaiDateTime(syncStatusData.generated_at)}</span></span>
           <span class="text-slate-500">• ดึงข้อมูลจริงจาก OpenData MoPH <span class="font-bold num-font text-emerald-700">${ok}/${n}</span> ตาราง</span>
+          ${verBadge}
         </div>
+        ${verFailuresBlock}
+        ${verWarnBlock}
         <details class="mt-2">
           <summary class="cursor-pointer text-[11px] font-bold text-emerald-700 hover:text-emerald-800 select-none">ดูสถานะการดึงข้อมูลรายตาราง (${n} ตาราง)</summary>
           <div class="mt-2 max-h-80 overflow-y-auto overflow-x-auto rounded-lg border border-slate-200">

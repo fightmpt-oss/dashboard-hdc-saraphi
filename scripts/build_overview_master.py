@@ -84,7 +84,25 @@ def _scope_with_fallback(scope, fu_keys):
     return {"num": num, "den": den, "rate": rate_f}
 
 
-def from_main_master(master):
+def load_catalog_urls():
+    """source_table → HDC report URL สำหรับปุ่มเทียบ HDC รายแถว"""
+    path = os.path.join(DATA, "moph_catalog.json")
+    urls = {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            cat = json.load(f)
+        items = cat if isinstance(cat, list) else cat.get("data") or []
+        for it in items:
+            st = it.get("source_table")
+            oid = it.get("opendata_id")
+            if st and oid and st not in urls:
+                urls[st] = f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{oid}"
+    except (json.JSONDecodeError, OSError):
+        pass
+    return urls
+
+
+def from_main_master(master, catalog_urls):
     """24 curated indicators from saraphi_complete_master.json."""
     out = []
     for ind_id, ind in master.get("indicators", {}).items():
@@ -101,6 +119,7 @@ def from_main_master(master):
             "goal_pct": ind.get("target") if ind.get("target") else None,
             "higher_is_better": ind_id not in LOWER_IS_BETTER,
             "show_pct": (ind.get("unit") == "%"),
+            "hdc_url": catalog_urls.get(ind.get("table")),
             "years": {},
         }
         for yr, yd in (ind.get("years") or {}).items():
@@ -130,6 +149,7 @@ def from_ncd_master(master):
             "goal_pct": rep.get("kpi_target"),
             "higher_is_better": not lower,
             "show_pct": True,
+            "hdc_url": rep.get("hdc_url"),
             "years": {},
         }
         for yr, yd in (rep.get("years") or {}).items():
@@ -181,6 +201,7 @@ def from_pcc2569_master(master):
             "goal_pct": goal,
             "higher_is_better": True,
             "show_pct": True,
+            "hdc_url": None,
             "years": {
                 "2569": {
                     "district": {"num": _int(d.get("a")), "den": _int(d.get("b")), "rate": d.get("rate")},
@@ -206,7 +227,7 @@ def main():
         with open(pcc2569_path, encoding="utf-8") as f:
             pcc2569_master = json.load(f)
 
-    indicators = from_main_master(main_master) + from_ncd_master(ncd_master)
+    indicators = from_main_master(main_master, load_catalog_urls()) + from_ncd_master(ncd_master)
     if pcc2569_master:
         indicators += from_pcc2569_master(pcc2569_master)
 

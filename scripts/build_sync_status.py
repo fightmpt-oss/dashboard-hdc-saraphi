@@ -41,7 +41,26 @@ def raw_stats(table):
     return out
 
 
+def load_catalog_urls():
+    """source_table → HDC report URL (จากแคตตาล็อก OpenData) สำหรับปุ่มเทียบ HDC"""
+    path = os.path.join(DATA, "moph_catalog.json")
+    urls = {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            cat = json.load(f)
+        items = cat if isinstance(cat, list) else cat.get("data") or []
+        for it in items:
+            st = it.get("source_table")
+            oid = it.get("opendata_id")
+            if st and oid and st not in urls:
+                urls[st] = f"https://hdc.moph.go.th/cmi/public/standard-report-detail/{oid}"
+    except (json.JSONDecodeError, OSError):
+        pass
+    return urls
+
+
 def main():
+    catalog_urls = load_catalog_urls()
     with open(os.path.join(DATA, "saraphi_complete_master.json"), encoding="utf-8") as f:
         main_master = json.load(f)
     with open(os.path.join(DATA, "ncd_service_plan_master.json"), encoding="utf-8") as f:
@@ -64,6 +83,7 @@ def main():
             "group": ind.get("domain_label") or ind.get("domain"),
             "source": "opendata",
             "years": years,
+            "hdc_url": catalog_urls.get(table),
             "ok": bool(years),
         })
 
@@ -79,6 +99,7 @@ def main():
             "group": f"Service Plan NCDs ({rep.get('category')})",
             "source": "opendata",
             "years": years,
+            "hdc_url": rep.get("hdc_url"),
             "ok": bool(years),
         })
 
@@ -97,6 +118,7 @@ def main():
                 "group": "งบ PCC 2569 (P4P)",
                 "source": "xlsx",
                 "years": {"2569": {"saraphi_rows": len(pcc.get("units") or {}), "date_com": updated}},
+                "hdc_url": None,
                 "ok": bool(d),
             })
 

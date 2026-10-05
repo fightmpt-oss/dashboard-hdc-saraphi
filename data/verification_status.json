@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-10-05T14:04:52Z",
+  "overall": "pass",
+  "counts": {
+    "main_indicators": 24,
+    "ncd_reports": 36,
+    "checks_failed": 0,
+    "warnings": 11
+  },
+  "sections": [
+    {
+      "name": "completeness",
+      "passed": true,
+      "failures": [],
+      "failure_count": 0,
+      "notes": []
+    },
+    {
+      "name": "invariants",
+      "passed": true,
+      "failures": [],
+      "failure_count": 0,
+      "notes": []
+    },
+    {
+      "name": "cross_view",
+      "passed": true,
+      "failures": [],
+      "failure_count": 0,
+      "notes": []
+    },
+    {
+      "name": "schema_fingerprints",
+      "passed": true,
+      "failures": [],
+      "failure_count": 0,
+      "notes": []
+    },
+    {
+      "name": "hdc_source_warnings",
+      "passed": true,
+      "failures": [
+        "ncd:ncd_24(s_bmi2year) 2567 หน่วย 06014: num(178) > den(173) = 102.89% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2567 หน่วย 06015: num(58) > den(57) = 101.75% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2567 หน่วย 06023: num(104) > den(102) = 101.96% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2567 หน่วย 06024: num(61) > den(59) = 103.39% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2567 หน่วย 13994: num(79) > den(70) = 112.86% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2568 หน่วย 06015: num(96) > den(90) = 106.67% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2568 หน่วย 06016: num(40) > den(37) = 108.11% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2568 หน่วย 99758: num(113) > den(110) = 102.73% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2569 หน่วย 06015: num(68) > den(66) = 103.03% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2569 หน่วย 06024: num(50) > den(48) = 104.17% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)",
+        "ncd:ncd_24(s_bmi2year) 2569 หน่วย 13994: num(58) > den(54) = 107.41% — ลักษณะข้อมูลต้นทาง HDC (ไม่ใช่การคำนวณผิด)"
+      ],
+      "failure_count": 11,
+      "notes": [
+        "ลักษณะข้อมูลต้นทาง HDC ที่ตรวจยืนยันแล้ว ไม่ใช่ความผิดพลาดของระบบ"
+      ]
+    }
+  ]
+}

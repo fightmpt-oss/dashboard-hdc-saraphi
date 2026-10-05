@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-05T12:28:12Z",
+  "generated_at": "2026-10-05T13:44:14Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-02T02:20:09Z",
+    "saraphi_complete_master": "2026-10-05T13:44:00Z",
     "ncd_service_plan_master": "2026-10-05",
     "ncd_total_reports": 36
   },
@@ -20,7 +20,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609080344"
+          "date_com": "202610020959"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -31,6 +31,7 @@
           "date_com": "202411142335"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/18576644ee6ec12c24b8d307535fa140",
       "ok": true
     },
     {
@@ -42,7 +43,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609121340"
+          "date_com": "202610020800"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -53,6 +54,7 @@
           "date_com": "202411142319"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/c8708c987b1400ceacfa02a1bd272a18",
       "ok": true
     },
     {
@@ -64,7 +66,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609080144"
+          "date_com": "202610020801"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -75,6 +77,7 @@
           "date_com": "202411142320"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/ca51496ce4f8076a0b67b72c1496d58e",
       "ok": true
     },
     {
@@ -86,7 +89,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609080301"
+          "date_com": "202610020906"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -97,6 +100,7 @@
           "date_com": "202411142333"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/4db362c3c0c8ed7642ffeccbf7df5255",
       "ok": true
     },
     {
@@ -108,7 +112,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609121340"
+          "date_com": "202610020801"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -119,6 +123,7 @@
           "date_com": "202411142320"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/65a9f9496401d91402b3cb38805bb4d6",
       "ok": true
     },
     {
@@ -130,7 +135,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609130418"
+          "date_com": "202610050612"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -141,6 +146,7 @@
           "date_com": "202502241304"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/mtlg7qpGzbMJRk15oggUy",
       "ok": true
     },
     {
@@ -152,7 +158,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202609121340"
+          "date_com": "202610020801"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -163,6 +169,7 @@
           "date_com": "202411142320"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/daa4f09de05917f530445267a017e1c4",
       "ok": true
     },
     {
@@ -174,7 +181,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609121452"
+          "date_com": "202610020959"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -185,6 +192,7 @@
           "date_com": "202411142335"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/9615f70d993b1b673fbe65ae958a59fc",
       "ok": true
     },
     {
@@ -195,8 +203,8 @@
       "source": "opendata",
       "years": {
         "2569": {
-          "saraphi_rows": 219,
-          "date_com": "202609080344"
+          "saraphi_rows": 225,
+          "date_com": "202610020959"
         },
         "2568": {
           "saraphi_rows": 286,
@@ -207,6 +215,7 @@
           "date_com": "202411142335"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8d38925724b0bbb4b11844b18df088e4",
       "ok": true
     },
     {
@@ -229,6 +238,7 @@
           "date_com": "202411141136"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/fdc28cd7317936b7b734cec34103524c",
       "ok": true
     },
     {
@@ -251,6 +261,7 @@
           "date_com": "202411141134"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/137a726340e4dfde7bbbc5d8aeee3ac3",
       "ok": true
     },
     {
@@ -262,7 +273,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 116,
-          "date_com": "202610020249"
+          "date_com": "202610052029"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -273,6 +284,7 @@
           "date_com": "202411141416"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2e3813337b6b5377c2f68affe247d5f9",
       "ok": true
     },
     {
@@ -295,6 +307,7 @@
           "date_com": "202411141140"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/b06544333648315e83c83445a62dd94e",
       "ok": true
     },
     {
@@ -317,6 +330,7 @@
           "date_com": "202411140923"
         }
       },
+      "hdc_url": null,
       "ok": true
     },
     {
@@ -328,7 +342,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609072302"
+          "date_com": "202610020537"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -339,6 +353,7 @@
           "date_com": "202411142107"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/e28682b2718e6cc82b8dbb3e00f2e28e",
       "ok": true
     },
     {
@@ -350,7 +365,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609072254"
+          "date_com": "202610020527"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -361,6 +376,7 @@
           "date_com": "202411142025"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/be5072b516aa3bc989be9780979314e6",
       "ok": true
     },
     {
@@ -372,7 +388,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609072254"
+          "date_com": "202610020527"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -383,6 +399,7 @@
           "date_com": "202411142025"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8b6e9aa2219613b9b6443a7724b7fd04",
       "ok": true
     },
     {
@@ -394,7 +411,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609071221"
+          "date_com": "202610051231"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -405,6 +422,7 @@
           "date_com": "202411140832"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/cXm32mF777ng0lJ0pZfrU",
       "ok": true
     },
     {
@@ -416,7 +434,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 114,
-          "date_com": "202609071231"
+          "date_com": "202610051240"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -427,6 +445,7 @@
           "date_com": "202411140843"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/aa86b13e8cb60cae6c3216b7e3e5f151",
       "ok": true
     },
     {
@@ -438,7 +457,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 114,
-          "date_com": "202609071315"
+          "date_com": "202610051323"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -449,6 +468,7 @@
           "date_com": "202411140905"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/953a2fc648be8ce76a8115fbb955bb51",
       "ok": true
     },
     {
@@ -460,7 +480,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 51,
-          "date_com": "202609072302"
+          "date_com": "202610020536"
         },
         "2568": {
           "saraphi_rows": 63,
@@ -471,6 +491,7 @@
           "date_com": "202411142105"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/4164a7c49fcb2b8c3ccca67dcdf28bd0",
       "ok": true
     },
     {
@@ -482,7 +503,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202609072338"
+          "date_com": "202610020605"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -493,6 +514,7 @@
           "date_com": "202411142152"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/94698146861c48e7d45dd1e186f9b7b1",
       "ok": true
     },
     {
@@ -515,6 +537,7 @@
           "date_com": "202411140923"
         }
       },
+      "hdc_url": null,
       "ok": true
     },
     {
@@ -526,7 +549,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 116,
-          "date_com": "202610020249"
+          "date_com": "202610052029"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -537,6 +560,7 @@
           "date_com": "202411141416"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/2e3813337b6b5377c2f68affe247d5f9",
       "ok": true
     },
     {
@@ -559,6 +583,7 @@
           "date_com": "202411141140"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/b06544333648315e83c83445a62dd94e",
       "ok": true
     },
     {
@@ -581,6 +606,7 @@
           "date_com": "202411141132"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/752f4de6e90d3e41b3cb8f8104b2e8bd",
       "ok": true
     },
     {
@@ -592,7 +618,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 116,
-          "date_com": "202610020251"
+          "date_com": "202610052031"
         },
         "2568": {
           "saraphi_rows": 116,
@@ -603,6 +629,7 @@
           "date_com": "202411141422"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/7a04770d641e649e3850f5df40deef05",
       "ok": true
     },
     {
@@ -625,6 +652,7 @@
           "date_com": "202411141133"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/4787b961e9782d2de685bf65bb23b8f1",
       "ok": true
     },
     {
@@ -647,6 +675,7 @@
           "date_com": "202411141134"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/151a52b8783f69e3a309c9f625a27e40",
       "ok": true
     },
     {
@@ -658,7 +687,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 1,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 1,
@@ -669,6 +698,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/291f57594cc6c0fdd5514a59c20c8904",
       "ok": true
     },
     {
@@ -680,7 +710,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 1,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 1,
@@ -691,6 +721,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/12f733a3842f9039c809968779faa971",
       "ok": true
     },
     {
@@ -713,6 +744,7 @@
           "date_com": "202411142149"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/0f23318497737af76b19e98304dbcec7",
       "ok": true
     },
     {
@@ -735,6 +767,7 @@
           "date_com": "202411142245"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/d3aad6d7729c370287f43d1f094b3dd1",
       "ok": true
     },
     {
@@ -757,6 +790,7 @@
           "date_com": "202411142245"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/e0d72f9ec9848a10b70f5872bb6830e8",
       "ok": true
     },
     {
@@ -779,6 +813,7 @@
           "date_com": "202411141142"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/e9fb648fe9f1858878714a410222eef1",
       "ok": true
     },
     {
@@ -801,6 +836,7 @@
           "date_com": "202411142150"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/cc7ca5d68ea315208e2039d7c64792ce",
       "ok": true
     },
     {
@@ -812,7 +848,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020250"
+          "date_com": "202610052030"
         },
         "2568": {
           "saraphi_rows": 12,
@@ -823,6 +859,7 @@
           "date_com": "202411141418"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/200becbc2658dfc892a0b0ba661d7941",
       "ok": true
     },
     {
@@ -845,6 +882,7 @@
           "date_com": "202411141141"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/626c89f6b8d9f7ed90c72c719775eb07",
       "ok": true
     },
     {
@@ -867,6 +905,7 @@
           "date_com": "202411141142"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/323a75335033c5976566d99f5ad53b33",
       "ok": true
     },
     {
@@ -878,7 +917,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020251"
+          "date_com": "202610052031"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -889,6 +928,7 @@
           "date_com": ""
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/b57439ff27302ade8c38d1dd189644a4",
       "ok": true
     },
     {
@@ -911,6 +951,7 @@
           "date_com": "202411142150"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/ab10d2cee3bd010cd0aab0148bbd0c6c",
       "ok": true
     },
     {
@@ -922,7 +963,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -933,6 +974,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/1d1f760554763b3ff098d5b696ecb8f3",
       "ok": true
     },
     {
@@ -944,7 +986,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 12,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 11,
@@ -955,6 +997,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/c72b4c288364ba0f84160cbb4182b3f9",
       "ok": true
     },
     {
@@ -977,6 +1020,7 @@
           "date_com": "202411141132"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/d5d8c4ae88e070d81b15dd4ed51294f3",
       "ok": true
     },
     {
@@ -988,7 +1032,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020252"
+          "date_com": "202610052032"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -999,6 +1043,7 @@
           "date_com": "202411141422"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/6d0c58de6b948dd0eac3c736c7584b59",
       "ok": true
     },
     {
@@ -1021,6 +1066,7 @@
           "date_com": "202411140914"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/735890fbb28aa2989052648af8cb4600",
       "ok": true
     },
     {
@@ -1043,6 +1089,7 @@
           "date_com": "202411141135"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/1932e7f6482a5e1e3c20b51927ef4adc",
       "ok": true
     },
     {
@@ -1065,6 +1112,7 @@
           "date_com": "202411141004"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/cb65de9ec5fa4e5987b43da669b2280d",
       "ok": true
     },
     {
@@ -1076,7 +1124,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 116,
-          "date_com": "202610020250"
+          "date_com": "202610052031"
         },
         "2568": {
           "saraphi_rows": 116,
@@ -1087,6 +1135,7 @@
           "date_com": "202411141418"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/9702fa28cd2ec73ecc6af89d14f46874",
       "ok": true
     },
     {
@@ -1098,7 +1147,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 116,
-          "date_com": "202610020252"
+          "date_com": "202610052032"
         },
         "2568": {
           "saraphi_rows": 116,
@@ -1109,6 +1158,7 @@
           "date_com": "202411141422"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/6833128a5d76a6afcae3e4a6af0e718c",
       "ok": true
     },
     {
@@ -1131,6 +1181,7 @@
           "date_com": "202411141444"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/71cff4a5f828ddbe688784c2659abfe9",
       "ok": true
     },
     {
@@ -1153,6 +1204,7 @@
           "date_com": "202411141140"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/d0726b6e82496162f596395050cb6c8c",
       "ok": true
     },
     {
@@ -1164,7 +1216,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 12,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 11,
@@ -1175,6 +1227,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/c24151b343645cbb62570d74ab6b5c13",
       "ok": true
     },
     {
@@ -1197,6 +1250,7 @@
           "date_com": "202411142150"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/e9e461e793e8258f47d46d6956f12832",
       "ok": true
     },
     {
@@ -1219,6 +1273,7 @@
           "date_com": "202411140919"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/9cd87ceb6609d0183a3cfd2f0fd29553",
       "ok": true
     },
     {
@@ -1241,6 +1296,7 @@
           "date_com": "202411141141"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/c70689abe5b3efe5d085b8c3c30141f7",
       "ok": true
     },
     {
@@ -1252,7 +1308,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 1,
-          "date_com": "202610020248"
+          "date_com": "202610052028"
         },
         "2568": {
           "saraphi_rows": 1,
@@ -1263,6 +1319,7 @@
           "date_com": "202411141415"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/ed8a334a91292b003cdc47a641679f0a",
       "ok": true
     },
     {
@@ -1285,6 +1342,7 @@
           "date_com": "202411141136"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/fdc28cd7317936b7b734cec34103524c",
       "ok": true
     },
     {
@@ -1307,6 +1365,7 @@
           "date_com": "202411141134"
         }
       },
+      "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/137a726340e4dfde7bbbc5d8aeee3ac3",
       "ok": true
     },
     {
@@ -1321,6 +1380,7 @@
           "date_com": ""
         }
       },
+      "hdc_url": null,
       "ok": true
     },
     {
@@ -1335,6 +1395,7 @@
           "date_com": ""
         }
       },
+      "hdc_url": null,
       "ok": true
     },
     {
@@ -1349,6 +1410,7 @@
           "date_com": ""
         }
       },
+      "hdc_url": null,
       "ok": true
     },
     {
@@ -1363,6 +1425,7 @@
           "date_com": ""
         }
       },
+      "hdc_url": null,
       "ok": true
     }
   ]
