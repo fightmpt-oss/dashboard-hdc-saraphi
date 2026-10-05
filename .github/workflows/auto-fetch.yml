@@ -1,0 +1,53 @@
+# ดึงข้อมูล HDC OpenData อัตโนมัติทุกวัน (เลียนแบบระบบ ncd.in.th ที่ตั้งเวลา 02:00)
+#
+# ตาราง cron เป็นเวลา UTC — 02:00 เวลาไทย (ICT = UTC+7) = 19:00 UTC ของวันก่อน
+# (GitHub อาจเลื่อนเวลารันสักไม่กี่นาทีในช่วงที่มีคิวสูง)
+#
+# ขอบเขต: เฉพาะตาราง OpenData MoPH (API สาธารณะ ไม่ต้องใช้ credential)
+#   - สปสช. MeData ยังรันมือผ่าน update_nhso_data.bat เพราะต้องใช้ Playwright
+#     สกัดหน้าจอ Tableau (ทำใน CI ได้แต่เปราะบางและช้า)
+#   - commit เฉพาะเมื่อข้อมูลเปลี่ยนจริง (HDC บางวันไม่อัปเดตข้อมูล)
+
+name: auto-fetch
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # 02:00 Asia/Bangkok ทุกวัน
+  workflow_dispatch: {} # ปุ่มรันมือในหน้า Actions
+
+concurrency:
+  group: auto-fetch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install openpyxl
+
+      - name: Run data pipeline (MoPH OpenData)
+        run: python scripts/run_pipeline.py
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data; then
+            echo "ข้อมูลไม่เปลี่ยนแปลง (HDC ยังไม่ประมวลผลข้อมูลใหม่) — ไม่ commit"
+          else
+            git add data
+            git commit -m "data: auto-refresh HDC OpenData snapshots ($(date -u +'%Y-%m-%d'))"
+            git push
+            echo "Pushed refreshed data — Vercel will auto-deploy"
+          fi

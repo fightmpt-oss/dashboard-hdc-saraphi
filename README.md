@@ -157,6 +157,17 @@ python scripts/build_ttm4_cache.py --write   # รัน --dry-run (ค่า de
 git add data/ && git commit -m "data: refresh HDC snapshots" && git push
 ```
 
+### ดึงข้อมูลอัตโนมัติ (GitHub Actions) — เปิดใช้แล้ว
+
+`.github/workflows/auto-fetch.yml` รันทุกวัน **02:00 น. เวลาไทย** (19:00 UTC) โดย
+รัน pipeline เต็มชุดข้างบนผ่าน `python scripts/run_pipeline.py` แล้ว commit ไฟล์ใน
+`data/` เฉพาะเมื่อข้อมูลเปลี่ยนจริง (HDC บางวันไม่ประมวลผลข้อมูลใหม่ ระบบจะไม่
+commit เปล่า ๆ) — push แล้ว Vercel deploy อัตโนมัติ ดูประวัติการรันในหน้า
+**Actions** ของ repo หรือกด **Run workflow** เพื่อรันมือได้ทันที
+
+ขอบเขต: ครอบคลุมเฉพาะตาราง OpenData MoPH เท่านั้น — ข้อมูล สปสช. MeData
+(ต้องสกัดด้วยเบราว์เซอร์) ยังรันมือตามหัวข้อถัดไป
+
 ### ข้อมูล สปสช. MeData (กองทุนแพทย์แผนไทย)
 
 ดึงด้วย `python scripts/sync_nhso_medata_realtime.py` (สคริปต์สกัดหน้าจอ Tableau
