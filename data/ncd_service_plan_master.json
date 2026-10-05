@@ -1383,6 +1383,20 @@
             "rate_c2": 46.02
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020249"
+        },
+        "2568": {
+          "saraphi_rows": 113,
+          "date_com": "202511152030"
+        },
+        "2567": {
+          "saraphi_rows": 113,
+          "date_com": "202411141416"
+        }
       }
     },
     {
@@ -2079,7 +2093,21 @@
         }
       },
       "kpi_target": 5.0,
-      "lower_is_better": true
+      "lower_is_better": true,
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051714"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151826"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141140"
+        }
+      }
     },
     {
       "id": "ncd_03",
@@ -2769,6 +2797,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610051656"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511151811"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141132"
         }
       }
     },
@@ -3460,6 +3502,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020251"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141422"
         }
       }
     },
@@ -4155,6 +4211,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610051702"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511151814"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411141133"
+        }
       }
     },
     {
@@ -4849,6 +4919,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610051703"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511151815"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411141134"
+        }
       }
     },
     {
@@ -5539,6 +5623,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
         }
       }
     },
@@ -6231,6 +6329,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
+        }
       }
     },
     {
@@ -6921,6 +7033,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610020602"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511152249"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142149"
         }
       }
     },
@@ -7613,6 +7739,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 98,
+          "date_com": "202610020636"
+        },
+        "2568": {
+          "saraphi_rows": 107,
+          "date_com": "202511152318"
+        },
+        "2567": {
+          "saraphi_rows": 102,
+          "date_com": "202411142245"
+        }
       }
     },
     {
@@ -8303,6 +8443,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 87,
+          "date_com": "202610020637"
+        },
+        "2568": {
+          "saraphi_rows": 95,
+          "date_com": "202511152318"
+        },
+        "2567": {
+          "saraphi_rows": 70,
+          "date_com": "202411142245"
         }
       }
     },
@@ -8995,6 +9149,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051722"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511151829"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141142"
+        }
       }
     },
     {
@@ -9685,6 +9853,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 98,
+          "date_com": "202610020603"
+        },
+        "2568": {
+          "saraphi_rows": 107,
+          "date_com": "202511152250"
+        },
+        "2567": {
+          "saraphi_rows": 102,
+          "date_com": "202411142150"
         }
       }
     },
@@ -10377,6 +10559,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020250"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141418"
+        }
       }
     },
     {
@@ -11067,6 +11263,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051716"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141141"
         }
       }
     },
@@ -12220,6 +12430,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051722"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151829"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141142"
+        }
       }
     },
     {
@@ -12910,6 +13134,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020251"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 0,
+          "date_com": ""
         }
       }
     },
@@ -13602,6 +13840,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610020603"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511152250"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142150"
+        }
       }
     },
     {
@@ -14292,6 +14544,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141415"
         }
       }
     },
@@ -14984,6 +15250,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 12,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 11,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411141415"
+        }
       }
     },
     {
@@ -15674,6 +15954,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610051654"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511151811"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141132"
         }
       }
     },
@@ -16366,6 +16660,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020252"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152032"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141422"
+        }
       }
     },
     {
@@ -17056,6 +17364,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051333"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511151616"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411140914"
         }
       }
     },
@@ -17748,6 +18070,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051705"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151817"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141135"
+        }
       }
     },
     {
@@ -18439,6 +18775,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 111,
+          "date_com": "202610051518"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151729"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141004"
+        }
       }
     },
     {
@@ -19129,6 +19479,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020250"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141418"
         }
       }
     },
@@ -20283,6 +20647,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020252"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152032"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141422"
+        }
       }
     },
     {
@@ -20973,6 +21351,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 111,
+          "date_com": "202610020351"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511152114"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141444"
         }
       }
     },
@@ -21665,6 +22057,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051715"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141140"
+        }
       }
     },
     {
@@ -22355,6 +22761,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 12,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 11,
+          "date_com": "202511152029"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411141415"
         }
       }
     },
@@ -23047,6 +23467,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020604"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511152251"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411142150"
+        }
       }
     },
     {
@@ -23737,6 +24171,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051334"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511151617"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411140919"
         }
       }
     },
@@ -24429,6 +24877,20 @@
             }
           }
         }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051717"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141141"
+        }
       }
     },
     {
@@ -25119,6 +25581,20 @@
               "result2_fu": 0
             }
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
         }
       }
     },
@@ -26282,7 +26758,21 @@
           "rate4_label": "ร้อยละ [A4/B2] x 100"
         }
       },
-      "kpi_target": 70.0
+      "kpi_target": 70.0,
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051706"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151818"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141136"
+        }
+      }
     },
     {
       "id": "ncd_37",
@@ -27607,6 +28097,20 @@
             "c2": 1009,
             "rate_c2": 22.6
           }
+        }
+      },
+      "sync_info": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051703"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151815"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141134"
         }
       }
     }

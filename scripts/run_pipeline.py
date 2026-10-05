@@ -13,6 +13,8 @@ The order matches README "แหล่งข้อมูล & ความถี
   build_master  → scripts/build_saraphi_master.py    (offline)
   build_pcc     → scripts/build_pcc_2569_master.py   (offline, needs openpyxl)
   build_ttm4    → scripts/build_ttm4_cache.py --write
+  build_overview → scripts/build_overview_master.py  (offline, 64-indicator page)
+  build_sync    → scripts/build_sync_status.py       (offline, freshness status)
 
 Notes:
 - สปสช. MeData (Playwright) is NOT part of this pipeline — run it manually via
@@ -43,6 +45,8 @@ STEPS = [
     ("build_master", [sys.executable, "scripts/build_saraphi_master.py"]),
     ("build_pcc", [sys.executable, "scripts/build_pcc_2569_master.py"]),
     ("build_ttm4", [sys.executable, "scripts/build_ttm4_cache.py", "--write"]),
+    ("build_overview", [sys.executable, "scripts/build_overview_master.py"]),
+    ("build_sync", [sys.executable, "scripts/build_sync_status.py"]),
 ]
 
 

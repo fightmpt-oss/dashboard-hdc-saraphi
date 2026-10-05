@@ -1,0 +1,1369 @@
+{
+  "generated_at": "2026-10-05T12:28:12Z",
+  "pipeline_ok": true,
+  "masters": {
+    "saraphi_complete_master": "2026-10-02T02:20:09Z",
+    "ncd_service_plan_master": "2026-10-05",
+    "ncd_total_reports": 36
+  },
+  "counts": {
+    "tables": 63,
+    "ok": 63
+  },
+  "tables": [
+    {
+      "id": "ttm_val",
+      "table": "s_ttm7",
+      "label": "ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609080344"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511160059"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142335"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_ed",
+      "table": "s_ttm10",
+      "label": "OPD-การจ่ายยาสมุนไพรตามบัญชียาหลักแห่งชาติ (ttm10)",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609121340"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511160037"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142319"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_rx",
+      "table": "s_ttm32",
+      "label": "สัดส่วนการสั่งใช้ยาสมุนไพรเทียบกับสั่งยาทั้งหมด (Prescription)",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609080144"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511160038"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142320"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_service",
+      "table": "s_ttm34",
+      "label": "ร้อยละผู้ป่วยนอกได้รับบริการแพทย์แผนไทย (OPD Coverage)",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609080301"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511160057"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411142333"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_cases",
+      "table": "s_ttm2",
+      "label": "OPD ปริมาณการจ่ายยาสมุนไพร",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609121340"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511160037"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142320"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_common_dis",
+      "table": "s_common_diseases_thai_drug",
+      "label": "ร้อยละของผู้ป่วยที่ได้รับการวินิจฉัยโรค Common Diseases and Symptoms และได้รับยาสมุนไพรเพิ่มขึ้น",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609130418"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202507020923"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202502241304"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_age_sex",
+      "table": "s_ttm3",
+      "label": "การจ่ายยาสมุนไพรตามอายุและเพศ",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202609121340"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511160038"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142320"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_massage",
+      "table": "s_ttm8",
+      "label": "OPD-การบริการแผนไทย นวด อบ ประคบ",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609121452"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511160059"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411142335"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ttm_top_herbs",
+      "table": "s_ttm4",
+      "label": "OPD-อันดับการใช้ยาสมุนไพรและมูลค่ายา (DIDSTD)",
+      "group": "🌿 แพทย์แผนไทย & ยาสมุนไพร",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 219,
+          "date_com": "202609080344"
+        },
+        "2568": {
+          "saraphi_rows": 286,
+          "date_com": "202511160059"
+        },
+        "2567": {
+          "saraphi_rows": 256,
+          "date_com": "202411142335"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc_dm_hba1c",
+      "table": "s_dm_hba1c",
+      "label": "DM ได้รับการตรวจ HbA1c อย่างน้อยปีละ 1 ครั้ง",
+      "group": "💰 งบ PCC (4 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051706"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151818"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141136"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc_dm_control",
+      "table": "s_dm_control",
+      "label": "DM ควบคุมระดับน้ำตาลได้ดี (HbA1c < 7%)",
+      "group": "💰 งบ PCC (4 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051703"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151815"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141134"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc_ht_control",
+      "table": "s_ht_control",
+      "label": "HT ควบคุมความดันโลหิตได้ดี (<140/90 mmHg)",
+      "group": "💰 งบ PCC (4 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020249"
+        },
+        "2568": {
+          "saraphi_rows": 113,
+          "date_com": "202511152030"
+        },
+        "2567": {
+          "saraphi_rows": 113,
+          "date_com": "202411141416"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc_complication",
+      "table": "s_dm_hypo",
+      "label": "DM/HT ภาวะแทรกซ้อนเฉียบพลัน/Admit (ยิ่งน้อยยิ่งดี)",
+      "group": "💰 งบ PCC (4 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051714"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151826"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141140"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ppb_child_develop",
+      "table": "s_childdev_specialpp",
+      "label": "เด็ก 0-5 ปี คัดกรองพัฒนาการตามช่วงอายุ (DSPM/SpecialPP)",
+      "group": "🎯 งบ PPB (5 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 549,
+          "date_com": "202609071400"
+        },
+        "2568": {
+          "saraphi_rows": 607,
+          "date_com": "202511151626"
+        },
+        "2567": {
+          "saraphi_rows": 672,
+          "date_com": "202411140923"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ppb_weight_height",
+      "table": "s_kpi_height614",
+      "label": "เด็ก 6-12 ปี ชั่งน้ำหนักวัดส่วนสูง (สูงดีสมส่วน)",
+      "group": "🎯 งบ PPB (5 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609072302"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511152228"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142107"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ppb_fluoride",
+      "table": "s_kpi_dental63",
+      "label": "ทันตกรรมป้องกัน เด็ก 4-12 ปี ได้รับการเคลือบฟลูออไรด์",
+      "group": "🎯 งบ PPB (5 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609072254"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152225"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411142025"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ppb_sealant",
+      "table": "s_kpi_dental64",
+      "label": "ทันตกรรมป้องกัน เด็ก 6-12 ปี ได้รับการเคลือบหลุมร่องฟัน",
+      "group": "🎯 งบ PPB (5 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609072254"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152225"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411142025"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ppb_depression",
+      "table": "s_2q_adl_test",
+      "label": "ผู้สูงอายุ 60 ปีขึ้นไป ได้รับการคัดกรองโรคซึมเศร้า (2Q)",
+      "group": "🎯 งบ PPB (5 ตัวชี้วัด)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609071221"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511151524"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411140832"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "elderly_screen9",
+      "table": "s_aged9",
+      "label": "การคัดกรองผู้สูงอายุ 9 ด้าน (Basic Screen STEP1)",
+      "group": "👵 ผู้สูงอายุ & NCDs",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 114,
+          "date_com": "202609071231"
+        },
+        "2568": {
+          "saraphi_rows": 113,
+          "date_com": "202511151529"
+        },
+        "2567": {
+          "saraphi_rows": 112,
+          "date_com": "202411140843"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "elderly_adl",
+      "table": "s_ageing",
+      "label": "การประเมิน ADL ผู้สูงอายุ (ติดสังคม ติดบ้าน ติดเตียง)",
+      "group": "👵 ผู้สูงอายุ & NCDs",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 114,
+          "date_com": "202609071315"
+        },
+        "2568": {
+          "saraphi_rows": 113,
+          "date_com": "202511151555"
+        },
+        "2567": {
+          "saraphi_rows": 112,
+          "date_com": "202411140905"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "mch_breastfeeding",
+      "table": "s_kpi_food",
+      "label": "เด็กแรกเกิด - 6 เดือน กินนมแม่อย่างเดียว",
+      "group": "👶 อนามัยแม่และเด็ก",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 51,
+          "date_com": "202609072302"
+        },
+        "2568": {
+          "saraphi_rows": 63,
+          "date_com": "202511152227"
+        },
+        "2567": {
+          "saraphi_rows": 62,
+          "date_com": "202411142105"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "mch_child_nutrition",
+      "table": "s_nutrition_11",
+      "label": "โภชนาการเด็ก 0-5 ปี (น้ำหนักตามเกณฑ์ส่วนสูง)",
+      "group": "👶 อนามัยแม่และเด็ก",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202609072338"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152252"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411142152"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "mch_childdev_follow",
+      "table": "s_childdev_specialpp48",
+      "label": "เด็กพัฒนาการสงสัยล่าช้าได้รับการติดตามประเมินซ้ำ (TEDA4I/DAIM)",
+      "group": "👶 อนามัยแม่และเด็ก",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 55,
+          "date_com": "202609071400"
+        },
+        "2568": {
+          "saraphi_rows": 60,
+          "date_com": "202511151626"
+        },
+        "2567": {
+          "saraphi_rows": 57,
+          "date_com": "202411140923"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_01",
+      "table": "s_ht_control",
+      "label": "ร้อยละผู้ป่วยโรคความดันโลหิตสูงที่ควบคุมความดันโลหิตได้ดี",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020249"
+        },
+        "2568": {
+          "saraphi_rows": 113,
+          "date_com": "202511152030"
+        },
+        "2567": {
+          "saraphi_rows": 113,
+          "date_com": "202411141416"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_02",
+      "table": "s_dm_hypo",
+      "label": "ร้อยละของการเกิดภาวะแทรกซ้อนเฉียบพลันในผู้ป่วยเบาหวาน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051714"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151826"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141140"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_03",
+      "table": "s_dmht_ckd_egfr",
+      "label": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูง ที่เป็น CKD 3-4 ชะลอการลดลงของ eGFR ได้ตามเป้าหมาย",
+      "group": "Service Plan NCDs (CKD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610051656"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511151811"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141132"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_04",
+      "table": "s_ht_screen_n",
+      "label": "ร้อยละของประชากรอายุ 35-59 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020251"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141422"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_05",
+      "table": "s_dm_ckd",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่ยังไม่มีภาวะแทรกซ้อนทางไตได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "group": "Service Plan NCDs (CKD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610051702"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511151814"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411141133"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_06",
+      "table": "s_dm_ckd1",
+      "label": "ร้อยละของผู้ป่วยเบาหวานได้รับการตรวจภาวะแทรกซ้อนทางไต",
+      "group": "Service Plan NCDs (CKD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610051703"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511151815"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411141134"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_07",
+      "table": "s_hosp_bp180_4",
+      "label": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg ได้รับการวินิจฉัยเป็นผู้ป่วย โรคความดันโลหิตสูง I10 – I15 จากการค้นหาในโรงพยาบาล ในวันนั้น จำแนกรายเดือน (ไม่รวม ER)",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_08",
+      "table": "s_hosp_bp180_2",
+      "label": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล (ไม่นับรวม ER)\r\n",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_09",
+      "table": "s_ncd_ldl_n1",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610020602"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511152249"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142149"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_10",
+      "table": "s_pre_dm_diag",
+      "label": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่ม Pre-DM (ภาวะก่อนเบาหวาน) ปีที่ผ่านมา ",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 98,
+          "date_com": "202610020636"
+        },
+        "2568": {
+          "saraphi_rows": 107,
+          "date_com": "202511152318"
+        },
+        "2567": {
+          "saraphi_rows": 102,
+          "date_com": "202411142245"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_11",
+      "table": "s_pre_ht_diag",
+      "label": "ร้อยละของผู้ป่วยโรคความดันโลหิตสูงรายใหม่จากผู้ที่มีค่าความดันโลหิตอยู่ในเกณฑ์ BP at risk (กลุ่มเสี่ยงความดันโลหิตสูง)",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 87,
+          "date_com": "202610020637"
+        },
+        "2568": {
+          "saraphi_rows": 95,
+          "date_com": "202511152318"
+        },
+        "2567": {
+          "saraphi_rows": 70,
+          "date_com": "202411142245"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_12",
+      "table": "s_dm_visit",
+      "label": "ร้อยละผู้ป่วยเบาหวานที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051722"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511151829"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141142"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_13",
+      "table": "s_ncd_screen_repleate",
+      "label": "ร้อยละของประชากรกลุ่มPre-DM (ภาวะก่อนเบาหวาน) ในพื้นที่รับผิดชอบของปีที่ผ่านมาได้รับการตรวจน้ำตาลซ้ำ",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 98,
+          "date_com": "202610020603"
+        },
+        "2568": {
+          "saraphi_rows": 107,
+          "date_com": "202511152250"
+        },
+        "2567": {
+          "saraphi_rows": 102,
+          "date_com": "202411142150"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_14",
+      "table": "s_ht_diag_follow",
+      "label": "ร้อยละของผู้ป่วยความดันโลหิตสูงรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจติดตาม",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020250"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141418"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_15",
+      "table": "s_dm_screen",
+      "label": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051716"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141141"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_risk_dm",
+      "table": "s_dm_screen_risk",
+      "label": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคเบาหวาน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051722"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151829"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141142"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_17",
+      "table": "s_ht_screen_follow",
+      "label": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคความดันโลหิตสูง",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020251"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 0,
+          "date_com": ""
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_19",
+      "table": "s_ncd_ldl_n2",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจไขมัน LDL และควบคุมได้ตามเกณฑ์",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": "202610020603"
+        },
+        "2568": {
+          "saraphi_rows": 14,
+          "date_com": "202511152250"
+        },
+        "2567": {
+          "saraphi_rows": 14,
+          "date_com": "202411142150"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_20",
+      "table": "s_home_bp",
+      "label": "อัตรากลุ่มสงสัยป่วยความดันโลหิตสูงในเขตรับผิดชอบได้รับการวัดความดันโลหิตที่บ้าน",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_21",
+      "table": "s_ht180_diag",
+      "label": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 mmHg และ/หรือค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 mmHg จากการคัดกรอง ได้รับการวินิจฉัย",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 12,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 11,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_22",
+      "table": "s_dmht_ckd_acei_arb",
+      "label": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่เป็น CKD 1-4 และได้รับยา ACEi/ARB",
+      "group": "Service Plan NCDs (CKD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610051654"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511151811"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141132"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_23",
+      "table": "s_ht_visit",
+      "label": "ร้อยละผู้ป่วยความดันโลหิตสูงที่ขึ้นทะเบียนและมารับการรักษาต่อเนื่อง",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020252"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511152032"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411141422"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_24",
+      "table": "s_bmi2year",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่มีภาวะอ้วน [BMI >= 25 กก./ตร.ม.] ลดลงจากงบประมาณที่ผ่านมา",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051333"
+        },
+        "2568": {
+          "saraphi_rows": 13,
+          "date_com": "202511151616"
+        },
+        "2567": {
+          "saraphi_rows": 13,
+          "date_com": "202411140914"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_25",
+      "table": "s_dm_foot",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางเท้า",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051705"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151817"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141135"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_26",
+      "table": "s_cvd_change20",
+      "label": "ร้อยละของผู้ป่วยเบาหวาน และ/หรือ ความดันโลหิตสูงที่มี CVD Risk ≥ 20% ในช่วงไตรมาส 1, 2 และมีผล CVD Risk ลดลงเป็น < 20% ในไตรมาส 3, 4",
+      "group": "Service Plan NCDs (CKD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 111,
+          "date_com": "202610051518"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151729"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141004"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_27",
+      "table": "s_ht_screen",
+      "label": "ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยความดันโลหิตสูง",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020250"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152031"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141418"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_risk_ht",
+      "table": "s_ht_screen_risk",
+      "label": "ประชากร 35 ปีขึ้นไปได้รับการคัดกรอง และเสี่ยงต่อโรคความดันโลหิตสูง",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 116,
+          "date_com": "202610020252"
+        },
+        "2568": {
+          "saraphi_rows": 116,
+          "date_com": "202511152032"
+        },
+        "2567": {
+          "saraphi_rows": 115,
+          "date_com": "202411141422"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_29",
+      "table": "s_kpi_cvd_risk",
+      "label": "ร้อยละของผู้ป่วยเบาหวาน ความดันโลหิตสูงที่ขึ้นทะเบียนได้รับการประเมินโอกาสเสี่ยงต่อโรคหัวใจและหลอดเลือด (CVD Risk) ",
+      "group": "Service Plan NCDs (CVD)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 111,
+          "date_com": "202610020351"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511152114"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141444"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_30",
+      "table": "s_dm_retina_kpi",
+      "label": "ร้อยละของผู้ป่วยเบาหวานที่ได้รับการตรวจภาวะแทรกซ้อนทางตา",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051715"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141140"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_31",
+      "table": "s_ht180_diag1",
+      "label": "ร้อยละของผู้ที่มีค่าความดันโลหิตตัวบนเฉลี่ย (SBP) ≥ 180 มม.ปรอท และ/หรือ ค่าความดันโลหิตตัวล่างเฉลี่ย (DBP) ≥ 110 มม.ปรอท จากการคัดกรองและได้การวัดความโลหิตซ้ำภายใน 7 วัน ได้รับการวินิจฉัย",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 12,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 11,
+          "date_com": "202511152029"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_32",
+      "table": "s_ncd_screen_repleate1",
+      "label": "ร้อยละการตรวจติดตามยืนยันวินิจฉัยกลุ่มสงสัยป่วยโรคเบาหวาน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610020604"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511152251"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411142150"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_33",
+      "table": "s_cf_dm_diag",
+      "label": "ร้อยละผู้ป่วยเบาหวานรายใหม่จากกลุ่มสงสัยป่วยที่ได้รับการตรวจยืนยัน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 13,
+          "date_com": "202610051334"
+        },
+        "2568": {
+          "saraphi_rows": 12,
+          "date_com": "202511151617"
+        },
+        "2567": {
+          "saraphi_rows": 12,
+          "date_com": "202411140919"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_34",
+      "table": "s_dm_screen_n",
+      "label": "ร้อยละของประชากรอายุ 35-59 ปีที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 118,
+          "date_com": "202610051717"
+        },
+        "2568": {
+          "saraphi_rows": 118,
+          "date_com": "202511151827"
+        },
+        "2567": {
+          "saraphi_rows": 116,
+          "date_com": "202411141141"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_35",
+      "table": "s_hosp_bp180_5",
+      "label": "ร้อยละผู้ป่วยนอกที่มีค่า SBP ≥ 180 mmHg และ/หรือ DBP ≥ 110 mmHg และได้รับการวินิจฉัยเป็นผู้ป่วยโรคความดันโลหิตสูง (I10 – I15) จากการค้นหาในโรงพยาบาล  (นับรวม ER)",
+      "group": "Service Plan NCDs (HT)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 1,
+          "date_com": "202610020248"
+        },
+        "2568": {
+          "saraphi_rows": 1,
+          "date_com": "202511152028"
+        },
+        "2567": {
+          "saraphi_rows": 1,
+          "date_com": "202411141415"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_36",
+      "table": "s_dm_hba1c",
+      "label": "ร้อยละของผู้ป่วยโรคเบาหวานที่ได้รับการตรวจ HbA1c อย่างน้อย 1 ครั้ง/ปี",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051706"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151818"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141136"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "ncd_37",
+      "table": "s_dm_control",
+      "label": "ร้อยละผู้ป่วยโรคเบาหวานที่ควบคุมระดับน้ำตาลได้ดี",
+      "group": "Service Plan NCDs (DM)",
+      "source": "opendata",
+      "years": {
+        "2569": {
+          "saraphi_rows": 113,
+          "date_com": "202610051703"
+        },
+        "2568": {
+          "saraphi_rows": 110,
+          "date_com": "202511151815"
+        },
+        "2567": {
+          "saraphi_rows": 110,
+          "date_com": "202411141134"
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc69_kpi1",
+      "table": "PCC_69_R.1",
+      "label": "งบ PCC 2569 KPI1",
+      "group": "งบ PCC 2569 (P4P)",
+      "source": "xlsx",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": ""
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc69_kpi2",
+      "table": "PCC_69_R.1",
+      "label": "งบ PCC 2569 KPI2",
+      "group": "งบ PCC 2569 (P4P)",
+      "source": "xlsx",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": ""
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc69_kpi3",
+      "table": "PCC_69_R.1",
+      "label": "งบ PCC 2569 KPI3",
+      "group": "งบ PCC 2569 (P4P)",
+      "source": "xlsx",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": ""
+        }
+      },
+      "ok": true
+    },
+    {
+      "id": "pcc69_kpi4",
+      "table": "PCC_69_R.1",
+      "label": "งบ PCC 2569 KPI4",
+      "group": "งบ PCC 2569 (P4P)",
+      "source": "xlsx",
+      "years": {
+        "2569": {
+          "saraphi_rows": 14,
+          "date_com": ""
+        }
+      },
+      "ok": true
+    }
+  ]
+}

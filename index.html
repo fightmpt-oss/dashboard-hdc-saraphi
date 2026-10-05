@@ -63,6 +63,17 @@
       <!-- Domain Navigation Items -->
       <div class="p-2.5">
         <nav class="space-y-1.5" id="sidebar-items-list">
+          <button type="button" class="sidebar-item w-full" data-domain="overview" title="📊 ภาพรวมตัวชี้วัดทั้งหมดในหน้าเดียว">
+            <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-blue-600 bg-blue-50 shrink-0 mr-3 transition">
+              <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            </div>
+            <div class="sidebar-text text-left flex-1 min-w-0">
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">ภาพรวมตัวชี้วัด</div>
+              <div class="text-[11px] text-slate-400 font-medium">64 ตัวชี้วัด • ทุกหมวดในหน้าเดียว</div>
+            </div>
+            <span class="sidebar-badge bg-blue-100 text-blue-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">64</span>
+          </button>
+
           <button type="button" class="sidebar-item active w-full" data-domain="ttm" title="🌿 แพทย์แผนไทย & ยาสมุนไพร">
             <div class="sidebar-item-icon w-9 h-9 rounded-xl flex items-center justify-center text-emerald-600 bg-emerald-50 shrink-0 mr-3 transition">
               <i data-lucide="leaf" class="w-5 h-5"></i>
@@ -3547,6 +3558,69 @@
       <!-- ======================================================== -->
       <!-- SPECIAL PANEL FOR SERVICE PLAN (NCD DM, HT, CVD, CKD) -->
       <!-- ======================================================== -->
+      <!-- ภาพรวมตัวชี้วัด (ncd.in.th style overview) -->
+      <div id="overview-panel" class="hidden space-y-5">
+
+        <!-- Header & Filters -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 bg-white border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200 shadow-2xs flex items-center gap-1.5">
+                  <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-blue-600"></i> ภาพรวมตัวชี้วัดทั้งหมด
+                </span>
+                <span class="px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 num-font" id="overview-last-sync-badge">
+                  ข้อมูลล่าสุด: -
+                </span>
+              </div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900 mt-1">ภาพรวมตัวชี้วัดทั้งหมด <span class="text-xs text-slate-400 font-medium">อำเภอสารภี (14 หน่วยบริการ) — คลิกชื่อตัวชี้วัดเพื่อเปิดหน้ารายงานเต็ม</span></h2>
+            </div>
+            <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-semibold shrink-0" id="overview-year-pills">
+              <button type="button" id="btn-ov-yr-2569" onclick="window.switchOverviewYear('2569')" class="px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white">2569</button>
+              <button type="button" id="btn-ov-yr-2568" onclick="window.switchOverviewYear('2568')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">2568</button>
+              <button type="button" id="btn-ov-yr-2567" onclick="window.switchOverviewYear('2567')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">2567</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div class="md:col-span-5 relative">
+              <input type="text" id="overview-search" oninput="window.filterOverview(this.value)" placeholder="ค้นหาตัวชี้วัดหรือตาราง HDC..." class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+            </div>
+            <div class="md:col-span-4">
+              <select id="overview-group-select" onchange="window.switchOverviewGroup(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                <option value="all">ทุกกลุ่มตัวชี้วัด</option>
+              </select>
+            </div>
+            <div class="md:col-span-3 flex items-center justify-end">
+              <span class="text-[11px] text-slate-400 font-medium" id="overview-count-label"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 status cards -->
+        <div id="overview-status-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+        <!-- Legend -->
+        <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[10.5px] text-slate-500 px-1">
+          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> ถึงเป้า</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> ใกล้เป้า (ห่างไม่เกิน 10% ของเป้า)</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> ต่ำกว่าเป้า</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span> ยังไม่ตั้งเป้า / แสดงเป็นจำนวน</span>
+          <span class="text-slate-400">• แถวรวมอำเภอ = คอลัมน์ "ค่าที่ทำได้" • คอลัมน์รายหน่วยแสดงร้อยละราย รพ.สต.</span>
+        </div>
+
+        <!-- Matrix table -->
+        <div class="glass-card rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table id="overview-matrix-table" class="w-full text-left border-collapse custom-table text-xs">
+              <thead id="overview-thead"></thead>
+              <tbody id="overview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div id="service-plan-ncd-panel" class="hidden space-y-5">
 
         <!-- Top Header & Filter Toolbar -->
@@ -3981,6 +4055,7 @@
           <i data-lucide="database" class="w-5 h-5 text-blue-600"></i>
           <span>สำรวจแคตตาล็อกรายงาน Open Data กระทรวงสาธารณสุข (1,028 รายงาน)</span>
         </h3>
+        <div id="explorer-sync-banner" class="mt-3"></div>
         <p class="text-xs text-slate-500 mt-1">
           ระบบเปิดเผยข้อมูลสาธารณสุข สำนักงานปลัดกระทรวงสาธารณสุข ครอบคลุม 5 หมวดหมู่หลัก และ 44 หมวดหมู่ย่อย พร้อมตัวอย่าง Code สำหรับนักพัฒนาในการดึงข้อมูลผ่าน REST API
         </p>
@@ -4212,6 +4287,6 @@
 
 
   <!-- Main JavaScript Logic -->
-  <script src="app.js?v=4.7"></script>
+  <script src="app.js?v=4.8"></script>
 </body>
 </html>

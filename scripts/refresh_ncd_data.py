@@ -140,6 +140,24 @@ def build_year_object(table, rows, has_fu):
     return year_obj
 
 
+def _rows_stats(rows):
+    """Fetch stats for the sync status page (row count + HDC compile date)."""
+    dates = [str(r.get("date_com") or "") for r in rows if r.get("date_com")]
+    return {"saraphi_rows": len(rows), "date_com": max(dates) if dates else ""}
+
+
+def _raw_file_stats(table, year):
+    """Stats from a raw snapshot a delegated enrichment module just wrote."""
+    path = os.path.join(ROOT, "data", f"{table}_{year}.json")
+    if not os.path.exists(path):
+        return {"saraphi_rows": 0, "date_com": ""}
+    try:
+        with open(path, encoding="utf-8") as f:
+            return _rows_stats(json.load(f))
+    except (json.JSONDecodeError, OSError):
+        return {"saraphi_rows": 0, "date_com": ""}
+
+
 def refresh():
     only_tables = None
     if "--only-table" in sys.argv:
@@ -186,23 +204,29 @@ def refresh():
         print(f"[{i}/{len(registry)}] {rep['id']} — {table} ({rep.get('name', '')[:46]})")
         try:
             years_data = {}
+            sync_info = {}
             for y in YEARS:
                 if table in DELEGATED:
                     years_data[y] = DELEGATED[table](y)
+                    sync_info[y] = _raw_file_stats(table, y)
                 elif table in ("s_dm_screen_risk", "s_ht_screen_risk"):
                     risk_type = rep.get("risk_type") or ("ht" if "ht" in table else "dm")
                     rows = risk_mod.fetch_table_rows(table, y)
                     years_data[y] = risk_mod.aggregate_risk_data(rows, risk_type)
+                    sync_info[y] = _rows_stats(rows)
                 elif table == "s_dm_hypo":
                     rows = fetch_opendata_rows(table, y)
                     _write_raw_snapshot(table, y, rows)
                     years_data[y] = hypo_mod.build_year(y)
+                    sync_info[y] = _rows_stats(rows)
                 else:
                     rows = fetch_opendata_rows(table, y)
                     years_data[y] = build_year_object(table, rows, bool(rep.get("has_fu")))
+                    sync_info[y] = _rows_stats(rows)
             rep["years"] = years_data
+            rep["sync_info"] = sync_info
             d = years_data["2569"]["district"]
-            print(f"    2569 district: rate={d.get('rate')} | fu={d.get('rate_fu')}")
+            print(f"    2569 district: rate={d.get('rate')} | fu={d.get('rate_fu')} | rows={sync_info['2569']['saraphi_rows']}")
         except Exception as e:
             print(f"    ERROR: {type(e).__name__}: {e}")
             failures.append(f"{rep['id']}({table})")

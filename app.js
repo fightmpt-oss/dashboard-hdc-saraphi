@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const dmHba1cPanel = document.getElementById('dm-hba1c-panel');
   const pcc2569Panel = document.getElementById('pcc-2569-panel');
   const servicePlanNcdPanel = document.getElementById('service-plan-ncd-panel');
+  const overviewPanel = document.getElementById('overview-panel');
 
   let ncdMasterData = null;
   let currentNcdReportId = 'ncd_22'; // Default: s_dm_screen (ร้อยละของประชากรอายุ 35 ปีขึ้นไปที่ได้รับการคัดกรองเพื่อวินิจฉัยเบาหวาน)
@@ -83,6 +84,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentDmHba1cView = 'hdc_full';
   let currentDmHba1cYear = '2569';
+
+  // ภาพรวมตัวชี้วัด + สถานะการดึงข้อมูล (โหลดแยกหลัง master หลัก)
+  let overviewData = null;
+  let syncStatusData = null;
+  let overviewYear = '2569';
+  let overviewGroup = 'all';
+  let overviewSearch = '';
+  const overviewCollapsedGroups = new Set();
   let currentDmHba1cSort = 'desc'; // 'desc' (ร้อยละมาก->น้อย), 'asc' (น้อย->มาก), 'code' (ตามรหัส)
   let currentDmHba1cSortField = null; // null for auto percentage, or specific field key ('rate1', 'rate2', 'b1', 'a1', etc.)
   let dmHba1cSearchQuery = '';
@@ -334,6 +343,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('ไม่สามารถโหลดไฟล์ข้อมูลได้ กรุณาตรวจสอบว่าไฟล์ data/saraphi_complete_master.json มีอยู่');
     return;
   }
+
+  // โหลดข้อมูลภาพรวมตัวชี้วัด + สถานะการดึงข้อมูล (แยกจาก master หลัก — โหลดไม่สำเร็จไม่บล็อกหน้า)
+  (async () => {
+    const cb = `?t=${Date.now()}`;
+    try {
+      const [rOv, rSync] = await Promise.all([
+        fetch(`data/overview_master.json${cb}`, { cache: 'no-cache' }).catch(() => null),
+        fetch(`data/sync_status.json${cb}`, { cache: 'no-cache' }).catch(() => null)
+      ]);
+      if (rOv && rOv.ok) overviewData = await rOv.json();
+      if (rSync && rSync.ok) syncStatusData = await rSync.json();
+    } catch (e) {
+      console.warn('overview/sync status load failed:', e);
+    }
+    if (overviewData && currentDomain === 'overview') renderOverviewPanel();
+    renderExplorerSyncStatus();
+  })();
 
   // Master Map of 14 Health Units in Saraphi District (Guaranteed Clean Thai Names)
   const SARAPHI_UNITS_MAP = {
@@ -16578,6 +16604,307 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // ── ภาพรวมตัวชี้วัดทั้งหมด (ncd.in.th style) ─────────────────────────────
+  const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+  function formatThaiDateTime(iso) {
+    if (!iso) return '-';
+    const s = String(iso);
+    let d = new Date(s);
+    if (isNaN(d)) {
+      // date_com แบบ HDC: YYYYMMDDHHMM (เวลาท้องถิ่นไทย)
+      const m = s.match(/^(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?/);
+      if (!m) return s;
+      d = new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4] || '00'}:${m[5] || '00'}:00+07:00`);
+      if (isNaN(d)) return s;
+    }
+    const th = new Date(d.getTime() + 7 * 3600 * 1000);
+    return `${th.getUTCDate()} ${THAI_MONTHS_SHORT[th.getUTCMonth()]} ${th.getUTCFullYear() + 543} ` +
+      `${String(th.getUTCHours()).padStart(2, '0')}:${String(th.getUTCMinutes()).padStart(2, '0')} น.`;
+  }
+
+  // สถานะเทียบเป้าหมายของ scope ใด ๆ (district หรือหน่วยบริการ)
+  function overviewGoalStatus(entry, scope) {
+    if (!scope) return 'none';
+    const target = Number(entry.goal_pct);
+    if (!Number.isFinite(target) || target <= 0) return 'none';
+    const rate = Number(scope.rate);
+    if (!Number.isFinite(rate)) return 'none';
+    if (scope.den === 0 && scope.num === 0) return 'none';
+    const gap = entry.higher_is_better === false ? (rate - target) : (target - rate);
+    if (gap <= 0) return 'met';
+    if (gap <= target * 0.10) return 'near';
+    return 'below';
+  }
+
+  const OVERVIEW_STATUS_STYLE = {
+    met: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    near: 'bg-amber-100 text-amber-800 border-amber-200',
+    below: 'bg-rose-100 text-rose-700 border-rose-200',
+    none: 'bg-slate-100 text-slate-600 border-slate-200'
+  };
+
+  function overviewRateCell(entry, scope) {
+    if (!scope || (scope.den === 0 && scope.num === 0) || !Number.isFinite(Number(scope.rate))) {
+      return '<span class="text-slate-300 num-font">–</span>';
+    }
+    const rate = Number(scope.rate);
+    const cls = OVERVIEW_STATUS_STYLE[overviewGoalStatus(entry, scope)];
+    if (!entry.show_pct) {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full border font-bold num-font text-[11px] ${cls}" title="${Number(scope.num).toLocaleString()} / ${Number(scope.den).toLocaleString()}">${Number(rate).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>`;
+    }
+    const val = (rate % 1 === 0) ? rate.toFixed(0) : rate.toFixed(rate * 100 % 1 === 0 ? 1 : 2);
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full border font-bold num-font text-[11px] ${cls}" title="${Number(scope.num).toLocaleString()} / ${Number(scope.den).toLocaleString()}">${val}%</span>`;
+  }
+
+  function getFilteredOverviewIndicators() {
+    if (!overviewData) return [];
+    return overviewData.indicators.filter(e => {
+      if (overviewGroup !== 'all' && e.group !== overviewGroup) return false;
+      if (!overviewSearch) return true;
+      const q = overviewSearch.toLowerCase();
+      return (e.name || '').toLowerCase().includes(q) || (e.table || '').toLowerCase().includes(q);
+    });
+  }
+
+  function renderOverviewStatusCards() {
+    const box = document.getElementById('overview-status-cards');
+    if (!box) return;
+    const list = getFilteredOverviewIndicators();
+    const counts = { met: 0, near: 0, below: 0, none: 0 };
+    list.forEach(e => counts[overviewGoalStatus(e, e.years?.[overviewYear]?.district)]++);
+    const total = list.length;
+    const defs = [
+      { key: 'met', label: 'ถึงเป้า', icon: 'fa-circle-check', num: 'text-emerald-700', grad: 'from-emerald-50 to-emerald-100/40', border: 'border-emerald-200/80', chip: 'bg-emerald-100 text-emerald-800 border-emerald-200', bar: 'bg-emerald-500' },
+      { key: 'near', label: 'ใกล้เป้า', icon: 'fa-circle-half-stroke', num: 'text-amber-700', grad: 'from-amber-50 to-amber-100/40', border: 'border-amber-200/80', chip: 'bg-amber-100 text-amber-800 border-amber-200', bar: 'bg-amber-500' },
+      { key: 'below', label: 'ต่ำกว่าเป้า', icon: 'fa-circle-xmark', num: 'text-rose-700', grad: 'from-rose-50 to-rose-100/40', border: 'border-rose-200/80', chip: 'bg-rose-100 text-rose-800 border-rose-200', bar: 'bg-rose-500' },
+      { key: 'none', label: 'ยังไม่ตั้งเป้า', icon: 'fa-circle-dashed', num: 'text-slate-600', grad: 'from-slate-50 to-slate-100/60', border: 'border-slate-200/80', chip: 'bg-slate-100 text-slate-600 border-slate-200', bar: 'bg-slate-400' }
+    ];
+    box.innerHTML = defs.map(d => {
+      const pct = total ? Math.round((counts[d.key] / total) * 100) : 0;
+      return `
+        <div class="glass-card rounded-2xl p-4 bg-gradient-to-br ${d.grad} border ${d.border} shadow-2xs">
+          <div class="flex items-start justify-between gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border ${d.chip}">
+              <i class="fa-solid ${d.icon} text-[9px]"></i> ${d.label}
+            </span>
+            <span class="text-[10px] text-slate-400 font-bold num-font">${pct}%</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1.5 flex-wrap">
+            <span class="text-3xl leading-none font-black num-font ${d.num}">${counts[d.key]}</span>
+            <span class="text-[11px] text-slate-500 font-semibold">จาก ${total} ตัวชี้วัด</span>
+          </div>
+          <div class="mt-2.5 h-1.5 bg-white/70 rounded-full overflow-hidden">
+            <div class="${d.bar} h-full rounded-full transition-all duration-500" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function buildOverviewRow(entry, units) {
+    const yd = entry.years?.[overviewYear] || {};
+    const dist = yd.district || {};
+    const series = NCD_TREND_YEARS.map(y => {
+      const r = entry.years?.[y]?.district?.rate;
+      return Number.isFinite(Number(r)) ? Number(r) : null;
+    });
+    const cur = series[2], prev = series[1];
+    const delta = (cur !== null && prev !== null) ? cur - prev : null;
+    let color = '#94a3b8';
+    if (delta !== null && Math.abs(delta) >= 0.05) {
+      const good = entry.higher_is_better === false ? delta < 0 : delta > 0;
+      color = good ? '#059669' : '#e11d48';
+    } else if (series.some(v => v !== null)) {
+      color = '#64748b';
+    }
+    const goalTxt = entry.goal_pct
+      ? `<span class="num-font font-bold text-slate-600">≥ ${entry.goal_pct}${entry.show_pct ? '%' : ''}</span>`
+      : '<span class="text-slate-300">–</span>';
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-blue-50/40 transition border-b border-slate-100';
+    tr.innerHTML = `
+      <td class="py-2 px-3">
+        <button type="button" class="text-left font-semibold text-slate-800 hover:text-blue-700 leading-snug" onclick="window.openOverviewIndicator('${entry.id}')" title="เปิดหน้ารายงานเต็มของตัวชี้วัดนี้">${entry.name}</button>
+        <div class="text-[10px] text-slate-400 font-mono mt-0.5">${entry.table}</div>
+      </td>
+      <td class="py-2 px-2 text-center">${goalTxt}</td>
+      <td class="py-2 px-2 text-center">${overviewRateCell(entry, dist)}</td>
+      <td class="py-2 px-2 text-center">${buildSparklineSvg(series, { color })}</td>
+      <td class="py-2 px-2 text-center">${formatDeltaBadge(delta, entry.higher_is_better === false)}</td>
+      ${units.map(hc => `<td class="py-2 px-1.5 text-center">${overviewRateCell(entry, (yd.units || {})[hc])}</td>`).join('')}
+    `;
+    return tr;
+  }
+
+  function renderOverviewTable() {
+    const thead = document.getElementById('overview-thead');
+    const tbody = document.getElementById('overview-tbody');
+    if (!thead || !tbody) return;
+    const units = Object.keys(SARAPHI_UNITS_MAP);
+    thead.innerHTML = `
+      <tr class="bg-slate-50/80 text-slate-600 text-[11px] uppercase tracking-wide font-bold border-b border-slate-200">
+        <th class="py-2.5 px-3 min-w-[260px]">ตัวชี้วัด</th>
+        <th class="py-2.5 px-2 text-center w-16">เป้า</th>
+        <th class="py-2.5 px-2 text-center w-24">ค่าที่ทำได้</th>
+        <th class="py-2.5 px-2 text-center w-[84px]">แนวโน้ม<br>3 ปี</th>
+        <th class="py-2.5 px-2 text-center w-[92px]">เทียบ<br>ปีก่อน</th>
+        ${units.map(hc => `<th class="py-2.5 px-1.5 text-center w-[62px] text-[10px]" title="${SARAPHI_UNITS_MAP[hc].name} (ต.${SARAPHI_UNITS_MAP[hc].subdistrict})">${SARAPHI_UNITS_MAP[hc].short}</th>`).join('')}
+      </tr>`;
+    const list = getFilteredOverviewIndicators();
+    const countLabel = document.getElementById('overview-count-label');
+    if (countLabel) countLabel.textContent = `แสดง ${list.length} จาก ${overviewData.indicators.length} ตัวชี้วัด`;
+    tbody.innerHTML = '';
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="${5 + units.length}" class="text-center py-6 text-slate-400">ไม่พบตัวชี้วัดที่ตรงกับเงื่อนไข</td></tr>`;
+      return;
+    }
+    overviewData.groups.forEach(g => {
+      const items = list.filter(e => e.group === g.key);
+      if (!items.length) return;
+      const collapsed = overviewCollapsedGroups.has(g.key);
+      const gtr = document.createElement('tr');
+      gtr.className = 'bg-gradient-to-r from-slate-100 to-slate-50 cursor-pointer select-none border-b border-slate-200';
+      gtr.onclick = () => {
+        if (collapsed) overviewCollapsedGroups.delete(g.key); else overviewCollapsedGroups.add(g.key);
+        renderOverviewTable();
+      };
+      gtr.innerHTML = `
+        <td colspan="5" class="py-2 px-3 font-extrabold text-slate-700 text-[12.5px]">
+          <i data-lucide="${collapsed ? 'chevron-right' : 'chevron-down'}" class="w-3.5 h-3.5 inline-block mr-1 text-slate-400"></i>
+          ${g.icon} ${g.label}
+          <span class="ml-1.5 text-[11px] font-semibold text-slate-400">${items.length} ตัวชี้วัด</span>
+        </td>
+        ${units.map(() => '<td class="py-2"></td>').join('')}`;
+      tbody.appendChild(gtr);
+      if (collapsed) return;
+      items.forEach(e => tbody.appendChild(buildOverviewRow(e, units)));
+    });
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function renderOverviewPanel() {
+    if (!overviewPanel) return;
+    if (!overviewData) {
+      overviewPanel.innerHTML = `
+        <div class="glass-card rounded-2xl p-8 bg-white text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 mx-auto flex items-center justify-center">
+            <i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">กำลังโหลดข้อมูลภาพรวมตัวชี้วัด...</h3>
+          <p class="text-xs text-slate-500">รวบรวมจาก data/overview_master.json</p>
+        </div>`;
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
+    const badge = document.getElementById('overview-last-sync-badge');
+    if (badge) badge.textContent = `ข้อมูลล่าสุด: ${formatThaiDateTime(overviewData.metadata.generated_at)}`;
+    const sel = document.getElementById('overview-group-select');
+    if (sel && sel.options.length <= 1) {
+      overviewData.groups.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.key;
+        opt.textContent = `${g.icon} ${g.label}`;
+        sel.appendChild(opt);
+      });
+    }
+    renderOverviewStatusCards();
+    renderOverviewTable();
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  window.switchOverviewYear = function(yr) {
+    overviewYear = yr;
+    ['2569', '2568', '2567'].forEach(y => {
+      const btn = document.getElementById(`btn-ov-yr-${y}`);
+      if (btn) btn.className = y === yr
+        ? 'px-3 py-1 rounded-lg font-bold transition shadow-2xs bg-emerald-600 text-white'
+        : 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+    });
+    renderOverviewPanel();
+  };
+
+  window.switchOverviewGroup = function(v) {
+    overviewGroup = v;
+    renderOverviewPanel();
+  };
+
+  window.filterOverview = function(v) {
+    overviewSearch = (v || '').trim().toLowerCase();
+    renderOverviewStatusCards();
+    renderOverviewTable();
+  };
+
+  const OVERVIEW_GROUP_TO_DOMAIN = {
+    overview_ttm: 'ttm', overview_pcc: 'pcc', overview_ppb: 'ppb',
+    overview_elderly: 'elderly', overview_mch: 'mch',
+    overview_pcc2569: 'pcc_2569', overview_ncd: 'service_plan_ncd'
+  };
+
+  window.openOverviewIndicator = function(entryId) {
+    const entry = overviewData?.indicators.find(e => e.id === entryId);
+    if (!entry) return;
+    const domain = OVERVIEW_GROUP_TO_DOMAIN[entry.group] || 'ttm';
+    if (domain === 'service_plan_ncd') {
+      currentNcdReportId = entry.id;
+    } else {
+      currentIndicatorId = entry.id;
+    }
+    currentDomain = domain;
+    sidebarItems.forEach(i => i.classList.remove('active'));
+    document.querySelector(`.sidebar-item[data-domain="${domain}"]`)?.classList.add('active');
+    updateDashboardView();
+  };
+
+  // ── สถานะการดึงข้อมูลล่าสุด (OpenData MoPH menu) ─────────────────────────
+  function renderExplorerSyncStatus() {
+    const box = document.getElementById('explorer-sync-banner');
+    if (!box) return;
+    if (!syncStatusData) { box.innerHTML = ''; return; }
+    const n = syncStatusData.counts.tables;
+    const ok = syncStatusData.counts.ok;
+    const rows = syncStatusData.tables.map(t => {
+      const y9 = t.years['2569'] || {};
+      const dc = y9.date_com ? formatThaiDateTime(y9.date_com) : '–';
+      const rowsTxt = t.source === 'xlsx'
+        ? `${Number(y9.saraphi_rows || 0).toLocaleString()} หน่วย`
+        : Number(y9.saraphi_rows || 0).toLocaleString();
+      return `<tr class="hover:bg-slate-50">
+        <td class="py-1.5 px-2.5 font-semibold text-slate-800">${t.label || t.table}</td>
+        <td class="py-1.5 px-2 font-mono text-rose-700">${t.table}</td>
+        <td class="py-1.5 px-2 text-slate-500">${t.group || ''}</td>
+        <td class="py-1.5 px-2 text-center num-font font-bold text-slate-700">${rowsTxt}</td>
+        <td class="py-1.5 px-2 text-center num-font text-slate-500">${dc}</td>
+        <td class="py-1.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-[9.5px] font-extrabold ${t.ok ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-rose-100 text-rose-700 border border-rose-200'}">${t.ok ? 'ok' : 'รอข้อมูล'}</span></td>
+      </tr>`;
+    }).join('');
+    box.innerHTML = `
+      <div class="rounded-xl p-3.5 bg-gradient-to-r from-emerald-50/80 to-blue-50/60 border border-emerald-200/70">
+        <div class="flex items-center gap-2 flex-wrap text-xs">
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold ${syncStatusData.pipeline_ok ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'}">
+            <i class="fa-solid ${syncStatusData.pipeline_ok ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${syncStatusData.pipeline_ok ? 'ข้อมูลครบถ้วน' : 'บางรายการยังไม่ได้ข้อมูล'}
+          </span>
+          <span class="font-bold text-slate-700">ข้อมูลล่าสุด: <span class="num-font text-emerald-700">${formatThaiDateTime(syncStatusData.generated_at)}</span></span>
+          <span class="text-slate-500">• ดึงข้อมูลจริงจาก OpenData MoPH <span class="font-bold num-font text-emerald-700">${ok}/${n}</span> ตาราง</span>
+        </div>
+        <details class="mt-2">
+          <summary class="cursor-pointer text-[11px] font-bold text-emerald-700 hover:text-emerald-800 select-none">ดูสถานะการดึงข้อมูลรายตาราง (${n} ตาราง)</summary>
+          <div class="mt-2 max-h-80 overflow-y-auto overflow-x-auto rounded-lg border border-slate-200">
+            <table class="w-full text-left border-collapse text-[11px] custom-table">
+              <thead class="sticky top-0 z-10"><tr class="bg-slate-100 text-slate-600 font-bold">
+                <th class="py-1.5 px-2.5">ชื่อรายงาน</th>
+                <th class="py-1.5 px-2">ตาราง API</th>
+                <th class="py-1.5 px-2">หมวดหมู่</th>
+                <th class="py-1.5 px-2 text-center w-24">แถวข้อมูล<br>(ปี 2569)</th>
+                <th class="py-1.5 px-2 text-center w-36">ข้อมูลล่าสุด<br>(HDC ประมวลผล)</th>
+                <th class="py-1.5 px-2 text-center w-16">สถานะ</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-100">${rows}</tbody>
+            </table>
+          </div>
+        </details>
+      </div>`;
+  }
+
   // ── Reusable trend components (Task 2) ──────────────────────────────────
   // ออกแบบให้หน้า "ภาพรวมตัวชี้วัด" นำไปใช้ซ้ำได้ — ทำงานกับ report entry
   // รูปแบบเดียวกับ ncd_service_plan_master.json (years → district/units)
@@ -17898,7 +18225,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 10. Update Everything on View Change
   function updateDashboardView() {
-    if (currentDomain === 'explorer') {
+    if (overviewPanel && currentDomain !== 'overview') overviewPanel.classList.add('hidden');
+    if (currentDomain === 'overview') {
+      // แผงภาพรวมอยู่ภายใน active-indicator-section เดียวกับแผงพิเศษอื่น ๆ —
+      // เปิด section แล้วซ่อนองค์ประกอบมาตรฐานภายใน (เช่นเดียวกับ branch service_plan_ncd)
+      if (explorerSection) explorerSection.classList.add('hidden');
+      if (pcc2569Panel) pcc2569Panel.classList.add('hidden');
+      if (servicePlanNcdPanel) servicePlanNcdPanel.classList.add('hidden');
+      if (indicatorDropdownBar) indicatorDropdownBar.classList.add('hidden');
+      if (executiveBanner) executiveBanner.classList.add('hidden');
+      if (activeSection) activeSection.classList.remove('hidden');
+
+      const standardIndHeader = document.getElementById('standard-indicator-header');
+      if (standardIndHeader) standardIndHeader.classList.add('hidden');
+      const standardChartsSection = document.getElementById('standard-charts-section');
+      if (standardChartsSection) standardChartsSection.classList.add('hidden');
+      const standardTableSection = document.getElementById('standard-table-section');
+      if (standardTableSection) standardTableSection.classList.add('hidden');
+      if (topHerbsPanel) topHerbsPanel.classList.add('hidden');
+      if (nhsoErrorPanel) nhsoErrorPanel.classList.add('hidden');
+      if (nhsoServicePanel) nhsoServicePanel.classList.add('hidden');
+      if (ttmAgeSexPanel) ttmAgeSexPanel.classList.add('hidden');
+      if (ttmEdPanel) ttmEdPanel.classList.add('hidden');
+      if (ttmCasesPanel) ttmCasesPanel.classList.add('hidden');
+      if (ttmCommonPanel) ttmCommonPanel.classList.add('hidden');
+      if (ttmMassagePanel) ttmMassagePanel.classList.add('hidden');
+      if (dmHba1cPanel) dmHba1cPanel.classList.add('hidden');
+
+      if (overviewPanel) overviewPanel.classList.remove('hidden');
+      renderOverviewPanel();
+    } else if (currentDomain === 'explorer') {
       if (activeSection) activeSection.classList.add('hidden');
       if (indicatorDropdownBar) indicatorDropdownBar.classList.add('hidden');
       if (executiveBanner) executiveBanner.classList.add('hidden');
