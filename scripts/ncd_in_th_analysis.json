@@ -1,0 +1,378 @@
+{
+  "ref_keys": [
+    "amphoes",
+    "tambons",
+    "workplaces"
+  ],
+  "dash_keys": [
+    "categories",
+    "scope",
+    "cols",
+    "affCols",
+    "years",
+    "years_with_data",
+    "current_year",
+    "reports"
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "ผู้สูงอายุ",
+      "icon": "🧓"
+    },
+    {
+      "id": 2,
+      "name": "NCD (เบาหวาน/ความดัน/CVD)",
+      "icon": "🩺"
+    },
+    {
+      "id": 3,
+      "name": "มะเร็ง",
+      "icon": "🎗️"
+    },
+    {
+      "id": 4,
+      "name": "ฝากครรภ์/หลังคลอด",
+      "icon": "🤰"
+    },
+    {
+      "id": 5,
+      "name": "วัยรุ่น/ตั้งครรภ์ซ้ำ/คุมกำเนิด",
+      "icon": "🌱"
+    },
+    {
+      "id": 6,
+      "name": "พัฒนาการเด็ก (TEDA4I/DSPM)",
+      "icon": "🧸"
+    },
+    {
+      "id": 7,
+      "name": "สุขภาพเด็ก",
+      "icon": "👶"
+    },
+    {
+      "id": 8,
+      "name": "ทันตกรรม",
+      "icon": "🦷"
+    },
+    {
+      "id": 9,
+      "name": "แพทย์แผนไทย",
+      "icon": "🌿"
+    },
+    {
+      "id": 10,
+      "name": "อื่นๆ",
+      "icon": "📊"
+    }
+  ],
+  "reports_summary": {
+    "total": 38,
+    "sample_report": {
+      "id": 1,
+      "name": "การคัดกรองผู้สูงอายุ 9 ด้าน (Basic/Community Screen STEP1)",
+      "category_id": 1,
+      "description": "เป้าหมาย ≥ร้อยละ 80 (รอบกลางปี ≥ร้อยละ 40) ตัวชี้วัดย่อย \"ผู้สูงอายุได้รับการคัดกรองสุขภาพ 9 ด้าน\" — ที่มา: แผนการตรวจราชการกระทรวงสาธารณสุข ปีงบประมาณ 2569 (กองตรวจราชการ สป.สธ.)",
+      "goal_pct": 80,
+      "higher_is_better": true,
+      "show_pct": true,
+      "last_sync_at": "2026-10-04T19:01:13.000Z",
+      "data": {
+        "2565": {
+          "3501": {
+            "n": 0,
+            "d": 17857
+          },
+          "3502": {
+            "n": 0,
+            "d": 4699
+          },
+          "3503": {
+            "n": 0,
+            "d": 8748
+          },
+          "3504": {
+            "n": 0,
+            "d": 9488
+          },
+          "3505": {
+            "n": 0,
+            "d": 5276
+          },
+          "3506": {
+            "n": 0,
+            "d": 8512
+          },
+          "3507": {
+            "n": 0,
+            "d": 3916
+          },
+          "3508": {
+            "n": 0,
+            "d": 11659
+          },
+          "3509": {
+            "n": 0,
+            "d": 4660
+          },
+          "_all": {
+            "n": 0,
+            "d": 74815
+          },
+          "@moph": {
+            "n": 0,
+            "d": 45672
+          },
+          "@other": {
+            "n": 0,
+            "d": 493
+          },
+          "@pao": {
+            "n": 0,
+            "d": 28366
+          },
+          "@private": {
+            "n": 0,
+            "d": 284
+          }
+        },
+        "2566": {
+          "3501": {
+            "n": 11334,
+            "d": 19089
+          },
+          "3502": {
+            "n": 4685,
+            "d": 4855
+          },
+          "3503": {
+            "n": 6895,
+            "d": 9278
+          },
+          "3504": {
+            "n": 8477,
+            "d": 9894
+          },
+          "3505": {
+            "n": 4675,
+            "d": 5556
+          },
+          "3506": {
+            "n": 8292,
+            "d": 8774
+          },
+          "3507": {
+            "n": 3702,
+            "d": 4012
+          },
+          "3508": {
+            "n": 9590,
+            "d": 12055
+          },
+          "3509": {
+            "n": 4693,
+            "d": 4887
+          },
+          "_all": {
+            "n": 62343,
+            "d": 78400
+          },
+          "@moph": {
+            "n": 42107,
+            "d": 47173
+          },
+          "@other": {
+            "n": 441,
+            "d": 660
+          },
+          "@pao": {
+            "n": 19538,
+            "d": 30289
+          },
+          "@private": {
+            "n": 257,
+            "d": 278
+          }
+        },
+        "2567": {
+          "3501": {
+            "n": 19118,
+            "d": 20211
+          },
+          "3502": {
+            "n": 4870,
+            "d": 5046
+          },
+          "3503": {
+            "n": 9086,
+            "d": 9668
+          },
+          "3504": {
+            "n": 10138,
+            "d": 10441
+          },
+          "3505": {
+            "n": 5483,
+            "d": 5937
+          },
+          "3506": {
+            "n": 8649,
+            "d": 8989
+          },
+          "3507": {
+            "n": 3927,
+            "d": 4135
+          },
+          "3508": {
+            "n": 10858,
+            "d": 12918
+          },
+          "3509": {
+            "n": 4807,
+            "d": 5106
+          },
+          "_all": {
+            "n": 76936,
+            "d": 82451
+          },
+          "@moph": {
+            "n": 46822,
+            "d": 49485
+          },
+          "@other": {
+            "n": 695,
+            "d": 776
+          },
+          "@pao": {
+            "n": 29142,
+            "d": 31905
+          },
+          "@private": {
+            "n": 277,
+            "d": 285
+          }
+        },
+        "2568": {
+          "3501": {
+            "n": 12441,
+            "d": 21105
+          },
+          "3502": {
+            "n": 4927,
+            "d": 5155
+          },
+          "3503": {
+            "n": 9307,
+            "d": 9935
+          },
+          "3504": {
+            "n": 10126,
+            "d": 10889
+          },
+          "3505": {
+            "n": 5851,
+            "d": 6214
+          },
+          "3506": {
+            "n": 8746,
+            "d": 9189
+          },
+          "3507": {
+            "n": 4233,
+            "d": 4655
+          },
+          "3508": {
+            "n": 10073,
+            "d": 13789
+          },
+          "3509": {
+            "n": 4936,
+            "d": 5313
+          },
+          "_all": {
+            "n": 70640,
+            "d": 86244
+          },
+          "@moph": {
+            "n": 46049,
+            "d": 51878
+          },
+          "@other": {
+            "n": 809,
+            "d": 814
+          },
+          "@pao": {
+            "n": 23538,
+            "d": 33259
+          },
+          "@private": {
+            "n": 244,
+            "d": 293
+          }
+        },
+        "2569": {
+          "3501": {
+            "n": 17841,
+            "d": 22080
+          },
+          "3502": {
+            "n": 5067,
+            "d": 5349
+          },
+          "3503": {
+            "n": 9744,
+            "d": 10373
+          },
+          "3504": {
+            "n": 10673,
+            "d": 11259
+          },
+          "3505": {
+            "n": 6142,
+            "d": 6475
+          },
+          "3506": {
+            "n": 9135,
+            "d": 9460
+          },
+          "3507": {
+            "n": 4340,
+            "d": 4646
+          },
+          "3508": {
+            "n": 11642,
+            "d": 14608
+          },
+          "3509": {
+            "n": 5197,
+            "d": 5548
+          },
+          "_all": {
+            "n": 79781,
+            "d": 89798
+          },
+          "@moph": {
+            "n": 50046,
+            "d": 53799
+          },
+          "@other": {
+            "n": 725,
+            "d": 855
+          },
+          "@pao": {
+            "n": 28716,
+            "d": 34849
+          },
+          "@private": {
+            "n": 294,
+            "d": 295
+          }
+        }
+      }
+    }
+  },
+  "settings_fn": "async function viewSettings() {\n\n  const s = await api('GET', '/api/admin/settings');\n\n  const now = new Date();\n\n  const fy = now.getFullYear() + 543 + (now.getMonth() >= 9 ? 1 : 0);          // ปีงบประมาณ พ.ศ. (ต.ค.–ก.ย.)\n\n  const fmtAt = (iso) => new Date(iso).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok', dateStyle: 'medium', timeStyle: 'short' });\n\n  const last = s.last_auto_result\n\n    ? `ครั้งล่าสุด ${fmtAt(s.last_auto_result.at)} · ${s.last_auto_result.errors ? `<span class=\"text-danger\">ผิดพลาด ${s.last_auto_result.errors} จาก ${s.last_auto_result.total} รายการ</span>` : '<span class=\"text-success\">สำเร็จทั้งหมด</span>'}`\n\n    : 'ยังไม่เคยดึงอัตโนมัติ';\n\n  $('#view').innerHTML = `<div class=\"card\" style=\"max-width:560px\"><div class=\"card-body\">\n\n    <h2 class=\"h6 mb-3\">ข้อมูลที่ดึง</h2>\n\n    <div class=\"row g-3 mb-2\">\n\n      <div class=\"col-6\"><label class=\"form-label\">รหัสจังหวัด (2 หลัก)</label><input id=\"sp\" class=\"form-control\" maxlength=\"2\" value=\"${esc(s.province)}\"></div>\n\n      <div class=\"col-6\"><label class=\"form-label\">ดึงข้อมูลย้อนหลัง (ปี)</label><input id=\"sy\" type=\"number\" min=\"1\" max=\"15\" class=\"form-control\" value=\"${esc(s.years_back)}\"></div>\n\n    </div>\n\n    <div class=\"small text-muted mb-4\">ปีเป็นปีงบประมาณ พ.ศ. (ต.ค.–ก.ย.) ปีปัจจุบันคือ ${fy} เช่น 5 ปี = ${[...Array(5)].map((_, i) => fy - 4 + i).join(', ')} (ปีงบใหม่ช่วงแรกอาจยังไม่มีข้อมูล)<br>เปลี่ยนจังหวัดแล้วต้องกด \"ดึงข้อมูลทุกรายงาน\" ใหม่ ข้อมูลของจังหวัดเดิมจะยังอยู่ในฐาน</div>\n\n    <h2 class=\"h6 mb-3\">ดึงข้อมูลอัตโนมัติรายวัน</h2>\n\n    <div class=\"d-flex flex-wrap align-items-center gap-3 mb-2\">\n\n      <div class=\"form-check form-switch m-0\"><input class=\"form-check-input\" type=\"checkbox\" role=\"switch\" id=\"se\" ${s.sync_enabled ? 'checked' : ''}><label class=\"form-check-label\" for=\"se\">เปิดใช้งาน</label></div>\n\n      <div class=\"d-flex align-items-center gap-2\"><label class=\"form-label m-0\" for=\"st\">เวลา (เวลาไทย)</label><input id=\"st\" type=\"time\" class=\"form-control\" style=\"width:8rem\" value=\"${esc(s.sync_time)}\"></div>\n\n    </div>\n\n    <div class=\"small text-muted mb-4\">${last}<br>ถ้าเซิร์ฟเวอร์ปิดอยู่ตอนถึงเวลา จะดึงให้ทันทีที่เปิดขึ้นมาในวันเดียวกัน ใช้เวลาประมาณ 4–6 นาที และดูความคืบหน้าได้ที่แท็บ \"ดึงข้อมูล / Log\"</div>\n\n    <button class=\"btn btn-primary\" id=\"save\">บันทึก</button></div></div>\n\n    <div class=\"card mt-3\" style=\"max-width:560px\"><div class=\"card-body\">\n\n      <h2 class=\"h6 mb-2\">อีเมลส่งรหัสเข้าสู่ระบบ</h2>\n\n      <div class=\"mb-2\">โหมด: <span class=\"badge ${s.mail.ready ? 'text-bg-success' : 'text-bg-warning'}\">${esc(s.mail.mode)}</span>\n\n        ${s.mail.ready ? '<span class=\"small text-success\">พร้อมส่งจริง</span>' : '<span class=\"small\">ยังไม่ส่งจริง — รหัสจะพิมพ์ลงบันทึกของเซิร์ฟเวอร์ (ใช้ได้เฉพาะเครื่องพัฒนา)</span>'}</div>\n\n      <div class=\"small text-muted mb-3\">ตั้งค่าที่ตัวแปรสภาพแวดล้อมของเซิร์ฟเวอร์ (ไม่เก็บในหน้านี้เพื่อความปลอดภัย): <span class=\"src\">MAIL_MODE=resend</span>, <span class=\"src\">RESEND_API_KEY</span>, <span class=\"src\">RESEND_FROM_EMAIL</span> (แบบเดียวกับ dmyst) หรือ <span class=\"src\">MAIL_MODE=smtp</span> ดูรายละเอียดใน docs/DEPLOY.md</div>\n\n      <button class=\"btn btn-outline-primary\" id=\"mailtest\">ส่งอีเมลทดสอบถึงฉัน</button>\n\n    </div></div>`;\n\n  // สถิติผู้เข้าชมแดชบอร์ด 14 วันล่าสุด\n\n  const vis = await api('GET', '/api/admin/visits?days=14');\n\n  const maxV = Math.max(1, ...vis.days.map((d) => d.views));\n\n  const dayTh = (d) => new Date(`${d}T00:00:00+07:00`).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' });\n\n  $('#view').insertAdjacentHTML('beforeend', `<div class=\"card mt-3\" style=\"max-width:560px\"><div class=\"card-body\">\n\n    <h2 class=\"h6 mb-2\">สถิติผู้เข้าชมหน้าแดชบอร์ด</h2>\n\n    <div class=\"small text-muted mb-2\">วันนี้ <b>${nf(vis.summary.today.visitors)}</b> คน (เปิดดู ${nf(vis.summary.today.views)} ครั้ง) · สะสม <b>${nf(vis.summary.total.visitors)}</b> คน-วัน, ${nf(vis.summary.total.views)} ครั้ง${vis.summary.since ? ` · นับตั้งแต่ ${dayTh(vis.summary.since)}` : ''}</div>\n\n    <table class=\"table table-sm mb-2\"><thead class=\"table-light\"><tr><th>วันที่</th><th class=\"text-end\">ผู้เข้าชม</th><th class=\"text-end\">เปิดดู (ครั้ง)</th><th style=\"width:35%\"></th></tr></thead>\n\n    <tbody>${vis.days.map((d) => `<tr><td>${dayTh(d.day)}</td><td class=\"text-end\">${nf(d.visitors)}</td><td class=\"text-end\">${nf(d.views)}</td><td><div style=\"height:8px;border-radius:4px;background:var(--opc-primary);width:${Math.max(3, Math.round((d.views / maxV) * 100))}%\"></div></td></tr>`).join('') || '<tr><td colspan=\"4\" class=\"text-muted\">ยังไม่มีข้อมูล (ไม่นับการเปิดจากเครื่องพัฒนา localhost และบอท)</td></tr>'}</tbody></table>\n\n    <div class=\"small text-muted\">ผู้เข้าชม = นับคนละ 1 ครั้งต่อวัน · ไม่เก็บ IP ดิบ ใช้ค่าแฮชชั่วคราวที่ลบทิ้งใน 2 วัน</div></div></div>`);\n\n  $('#mailtest').onclick = () => run(async () => {\n\n    const j = await api('POST', '/api/admin/mail/test', {});\n\n    toast(j.ready ? `ส่งอีเมลทดสอบถึง ${j.to} แล้ว ตรวจกล่องจดหมาย` : `โหมด ${j.mode}: ยังไม่ได้ส่งจริง (ดูบันทึกเซิร์ฟเวอร์)`, j.ready ? 'success' : 'warning');\n\n  });\n\n  $('#save').onclick = () => run(async () => {\n\n    await api('PUT', '/api/admin/settings', { province: $('#sp').value, years_back: $('#sy').value, sync_enabled: $('#se').checked, sync_time: $('#st').value });\n\n    toast('บันทึกแล้ว');\n\n  });\n\n}",
+  "sync_fn": "async function viewSync() {\n\n  const [st, log] = await Promise.all([api('GET', '/api/admin/sync/status'), api('GET', '/api/admin/sync/log?limit=100')]);\n\n  const badge = { ok: 'success', error: 'danger', running: 'primary', 'empty-kept': 'warning' };\n\n  $('#view').innerHTML = `\n\n    <div class=\"card mb-3\"><div class=\"card-body\">\n\n      <div class=\"d-flex flex-wrap gap-2 align-items-center\">\n\n        <button class=\"btn btn-primary\" id=\"all\" ${st.running ? 'disabled' : ''}>ดึงข้อมูลทุกรายงาน</button>\n\n        <span class=\"text-muted small\">ดึงตามจังหวัดและจำนวนปีย้อนหลังในแท็บตั้งค่า (ใช้เวลาราว 3–5 นาที)</span>\n\n      </div>\n\n      <div id=\"prog\" class=\"mt-3\"></div>\n\n    </div></div>\n\n    <div class=\"table-responsive bg-white border rounded\"><table class=\"table table-sm table-hover mb-0\">\n\n      <thead class=\"table-light\"><tr><th>เวลา</th><th>รายงาน</th><th>ปี</th><th>สถานะ</th><th class=\"text-end\">แถว</th><th>ข้อความ</th></tr></thead>\n\n      <tbody>${log.map((l) => `<tr><td class=\"small text-nowrap\">${fmt(l.started_at)}</td><td>${esc(l.name)} <span class=\"src text-muted\">${esc(l.source_table)}</span></td><td>${esc(l.year)}</td>\n\n        <td><span class=\"badge text-bg-${badge[l.status] || 'secondary'}\">${esc(l.status)}</span></td><td class=\"text-end\">${nf(l.row_count)}</td><td class=\"small text-danger\">${esc(l.error || '')}</td></tr>`).join('') || '<tr><td colspan=\"6\" class=\"text-center text-muted py-3\">ยังไม่มีประวัติ</td></tr>'}</tbody></table></div>`;\n\n  $('#all').onclick = () => startSync({ all: true });\n\n  showProgress(st);\n\n  clearInterval(poll);\n\n  if (st.running) poll = setInterval(async () => {\n\n    const s = await api('GET', '/api/admin/sync/status').catch(() => null);\n\n    if (!s) return;\n\n    showProgress(s);\n\n    if (!s.running) { clearInterval(poll); if (current === 'sync') run(viewSync); }\n\n  }, 2000);\n\n}",
+  "start_sync_fn": "async function startSync(body) {\n\n  await run(async () => {\n\n    const j = await api('POST', '/api/admin/sync', body);\n\n    toast(`เริ่มดึงข้อมูล ${j.total} รายการ (ปี ${j.years.join(', ')})`);\n\n    switchTab('sync');\n\n  });\n\n}",
+  "report_form_fn": "function reportForm(r) {\n\n  const isNew = !r;\n\n  r = r || { name: '', source_table: '', category_id: null, is_active: true, sort_order: 0, goal_pct: null, higher_is_better: true, num_col: 'result', den_col: 'target', show_pct: true, description: '' };\n\n  openModal(isNew ? 'เพิ่มรายงาน' : 'แก้ไขรายงาน', `\n\n    <div class=\"mb-3\"><label class=\"form-label\">ชื่อรายงาน</label><input id=\"rn\" class=\"form-control\" value=\"${esc(r.name)}\"></div>\n\n    <div class=\"row g-3 mb-3\">\n\n      <div class=\"col-md-7\"><label class=\"form-label\">ชื่อตารางจาก API (tableName)</label>\n\n        <div class=\"input-group\"><input id=\"rt\" class=\"form-control src\" placeholder=\"เช่น s_aged9\" value=\"${esc(r.source_table)}\"><button class=\"btn btn-outline-secondary\" id=\"rtest\" type=\"button\">ทดสอบดึง</button></div></div>\n\n      <div class=\"col-md-5\"><label class=\"form-label\">หมวดหมู่</label><select id=\"rc\" class=\"form-select\">${catOptions(r.category_id)}</select></div>\n\n    </div>\n\n    <div class=\"row g-3 mb-3\">\n\n      <div class=\"col-md-4\"><label class=\"form-label\">ลำดับ</label><input id=\"ro\" type=\"number\" class=\"form-control\" value=\"${esc(r.sort_order)}\"></div>\n\n      <div class=\"col-md-4 d-flex align-items-end\"><div class=\"form-check\"><input id=\"ra\" type=\"checkbox\" class=\"form-check-input\" ${r.is_active ? 'checked' : ''}><label class=\"form-check-label\" for=\"ra\">เปิดใช้งาน</label></div></div>\n\n    </div>\n\n    <hr>\n\n    <div class=\"row g-3 mb-3\">\n\n      <div class=\"col-md-3\"><label class=\"form-label\">เป้าหมาย (%)</label><input id=\"rg\" type=\"number\" step=\"0.1\" min=\"0\" class=\"form-control\" placeholder=\"ไม่ตั้ง\" value=\"${r.goal_pct ?? ''}\"></div>\n\n      <div class=\"col-md-5\"><label class=\"form-label\">ทิศทางที่ดี</label><select id=\"rh\" class=\"form-select\"><option value=\"1\" ${r.higher_is_better ? 'selected' : ''}>ยิ่งสูงยิ่งดี (≥ เป้า)</option><option value=\"0\" ${r.higher_is_better ? '' : 'selected'}>ยิ่งต่ำยิ่งดี (≤ เป้า)</option></select></div>\n\n      <div class=\"col-md-4 d-flex align-items-end\"><div class=\"form-check\"><input id=\"rp\" type=\"checkbox\" class=\"form-check-input\" ${r.show_pct ? 'checked' : ''}><label class=\"form-check-label\" for=\"rp\">แสดงเป็นร้อยละ (ตัวตั้ง ÷ ตัวหาร)</label></div></div>\n\n    </div>\n\n    <div class=\"row g-3 mb-3\">\n\n      <div class=\"col-md-6\"><label class=\"form-label\">คอลัมน์ตัวตั้ง (A)</label><input id=\"rnum\" class=\"form-control src\" value=\"${esc(r.num_col)}\"></div>\n\n      <div class=\"col-md-6\"><label class=\"form-label\">คอลัมน์ตัวหาร (B)</label><input id=\"rden\" class=\"form-control src\" value=\"${esc(r.den_col)}\"></div>\n\n      <div class=\"form-text\">ดูชื่อคอลัมน์และความหมายได้ที่ปุ่ม \"คอลัมน์\" ในตารางรายงาน รวมหลายคอลัมน์ได้ด้วยเครื่องหมาย + เช่น <span class=\"src\">result1+result2+result3+result4</span> (ใช้กับรายงานรายไตรมาส/รายอายุ/รายเดือน) ถ้าไม่เปิดแสดงเป็นร้อยละ แดชบอร์ดจะแสดงจำนวนของคอลัมน์ตัวตั้ง (หรือตัวหารถ้าไม่มีตัวตั้ง)</div>\n\n    </div>\n\n    <div class=\"mb-3\"><label class=\"form-label\">คำอธิบาย / นิยามตัวชี้วัด</label><textarea id=\"rd\" rows=\"3\" class=\"form-control\">${esc(r.description || '')}</textarea></div>\n\n    <div id=\"rprev\"></div>`, [\n\n    { label: 'ยกเลิก', close: true },\n\n    { label: 'บันทึก', cls: 'primary', onClick: async () => {\n\n      const body = { name: $('#rn').value, source_table: $('#rt').value, category_id: $('#rc').value || null, sort_order: $('#ro').value, is_active: $('#ra').checked,\n\n        goal_pct: $('#rg').value, higher_is_better: $('#rh').value === '1', show_pct: $('#rp').checked, num_col: $('#rnum').value, den_col: $('#rden').value, description: $('#rd').value };\n\n      await api(isNew ? 'POST' : 'PUT', isNew ? '/api/admin/reports' : `/api/admin/reports/${r.id}`, body);\n\n      modal.hide(); toast('บันทึกแล้ว'); viewReports();\n\n    } },\n\n  ]);\n\n  $('#rtest').onclick = () => run(async () => {\n\n    $('#rprev').innerHTML = '<div class=\"text-muted small\">กำลังดึงตัวอย่าง…</div>';\n\n    try {\n\n      const j = await api('POST', '/api/admin/reports/test', { source_table: $('#rt').value });\n\n      $('#rprev').innerHTML = `<div class=\"alert alert-success py-2 small mb-2\">พบข้อมูล ${nf(j.total)} แถว (ปี ${esc(j.year)} จังหวัด ${esc(j.province)}) — ${j.columns.length} คอลัมน์</div>\n\n        <pre class=\"sample border rounded p-2 bg-light\">${esc(JSON.stringify(j.sample, null, 1))}</pre>`;\n\n    } catch (e) { $('#rprev').innerHTML = `<div class=\"alert alert-danger py-2 small\">${esc(e.message)}</div>`; }\n\n  });\n\n}"
+}

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แดชบอร์ดตัวชี้วัด | ศูนย์ตุ้มโฮมข้อมูล OPC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/app.css" rel="stylesheet">
+<script src="/app.js"></script>
+<style>
+  /* หัวเรื่อง + ขอบเขต/เวลาข้อมูล อยู่แถวเดียวกัน (จอแคบจะขึ้นบรรทัดใหม่เอง) */
+  .title-row { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .9rem; row-gap: .1rem; }
+  .chips-row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+  .scope-chip, .date-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .22rem .75rem; border-radius: 999px; font-size: .82rem; line-height: 1.4; }
+  .scope-chip { font-weight: 600; color: var(--opc-primary); background: color-mix(in srgb, var(--opc-primary) 15%, var(--opc-surface));
+                border: 1px solid color-mix(in srgb, var(--opc-primary) 38%, transparent); }
+  .date-chip { color: var(--opc-text); font-weight: 500; background: color-mix(in srgb, var(--opc-text) 9%, var(--opc-surface)); border: 1px solid color-mix(in srgb, var(--opc-text) 22%, transparent); }
+
+  /* การ์ดสรุป */
+  .sum-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; margin-bottom: .9rem; }
+  @media (max-width: 767px) { .sum-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .sum { position: relative; text-align: left; border: 1px solid var(--opc-border); background: var(--opc-surface); border-radius: .9rem;
+         padding: .7rem .9rem .75rem 1.1rem; box-shadow: var(--opc-shadow); cursor: pointer; overflow: hidden; transition: transform .12s, border-color .12s; color: var(--opc-text); }
+  .sum:hover { transform: translateY(-1px); }
+  .sum::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
+  .sum.on { border-color: var(--c); box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 30%, transparent), var(--opc-shadow); }
+  .sum .lbl { font-size: .78rem; color: var(--opc-muted); display: flex; align-items: center; gap: .35rem; }
+  .sum .dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--c); }
+  .sum .num { font-size: 1.85rem; font-weight: 700; line-height: 1.15; color: var(--c); font-variant-numeric: tabular-nums; }
+  .sum .num small { font-size: .78rem; font-weight: 500; color: var(--opc-muted); margin-left: .25rem; }
+  .sum .bar { height: 5px; border-radius: 3px; background: var(--opc-surface-2); margin-top: .35rem; overflow: hidden; }
+  .sum .bar i { display: block; height: 100%; background: var(--c); border-radius: 3px; }
+  .sum.g { --c: var(--ok-solid); } .sum.a { --c: var(--warn-solid); } .sum.r { --c: var(--bad-solid); } .sum.n { --c: var(--na-solid); }
+
+  /* แถบตัวกรอง */
+  .filters { padding: .7rem .8rem; margin-bottom: .75rem; display: flex; flex-wrap: wrap; gap: .6rem .7rem; align-items: flex-end; }
+  .fg { display: flex; flex-direction: column; gap: .15rem; margin: 0; }
+  .fg > span { font-size: .68rem; color: var(--opc-muted); font-weight: 500; padding-left: .2rem; letter-spacing: .2px; }
+  .fg select, .fg input[type=search] { min-width: 120px; }
+  .seg { display: inline-flex; background: var(--opc-surface-2); border: 1px solid var(--opc-border); border-radius: .7rem; padding: 3px; gap: 2px; }
+  .seg .btn { border: 0 !important; border-radius: .5rem; padding: .28rem .7rem; font-size: .82rem; color: var(--opc-muted); background: transparent; }
+  .seg .btn-check:checked + .btn { background: var(--opc-primary); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  [data-bs-theme='dark'] .seg .btn-check:checked + .btn { color: #04201d; }
+  .seg .btn-check:disabled + .btn { opacity: .4; cursor: not-allowed; }
+
+  /* ตาราง */
+  .dash-wrap { overflow: auto; max-height: calc(100vh - 330px); min-height: 320px; background: var(--opc-surface); border: 1px solid var(--opc-border); border-radius: .9rem; box-shadow: var(--opc-shadow); }
+  table.dash { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .84rem; color: var(--opc-text); }
+  table.dash th, table.dash td { padding: .3rem .55rem; border-bottom: 1px solid var(--opc-border); white-space: nowrap; }
+  table.dash thead th { position: sticky; top: 0; z-index: 3; background: var(--opc-surface-2); color: var(--opc-muted); font-weight: 600; font-size: .76rem; text-align: center; border-bottom: 2px solid var(--opc-primary); }
+  table.dash thead th:first-child { left: 0; z-index: 4; text-align: left; min-width: 320px; }
+  td.name { position: sticky; left: 0; z-index: 2; background: var(--opc-surface); min-width: 320px; max-width: 420px; white-space: normal !important; line-height: 1.3; border-right: 1px solid var(--opc-border); }
+  tr.rep { cursor: pointer; }
+  tr.rep:hover td, tr.rep:hover td.name { background: color-mix(in srgb, var(--opc-accent) 9%, var(--opc-surface)); }
+  td.c { text-align: center; }
+  td.tot { border-left: 2px solid var(--opc-primary); }
+  td.tot .pill { font-size: .9rem; }
+  .goal { color: var(--opc-muted); font-size: .78rem; }
+  .delta { font-size: .76rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .delta.up { color: var(--ok-solid); } .delta.dn { color: var(--bad-solid); } .delta.eq { color: var(--opc-muted); }
+  .spark { vertical-align: middle; }
+  tr.cat td { position: sticky; left: 0; background: color-mix(in srgb, var(--cc) 11%, var(--opc-surface)); cursor: pointer; padding: .42rem .7rem; font-weight: 600; border-left: 5px solid var(--cc); }
+  tr.cat .chips { float: right; position: sticky; right: .7rem; }
+  tr.cat .chip { font-size: .72rem; font-weight: 600; padding: .08rem .5rem; border-radius: 999px; margin-left: .3rem; }
+  .chip.g { background: var(--ok-bg); color: var(--ok-fg); } .chip.a { background: var(--warn-bg); color: var(--warn-fg); }
+  .chip.r { background: var(--bad-bg); color: var(--bad-fg); } .chip.n { background: var(--na-bg); color: var(--na-fg); }
+  .caret { display: inline-block; width: 1.1em; color: var(--opc-muted); }
+  /* ไอคอนกลุ่มตัวชี้วัด */
+  .cat-ico { display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; margin-right: .55rem; vertical-align: middle; font-size: 1.1rem; line-height: 1;
+             border-radius: .55rem; background: color-mix(in srgb, var(--cc) 20%, var(--opc-surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cc) 30%, transparent); }
+  .cat-ico:empty { display: none; }
+  /* คอลัมน์ข้อมูล (ชื่ออำเภอ/หน่วยบริการ/สังกัด/ปี) กว้างและสูงเท่ากันทุกคอลัมน์ — ชื่อยาวตัดเป็น 2 บรรทัด ชี้เมาส์ดูชื่อเต็ม */
+  table.dash th.dcol, table.dash td.dc { width: 76px; min-width: 76px; max-width: 76px; padding-left: .3rem; padding-right: .3rem; }
+  table.dash th.dcol { vertical-align: middle; padding-top: .35rem; padding-bottom: .35rem; font-size: .72rem; }
+  table.dash th.dcol span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal;
+                            word-break: break-word; line-height: 1.25; height: 2.5em; text-align: center; }
+  table.dash td.dc .pill { min-width: 3.3rem; padding-left: .35rem; padding-right: .35rem; }
+  .legend { font-size: .76rem; color: var(--opc-muted); display: flex; flex-wrap: wrap; gap: .3rem .9rem; margin: .1rem 0 .6rem; }
+  .legend i { display: inline-block; width: .7rem; height: .7rem; border-radius: 3px; margin-right: .3rem; vertical-align: -1px; }
+  .visit-box { margin-top: .75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .35rem .9rem; font-size: .85rem; color: var(--opc-text); }
+  .visit-box .chip-v { display: inline-flex; align-items: center; gap: .35rem; padding: .22rem .75rem; border-radius: 999px; background: var(--opc-surface); border: 1px solid var(--opc-border); box-shadow: var(--opc-shadow); }
+  .visit-box .chip-v b { color: var(--opc-primary); font-variant-numeric: tabular-nums; }
+  .visit-box small { flex-basis: 100%; text-align: center; color: var(--opc-muted); font-size: .75rem; }
+  .skeleton { animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .45; } }
+</style>
+</head>
+<body>
+<div id="opc-header" data-active="home"></div>
+
+<main class="opc-main">
+  <div class="title-row mb-3">
+    <h1 class="page-title">ภาพรวมตัวชี้วัดสุขภาพ</h1>
+    <span class="chips-row" id="updated"><span class="date-chip">กำลังโหลด…</span></span>
+  </div>
+
+  <div id="yearNote"></div>
+  <div class="sum-grid" id="summary" aria-live="polite"></div>
+
+  <div class="opc-card filters">
+    <label class="fg"><span>ปีงบประมาณ</span><select id="year" class="form-select form-select-sm"></select></label>
+    <label class="fg"><span>อำเภอ</span><select id="fa" class="form-select form-select-sm"></select></label>
+    <label class="fg"><span>สังกัด</span>
+      <select id="fg" class="form-select form-select-sm">
+        <option value="">ทุกสังกัด</option><option value="moph">สธ.</option><option value="pao">อบจ.</option>
+        <option value="private">เอกชน</option><option value="other">อื่นๆ</option><option value="unknown">ไม่ระบุสังกัด</option>
+      </select></label>
+    <label class="fg"><span>หน่วยบริการ</span><select id="fh" class="form-select form-select-sm" style="max-width:260px"></select></label>
+    <div class="fg"><span>แสดงแบบ</span>
+      <div class="seg" role="group" aria-label="มุมมอง">
+        <input type="radio" class="btn-check" name="by" id="by-a" value="amphoe" checked><label class="btn" for="by-a" id="by-a-lbl">แยกตามอำเภอ</label>
+        <input type="radio" class="btn-check" name="by" id="by-g" value="aff"><label class="btn" for="by-g">แยกตามสังกัด</label>
+        <input type="radio" class="btn-check" name="by" id="by-y" value="year"><label class="btn" for="by-y">แนวโน้มรายปี</label>
+      </div></div>
+    <label class="fg ms-auto"><span>ค้นหา</span><input id="q" class="form-control form-control-sm" type="search" placeholder="ชื่อตัวชี้วัด…" style="min-width:200px"></label>
+    <button id="collapse" class="btn btn-sm btn-outline-secondary" type="button">ย่อ/ขยายหมวด</button>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--ok-solid)"></i>ถึงเป้า</span>
+    <span><i style="background:var(--warn-solid)"></i>ใกล้เป้า (ห่างไม่เกิน 10% ของเป้า)</span>
+    <span><i style="background:var(--bad-solid)"></i>ต่ำกว่าเป้า</span>
+    <span><i style="background:var(--na-solid)"></i>ยังไม่ตั้งเป้า / แสดงเป็นจำนวน</span>
+    <span>คลิกแถวเพื่อดูรายละเอียด · ชี้ที่ตัวเลขเพื่อดู ตัวตั้ง/ตัวหาร</span>
+  </div>
+
+  <div class="dash-wrap"><table class="dash" id="dash"><tbody><tr><td class="p-4 skeleton text-muted">กำลังโหลดข้อมูล…</td></tr></tbody></table></div>
+  <div class="visit-box" id="visitBox" hidden></div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = OPC.esc;
+const nf = (n, d = 0) => Number(n).toLocaleString('th-TH', { maximumFractionDigits: d });
+const CAT_COLORS = ['#0d9488', '#0284c7', '#7c3aed', '#db2777', '#ea580c', '#65a30d', '#0891b2', '#c026d3', '#ca8a04', '#475569'];
+let D, ref, stFilter = '', collapsed = new Set();
+try { collapsed = new Set(JSON.parse(localStorage.getItem('kpi_collapsed') || '[]')); } catch { /* ไม่มี localStorage ก็ไม่เป็นไร */ }
+const saveCollapsed = () => { try { localStorage.setItem('kpi_collapsed', JSON.stringify([...collapsed])); } catch { /* ignore */ } };
+
+/* ---------- ตรรกะค่า/สี (เหมือนเดิม) ---------- */
+function value(rep, cell) {
+  if (!cell) return null;
+  if (rep.show_pct) return cell.d > 0 && cell.n !== null ? { v: (cell.n / cell.d) * 100, pct: true } : null;
+  const v = cell.n ?? cell.d;
+  return v === null ? null : { v, pct: false };
+}
+function status(rep, x) {
+  if (!x || !x.pct || rep.goal_pct === null) return 'n';
+  const g = rep.goal_pct;
+  if (rep.higher_is_better) return x.v >= g ? 'g' : x.v >= g * 0.9 ? 'a' : 'r';
+  return x.v <= g ? 'g' : x.v <= g * 1.1 ? 'a' : 'r';
+}
+const show = (x) => (x ? (x.pct ? `${nf(x.v, 1)}%` : nf(x.v)) : '–');
+const tip = (rep, c) => (c && rep.show_pct && c.d > 0 ? `${nf(c.n)} / ${nf(c.d)}` : '');
+const short = (n) => String(n).replace(/^โรงพยาบาลส่งเสริมสุขภาพตำบล/, 'รพ.สต.').replace(/^โรงพยาบาล/, 'รพ.').replace(/^สำนักงานสาธารณสุขอำเภอ/, 'สสอ.').replace(/ ตำบล.*$/, '');
+
+// ชื่อหัวคอลัมน์แบบบีบ: ตัดคำนำหน้า รพ.สต./บ้าน/ตำบล… ที่ซ้ำกันทุกคอลัมน์ให้เหลือชื่อสถานที่ (ชื่อเต็มอยู่ใน tooltip)
+const colName = (n) => (String(n)
+  .replace(/^โรงพยาบาลส่งเสริมสุขภาพตำบล(?:บ้าน)?/, '')
+  .replace(/^โรงพยาบาล/, 'รพ.​')                  // ​ = จุดตัดบรรทัดที่มองไม่เห็น ให้ชื่อขึ้นบรรทัดใหม่ทั้งคำ ไม่ฉีกตัวอักษร
+  .replace(/^สำนักงานสาธารณสุขอำเภอ/, 'สสอ.​')
+  .replace(/ ตำบล.*$/, '').trim() || String(n));
+
+const pill = (rep, c) => {
+  const x = value(rep, c);
+  const st = x ? status(rep, x) : 'empty';
+  return `<span class="pill ${st}" title="${esc(tip(rep, c))}">${show(x)}</span>`;
+};
+
+/* กราฟเส้นแนวโน้มตามปี (ขอบเขตปัจจุบัน) */
+function spark(r) {
+  const ys = [...D.years_with_data].reverse();
+  const pts = ys.map((y) => value(r, r.data[y]?._all)).map((x) => (x && x.pct === r.show_pct ? x.v : null));
+  const vals = pts.filter((v) => v !== null);
+  if (vals.length < 2) return '<span class="goal">–</span>';
+  const W = 64, H = 20, p = 3, lo = Math.min(...vals), hi = Math.max(...vals), rng = hi - lo || 1;
+  const xy = pts.map((v, i) => (v === null ? null : [p + (i / (pts.length - 1)) * (W - 2 * p), H - p - ((v - lo) / rng) * (H - 2 * p)])).filter(Boolean);
+  const up = vals[vals.length - 1] >= vals[0];
+  const good = r.higher_is_better ? up : !up;
+  // จำนวน (ไม่ใช่ร้อยละ) ไม่มีดี/ไม่ดี -> สีกลาง
+  const col = !r.show_pct || Math.abs(vals[vals.length - 1] - vals[0]) < 0.05 ? 'var(--na-solid)' : good ? 'var(--ok-solid)' : 'var(--bad-solid)';
+  const last = xy[xy.length - 1];
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="แนวโน้ม ${ys[0]}–${ys[ys.length - 1]}">
+    <polyline fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${xy.map((a) => a.map((n) => n.toFixed(1)).join(',')).join(' ')}"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.3" fill="${col}"/></svg>`;
+}
+
+/* ---------- สรุปด้านบน ---------- */
+function statusOf(r, year) { return status(r, value(r, r.data[year]?._all)); }
+function renderSummary(year) {
+  const cnt = { g: 0, a: 0, r: 0, n: 0 };
+  D.reports.forEach((r) => { cnt[statusOf(r, year)] += 1; });
+  const total = D.reports.length || 1;
+  const cards = [['g', 'ถึงเป้า'], ['a', 'ใกล้เป้า'], ['r', 'ต่ำกว่าเป้า'], ['n', 'ยังไม่ตั้งเป้า / ไม่มีข้อมูล']];
+  $('#summary').innerHTML = cards.map(([k, t]) => `<button type="button" class="sum ${k} ${stFilter === k ? 'on' : ''}" data-st="${k}" aria-pressed="${stFilter === k}">
+    <div class="lbl"><span class="dot"></span>${t}</div>
+    <div class="num">${cnt[k]}<small>จาก ${D.reports.length} ตัวชี้วัด</small></div>
+    <div class="bar"><i style="width:${Math.round((cnt[k] / total) * 100)}%"></i></div></button>`).join('');
+}
+
+/* ---------- ตาราง ---------- */
+function render() {
+  const year = Number($('#year').value);
+  const by = D.scope.type === 'hosp' ? 'year' : document.querySelector('input[name=by]:checked').value;
+  const q = $('#q').value.trim().toLowerCase();
+  // ปีที่ยังไม่มีข้อมูลจากต้นทาง (เช่น ปีงบใหม่ที่เพิ่งเริ่ม) — แจ้งให้ชัด แทนที่จะให้เห็นแต่ขีดเต็มตาราง
+  const latest = D.years_with_data[0];
+  $('#yearNote').innerHTML = D.years_with_data.includes(year) ? '' : `<div class="alert alert-info d-flex flex-wrap align-items-center gap-2 py-2 mb-3" role="status">
+    <span><b>ปีงบประมาณ ${year}</b>${year === D.current_year ? ` (ปีงบปัจจุบัน เริ่ม 1 ต.ค. ${year - 1})` : ''} ยังไม่มีข้อมูลจากต้นทาง (MOPH) — ระบบดึงข้อมูลให้อัตโนมัติทุกวัน และจะแสดงทันทีเมื่อมีข้อมูล</span>
+    ${latest ? `<button type="button" class="btn btn-sm btn-primary ms-auto" id="goLatest">ดูปีงบ ${latest}</button>` : ''}</div>`;
+  const go = $('#goLatest'); if (go) go.onclick = () => { $('#year').value = latest; syncUrl(); render(); };
+  renderSummary(year);
+
+  const cols = by === 'amphoe' ? D.cols.map((c) => ({ k: c.key, t: colName(c.name), full: c.name }))
+    : by === 'aff' ? D.affCols.map((c) => ({ k: c.key, t: c.name, full: c.name }))
+    : [...D.years_with_data].reverse().map((y) => ({ k: y, t: String(y), full: `ปีงบ ${y}` }));
+  const extra = by !== 'year';                       // มีคอลัมน์แนวโน้ม/เทียบปีก่อน
+  const ncols = 3 + (extra ? 2 : 0) + cols.length;
+  const head = `<thead><tr><th>ตัวชี้วัด</th><th>เป้า</th>
+    <th title="${esc(D.scope.label)}">${extra ? esc(short(D.scope.label)) : `ปีงบ ${year}`}</th>${extra ? '<th>แนวโน้ม</th><th>เทียบปีก่อน</th>' : ''}
+    ${cols.map((c) => `<th class="dcol" title="${esc(c.full)}"><span>${esc(c.t)}</span></th>`).join('')}</tr></thead>`;
+
+  let body = '';
+  D.categories.forEach((cat, ci) => {
+    const color = CAT_COLORS[ci % CAT_COLORS.length];
+    const all = D.reports.filter((r) => r.category_id === cat.id);
+    const reps = all.filter((r) => (!q || r.name.toLowerCase().includes(q)) && (!stFilter || statusOf(r, year) === stFilter));
+    if (!reps.length) return;
+    const c = { g: 0, a: 0, r: 0 };
+    all.forEach((r) => { const s = statusOf(r, year); if (s in c) c[s] += 1; });
+    const closed = collapsed.has(cat.id) && !q && !stFilter;
+    body += `<tr class="cat" data-cat="${cat.id}" style="--cc:${color}"><td colspan="${ncols}"><span class="caret">${closed ? '▸' : '▾'}</span><span class="cat-ico" aria-hidden="true">${esc(cat.icon || '')}</span>${esc(cat.name)}
+      <span class="text-muted fw-normal ms-1" style="font-size:.76rem">${reps.length} ตัวชี้วัด</span>
+      <span class="chips">${c.g ? `<span class="chip g">ถึงเป้า ${c.g}</span>` : ''}${c.a ? `<span class="chip a">ใกล้ ${c.a}</span>` : ''}${c.r ? `<span class="chip r">ต่ำกว่า ${c.r}</span>` : ''}</span></td></tr>`;
+    if (closed) return;
+    for (const r of reps) {
+      const cur = r.data[year];
+      const tot = value(r, cur?._all);
+      const pv = value(r, r.data[year - 1]?._all);
+      let trend = '<span class="goal">–</span>';
+      if (tot && pv && tot.pct === pv.pct) {
+        const d = tot.v - pv.v;
+        const better = r.higher_is_better ? d > 0 : d < 0;
+        const flat = Math.abs(d) < 0.05;
+        trend = `<span class="delta ${flat || !tot.pct ? 'eq' : better ? 'up' : 'dn'}">${flat ? '–' : (d > 0 ? '▲ ' : '▼ ') + nf(Math.abs(d), tot.pct ? 1 : 0)}${tot.pct && !flat ? ' จุด' : ''}</span>`;
+      }
+      const cells = cols.map((cc) => `<td class="c dc">${pill(r, by === 'year' ? r.data[cc.k]?._all : cur?.[cc.k])}</td>`).join('');
+      body += `<tr class="rep" data-id="${r.id}"><td class="name" title="${esc(r.description || '')}">${esc(r.name)}${r.last_sync_at ? '' : ' <span class="badge text-bg-secondary">ยังไม่มีข้อมูล</span>'}</td>
+        <td class="c goal">${r.goal_pct === null ? '–' : `${r.higher_is_better ? '≥' : '≤'}${nf(r.goal_pct, 1)}%`}</td>
+        <td class="c tot">${pill(r, cur?._all)}</td>${extra ? `<td class="c">${spark(r)}</td><td class="c">${trend}</td>` : ''}${cells}</tr>`;
+    }
+  });
+  $('#dash').innerHTML = head + `<tbody>${body || `<tr><td colspan="${ncols}" class="p-4 text-muted">ไม่พบตัวชี้วัดตามเงื่อนไขที่เลือก</td></tr>`}</tbody>`;
+}
+
+/* ---------- ตัวกรอง / โหลดข้อมูล ---------- */
+const opts = (list, val, all) => `<option value="">${all}</option>` + list.map(([v, t]) => `<option value="${esc(v)}" ${String(v) === String(val) ? 'selected' : ''}>${esc(t)}</option>`).join('');
+function fillFilters(sel = {}) {
+  $('#fa').innerHTML = opts(ref.amphoes.map((a) => [a.code, a.name]), sel.amphoe, 'ทั้งจังหวัด');
+  const wps = ref.workplaces.filter((w) => (!$('#fa').value || w.amphoe_code === $('#fa').value) && (!$('#fg').value || (w.affiliation || 'unknown') === $('#fg').value));
+  $('#fh').innerHTML = opts(wps.map((w) => [w.code, w.name]), sel.hosp, 'ทุกหน่วยบริการ');
+}
+function syncUrl() {
+  const p = new URLSearchParams();
+  if ($('#fa').value) p.set('amphoe', $('#fa').value);
+  if ($('#fh').value) p.set('hosp', $('#fh').value);
+  if ($('#fg').value) p.set('aff', $('#fg').value);
+  if ($('#year').value) p.set('year', $('#year').value);
+  const byv = document.querySelector('input[name=by]:checked').value;
+  if (byv !== 'amphoe') p.set('by', byv);
+  try { history.replaceState(null, '', p.toString() ? `?${p}` : location.pathname); } catch { /* ไม่เป็นไร */ }
+}
+async function loadDash() {
+  const keep = $('#year').value || new URLSearchParams(location.search).get('year');
+  const q = new URLSearchParams({ amphoe: $('#fa').value, hosp: $('#fh').value, aff: $('#fg').value }).toString();
+  $('#dash').classList.add('skeleton');
+  const r = await fetch(`/api/dashboard?${q}`);
+  D = await r.json();
+  $('#dash').classList.remove('skeleton');
+  // ตัวเลือกปีรวมปีงบปัจจุบันเสมอ (ปีที่ยังไม่มีข้อมูลระบุกำกับ) — ค่าเริ่มต้น: ปีงบปัจจุบันถ้ามีข้อมูลแล้ว ไม่งั้นปีล่าสุดที่มีข้อมูล
+  $('#year').innerHTML = D.years.map((y) => `<option value="${y}">ปีงบ ${y}${D.years_with_data.includes(y) ? '' : ' (ยังไม่มีข้อมูล)'}</option>`).join('');
+  $('#year').value = D.years_with_data.includes(D.current_year) ? D.current_year : (D.years_with_data[0] ?? D.current_year);
+  if (keep && D.years.map(String).includes(String(keep))) $('#year').value = keep;
+  $('#by-a-lbl').textContent = D.scope.type === 'amphoe' ? 'แยกตามหน่วยบริการ' : 'แยกตามอำเภอ';
+  const noBreak = D.scope.type === 'hosp';
+  $('#by-a').disabled = noBreak; $('#by-g').disabled = noBreak;
+  if (noBreak) $('#by-y').checked = true;
+  const last = D.reports.map((x) => x.last_sync_at).filter(Boolean).sort().pop();
+  const lastTxt = last ? new Date(last).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok', dateStyle: 'medium', timeStyle: 'short' }) : '';
+  $('#updated').innerHTML = `<span class="scope-chip">📍 ขอบเขต: ${esc(D.scope.label)}</span>${lastTxt ? `<span class="date-chip">🕒 ข้อมูลล่าสุด ${esc(lastTxt)}</span>` : ''}`;
+  syncUrl();
+  render();
+}
+
+$('#summary').onclick = (e) => {
+  const b = e.target.closest('.sum'); if (!b) return;
+  stFilter = stFilter === b.dataset.st ? '' : b.dataset.st;
+  render();
+};
+$('#dash').onclick = (e) => {
+  const cat = e.target.closest('tr.cat');
+  if (cat) { const id = Number(cat.dataset.cat); collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id); saveCollapsed(); render(); return; }
+  const rep = e.target.closest('tr.rep');
+  if (rep) {
+    const p = new URLSearchParams({ id: rep.dataset.id, year: $('#year').value });
+    if ($('#fa').value) p.set('amphoe', $('#fa').value);
+    if ($('#fh').value) p.set('hosp', $('#fh').value);
+    if ($('#fg').value) p.set('aff', $('#fg').value);
+    location.href = `/report.html?${p}`;
+  }
+};
+$('#collapse').onclick = () => { collapsed = collapsed.size ? new Set() : new Set(D.categories.map((c) => c.id)); saveCollapsed(); render(); };
+$('#year').onchange = () => { syncUrl(); render(); };
+document.querySelectorAll('input[name=by]').forEach((r) => { r.onchange = () => { syncUrl(); render(); }; });
+$('#fa').onchange = () => { fillFilters({ amphoe: $('#fa').value }); loadDash(); };
+$('#fg').onchange = () => { fillFilters({ amphoe: $('#fa').value }); loadDash(); };
+$('#fh').onchange = () => loadDash();
+$('#q').oninput = render;
+
+/* ---------- ตัวนับผู้เข้าชม: นับครั้งเดียวต่อรอบการเปิดแท็บ (เปลี่ยนตัวกรอง/รีเฟรชไม่นับซ้ำ) ---------- */
+function showVisits(v) {
+  const b = $('#visitBox');
+  const since = v.since ? new Date(`${v.since}T00:00:00+07:00`).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', dateStyle: 'medium' }) : null;
+  b.innerHTML = `<span class="chip-v" title="จำนวนผู้เข้าชมที่ไม่ซ้ำกันในวันนี้">👥 ผู้เข้าชมวันนี้ <b>${nf(v.today.visitors)}</b> คน</span>
+    <span class="chip-v" title="รวมผู้เข้าชมรายวันทุกวัน (คนเดิมที่กลับมาอีกวันนับเป็นอีก 1)">📈 ผู้เข้าชมสะสม <b>${nf(v.total.visitors)}</b></span>
+    <span class="chip-v" title="จำนวนครั้งที่เปิดหน้านี้ทั้งหมด">👁️ เปิดดูทั้งหมด <b>${nf(v.total.views)}</b> ครั้ง</span>
+    ${since ? `<small>นับตั้งแต่ ${esc(since)} · ไม่เก็บที่อยู่ IP หรือข้อมูลส่วนตัว</small>` : ''}`;
+  b.hidden = false;
+}
+async function trackVisit() {
+  let first = true;
+  try { first = !sessionStorage.getItem('opc_visit'); if (first) sessionStorage.setItem('opc_visit', '1'); } catch { /* ไม่มี sessionStorage: นับทุกครั้งที่เปิดหน้า */ }
+  try { if (first) await fetch('/api/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'dashboard' }), keepalive: true }); } catch { /* ไม่เป็นไร */ }
+  try { const r = await fetch('/api/visits'); if (r.ok) showVisits(await r.json()); } catch { /* ไม่เป็นไร */ }
+}
+trackVisit();
+
+fetch('/api/ref').then(async (rf) => {            // หน้านี้เปิดสาธารณะ ไม่ต้องล็อกอิน
+  ref = await rf.json();
+  const p = new URLSearchParams(location.search);
+  if (p.get('by') === 'year') $('#by-y').checked = true;
+  if (p.get('by') === 'aff') $('#by-g').checked = true;
+  $('#fg').value = ['moph', 'pao', 'private', 'other', 'unknown'].includes(p.get('aff')) ? p.get('aff') : '';
+  fillFilters({ amphoe: p.get('amphoe') || '', hosp: p.get('hosp') || '' });
+  await loadDash();
+}).catch(() => { $('#dash').innerHTML = '<tbody><tr><td class="p-4 text-danger">โหลดข้อมูลไม่สำเร็จ</td></tr></tbody>'; });
+</script>
+</body>
+</html>

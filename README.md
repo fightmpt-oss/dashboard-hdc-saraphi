@@ -138,13 +138,10 @@ python scripts/refresh_pcc_data.py
 python fetch_all_saraphi_data.py
 python fetch_additional_kpis.py
 
-# 3) อัปเดตมุมมอง Service Plan (NCD) — enricher แต่ละตัว fetch เองและเขียน
-#    raw snapshot ลง data/ ให้ทุกมุมมองใช้ข้อมูลชุดเดียวกัน
-python scripts/enrich_hba1c_master_data.py
-python scripts/enrich_dm_control_master_data.py
-python scripts/enrich_ht_control_master_data.py
-python scripts/enrich_risk_screening_data.py
-python scripts/patch_ncd_hypo.py
+# 3) อัปเดตมุมมอง Service Plan (NCD) ครบทุกตัวชี้วัดจาก registry — ดึงจาก
+#    OpenData โดยตรง พร้อมเขียน raw snapshot ให้ทุกมุมมองใช้ชุดเดียวกัน
+#    (สคริปต์ enrich_* เดิมยังใช้งานเดี่ยวได้ — refresh_ncd_data เรียกใช้ภายใน)
+python scripts/refresh_ncd_data.py
 
 # 4) สร้าง master ของหน้าหลักจากไฟล์ดิบ (offline)
 python scripts/build_saraphi_master.py

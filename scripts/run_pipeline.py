@@ -6,11 +6,10 @@ The order matches README "แหล่งข้อมูล & ความถี
   fetch_pcc     → scripts/refresh_pcc_data.py        (4 PCC tables, live API)
   fetch_ttm     → fetch_all_saraphi_data.py          (TTM tables, live API)
   fetch_rest    → fetch_additional_kpis.py           (PPB/elderly/MCH, live API)
-  enrich_hba1c  → scripts/enrich_hba1c_master_data.py
-  enrich_dm     → scripts/enrich_dm_control_master_data.py
-  enrich_ht     → scripts/enrich_ht_control_master_data.py
-  enrich_risk   → scripts/enrich_risk_screening_data.py
-  patch_hypo    → scripts/patch_ncd_hypo.py          (offline)
+  fetch_ncd     → scripts/refresh_ncd_data.py        (all Service Plan NCD
+                  reports from the live API — delegates the HDC 20/21-col
+                  tables and risk screening to the enrichment modules and
+                  aggregates the rest with the 14-unit scope)
   build_master  → scripts/build_saraphi_master.py    (offline)
   build_pcc     → scripts/build_pcc_2569_master.py   (offline, needs openpyxl)
   build_ttm4    → scripts/build_ttm4_cache.py --write
@@ -23,7 +22,7 @@ Notes:
 Usage:
   python scripts/run_pipeline.py                # run everything
   python scripts/run_pipeline.py --dry-run      # print the plan only
-  python scripts/run_pipeline.py --only fetch_pcc,build_master
+  python scripts/run_pipeline.py --only fetch_ncd,build_master
 """
 import argparse
 import subprocess
@@ -40,11 +39,7 @@ STEPS = [
     ("fetch_pcc", [sys.executable, "scripts/refresh_pcc_data.py"]),
     ("fetch_ttm", [sys.executable, "fetch_all_saraphi_data.py"]),
     ("fetch_rest", [sys.executable, "fetch_additional_kpis.py"]),
-    ("enrich_hba1c", [sys.executable, "scripts/enrich_hba1c_master_data.py"]),
-    ("enrich_dm", [sys.executable, "scripts/enrich_dm_control_master_data.py"]),
-    ("enrich_ht", [sys.executable, "scripts/enrich_ht_control_master_data.py"]),
-    ("enrich_risk", [sys.executable, "scripts/enrich_risk_screening_data.py"]),
-    ("patch_hypo", [sys.executable, "scripts/patch_ncd_hypo.py"]),
+    ("fetch_ncd", [sys.executable, "scripts/refresh_ncd_data.py"]),
     ("build_master", [sys.executable, "scripts/build_saraphi_master.py"]),
     ("build_pcc", [sys.executable, "scripts/build_pcc_2569_master.py"]),
     ("build_ttm4", [sys.executable, "scripts/build_ttm4_cache.py", "--write"]),

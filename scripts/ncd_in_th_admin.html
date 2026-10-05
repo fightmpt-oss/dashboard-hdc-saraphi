@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>จัดการระบบ | ศูนย์ตุ้มโฮมข้อมูล OPC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/app.css" rel="stylesheet">
+<script src="/app.js"></script>
+<style>
+  .table td, .table th { vertical-align: middle; }
+  .src { font-family: ui-monospace, Consolas, monospace; font-size: .85em; }
+  #toast { position: fixed; top: 12px; right: 12px; z-index: 2000; max-width: 420px; }
+  pre.sample { max-height: 260px; overflow: auto; font-size: .75rem; }
+</style>
+</head>
+<body>
+<div id="opc-header" data-active="admin"></div>
+<script>OPC.mountHeader();</script>
+<div id="toast"></div>
+
+<main class="opc-main">
+  <ul class="nav nav-tabs mb-3" id="tabs">
+    <li class="nav-item"><button class="nav-link active" data-tab="reports">รายงาน</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="categories">หมวดหมู่</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="sync">ดึงข้อมูล / Log</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="users">ผู้ใช้</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="settings">ตั้งค่า</button></li>
+  </ul>
+  <div id="view"></div>
+</main>
+
+<!-- modal กลาง ใช้ร่วมทุกฟอร์ม -->
+<div class="modal fade" id="modal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="mTitle"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body" id="mBody"></div>
+  <div class="modal-footer" id="mFoot"></div>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (d) => (d ? new Date(d).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok', dateStyle: 'medium', timeStyle: 'short' }) : '-');
+const nf = (n) => Number(n || 0).toLocaleString('th-TH');
+
+function toast(msg, kind = 'success') {
+  const el = document.createElement('div');
+  el.className = `alert alert-${kind} shadow-sm py-2`;
+  el.textContent = msg;
+  $('#toast').appendChild(el);
+  setTimeout(() => el.remove(), kind === 'danger' ? 7000 : 3000);
+}
+
+async function api(method, url, body) {
+  const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: method === 'GET' ? undefined : JSON.stringify(body ?? {}) });
+  if (r.status === 401) { location.href = '/login.html'; throw new Error('กรุณาเข้าสู่ระบบ'); }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `เกิดข้อผิดพลาด (${r.status})`);
+  return j;
+}
+const run = async (fn) => { try { await fn(); } catch (e) { toast(e.message, 'danger'); } };
+
+const modal = new bootstrap.Modal($('#modal'));
+function openModal(title, bodyHtml, buttons) {
+  $('#mTitle').textContent = title;
+  $('#mBody').innerHTML = bodyHtml;
+  $('#mFoot').innerHTML = '';
+  for (const b of buttons) {
+    const el = document.createElement('button');
+    el.className = `btn btn-${b.cls || 'secondary'}`;
+    el.textContent = b.label;
+    el.onclick = () => (b.close ? modal.hide() : run(b.onClick));
+    $('#mFoot').appendChild(el);
+  }
+  modal.show();
+}
+const closeBtn = { label: 'ปิด', close: true };
+
+let cats = [];
+const catOptions = (sel) => `<option value="">— ไม่มีหมวด —</option>` + cats.map((c) => `<option value="${c.id}" ${c.id === sel ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+
+/* ---------------- รายงาน ---------------- */
+let reportFilter = { q: '', cat: '' };
+async function viewReports() {
+  [cats] = [await api('GET', '/api/admin/categories')];
+  const list = await api('GET', '/api/admin/reports');
+  const q = reportFilter.q.toLowerCase();
+  const rows = list.filter((r) => (!reportFilter.cat || String(r.category_id ?? 0) === reportFilter.cat)
+    && (!q || r.name.toLowerCase().includes(q) || r.source_table.toLowerCase().includes(q)));
+  $('#view').innerHTML = `
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <input id="fq" class="form-control" style="max-width:280px" placeholder="ค้นหาชื่อรายงาน / ชื่อตาราง" value="${esc(reportFilter.q)}">
+      <select id="fc" class="form-select" style="max-width:260px"><option value="">ทุกหมวดหมู่</option>${cats.map((c) => `<option value="${c.id}" ${String(c.id) === reportFilter.cat ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="0" ${reportFilter.cat === '0' ? 'selected' : ''}>ไม่มีหมวด</option></select>
+      <button class="btn btn-primary ms-auto" id="add">+ เพิ่มรายงาน</button>
+    </div>
+    <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>ชื่อรายงาน</th><th>ตาราง API</th><th>หมวดหมู่</th><th class="text-end">แถวข้อมูล</th><th>ดึงล่าสุด</th><th>สถานะ</th><th></th></tr></thead>
+      <tbody>${rows.map((r) => `<tr class="${r.is_active ? '' : 'text-muted'}">
+        <td>${esc(r.name)}</td><td class="src">${esc(r.source_table)}</td><td>${esc(r.category_name || '—')}</td>
+        <td class="text-end">${nf(r.row_count)}</td>
+        <td class="small">${fmt(r.last_sync_at)} ${r.last_status ? `<span class="badge text-bg-${r.last_status === 'ok' ? 'success' : 'danger'}">${esc(r.last_status)}</span>` : ''}</td>
+        <td class="text-nowrap"><div class="form-check form-switch m-0 d-flex align-items-center gap-2">
+          <input class="form-check-input m-0" type="checkbox" role="switch" id="sw${r.id}" data-toggle="${r.id}" ${r.is_active ? 'checked' : ''} style="cursor:pointer">
+          <label class="form-check-label small ${r.is_active ? 'text-success fw-semibold' : 'text-muted'}" for="sw${r.id}" style="cursor:pointer">${r.is_active ? 'Enable' : 'Disable'}</label></div></td>
+        <td class="text-nowrap text-end">
+          <button class="btn btn-sm btn-outline-primary" data-sync="${r.id}" ${r.is_active ? '' : 'disabled title="เปิดใช้งาน (Enable) ก่อนจึงจะดึงข้อมูลได้"'}>ดึงข้อมูล</button>
+          <button class="btn btn-sm btn-outline-secondary" data-edit="${r.id}">แก้ไข</button>
+          <button class="btn btn-sm btn-outline-secondary" data-cols="${r.id}">คอลัมน์</button></td></tr>`).join('') || '<tr><td colspan="7" class="text-center text-muted py-4">ไม่พบรายงาน</td></tr>'}</tbody>
+    </table></div><div class="small text-muted mt-2">${rows.length} จาก ${list.length} รายงาน</div>`;
+  $('#fq').oninput = (e) => { reportFilter.q = e.target.value; clearTimeout(viewReports.t); viewReports.t = setTimeout(() => run(viewReports), 250); };
+  $('#fc').onchange = (e) => { reportFilter.cat = e.target.value; run(viewReports); };
+  $('#add').onclick = () => reportForm();
+  $('#view').onclick = (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    const byId = (id) => list.find((r) => r.id === Number(id));
+    if (b.dataset.edit) reportForm(byId(b.dataset.edit));
+    if (b.dataset.cols) columnsForm(byId(b.dataset.cols));
+    if (b.dataset.sync) startSync({ report_ids: [Number(b.dataset.sync)] });
+  };
+  // สวิตช์ Enable / Disable (ไม่ลบข้อมูล — ซ่อนจากแดชบอร์ดและข้ามการดึงข้อมูลเท่านั้น)
+  $('#view').onchange = (e) => {
+    const sw = e.target.closest('input[data-toggle]'); if (!sw) return;
+    const r = list.find((x) => x.id === Number(sw.dataset.toggle));
+    const want = sw.checked;
+    run(async () => {
+      try {
+        await api('PUT', `/api/admin/reports/${r.id}/active`, { is_active: want });
+        toast(`${want ? 'Enable' : 'Disable'}: ${r.name}`);
+      } catch (err) { sw.checked = !want; throw err; }
+      viewReports();
+    });
+  };
+}
+
+function reportForm(r) {
+  const isNew = !r;
+  r = r || { name: '', source_table: '', category_id: null, is_active: true, sort_order: 0, goal_pct: null, higher_is_better: true, num_col: 'result', den_col: 'target', show_pct: true, description: '' };
+  openModal(isNew ? 'เพิ่มรายงาน' : 'แก้ไขรายงาน', `
+    <div class="mb-3"><label class="form-label">ชื่อรายงาน</label><input id="rn" class="form-control" value="${esc(r.name)}"></div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-7"><label class="form-label">ชื่อตารางจาก API (tableName)</label>
+        <div class="input-group"><input id="rt" class="form-control src" placeholder="เช่น s_aged9" value="${esc(r.source_table)}"><button class="btn btn-outline-secondary" id="rtest" type="button">ทดสอบดึง</button></div></div>
+      <div class="col-md-5"><label class="form-label">หมวดหมู่</label><select id="rc" class="form-select">${catOptions(r.category_id)}</select></div>
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-4"><label class="form-label">ลำดับ</label><input id="ro" type="number" class="form-control" value="${esc(r.sort_order)}"></div>
+      <div class="col-md-4 d-flex align-items-end"><div class="form-check"><input id="ra" type="checkbox" class="form-check-input" ${r.is_active ? 'checked' : ''}><label class="form-check-label" for="ra">เปิดใช้งาน</label></div></div>
+    </div>
+    <hr>
+    <div class="row g-3 mb-3">
+      <div class="col-md-3"><label class="form-label">เป้าหมาย (%)</label><input id="rg" type="number" step="0.1" min="0" class="form-control" placeholder="ไม่ตั้ง" value="${r.goal_pct ?? ''}"></div>
+      <div class="col-md-5"><label class="form-label">ทิศทางที่ดี</label><select id="rh" class="form-select"><option value="1" ${r.higher_is_better ? 'selected' : ''}>ยิ่งสูงยิ่งดี (≥ เป้า)</option><option value="0" ${r.higher_is_better ? '' : 'selected'}>ยิ่งต่ำยิ่งดี (≤ เป้า)</option></select></div>
+      <div class="col-md-4 d-flex align-items-end"><div class="form-check"><input id="rp" type="checkbox" class="form-check-input" ${r.show_pct ? 'checked' : ''}><label class="form-check-label" for="rp">แสดงเป็นร้อยละ (ตัวตั้ง ÷ ตัวหาร)</label></div></div>
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-6"><label class="form-label">คอลัมน์ตัวตั้ง (A)</label><input id="rnum" class="form-control src" value="${esc(r.num_col)}"></div>
+      <div class="col-md-6"><label class="form-label">คอลัมน์ตัวหาร (B)</label><input id="rden" class="form-control src" value="${esc(r.den_col)}"></div>
+      <div class="form-text">ดูชื่อคอลัมน์และความหมายได้ที่ปุ่ม "คอลัมน์" ในตารางรายงาน รวมหลายคอลัมน์ได้ด้วยเครื่องหมาย + เช่น <span class="src">result1+result2+result3+result4</span> (ใช้กับรายงานรายไตรมาส/รายอายุ/รายเดือน) ถ้าไม่เปิดแสดงเป็นร้อยละ แดชบอร์ดจะแสดงจำนวนของคอลัมน์ตัวตั้ง (หรือตัวหารถ้าไม่มีตัวตั้ง)</div>
+    </div>
+    <div class="mb-3"><label class="form-label">คำอธิบาย / นิยามตัวชี้วัด</label><textarea id="rd" rows="3" class="form-control">${esc(r.description || '')}</textarea></div>
+    <div id="rprev"></div>`, [
+    { label: 'ยกเลิก', close: true },
+    { label: 'บันทึก', cls: 'primary', onClick: async () => {
+      const body = { name: $('#rn').value, source_table: $('#rt').value, category_id: $('#rc').value || null, sort_order: $('#ro').value, is_active: $('#ra').checked,
+        goal_pct: $('#rg').value, higher_is_better: $('#rh').value === '1', show_pct: $('#rp').checked, num_col: $('#rnum').value, den_col: $('#rden').value, description: $('#rd').value };
+      await api(isNew ? 'POST' : 'PUT', isNew ? '/api/admin/reports' : `/api/admin/reports/${r.id}`, body);
+      modal.hide(); toast('บันทึกแล้ว'); viewReports();
+    } },
+  ]);
+  $('#rtest').onclick = () => run(async () => {
+    $('#rprev').innerHTML = '<div class="text-muted small">กำลังดึงตัวอย่าง…</div>';
+    try {
+      const j = await api('POST', '/api/admin/reports/test', { source_table: $('#rt').value });
+      $('#rprev').innerHTML = `<div class="alert alert-success py-2 small mb-2">พบข้อมูล ${nf(j.total)} แถว (ปี ${esc(j.year)} จังหวัด ${esc(j.province)}) — ${j.columns.length} คอลัมน์</div>
+        <pre class="sample border rounded p-2 bg-light">${esc(JSON.stringify(j.sample, null, 1))}</pre>`;
+    } catch (e) { $('#rprev').innerHTML = `<div class="alert alert-danger py-2 small">${esc(e.message)}</div>`; }
+  });
+}
+
+async function columnsForm(r) {
+  const cols = await api('GET', `/api/admin/reports/${r.id}/columns`);
+  const draw = (list) => `<div class="d-flex gap-2 mb-2 align-items-center"><button class="btn btn-sm btn-outline-primary" id="csync">ดึงคำอธิบายจากต้นทางใหม่</button>
+      <span class="small text-muted">ช่องที่แก้เองจะไม่ถูกทับเมื่อดึงใหม่ · ลบข้อความออกเพื่อกลับไปใช้ค่าจากต้นทาง</span></div>
+    <div class="table-responsive" style="max-height:60vh;overflow:auto"><table class="table table-sm">
+      <thead class="table-light"><tr><th>คอลัมน์</th><th>ชื่อ/คำอธิบาย</th><th></th></tr></thead>
+      <tbody>${list.map((c) => `<tr><td class="src">${esc(c.column_name)}</td><td><input class="form-control form-control-sm" data-c="${esc(c.column_name)}" data-orig="${esc(c.label || '')}" value="${esc(c.label || '')}"></td>
+        <td class="small text-muted">${c.label_source === 'admin' ? 'แก้เอง' : ''}</td></tr>`).join('') || '<tr><td colspan="3" class="text-muted">ยังไม่มีข้อมูลคอลัมน์ กด "ดึงคำอธิบายจากต้นทางใหม่"</td></tr>'}</tbody></table></div>`;
+  openModal(`คอลัมน์: ${r.name}`, draw(cols), [
+    { label: 'ปิด', close: true },
+    { label: 'บันทึก', cls: 'primary', onClick: async () => {
+      const labels = {};
+      document.querySelectorAll('#mBody input[data-c]').forEach((i) => { if (i.value !== i.dataset.orig) labels[i.dataset.c] = i.value; });
+      await api('PUT', `/api/admin/reports/${r.id}/columns`, { labels });
+      modal.hide(); toast('บันทึกแล้ว');
+    } },
+  ]);
+  $('#csync').onclick = () => run(async () => {
+    const j = await api('POST', '/api/admin/columns/sync', { report_id: r.id });
+    if (j.failed.length) throw new Error(j.failed[0]);
+    $('#mBody').innerHTML = draw(await api('GET', `/api/admin/reports/${r.id}/columns`));
+    $('#csync').onclick = () => columnsForm(r);
+    toast('ดึงคำอธิบายแล้ว');
+  });
+}
+
+
+/* ---------------- หมวดหมู่ ---------------- */
+async function viewCategories() {
+  cats = await api('GET', '/api/admin/categories');
+  $('#view').innerHTML = `
+    <div class="d-flex mb-3"><button class="btn btn-primary ms-auto" id="add">+ เพิ่มหมวดหมู่</button></div>
+    <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>ลำดับ</th><th>ไอคอน</th><th>ชื่อหมวดหมู่</th><th class="text-end">จำนวนรายงาน</th><th>แสดง</th><th></th></tr></thead>
+      <tbody>${cats.map((c) => `<tr><td>${esc(c.sort_order)}</td><td style="font-size:1.3rem;line-height:1">${esc(c.icon || '')}</td><td>${esc(c.name)}</td><td class="text-end">${nf(c.report_count)}</td><td>${c.is_active ? '✓' : '—'}</td>
+        <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-secondary" data-edit="${c.id}">แก้ไข</button>
+        <button class="btn btn-sm btn-outline-danger" data-del="${c.id}">ลบ</button></td></tr>`).join('')}</tbody></table></div>`;
+  $('#add').onclick = () => catForm();
+  $('#view').onclick = (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    const c = cats.find((x) => x.id === Number(b.dataset.edit || b.dataset.del));
+    if (b.dataset.edit) catForm(c);
+    if (b.dataset.del) openModal('ลบหมวดหมู่', `<p>ลบหมวดหมู่ <b>${esc(c.name)}</b> ใช่ไหม</p>${c.report_count > 0 ? `<div class="alert alert-warning small mb-0">ยังมี ${c.report_count} รายงานในหมวดนี้ ต้องย้ายหรือลบรายงานก่อน</div>` : ''}`, [
+      { label: 'ยกเลิก', close: true },
+      { label: 'ลบ', cls: 'danger', onClick: async () => { await api('DELETE', `/api/admin/categories/${c.id}`); modal.hide(); toast('ลบแล้ว'); viewCategories(); } },
+    ]);
+  };
+}
+function catForm(c) {
+  const isNew = !c;
+  c = c || { name: '', sort_order: cats.length + 1, is_active: true, icon: '' };
+  const PICKS = ['🧓', '🩺', '🩸', '🎗️', '🤰', '🌱', '🧸', '👶', '🦷', '🌿', '❤️', '🧠', '👁️', '💊', '🏥', '💉', '🥗', '📊'];
+  openModal(isNew ? 'เพิ่มหมวดหมู่' : 'แก้ไขหมวดหมู่', `
+    <div class="row g-3 mb-3">
+      <div class="col-md-8"><label class="form-label">ชื่อหมวดหมู่</label><input id="cn" class="form-control" value="${esc(c.name)}"></div>
+      <div class="col-md-4"><label class="form-label">ไอคอน (อีโมจิ)</label><input id="ci" class="form-control text-center" maxlength="8" style="font-size:1.4rem" value="${esc(c.icon || '')}"></div>
+    </div>
+    <div class="mb-3 d-flex flex-wrap gap-1" id="picks">${PICKS.map((p) => `<button type="button" class="btn btn-sm btn-outline-secondary" data-pick="${esc(p)}" style="font-size:1.15rem;line-height:1.2">${esc(p)}</button>`).join('')}</div>
+    <div class="row g-3"><div class="col-4"><label class="form-label">ลำดับ</label><input id="co" type="number" class="form-control" value="${esc(c.sort_order)}"></div>
+    <div class="col-8 d-flex align-items-end"><div class="form-check"><input id="ca" type="checkbox" class="form-check-input" ${c.is_active ? 'checked' : ''}><label class="form-check-label" for="ca">แสดงในหน้ารายงาน</label></div></div></div>`, [
+    { label: 'ยกเลิก', close: true },
+    { label: 'บันทึก', cls: 'primary', onClick: async () => {
+      const body = { name: $('#cn').value, icon: $('#ci').value, sort_order: $('#co').value, is_active: $('#ca').checked };
+      await api(isNew ? 'POST' : 'PUT', isNew ? '/api/admin/categories' : `/api/admin/categories/${c.id}`, body);
+      modal.hide(); toast('บันทึกแล้ว'); viewCategories();
+    } },
+  ]);
+  $('#picks').onclick = (e) => { const b = e.target.closest('[data-pick]'); if (b) $('#ci').value = b.dataset.pick; };
+}
+
+/* ---------------- ดึงข้อมูล / Log ---------------- */
+let poll;
+async function viewSync() {
+  const [st, log] = await Promise.all([api('GET', '/api/admin/sync/status'), api('GET', '/api/admin/sync/log?limit=100')]);
+  const badge = { ok: 'success', error: 'danger', running: 'primary', 'empty-kept': 'warning' };
+  $('#view').innerHTML = `
+    <div class="card mb-3"><div class="card-body">
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <button class="btn btn-primary" id="all" ${st.running ? 'disabled' : ''}>ดึงข้อมูลทุกรายงาน</button>
+        <span class="text-muted small">ดึงตามจังหวัดและจำนวนปีย้อนหลังในแท็บตั้งค่า (ใช้เวลาราว 3–5 นาที)</span>
+      </div>
+      <div id="prog" class="mt-3"></div>
+    </div></div>
+    <div class="table-responsive bg-white border rounded"><table class="table table-sm table-hover mb-0">
+      <thead class="table-light"><tr><th>เวลา</th><th>รายงาน</th><th>ปี</th><th>สถานะ</th><th class="text-end">แถว</th><th>ข้อความ</th></tr></thead>
+      <tbody>${log.map((l) => `<tr><td class="small text-nowrap">${fmt(l.started_at)}</td><td>${esc(l.name)} <span class="src text-muted">${esc(l.source_table)}</span></td><td>${esc(l.year)}</td>
+        <td><span class="badge text-bg-${badge[l.status] || 'secondary'}">${esc(l.status)}</span></td><td class="text-end">${nf(l.row_count)}</td><td class="small text-danger">${esc(l.error || '')}</td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-muted py-3">ยังไม่มีประวัติ</td></tr>'}</tbody></table></div>`;
+  $('#all').onclick = () => startSync({ all: true });
+  showProgress(st);
+  clearInterval(poll);
+  if (st.running) poll = setInterval(async () => {
+    const s = await api('GET', '/api/admin/sync/status').catch(() => null);
+    if (!s) return;
+    showProgress(s);
+    if (!s.running) { clearInterval(poll); if (current === 'sync') run(viewSync); }
+  }, 2000);
+}
+function showProgress(s) {
+  const el = $('#prog'); if (!el) return;
+  if (!s.startedAt) { el.innerHTML = ''; return; }
+  const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
+  el.innerHTML = `<div class="progress mb-1" style="height:18px"><div class="progress-bar ${s.running ? 'progress-bar-striped progress-bar-animated' : ''}" style="width:${pct}%">${pct}%</div></div>
+    <div class="small text-muted">${s.source === 'auto' ? '<span class="badge text-bg-info me-1">อัตโนมัติ</span>' : ''}${s.running ? `กำลังดึง: ${esc(s.current || '…')} — ` : `เสร็จเมื่อ ${fmt(s.finishedAt)} — `}${s.done}/${s.total} รายการ${s.errors.length ? ` — <span class="text-danger">ผิดพลาด ${s.errors.length}</span>` : ''}</div>
+    ${s.errors.length ? `<details class="small text-danger mt-1"><summary>รายละเอียดข้อผิดพลาด</summary>${s.errors.map(esc).join('<br>')}</details>` : ''}`;
+}
+async function startSync(body) {
+  await run(async () => {
+    const j = await api('POST', '/api/admin/sync', body);
+    toast(`เริ่มดึงข้อมูล ${j.total} รายการ (ปี ${j.years.join(', ')})`);
+    switchTab('sync');
+  });
+}
+
+/* ---------------- ผู้ใช้ ---------------- */
+let me;
+async function viewUsers() {
+  const users = await api('GET', '/api/admin/users');
+  $('#view').innerHTML = `
+    <div class="d-flex mb-3"><button class="btn btn-primary ms-auto" id="add">+ เพิ่มผู้ใช้</button></div>
+    <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>อีเมล</th><th>ชื่อ</th><th>สิทธิ์</th><th>สถานะ</th><th></th></tr></thead>
+      <tbody>${users.map((u) => `<tr class="${u.is_active ? '' : 'text-muted'}"><td>${esc(u.email)}${u.id === me.id ? ' <span class="badge text-bg-info">คุณ</span>' : ''}</td><td>${esc(u.name || '')}</td>
+        <td>${u.role === 'admin' ? 'ผู้ดูแลระบบ' : 'ผู้ดูข้อมูล'}</td><td>${u.is_active ? 'ใช้งาน' : 'ปิด'}</td>
+        <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-secondary" data-edit="${u.id}">แก้ไข</button>
+        <button class="btn btn-sm btn-outline-danger" data-del="${u.id}" ${u.id === me.id ? 'disabled' : ''}>ลบ</button></td></tr>`).join('')}</tbody></table></div>
+    <div class="small text-muted mt-2">เฉพาะอีเมลที่อยู่ในรายการนี้และเปิดใช้งานเท่านั้นที่ขอรหัสเข้าสู่ระบบได้</div>`;
+  $('#add').onclick = () => userForm();
+  $('#view').onclick = (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    const u = users.find((x) => x.id === Number(b.dataset.edit || b.dataset.del));
+    if (b.dataset.edit) userForm(u);
+    if (b.dataset.del) openModal('ลบผู้ใช้', `<p>ลบ <b>${esc(u.email)}</b> ใช่ไหม</p>`, [
+      { label: 'ยกเลิก', close: true },
+      { label: 'ลบ', cls: 'danger', onClick: async () => { await api('DELETE', `/api/admin/users/${u.id}`); modal.hide(); toast('ลบแล้ว'); viewUsers(); } },
+    ]);
+  };
+}
+function userForm(u) {
+  const isNew = !u;
+  u = u || { email: '', name: '', role: 'viewer', is_active: true };
+  openModal(isNew ? 'เพิ่มผู้ใช้' : 'แก้ไขผู้ใช้', `
+    <div class="mb-3"><label class="form-label">อีเมล</label><input id="ue" type="email" class="form-control" value="${esc(u.email)}" ${isNew ? '' : 'disabled'}></div>
+    <div class="mb-3"><label class="form-label">ชื่อ</label><input id="un" class="form-control" value="${esc(u.name || '')}"></div>
+    <div class="row g-3"><div class="col-6"><label class="form-label">สิทธิ์</label><select id="ur" class="form-select"><option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>ผู้ดูข้อมูล</option><option value="admin" ${u.role === 'admin' ? 'selected' : ''}>ผู้ดูแลระบบ</option></select></div>
+    <div class="col-6 d-flex align-items-end"><div class="form-check"><input id="ua" type="checkbox" class="form-check-input" ${u.is_active ? 'checked' : ''} ${isNew ? 'disabled' : ''}><label class="form-check-label" for="ua">เปิดใช้งาน</label></div></div></div>`, [
+    { label: 'ยกเลิก', close: true },
+    { label: 'บันทึก', cls: 'primary', onClick: async () => {
+      if (isNew) await api('POST', '/api/admin/users', { email: $('#ue').value, name: $('#un').value, role: $('#ur').value });
+      else await api('PUT', `/api/admin/users/${u.id}`, { name: $('#un').value, role: $('#ur').value, is_active: $('#ua').checked });
+      modal.hide(); toast('บันทึกแล้ว'); viewUsers();
+    } },
+  ]);
+}
+
+/* ---------------- ตั้งค่า ---------------- */
+async function viewSettings() {
+  const s = await api('GET', '/api/admin/settings');
+  const now = new Date();
+  const fy = now.getFullYear() + 543 + (now.getMonth() >= 9 ? 1 : 0);          // ปีงบประมาณ พ.ศ. (ต.ค.–ก.ย.)
+  const fmtAt = (iso) => new Date(iso).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok', dateStyle: 'medium', timeStyle: 'short' });
+  const last = s.last_auto_result
+    ? `ครั้งล่าสุด ${fmtAt(s.last_auto_result.at)} · ${s.last_auto_result.errors ? `<span class="text-danger">ผิดพลาด ${s.last_auto_result.errors} จาก ${s.last_auto_result.total} รายการ</span>` : '<span class="text-success">สำเร็จทั้งหมด</span>'}`
+    : 'ยังไม่เคยดึงอัตโนมัติ';
+  $('#view').innerHTML = `<div class="card" style="max-width:560px"><div class="card-body">
+    <h2 class="h6 mb-3">ข้อมูลที่ดึง</h2>
+    <div class="row g-3 mb-2">
+      <div class="col-6"><label class="form-label">รหัสจังหวัด (2 หลัก)</label><input id="sp" class="form-control" maxlength="2" value="${esc(s.province)}"></div>
+      <div class="col-6"><label class="form-label">ดึงข้อมูลย้อนหลัง (ปี)</label><input id="sy" type="number" min="1" max="15" class="form-control" value="${esc(s.years_back)}"></div>
+    </div>
+    <div class="small text-muted mb-4">ปีเป็นปีงบประมาณ พ.ศ. (ต.ค.–ก.ย.) ปีปัจจุบันคือ ${fy} เช่น 5 ปี = ${[...Array(5)].map((_, i) => fy - 4 + i).join(', ')} (ปีงบใหม่ช่วงแรกอาจยังไม่มีข้อมูล)<br>เปลี่ยนจังหวัดแล้วต้องกด "ดึงข้อมูลทุกรายงาน" ใหม่ ข้อมูลของจังหวัดเดิมจะยังอยู่ในฐาน</div>
+    <h2 class="h6 mb-3">ดึงข้อมูลอัตโนมัติรายวัน</h2>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+      <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" id="se" ${s.sync_enabled ? 'checked' : ''}><label class="form-check-label" for="se">เปิดใช้งาน</label></div>
+      <div class="d-flex align-items-center gap-2"><label class="form-label m-0" for="st">เวลา (เวลาไทย)</label><input id="st" type="time" class="form-control" style="width:8rem" value="${esc(s.sync_time)}"></div>
+    </div>
+    <div class="small text-muted mb-4">${last}<br>ถ้าเซิร์ฟเวอร์ปิดอยู่ตอนถึงเวลา จะดึงให้ทันทีที่เปิดขึ้นมาในวันเดียวกัน ใช้เวลาประมาณ 4–6 นาที และดูความคืบหน้าได้ที่แท็บ "ดึงข้อมูล / Log"</div>
+    <button class="btn btn-primary" id="save">บันทึก</button></div></div>
+    <div class="card mt-3" style="max-width:560px"><div class="card-body">
+      <h2 class="h6 mb-2">อีเมลส่งรหัสเข้าสู่ระบบ</h2>
+      <div class="mb-2">โหมด: <span class="badge ${s.mail.ready ? 'text-bg-success' : 'text-bg-warning'}">${esc(s.mail.mode)}</span>
+        ${s.mail.ready ? '<span class="small text-success">พร้อมส่งจริง</span>' : '<span class="small">ยังไม่ส่งจริง — รหัสจะพิมพ์ลงบันทึกของเซิร์ฟเวอร์ (ใช้ได้เฉพาะเครื่องพัฒนา)</span>'}</div>
+      <div class="small text-muted mb-3">ตั้งค่าที่ตัวแปรสภาพแวดล้อมของเซิร์ฟเวอร์ (ไม่เก็บในหน้านี้เพื่อความปลอดภัย): <span class="src">MAIL_MODE=resend</span>, <span class="src">RESEND_API_KEY</span>, <span class="src">RESEND_FROM_EMAIL</span> (แบบเดียวกับ dmyst) หรือ <span class="src">MAIL_MODE=smtp</span> ดูรายละเอียดใน docs/DEPLOY.md</div>
+      <button class="btn btn-outline-primary" id="mailtest">ส่งอีเมลทดสอบถึงฉัน</button>
+    </div></div>`;
+  // สถิติผู้เข้าชมแดชบอร์ด 14 วันล่าสุด
+  const vis = await api('GET', '/api/admin/visits?days=14');
+  const maxV = Math.max(1, ...vis.days.map((d) => d.views));
+  const dayTh = (d) => new Date(`${d}T00:00:00+07:00`).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' });
+  $('#view').insertAdjacentHTML('beforeend', `<div class="card mt-3" style="max-width:560px"><div class="card-body">
+    <h2 class="h6 mb-2">สถิติผู้เข้าชมหน้าแดชบอร์ด</h2>
+    <div class="small text-muted mb-2">วันนี้ <b>${nf(vis.summary.today.visitors)}</b> คน (เปิดดู ${nf(vis.summary.today.views)} ครั้ง) · สะสม <b>${nf(vis.summary.total.visitors)}</b> คน-วัน, ${nf(vis.summary.total.views)} ครั้ง${vis.summary.since ? ` · นับตั้งแต่ ${dayTh(vis.summary.since)}` : ''}</div>
+    <table class="table table-sm mb-2"><thead class="table-light"><tr><th>วันที่</th><th class="text-end">ผู้เข้าชม</th><th class="text-end">เปิดดู (ครั้ง)</th><th style="width:35%"></th></tr></thead>
+    <tbody>${vis.days.map((d) => `<tr><td>${dayTh(d.day)}</td><td class="text-end">${nf(d.visitors)}</td><td class="text-end">${nf(d.views)}</td><td><div style="height:8px;border-radius:4px;background:var(--opc-primary);width:${Math.max(3, Math.round((d.views / maxV) * 100))}%"></div></td></tr>`).join('') || '<tr><td colspan="4" class="text-muted">ยังไม่มีข้อมูล (ไม่นับการเปิดจากเครื่องพัฒนา localhost และบอท)</td></tr>'}</tbody></table>
+    <div class="small text-muted">ผู้เข้าชม = นับคนละ 1 ครั้งต่อวัน · ไม่เก็บ IP ดิบ ใช้ค่าแฮชชั่วคราวที่ลบทิ้งใน 2 วัน</div></div></div>`);
+  $('#mailtest').onclick = () => run(async () => {
+    const j = await api('POST', '/api/admin/mail/test', {});
+    toast(j.ready ? `ส่งอีเมลทดสอบถึง ${j.to} แล้ว ตรวจกล่องจดหมาย` : `โหมด ${j.mode}: ยังไม่ได้ส่งจริง (ดูบันทึกเซิร์ฟเวอร์)`, j.ready ? 'success' : 'warning');
+  });
+  $('#save').onclick = () => run(async () => {
+    await api('PUT', '/api/admin/settings', { province: $('#sp').value, years_back: $('#sy').value, sync_enabled: $('#se').checked, sync_time: $('#st').value });
+    toast('บันทึกแล้ว');
+  });
+}
+
+/* ---------------- ตัวสลับแท็บ ---------------- */
+const views = { reports: viewReports, categories: viewCategories, sync: viewSync, users: viewUsers, settings: viewSettings };
+let current = 'reports';
+function switchTab(t) {
+  current = t;
+  clearInterval(poll);
+  document.querySelectorAll('#tabs .nav-link').forEach((b) => b.classList.toggle('active', b.dataset.tab === t));
+  $('#view').onclick = null;
+  $('#view').onchange = null;
+  run(views[t]);
+}
+$('#tabs').onclick = (e) => { const b = e.target.closest('[data-tab]'); if (b) switchTab(b.dataset.tab); };
+$('#out').onclick = async () => { await api('POST', '/api/auth/logout'); location.href = '/login.html'; };
+
+fetch('/api/me').then((r) => (r.ok ? r.json() : Promise.reject())).then((j) => {
+  me = j.user;
+  if (me.role !== 'admin') { document.body.innerHTML = '<div class="container py-5"><div class="alert alert-warning">ต้องเป็นผู้ดูแลระบบจึงจะเข้าหน้านี้ได้ <a href="/">กลับหน้าแรก</a></div></div>'; return; }
+  $('#who').textContent = me.email;
+  switchTab('reports');
+}).catch(() => { location.href = '/login.html'; });
+</script>
+</body>
+</html>
