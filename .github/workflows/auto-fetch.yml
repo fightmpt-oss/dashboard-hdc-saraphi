@@ -4,7 +4,7 @@
 # (GitHub อาจเลื่อนเวลารันสักไม่กี่นาทีในช่วงที่มีคิวสูง)
 #
 # ขอบเขต: เฉพาะตาราง OpenData MoPH (API สาธารณะ ไม่ต้องใช้ credential)
-#   - สปสช. MeData ยังรันมือผ่าน update_nhso_data.bat เพราะต้องใช้ Playwright
+#   - สปสช. MeData รันมือผ่าน scripts/sync_nhso_medata_realtime.py เพราะต้องใช้ Playwright
 #     สกัดหน้าจอ Tableau (ทำใน CI ได้แต่เปราะบางและช้า)
 #   - commit เฉพาะเมื่อข้อมูลเปลี่ยนจริง (HDC บางวันไม่อัปเดตข้อมูล)
 

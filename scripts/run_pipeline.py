@@ -18,7 +18,7 @@ The order matches README "แหล่งข้อมูล & ความถี
 
 Notes:
 - สปสช. MeData (Playwright) is NOT part of this pipeline — run it manually via
-  update_nhso_data.bat or scripts/server.py.
+  scripts/sync_nhso_medata_realtime.py or scripts/server.py.
 - Any step failing aborts the pipeline with a non-zero exit (fail loudly).
 
 Usage:
