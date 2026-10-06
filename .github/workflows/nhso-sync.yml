@@ -48,6 +48,14 @@ jobs:
       - name: Run MeData sync (Playwright scrape)
         run: python scripts/sync_nhso_medata_realtime.py
 
+      - name: Upload debug screenshot (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: medata-debug-screenshot
+          path: _debug_medata*.png
+          if-no-files-found: ignore
+
       - name: Commit refreshed MeData
         run: |
           git config user.name "github-actions[bot]"

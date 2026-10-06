@@ -79,18 +79,44 @@ async def run_sync():
         page = await browser.new_page(viewport={"width": 1680, "height": 1100})
 
         print("กำลังเชื่อมต่อไปยัง https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y ...", flush=True)
-        try:
-            await page.goto("https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y", wait_until="domcontentloaded", timeout=60000)
-        except Exception as e:
-            print(f"เกิดข้อผิดพลาดในการโหลดหน้าเว็บ: {e}", flush=True)
+        # คลาวด์/Tableau อาจโหลดช้าหรือตอบสนองไม่สม่ำเสมอ — ลองซ้ำได้ 3 ครั้ง
+        # และเก็บภาพหน้าจอ debug เมื่อพลาด เพื่อวินิจฉัย (เช่น NHSO บล็อก IP คลาวด์)
+        viz_ready = False
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            print(f"  ความพยายามครั้งที่ {attempt}/{max_attempts} ...", flush=True)
+            try:
+                await page.goto("https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y", wait_until="domcontentloaded", timeout=120000)
+            except Exception as e:
+                print(f"  โหลดหน้าเว็บไม่สำเร็จ: {e}", flush=True)
+                try:
+                    await page.screenshot(path=f"_debug_medata_attempt{attempt}.png", full_page=True)
+                except Exception:
+                    pass
+                continue
+            try:
+                await page.wait_for_function('''() => {
+                    const viz = document.querySelector('tableau-viz');
+                    try { return !!(viz && viz.workbook && viz.workbook.activeSheet); } catch(e) { return false; }
+                }''', timeout=180000)
+                viz_ready = True
+                break
+            except Exception as e:
+                print(f"  Tableau ยังไม่พร้อมภายในเวลาที่กำหนด: {type(e).__name__}", flush=True)
+                try:
+                    await page.screenshot(path=f"_debug_medata_attempt{attempt}.png", full_page=True)
+                    print(f"  บันทึกภาพหน้าจอ debug: _debug_medata_attempt{attempt}.png", flush=True)
+                except Exception:
+                    pass
+                try:
+                    title = await page.title()
+                    print(f"  page.title() = '{title}'", flush=True)
+                except Exception:
+                    pass
+        if not viz_ready:
+            print("เชื่อมต่อ Tableau MeData ไม่สำเร็จหลังลองครบทุกครั้ง — ตรวจภาพ debug ประกอบ", flush=True)
             await browser.close()
             return False
-
-        print("กำลังรอการเตรียมพร้อมของ Tableau Viz Object...", flush=True)
-        await page.wait_for_function('''() => {
-            const viz = document.querySelector('tableau-viz');
-            try { return !!(viz && viz.workbook && viz.workbook.activeSheet); } catch(e) { return false; }
-        }''', timeout=60000)
         await asyncio.sleep(4)
 
         process_date = "N/A"
