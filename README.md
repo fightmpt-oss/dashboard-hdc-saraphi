@@ -172,6 +172,29 @@ commit เปล่า ๆ) — push แล้ว Vercel deploy อัตโน�
 ขอบเขต: ครอบคลุมเฉพาะตาราง OpenData MoPH เท่านั้น — ข้อมูล สปสช. MeData
 (ต้องสกัดด้วยเบราว์เซอร์) ยังรันมือตามหัวข้อถัดไป
 
+### ☁️ MeData Live Sync ผ่าน GitHub (ดึงข้อมูล สปสช. โดยไม่ต้องเปิดเครื่อง)
+
+ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บจะสั่งงานผ่าน 2 เส้นทางอัตโนมัติ:
+- **บนเว็บที่ deploy (Vercel)**: ปุ่มเรียก Vercel Function (`api/nhso-sync.js`) ซึ่งยิง
+  `repository_dispatch` ไป trigger workflow **nhso-sync** → GitHub Actions เปิด
+  headless Chromium สกัดข้อมูล MeData (Playwright) → commit `data/nhso/` → Vercel
+  deploy อัตโนมัติ — ทำงานบนคลาวด์ทั้งหมด ไม่ต้องเปิดคอมพิวเตอร์ของท่าน
+- **ในเครื่อง (โหมดพัฒนา)**: ถ้ารันผ่าน `python scripts/server.py` ปุ่มจะใช้ server
+  ในเครื่องเหมือนเดิม
+
+**ตั้งค่าครั้งแรก (3 ขั้น ~5 นาที):**
+1. สร้าง Fine-grained PAT ที่ GitHub → Settings → Developer settings → Fine-grained
+   tokens: เลือกเฉพาะ repo `dashboard-hdc-saraphi` + **Repository permissions →
+   Actions: Read and write**
+2. Vercel Dashboard → Project → Settings → Environment Variables → เพิ่ม
+   `NHSO_GITHUB_TOKEN` = token จากข้อ 1 (ทุก environment) → **Redeploy**
+3. ทดสอบ: กดปุ่ม Live Sync บนเว็บ หรือกด "Run workflow" ในแท็บ Actions (workflow
+   **nhso-sync**) — ดู log การสกัดข้อมูลได้ในหน้านั้น
+
+ข้อจำกัด: จำกัดการสั่ง 1 ครั้ง/20 นาที (กันรบกวนบริการ สปสช.), รายเดือนที่ MeData
+ยังไม่เปิดจะได้ค่าว่างโดยอัตโนมัติ และถ้า NHSO บล็อก IP คลาวด์ในอนาคต log จะ fail
+ให้เห็นทันที (ข้อมูลเดิมยังแสดงตามปกติ)
+
 ### 🛡 ระบบตรวจสอบความถูกต้องอัตโนมัติ (เปิดใช้แล้ว)
 
 `scripts/verify_integrity.py` รันเป็นขั้นสุดท้ายของ pipeline ทุกคืน ตรวจทุกตัวชี้วัด

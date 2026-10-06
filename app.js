@@ -7008,15 +7008,69 @@ document.addEventListener('DOMContentLoaded', async () => {
     const icon = document.getElementById('icon-sync-spin');
     const text = document.getElementById('text-sync-btn');
 
+    const reset = () => {
+      if (text) text.textContent = 'ดึงข้อมูล สปสช. ล่าสุด (Live Sync)';
+      if (icon) icon.classList.remove('animate-spin');
+      if (btn) btn.disabled = false;
+    };
+
     if (btn) btn.disabled = true;
     if (icon) icon.classList.add('animate-spin');
     if (text) text.textContent = 'กำลังเชื่อมต่อระบบ สปสช. MeData...';
 
+    // ── ทางที่ 1 (production): สั่ง GitHub Actions ดึงข้อมูลบนคลาวด์ —
+    //    ไม่ต้องเปิดเครื่องของท่าน ผ่าน Vercel Function (api/nhso-sync.js)
     try {
-      const res = await fetch('/api/nhso-live-sync', { method: 'POST' });
-      const data = await res.json();
+      const res = await fetch('/api/nhso-sync?action=trigger', { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
 
-      if (text) text.textContent = 'กำลังประมวลผลดึงข้อมูลสด...';
+      if (res.ok && data.ok) {
+        if (text) text.textContent = 'GitHub Actions กำลังดึงข้อมูล สปสช. MeData บนคลาวด์...';
+        const startedAt = Date.now();
+        const poll = setInterval(async () => {
+          try {
+            const mins = Math.floor((Date.now() - startedAt) / 60000);
+            const s = await fetch('/api/nhso-sync?action=status').then(r => r.json()).catch(() => null);
+            if (!s) return;
+            const statusTh = s.status === 'completed'
+              ? (s.conclusion === 'success' ? 'สำเร็จ' : 'ล้มเหลว')
+              : (s.status === 'in_progress' ? 'กำลังทำงาน' : 'รอคิว');
+            if (text && s.status !== 'completed') {
+              text.textContent = `GitHub Actions กำลังดึงข้อมูล สปสช. (นานที่ ${mins} นาที — ${statusTh})`;
+            }
+            if (s.status === 'completed') {
+              clearInterval(poll);
+              if (s.conclusion === 'success') {
+                if (text) text.textContent = 'ดึงข้อมูล สปสช. สำเร็จ — กำลัง deploy ข้อมูลใหม่...';
+                alert('✅ GitHub Actions ดึงข้อมูล สปสช. MeData สำเร็จ!\n\nระบบกำลัง deploy ข้อมูลใหม่อัตโนมัติ (1-2 นาที) — หน้าเว็บจะรีเฟรชข้อมูลล่าสุดให้เอง');
+                setTimeout(() => window.location.reload(), 120000);
+              } else {
+                reset();
+                alert('❌ การดึงข้อมูล สปสช. ล้มเหลวบน GitHub Actions\n\nเปิดดู log ได้ที่แท็บ Actions ของ repository (workflow: nhso-sync)' + (s.url ? `\n${s.url}` : ''));
+              }
+            }
+          } catch (pollErr) { /* ข้ามรอบ polling ที่ล้มเหลว */ }
+        }, 20000);
+        return;
+      }
+
+      // function ตอบแบบมีเงื่อนไข (rate limit / ยังไม่ตั้ง token) — แจ้งแล้วจบ
+      if (res.status === 429) {
+        reset();
+        alert('⏳ ' + (data.error || 'มีรอบดึงข้อมูลอยู่หรือเพิ่งรันไป') + (data.run?.url ? `\nดูสถานะ: ${data.run.url}` : ''));
+        return;
+      }
+      if (res.status === 500 && data.error && data.error.includes('NHSO_GITHUB_TOKEN')) {
+        reset();
+        alert('⚙️ ' + data.error);
+        return;
+      }
+
+      // ── ทางที่ 2 (โหมดพัฒนา): รันผ่าน scripts/server.py ในเครื่อง
+      const resLocal = await fetch('/api/nhso-live-sync', { method: 'POST' });
+      const localData = await resLocal.json();
+
+      if (text) text.textContent = 'กำลังประมวลผลดึงข้อมูลสด (server ในเครื่อง)...';
 
       let attempts = 0;
       const pollInterval = setInterval(async () => {
@@ -7062,10 +7116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               timeText.textContent = `ซิงค์ข้อมูลล่าสุดเมื่อ: ${sData.last_sync_thai} (สถานะ: สำเร็จ)`;
             }
 
-            if (text) text.textContent = 'ดึงข้อมูล สปสช. ล่าสุด (Live Sync)';
-            if (icon) icon.classList.remove('animate-spin');
-            if (btn) btn.disabled = false;
-
+            reset();
             updateDashboardView();
             alert('✅ ดึงข้อมูล สปสช. MeData ล่าสุดสำเร็จเรียบร้อยแล้ว!');
           }
@@ -7075,12 +7126,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 3000);
     } catch (err) {
       console.error('Live sync connection failed:', err);
-      if (text) text.textContent = 'ดึงข้อมูล สปสช. ล่าสุด (Live Sync)';
-      if (icon) icon.classList.remove('animate-spin');
-      if (btn) btn.disabled = false;
-      // /api/nhso-live-sync มีเฉพาะเมื่อรันผ่าน scripts/server.py ในเครื่อง —
-      // บนเว็บที่ deploy (Vercel/GitHub Pages) ไม่มี backend ให้เรียก
-      alert('⚠️ ปุ่ม Live Sync ใช้ได้เฉพาะเมื่อรันเว็บผ่าน "python scripts/server.py" ในเครื่องของท่านเท่านั้น (เว็บไซต์ที่ deploy แล้วจะแสดงข้อมูลล่าสุดจากการ commit ข้อมูลใหม่ลง GitHub)');
+      reset();
+      // ทั้ง Vercel function และ local server.py ไม่ตอบสนอง
+      alert('⚠️ เชื่อมต่อระบบ Live Sync ไม่สำเร็จ — ตรวจสอบว่า (1) บนเว็บจริง: ได้ตั้งค่า NHSO_GITHUB_TOKEN บน Vercel แล้ว (2) ในเครื่อง: รันผ่าน "python scripts/server.py"');
     }
   };
 

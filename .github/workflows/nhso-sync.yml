@@ -1,0 +1,58 @@
+# ดึงข้อมูลกองทุนแพทย์แผนไทย สปสช. (MeData) บนคลาวด์ — ไม่ต้องเปิดเครื่องตัวเอง
+#
+# ทริกเกอร์ 2 ทาง:
+#   1. ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บ → Vercel Function
+#      (api/nhso-sync.js) → repository_dispatch event นี้
+#   2. กดมือในแท็บ Actions ของ GitHub (Run workflow) — ใช้ทดสอบครั้งแรกได้
+#
+# สคริปต์สกัดหน้าจอ Tableau MeData ด้วย Playwright (headless Chromium) แล้ว
+# commit ไฟล์ data/nhso/*.json — push แล้ว Vercel deploy อัตโนมัติ
+#
+# หมายเหตุ: โดเมน medata.nhso.go.th เป็นบริการสาธารณะ (ไม่ต้องล็อกอิน) แต่ถ้า
+# NHSO บล็อก IP ของคลาวด์ในอนาคต รอบนี้จะ fail ให้เห็นใน log ทันที
+
+name: nhso-sync
+
+on:
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [nhso-sync]
+
+concurrency:
+  group: nhso-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright + Chromium (with system deps)
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run MeData sync (Playwright scrape)
+        run: python scripts/sync_nhso_medata_realtime.py
+
+      - name: Commit refreshed MeData
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/nhso; then
+            echo "ข้อมูล สปสช. ไม่เปลี่ยนแปลง — ไม่ commit"
+          else
+            git add data/nhso
+            git commit -m "data: MeData sync via GitHub Actions ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+            echo "Pushed — Vercel will auto-deploy"
+          fi
