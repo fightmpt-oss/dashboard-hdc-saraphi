@@ -174,7 +174,9 @@ commit เปล่า ๆ) — push แล้ว Vercel deploy อัตโน�
 
 ### ☁️ MeData Live Sync ผ่าน GitHub (ดึงข้อมูล สปสช. โดยไม่ต้องเปิดเครื่อง)
 
-ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บจะสั่งงานผ่าน 2 เส้นทางอัตโนมัติ:
+ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บจะสั่งงานผ่าน 2 เส้นทางอัตโนมัติ
+และมีการดึงอัตโนมัติทุกวัน **02:30 น.** (ต่อท้าย auto-fetch MoPH 02:00 น.) ทำให้
+MeData อัปเดตที่ไหน เว็บอัปเดตตามโดยไม่ต้องกดอะไรเลย:
 - **บนเว็บที่ deploy (Vercel)**: ปุ่มเรียก Vercel Function (`api/nhso-sync.js`) ซึ่งยิง
   `repository_dispatch` ไป trigger workflow **nhso-sync** → GitHub Actions เปิด
   headless Chromium สกัดข้อมูล MeData (Playwright) → commit `data/nhso/` → Vercel

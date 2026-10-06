@@ -1,9 +1,11 @@
 # ดึงข้อมูลกองทุนแพทย์แผนไทย สปสช. (MeData) บนคลาวด์ — ไม่ต้องเปิดเครื่องตัวเอง
 #
-# ทริกเกอร์ 2 ทาง:
-#   1. ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บ → Vercel Function
-#      (api/nhso-sync.js) → repository_dispatch event นี้
-#   2. กดมือในแท็บ Actions ของ GitHub (Run workflow) — ใช้ทดสอบครั้งแรกได้
+# ทริกเกอร์ 3 ทาง:
+#   1. อัตโนมัติทุกวัน 02:30 น. เวลาไทย (cron 19:30 UTC) — MeData อัปเดตที่ไหน
+#      เว็บเราอัปเดตตามโดยไม่ต้องกดอะไรเลย
+#   2. ปุ่ม "ดึงข้อมูล สปสช. ล่าสุด (Live Sync)" บนเว็บ → Vercel Function
+#      (api/nhso-sync.js) → สั่งดึงทันทีตามสั่ง (ใช้เมื่อรู้ว่า MeData เพิ่งอัปเดต)
+#   3. กดมือในแท็บ Actions ของ GitHub (Run workflow)
 #
 # สคริปต์สกัดหน้าจอ Tableau MeData ด้วย Playwright (headless Chromium) แล้ว
 # commit ไฟล์ data/nhso/*.json — push แล้ว Vercel deploy อัตโนมัติ
@@ -14,6 +16,8 @@
 name: nhso-sync
 
 on:
+  schedule:
+    - cron: "30 19 * * *" # 02:30 Asia/Bangkok ทุกวัน (หลัง auto-fetch MoPH 02:00)
   workflow_dispatch: {}
   repository_dispatch:
     types: [nhso-sync]
