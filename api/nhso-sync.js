@@ -75,10 +75,13 @@ export default async function handler(req, res) {
         });
       }
 
-      await github(`/repos/${REPO}/dispatches`, {
+      // ใช้ workflow_dispatch endpoint (ต้องการสิทธิ์ Actions: write — ตรงกับ
+      // Fine-grained PAT ที่ README แนะนำ) แทน repository_dispatch (ซึ่งต้องการ
+      // Contents: write แล้วโดน 403 "Resource not accessible")
+      await github(`/repos/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
         method: 'POST',
-        headers: { Authorization: `token ${token}` },
-        body: JSON.stringify({ event_type: 'nhso-sync', client_payload: { source: 'website-button' } }),
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ref: 'main' }),
       });
       return res.status(200).json({
         ok: true,
@@ -97,6 +100,10 @@ export default async function handler(req, res) {
       url: last.html_url,
     });
   } catch (err) {
-    return res.status(err.status || 500).json({ ok: false, error: String(err.message || err) });
+    let message = String(err.message || err);
+    if (err.status === 403 || message.includes('403')) {
+      message += ' — สิทธิ์ token ไม่พอ: ต้องเป็น Fine-grained PAT ที่เลือก repo นี้ + Repository permissions → Actions: Read and write';
+    }
+    return res.status(err.status || 500).json({ ok: false, error: message });
   }
 }
