@@ -30,6 +30,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const unitSelect = document.getElementById('unit-select') || document.getElementById('filter-unit');
   const yearButtons = document.querySelectorAll('.year-btn');
 
+  // ── Chart.js global fix: กันชื่อหน่วยบริการถูกตัดบนมือถือ/แท็บเล็ต ─────────
+  // กราฟแท่งแนวนอนทุกตัวในเว็บ (indexAxis: 'y') จะได้พื้นที่แกนชื่อขั้นต่ำ
+  // ไม่ถูกบีบจนชื่อ รพ. เหลือแค่ "รพ."/"ศส" — กราฟแนวตั้งไม่ได้รับผลกระทบ
+  if (window.Chart) {
+    Chart.overrides.bar.scales.y = Object.assign({}, Chart.overrides.bar.scales.y, {
+      afterFit: function (scale) {
+        try {
+          const chart = scale && scale.chart;
+          if (!chart || chart.options.indexAxis !== 'y') return;
+          const minW = window.innerWidth < 640 ? 110 : (window.innerWidth < 1024 ? 132 : 150);
+          if (scale.width < minW) scale.width = minW;
+        } catch (e) { /* ไม่ให้ callback ล้มการเรนเดอร์ */ }
+      }
+    });
+  }
+
   // ไฮไลต์ปุ่มปีกลุ่มบนตามปีที่เลือก (ใช้ร่วมทุกแผง เพื่อให้ปีบน-ล่างเชื่อมกัน)
   function syncTopYearPills(yr) {
     if (!yearButtons) return;
@@ -1860,8 +1876,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sortedUnits = [...yData.units].sort((a, b) => b.rate - a.rate);
     const labels = sortedUnits.map(u => {
       const meta = SARAPHI_UNITS_MAP[u.hospcode];
-      const baseName = meta ? meta.name : (u.name || u.hospcode);
-      return baseName.replace('โรงพยาบาลส่งเสริมสุขภาพตำบล', 'รพ.สต.').replace('โรงพยาบาล', 'รพ.');
+      let baseName = meta ? meta.name : (u.name || u.hospcode);
+      baseName = baseName.replace('โรงพยาบาลส่งเสริมสุขภาพตำบล', 'รพ.สต.').replace('โรงพยาบาล', 'รพ.');
+      // มือถือ/แท็บเล็ต: ใช้ชื่อย่อเพื่อไม่ให้แกนชื่อหน่วยถูกตัด
+      return (isMobile && meta && meta.short) ? meta.short : baseName;
     });
     const rates = sortedUnits.map(u => u.rate);
     const bgColors = sortedUnits.map(u => {
