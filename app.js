@@ -1943,6 +1943,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           },
           y: {
+            afterFit: (scale) => {
+              // กันชื่อหน่วยถูกตัดบนมือถือ/แท็บเล็ต — บังคับความกว้างขั้นต่ำ
+              try {
+                const minW = window.innerWidth < 640 ? 118 : (window.innerWidth < 1024 ? 138 : 150);
+                if (scale.width < minW) scale.width = minW;
+              } catch (e) { /* no-op */ }
+            },
             grid: { display: false },
             ticks: {
               autoSkip: false,
