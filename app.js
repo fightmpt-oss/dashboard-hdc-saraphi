@@ -19439,6 +19439,24 @@ console.log("Saraphi Records:", saraphiData);`;
           }
         });
       }
+      // ซิงก์ตัวเลือกปีของแผงภายในให้ตรงกับปีด้านบน (กดบน → ล่างเปลี่ยนตาม)
+      if (currentYear !== 'all') {
+        const panelYearSetterByDomain = {
+          service_plan_ncd: window.switchNcdYear,
+          overview: window.switchOverviewYear,
+        };
+        const panelYearSetterByIndicator = {
+          nhso_herb55: window.switchHerb55Year,
+          nhso_herb9: window.switchHerb9Year,
+          nhso_herb32: window.switchHerb32Year,
+          nhso_error_code: window.switchErrorYear,
+          nhso_service: window.switchProcedureYear,
+        };
+        const setter = panelYearSetterByDomain[currentDomain] || panelYearSetterByIndicator[currentIndicatorId];
+        if (typeof setter === 'function') {
+          try { setter(currentYear); } catch (e) { console.warn('panel year sync failed:', e); }
+        }
+      }
       updateDashboardView();
     });
   });
