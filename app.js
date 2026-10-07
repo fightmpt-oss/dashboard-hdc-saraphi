@@ -1878,8 +1878,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const meta = SARAPHI_UNITS_MAP[u.hospcode];
       let baseName = meta ? meta.name : (u.name || u.hospcode);
       baseName = baseName.replace('โรงพยาบาลส่งเสริมสุขภาพตำบล', 'รพ.สต.').replace('โรงพยาบาล', 'รพ.');
-      // มือถือ/แท็บเล็ต: ใช้ชื่อย่อเพื่อไม่ให้แกนชื่อหน่วยถูกตัด
-      return (isMobile && meta && meta.short) ? meta.short : baseName;
+      if (isMobile) {
+        if (meta && meta.short) return meta.short;
+        return baseName.replace(/^รพ\.สต\./, '');
+      }
+      return baseName;
     });
     const rates = sortedUnits.map(u => u.rate);
     const bgColors = sortedUnits.map(u => {
@@ -1946,27 +1949,37 @@ document.addEventListener('DOMContentLoaded', async () => {
             afterFit: (scale) => {
               // กันชื่อหน่วยถูกตัดบนมือถือ/แท็บเล็ต — บังคับความกว้างขั้นต่ำ
               try {
-                const minW = window.innerWidth < 640 ? 118 : (window.innerWidth < 1024 ? 138 : 150);
+                const minW = window.innerWidth < 640 ? 112 : (window.innerWidth < 1024 ? 135 : 150);
                 if (scale.width < minW) scale.width = minW;
               } catch (e) { /* no-op */ }
             },
             grid: { display: false },
             ticks: {
               autoSkip: false,
-              crossAlign: 'near', // ALIGN TEXT FLUSH TO THE LEFT!
               font: {
                 family: "'Noto Sans Thai', 'Prompt', 'Sarabun', sans-serif",
                 size: isMobile ? 10 : 11,
                 weight: '500'
               },
               color: '#1e293b',
-              padding: 4
+              padding: 6
             }
           }
         }
       }
     });
   }
+
+  // Handle window resize / device orientation change
+  let rankingResizeDebounce = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rankingResizeDebounce);
+    rankingResizeDebounce = setTimeout(() => {
+      if (rankingChartInstance && typeof renderRankingChart === 'function') {
+        renderRankingChart();
+      }
+    }, 250);
+  });
 
   // 8. Render Special Panel for Top Herbs (s_ttm4 - Takwang Layout)
   let mophTtm4TrendChart = null;
