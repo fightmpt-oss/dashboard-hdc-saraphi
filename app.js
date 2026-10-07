@@ -29,6 +29,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   // DOM Elements
   const unitSelect = document.getElementById('unit-select') || document.getElementById('filter-unit');
   const yearButtons = document.querySelectorAll('.year-btn');
+
+  // ไฮไลต์ปุ่มปีกลุ่มบนตามปีที่เลือก (ใช้ร่วมทุกแผง เพื่อให้ปีบน-ล่างเชื่อมกัน)
+  function syncTopYearPills(yr) {
+    if (!yearButtons) return;
+    yearButtons.forEach(b => {
+      if (b.dataset.year === yr) {
+        b.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+        b.classList.remove('text-slate-600');
+      } else {
+        b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+        b.classList.add('text-slate-600');
+      }
+    });
+  }
   const indicatorDropdownBar = document.getElementById('indicator-dropdown-bar');
   const executiveBanner = document.getElementById('executive-banner');
   const indicatorSelect = document.getElementById('indicator-select');
@@ -5185,6 +5199,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.switchHerb9Year = function(yr) {
     currentHerb9Year = yr;
+    currentYear = yr;
+    syncTopYearPills(yr);
     currentHerb9Month = 'all';
     currentHerb9Unit = 'all';
     currentHerb9Item = 'all';
@@ -5990,6 +6006,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.switchHerb32Year = function(yr) {
     currentHerb32Year = yr;
+    currentYear = yr;
+    syncTopYearPills(yr);
     currentHerb32Month = 'all';
     currentHerb32Unit = 'all';
     currentHerb32Item = 'all';
@@ -14462,6 +14480,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.switchNcdYear = function(yr) {
     currentNcdYear = yr;
+    currentYear = yr;
+    syncTopYearPills(yr);
     ['2569', '2568', '2567'].forEach(y => {
       const btn = document.getElementById(`btn-ncd-yr-${y}`);
       if (btn) {
@@ -17598,6 +17618,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.switchOverviewYear = function(yr) {
     overviewYear = yr;
+    currentYear = yr;
+    syncTopYearPills(yr);
     ['2569', '2568', '2567'].forEach(y => {
       const btn = document.getElementById(`btn-ov-yr-${y}`);
       if (btn) btn.className = y === yr
@@ -19451,6 +19473,13 @@ console.log("Saraphi Records:", saraphiData);`;
           nhso_herb32: window.switchHerb32Year,
           nhso_error_code: window.switchErrorYear,
           nhso_service: window.switchProcedureYear,
+          ttm_age: window.switchTtmAgeYear,
+          ttm_ed: window.switchTtmEdYear,
+          ttm_cases: window.switchTtmCasesYear,
+          ttm_common_dis: window.switchTtmCommonYear,
+          ttm_massage: window.switchTtmMassageYear,
+          pcc_dm_hba1c: window.switchDmHba1cYear,
+          mch_childdev: window.switchChilddevYear,
         };
         const setter = panelYearSetterByDomain[currentDomain] || panelYearSetterByIndicator[currentIndicatorId];
         if (typeof setter === 'function') {
