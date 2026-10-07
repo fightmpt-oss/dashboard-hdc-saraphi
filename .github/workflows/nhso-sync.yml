@@ -18,7 +18,13 @@ name: nhso-sync
 on:
   schedule:
     - cron: "30 19 * * *" # 02:30 Asia/Bangkok ทุกวัน (หลัง auto-fetch MoPH 02:00)
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      fast:
+        description: 'โหมดเร็ว (ข้าม granular per-unit/per-drug)'
+        required: false
+        type: boolean
+        default: false
   repository_dispatch:
     types: [nhso-sync]
 
@@ -46,7 +52,15 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Run MeData sync (Playwright scrape)
-        run: python scripts/sync_nhso_medata_realtime.py
+        run: |
+          FAST="${{ github.event.inputs.fast }}${{ github.event.client_payload.fast }}"
+          if [ "$FAST" = "true" ]; then
+            # ปุ่มบนเว็บ: โหมดเร็ว (ข้าม granular per-unit/per-drug — รอบ nightly เก็บให้)
+            python scripts/sync_nhso_medata_realtime.py --skip-granular
+          else
+            # nightly/รันมือ: granular เต็ม (มิติรายชนิดยาทั้งหมด)
+            python scripts/sync_nhso_medata_realtime.py
+          fi
 
       - name: Upload debug screenshot (on failure)
         if: failure()

@@ -81,7 +81,7 @@ export default async function handler(req, res) {
       await github(`/repos/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ref: 'main' }),
+        body: JSON.stringify({ ref: 'main', inputs: { fast: 'true' } }),
       });
       return res.status(200).json({
         ok: true,
