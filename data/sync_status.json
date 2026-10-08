@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-05T16:46:08Z",
+  "generated_at": "2026-10-08T07:09:34Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-05T16:45:52Z",
-    "ncd_service_plan_master": "2026-10-05",
+    "saraphi_complete_master": "2026-10-08T07:09:19Z",
+    "ncd_service_plan_master": "2026-10-08",
     "ncd_total_reports": 36
   },
   "counts": {
@@ -20,7 +20,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020959"
+          "date_com": "202610060316"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -43,7 +43,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020800"
+          "date_com": "202610060203"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -66,7 +66,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020801"
+          "date_com": "202610060204"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -89,7 +89,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020906"
+          "date_com": "202610060247"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -112,7 +112,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020801"
+          "date_com": "202610060203"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -135,7 +135,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610050612"
+          "date_com": "202610070625"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -158,7 +158,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020801"
+          "date_com": "202610060204"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -181,7 +181,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020959"
+          "date_com": "202610060316"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -203,8 +203,8 @@
       "source": "opendata",
       "years": {
         "2569": {
-          "saraphi_rows": 225,
-          "date_com": "202610020959"
+          "saraphi_rows": 227,
+          "date_com": "202610060316"
         },
         "2568": {
           "saraphi_rows": 286,
@@ -342,7 +342,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020537"
+          "date_com": "202610052303"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -365,7 +365,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020527"
+          "date_com": "202610052300"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -388,7 +388,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020527"
+          "date_com": "202610052300"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -480,7 +480,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 51,
-          "date_com": "202610020536"
+          "date_com": "202610052302"
         },
         "2568": {
           "saraphi_rows": 63,
@@ -503,7 +503,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020605"
+          "date_com": "202610052333"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -733,7 +733,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020602"
+          "date_com": "202610052330"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -756,7 +756,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 98,
-          "date_com": "202610020636"
+          "date_com": "202610060025"
         },
         "2568": {
           "saraphi_rows": 107,
@@ -778,8 +778,8 @@
       "source": "opendata",
       "years": {
         "2569": {
-          "saraphi_rows": 87,
-          "date_com": "202610020637"
+          "saraphi_rows": 86,
+          "date_com": "202610060026"
         },
         "2568": {
           "saraphi_rows": 95,
@@ -825,7 +825,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 98,
-          "date_com": "202610020603"
+          "date_com": "202610052331"
         },
         "2568": {
           "saraphi_rows": 107,
@@ -940,7 +940,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610020603"
+          "date_com": "202610052330"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -1170,7 +1170,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 111,
-          "date_com": "202610020351"
+          "date_com": "202610052125"
         },
         "2568": {
           "saraphi_rows": 110,
@@ -1239,7 +1239,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610020604"
+          "date_com": "202610052332"
         },
         "2568": {
           "saraphi_rows": 12,

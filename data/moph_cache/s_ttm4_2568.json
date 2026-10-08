@@ -8672,13 +8672,13 @@
     },
     {
       "year": 2569,
-      "total_pri": 24791.25,
-      "vs_all": 908,
-      "vs_uc": 804,
-      "vs_other": 104,
-      "items_count": 14,
+      "total_pri": 27627.0,
+      "vs_all": 997,
+      "vs_uc": 885,
+      "vs_other": 112,
+      "items_count": 15,
       "rank": 8,
-      "pri_uc": 22032.5
+      "pri_uc": 24662.75
     }
   ]
 }
