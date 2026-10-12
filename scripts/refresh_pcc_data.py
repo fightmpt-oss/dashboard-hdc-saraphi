@@ -23,7 +23,7 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 API_URL = "https://opendata.moph.go.th/api/report_data"
 YEARS = ["2567", "2568", "2569"]
 DEFAULT_TABLES = ["s_dm_control", "s_ht_control", "s_dm_hba1c", "s_dm_hypo"]
-PAGE_LIMIT = 1000
+PAGE_LIMIT = 10000
 AREACODE_PREFIX = "5019"
 
 

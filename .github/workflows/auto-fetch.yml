@@ -25,7 +25,9 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    env:
+      PYTHONUNBUFFERED: "1" # ให้ log แต่ละตารางขึ้นทันที (เดิมค้างใน buffer จนไม่รู้ว่าพังตรงไหน)
     steps:
       - uses: actions/checkout@v4
 

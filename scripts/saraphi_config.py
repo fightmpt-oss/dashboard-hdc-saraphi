@@ -72,6 +72,7 @@ def clean_num(v):
 # ------------------------------------------------------------------
 # Shared OpenData MoPH fetcher — paginated with backoff on 429/5xx.
 # ------------------------------------------------------------------
+import http.client as _httpclient
 import json as _json
 import time as _time
 import urllib.error as _urlerror
@@ -79,12 +80,21 @@ import urllib.request as _urlrequest
 
 OPENDATA_URL = "https://opendata.moph.go.th/api/report_data"
 
+# The API caps `limit` at 10000 rows/page. Large province tables (e.g.
+# s_childdev_specialpp ≈ 15,000 rows/year) took ~4 min/year at 1000/page because
+# deep-offset pages are slow server-side — that pushed the GitHub Actions job past
+# its 30-min timeout. 10000/page fetches the same table in ~2 requests.
+OPENDATA_MAX_LIMIT = 10000
+
 
 def fetch_opendata_rows(table, year, province="50", areacode_prefix="5019",
-                        limit=1000, max_retries=5):
-    """Fetch all rows of a table/year for a province, paginated (1000/page).
+                        limit=OPENDATA_MAX_LIMIT, max_retries=5):
+    """Fetch all rows of a table/year for a province, paginated (10000/page).
 
-    Retries with exponential backoff on HTTP 429/5xx and network errors.
+    Retries with exponential backoff on HTTP 429/5xx and network errors
+    (including dropped connections / truncated responses).
+    Stops using the server-reported `total` and the server's effective page
+    size, so a silently capped `limit` can never truncate the result.
     Raises on the final failure so callers fail loudly instead of writing
     empty snapshots.
     """
@@ -108,23 +118,34 @@ def fetch_opendata_rows(table, year, province="50", areacode_prefix="5019",
                     headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"},
                     method="POST",
                 )
-                with _urlrequest.urlopen(req, timeout=60) as resp:
+                with _urlrequest.urlopen(req, timeout=180) as resp:
                     payload = _json.loads(resp.read().decode("utf-8"))
                 break
-            except (_urlerror.HTTPError, _urlerror.URLError, TimeoutError) as e:
+            except (_urlerror.HTTPError, _urlerror.URLError, TimeoutError,
+                    _httpclient.HTTPException, ConnectionError,
+                    _json.JSONDecodeError) as e:
                 if attempt >= max_retries:
                     raise
                 wait = 5 * (2 ** (attempt - 1))
                 print(f"    opendata {table}/{year} offset={offset} attempt {attempt} "
-                      f"failed ({type(e).__name__}: {e}) — retry in {wait}s")
+                      f"failed ({type(e).__name__}: {e}) — retry in {wait}s", flush=True)
                 _time.sleep(wait)
         if payload is None:
             raise RuntimeError(f"opendata {table}/{year}: no payload after retries")
         page = payload.get("data") or [] if isinstance(payload, dict) else (payload or [])
         rows.extend(r for r in page if str(r.get("areacode") or "").startswith(areacode_prefix))
-        if len(page) < limit:
+        if not page:
             return rows
-        offset += limit
+        offset += len(page)
+        total = payload.get("total") if isinstance(payload, dict) else None
+        if isinstance(total, int):
+            if offset >= total:
+                return rows
+        else:
+            # No total reported: a short page (vs the server's effective limit) is the last.
+            page_size = payload.get("limit") if isinstance(payload, dict) else None
+            if len(page) < (page_size if isinstance(page_size, int) and page_size > 0 else limit):
+                return rows
 
 
 # รายงานมาตรฐาน HDC สสจ.เชียงใหม่ ที่ไม่มี opendata_id ใน moph_catalog.json หรือต้องการ override
