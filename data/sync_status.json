@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-12T03:08:46Z",
+  "generated_at": "2026-10-13T01:22:26Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-12T03:08:30Z",
-    "ncd_service_plan_master": "2026-10-12",
+    "saraphi_complete_master": "2026-10-13T01:22:12Z",
+    "ncd_service_plan_master": "2026-10-13",
     "ncd_total_reports": 36
   },
   "counts": {
@@ -135,7 +135,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610110648"
+          "date_com": "202610120641"
         },
         "2568": {
           "saraphi_rows": 14,
