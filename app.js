@@ -646,6 +646,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'NHSO-ALL',
       table: 'MeData สปสช.',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ภาพรวม',
       name: 'ภาพรวมกองทุนแพทย์แผนไทย สปสช. (ยอดชดเชยรวม 4 เมนู)',
       desc: 'สรุปยอดเงินชดเชยจริงที่ สปสช. อนุมัติจ่ายจาก 4 เมนูกองทุนแพทย์แผนไทย (หัตถการ + ยาสมุนไพร 55 รายการ + ยา 9 รายการ + ยา 32 รายการ)',
       unit: 'บาท',
@@ -720,6 +722,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'ME-03',
       table: 'MeData สปสช. เมนู 3',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ชีท 3-บริการแพทย์แผนไทย',
       name: 'เมนู 3: ผลงานบริการหัตถการแพทย์แผนไทย (Point & บาท)',
       desc: 'ผลงานบริการและหัตถการแพทย์แผนไทย (นวด, ประคบ, พอกเข่า, อบสมุนไพร, ฟื้นฟูมารดาหลังคลอด) คิดชดเชย 1 Point = 1 บาท',
       unit: 'Point',
@@ -792,6 +796,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'ME-04',
       table: 'MeData สปสช. ชีท 4',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ชีท 4-ยาสมุนไพร 55 รายการ',
       name: 'เมนู 4: ยาสมุนไพร 55 รายการ (Point System)',
       desc: 'ยาสมุนไพรในบัญชียาหลักแห่งชาติ 55 รายการ คิดระบบ Point (1 Point = 1 บาท)',
       unit: 'Point',
@@ -864,6 +870,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'ME-05',
       table: 'MeData สปสช. ชีท 5',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ชีท 5-ยาสมุนไพร 9 รายการ',
       name: 'เมนู 5: ยาสมุนไพร 9 รายการ (Fee Schedule)',
       desc: 'ยาสมุนไพร 9 รายการหลัก จ่ายชดเชยตามรายการบริการ (Fee Schedule 60 บ./ครั้ง)',
       unit: 'ครั้ง',
@@ -936,6 +944,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'ME-06',
       table: 'MeData สปสช. ชีท 6',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ชีท 6-ยาสมุนไพร 32 รายการ',
       name: 'เมนู 6: ยาสมุนไพร 32 รายการ (จ่ายตามจริง/Point)',
       desc: 'ยาสมุนไพร 32 รายการ (สารสกัดกัญชาทางการแพทย์ CBD/THC และตำรับยาเฉพาะ)',
       unit: 'ครั้ง',
@@ -1012,6 +1022,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       domain: 'nhso_ttm',
       code: 'ME-09',
       table: 'MeData สปสช. ชีท 9',
+      medata_url: 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y',
+      medata_sheet: 'ชีท 9-Error Code',
       name: 'เมนู 9: Error Code การส่งข้อมูล (ยาสมุนไพร & หัตถการ 3 ปี)',
       desc: 'รายงานข้อผิดพลาด (Error Code) งานบริการกองทุนแพทย์แผนไทย สปสช. แยกรายหน่วยบริการและรหัส Error (2567 - 2569)',
       unit: 'ครั้ง',
@@ -1658,13 +1670,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hdcLinkEl = document.getElementById('ind-hdc-link');
     if (hdcLinkEl) {
       const hdcUrl = ind.hdc_url || syncStatusData?.tables?.find(t => t.table === ind.table)?.hdc_url;
-      if (hdcUrl) {
+      if (hdcUrl && ind.domain !== 'nhso_ttm') {
         hdcLinkEl.href = hdcUrl;
         hdcLinkEl.classList.remove('hidden');
         hdcLinkEl.classList.add('inline-flex');
       } else {
         hdcLinkEl.classList.add('hidden');
         hdcLinkEl.classList.remove('inline-flex');
+      }
+    }
+
+    // Direct MeData Dashboard Link (สำหรับกองทุนแพทย์แผนไทย สปสช.)
+    const medataLinkEl = document.getElementById('ind-medata-link');
+    if (medataLinkEl) {
+      const medataUrl = ind.medata_url || (ind.domain === 'nhso_ttm' ? 'https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y' : null);
+      if (medataUrl) {
+        medataLinkEl.href = medataUrl;
+        const linkText = document.getElementById('ind-medata-link-text');
+        if (linkText) {
+          linkText.textContent = ind.medata_sheet ? `แดชบอร์ด MeData (${ind.medata_sheet})` : 'แดชบอร์ด MeData สปสช.';
+        }
+        medataLinkEl.title = `คลิกเพื่อเปิดแดชบอร์ดต้นทาง ${ind.table || 'MeData สปสช.'} บน medata.nhso.go.th`;
+        medataLinkEl.classList.remove('hidden');
+        medataLinkEl.classList.add('inline-flex');
+      } else {
+        medataLinkEl.classList.add('hidden');
+        medataLinkEl.classList.remove('inline-flex');
       }
     }
     document.getElementById('ind-name-text').textContent = ind.name;

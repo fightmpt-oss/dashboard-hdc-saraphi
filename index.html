@@ -90,7 +90,7 @@
               <i data-lucide="landmark" class="w-5 h-5"></i>
             </div>
             <div class="sidebar-text text-left flex-1 min-w-0">
-              <div class="font-bold text-slate-800 text-[13.5px] truncate">กองทุนแผนไทย สปสช.</div>
+              <div class="font-bold text-slate-800 text-[13.5px] truncate">กองทุนแพทย์แผนไทย สปสช.</div>
               <div class="text-[11px] text-slate-400 font-medium">6 ตัวชี้วัด • ชดเชย & Error MeData</div>
             </div>
             <span class="sidebar-badge bg-cyan-100 text-cyan-800 text-[10.5px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-1.5">6</span>
@@ -289,7 +289,11 @@
             <p id="nhso-sync-last-time-text" class="text-xs text-slate-300 mt-1">เชื่อมต่อข้อมูลแบบเรียลไทม์จาก medata.nhso.go.th • รายเดือน &amp; รายหน่วยบริการ 14 แห่ง</p>
           </div>
         </div>
-        <div class="flex items-center gap-2.5 self-end md:self-center shrink-0">
+        <div class="flex items-center gap-2.5 self-end md:self-center shrink-0 flex-wrap">
+          <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-900/70 hover:bg-cyan-800 text-cyan-200 border border-cyan-400/40 transition-all flex items-center gap-1.5 shadow-xs hover:shadow cursor-pointer" title="เปิดระบบแดชบอร์ด MeData สปสช. (medata.nhso.go.th) ในแท็บใหม่">
+            <i data-lucide="external-link" class="w-4 h-4 text-cyan-300"></i>
+            <span>เปิดแดชบอร์ด MeData</span>
+          </a>
           <button id="btn-nhso-live-sync" type="button" onclick="window.triggerNhsoLiveSync()" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 transition-all flex items-center gap-2 shadow-sm hover:shadow active:scale-95 cursor-pointer">
             <i data-lucide="refresh-cw" id="icon-sync-spin" class="w-4 h-4 text-slate-900"></i>
             <span id="text-sync-btn">ดึงข้อมูล สปสช. ล่าสุด (Live Sync)</span>
@@ -450,6 +454,9 @@
               <span id="ind-table-badge" class="text-xs text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-md num-font">table: s_ttm7</span>
               <a id="ind-hdc-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md transition shadow-2xs" title="คลิกเพื่อเปิดรายงานนี้ในระบบ HDC กระทรวงสาธารณสุข">
                 <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px]"></i> HDC สธ.
+              </a>
+              <a id="ind-medata-link" href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-0.5 rounded-md transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทางในระบบ MeData สปสช.">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px]"></i> <span id="ind-medata-link-text">แดชบอร์ด MeData สปสช.</span>
               </a>
             </div>
             <h3 id="ind-name-text" class="text-lg sm:text-xl font-bold text-slate-900 mt-1.5">ร้อยละมูลค่าการใช้ยาสมุนไพร (OPD)</h3>
@@ -2637,9 +2644,14 @@
               </button>
             </div>
 
-            <!-- Active Filter Badge -->
-            <div id="proc-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
-              <!-- Populated dynamically -->
+            <!-- Active Filter Badge & MeData Link -->
+            <div class="flex items-center gap-2 self-start xl:self-auto flex-wrap">
+              <div id="proc-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+                <!-- Populated dynamically -->
+              </div>
+              <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-xl transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทาง MeData สปสช. (ชีท 3-บริการแพทย์แผนไทย)">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> แดชบอร์ด MeData (ชีท 3)
+              </a>
             </div>
           </div>
 
@@ -2801,8 +2813,13 @@
               </button>
             </div>
 
-            <!-- Active Filter Badge -->
-            <div id="herb55-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
+            <!-- Active Filter Badge & MeData Link -->
+            <div class="flex items-center gap-2 self-start xl:self-auto flex-wrap">
+              <div id="herb55-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+              </div>
+              <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-xl transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทาง MeData สปสช. (ชีท 4-ยาสมุนไพร 55 รายการ)">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> แดชบอร์ด MeData (ชีท 4)
+              </a>
             </div>
           </div>
         </div>
@@ -2950,8 +2967,13 @@
               </button>
             </div>
 
-            <!-- Active Filter Badge -->
-            <div id="herb9-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
+            <!-- Active Filter Badge & MeData Link -->
+            <div class="flex items-center gap-2 self-start xl:self-auto flex-wrap">
+              <div id="herb9-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+              </div>
+              <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-xl transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทาง MeData สปสช. (ชีท 5-ยาสมุนไพร 9 รายการ)">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> แดชบอร์ด MeData (ชีท 5)
+              </a>
             </div>
           </div>
         </div>
@@ -3170,8 +3192,13 @@
               </button>
             </div>
 
-            <!-- Active Filter Badge -->
-            <div id="herb32-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
+            <!-- Active Filter Badge & MeData Link -->
+            <div class="flex items-center gap-2 self-start xl:self-auto flex-wrap">
+              <div id="herb32-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+              </div>
+              <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-xl transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทาง MeData สปสช. (ชีท 6-ยาสมุนไพร 32 รายการ)">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> แดชบอร์ด MeData (ชีท 6)
+              </a>
             </div>
           </div>
         </div>
@@ -3386,8 +3413,13 @@
               </button>
             </div>
 
-            <!-- Active Filter Badge -->
-            <div id="err-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5 self-start xl:self-auto">
+            <!-- Active Filter Badge & MeData Link -->
+            <div class="flex items-center gap-2 self-start xl:self-auto flex-wrap">
+              <div id="err-active-filter-badge" class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+              </div>
+              <a href="https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-xl transition shadow-2xs" title="คลิกเพื่อเปิดแดชบอร์ดต้นทาง MeData สปสช. (ชีท 9-Error Code)">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> แดชบอร์ด MeData (ชีท 9)
+              </a>
             </div>
           </div>
         </div>
