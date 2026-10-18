@@ -12,7 +12,7 @@
   "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8d38925724b0bbb4b11844b18df088e4",
   "year": 2569,
   "source": "MOPH Open Data API (HDC s_ttm4)",
-  "last_updated": "202610101526",
+  "last_updated": "202610161402",
   "target_unit": {
     "hospcode": "06020",
     "hospname": "06020:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง",
@@ -423,17 +423,17 @@
         "rate": 5.23
       }
     },
-    "date_com": "202610101526",
+    "date_com": "202610161402",
     "is_target_unit": true,
     "rank": 8
   },
   "saraphi_summary": {
     "total_units": 14,
-    "total_num": 1134556.49,
-    "total_den": 24267,
-    "total_tm": 1134556.49,
-    "total_op": 24267,
-    "rate": 1134556.49,
+    "total_num": 1134700.49,
+    "total_den": 24270,
+    "total_tm": 1134700.49,
+    "total_op": 24270,
+    "rate": 1134700.49,
     "units": [
       {
         "hospcode": "11135",
@@ -1631,7 +1631,7 @@
             "rate": 7.21
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 1
       },
@@ -1921,21 +1921,21 @@
           },
           "q2": {
             "num": 12019.15,
-            "den": 144470.9,
+            "den": 144474.4,
             "rate": 8.32
           },
           "q3": {
             "num": 49120.6,
-            "den": 183974.0,
+            "den": 183977.5,
             "rate": 26.7
           },
           "q4": {
             "num": 47001.2,
-            "den": 226715.0,
+            "den": 226725.5,
             "rate": 20.73
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 2
       },
@@ -2567,7 +2567,7 @@
             "rate": 3.96
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 3
       },
@@ -3079,7 +3079,7 @@
             "rate": 7.34
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 4
       },
@@ -3425,7 +3425,7 @@
             "rate": 4.55
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 5
       },
@@ -3933,11 +3933,11 @@
           },
           "q4": {
             "num": 7010.25,
-            "den": 165611.95,
+            "den": 165779.95,
             "rate": 4.23
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 6
       },
@@ -4423,7 +4423,7 @@
             "rate": 6.42
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 7
       },
@@ -4837,7 +4837,7 @@
             "rate": 5.23
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": true,
         "rank": 8
       },
@@ -5225,7 +5225,7 @@
             "rate": 2.04
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 9
       },
@@ -5659,7 +5659,7 @@
             "rate": 5.88
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 10
       },
@@ -5669,29 +5669,29 @@
         "short_name": "รพ.สต.บ้านหัวดง",
         "official_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง",
         "areacode": "50190507",
-        "total_num": 12739.75,
-        "total_den": 453,
-        "total_tm": 12739.75,
-        "total_op": 453,
-        "vs_all": 453,
-        "vs_uc": 409,
-        "rate": 12739.75,
+        "total_num": 12883.75,
+        "total_den": 456,
+        "total_tm": 12883.75,
+        "total_op": 456,
+        "vs_all": 456,
+        "vs_uc": 411,
+        "rate": 12883.75,
         "item_count": 11,
         "drug_items": [
           {
             "didstd": "420000011779404094782758",
             "drug_name": "ยาน้ำแก้ไอผสมมะขามป้อม 120ml [7วัน]*",
             "hdc_group_name": "แก้ไอผสมมะขามป้อม ตราอภัยภูเบศร, ยาน้ำ",
-            "vs": 206,
-            "vs_all": 206,
-            "vs_uc": 185,
-            "amount": 215.0,
-            "am_all": 215.0,
-            "qty": 215.0,
-            "price": 3655.0,
-            "pri_all": 3655.0,
-            "pri_uc": 3230.0,
-            "cost": 3655.0
+            "vs": 207,
+            "vs_all": 207,
+            "vs_uc": 186,
+            "amount": 216.0,
+            "am_all": 216.0,
+            "qty": 216.0,
+            "price": 3672.0,
+            "pri_all": 3672.0,
+            "pri_uc": 3247.0,
+            "cost": 3672.0
           },
           {
             "didstd": "420000003969120020382755",
@@ -5727,16 +5727,16 @@
             "didstd": "410000000109150020182748",
             "drug_name": "410000000109150020182748",
             "hdc_group_name": "ขมิ้นชัน, ยาแคปซูล",
-            "vs": 42,
-            "vs_all": 42,
-            "vs_uc": 36,
-            "amount": 2305.0,
-            "am_all": 2305.0,
-            "qty": 2305.0,
-            "price": 3457.5,
-            "pri_all": 3457.5,
-            "pri_uc": 2593.5,
-            "cost": 3457.5
+            "vs": 43,
+            "vs_all": 43,
+            "vs_uc": 37,
+            "amount": 2361.0,
+            "am_all": 2361.0,
+            "qty": 2361.0,
+            "price": 3541.5,
+            "pri_all": 3541.5,
+            "pri_uc": 2677.5,
+            "cost": 3541.5
           },
           {
             "didstd": "420000005549150020182737",
@@ -5787,16 +5787,16 @@
             "didstd": "410000000450000040111144",
             "drug_name": "410000000450000040111144",
             "hdc_group_name": "ไพล, น้ำมัน",
-            "vs": 5,
-            "vs_all": 5,
+            "vs": 6,
+            "vs_all": 6,
             "vs_uc": 4,
-            "amount": 5.0,
-            "am_all": 5.0,
-            "qty": 5.0,
-            "price": 215.0,
-            "pri_all": 215.0,
+            "amount": 6.0,
+            "am_all": 6.0,
+            "qty": 6.0,
+            "price": 258.0,
+            "pri_all": 258.0,
             "pri_uc": 172.0,
-            "cost": 215.0
+            "cost": 258.0
           },
           {
             "didstd": "410000000649200234182758",
@@ -5847,10 +5847,10 @@
         "hdc_grouped_drugs": [
           {
             "drug_name": "แก้ไอผสมมะขามป้อม ตราอภัยภูเบศร, ยาน้ำ",
-            "vs_all": 206,
-            "vs_uc": 185,
-            "am_all": 215.0,
-            "pri_all": 3655.0,
+            "vs_all": 207,
+            "vs_uc": 186,
+            "am_all": 216.0,
+            "pri_all": 3672.0,
             "items_count": 1,
             "didstd_list": [
               "420000011779404094782758"
@@ -5881,10 +5881,10 @@
           },
           {
             "drug_name": "ขมิ้นชัน, ยาแคปซูล",
-            "vs_all": 42,
-            "vs_uc": 36,
-            "am_all": 2305.0,
-            "pri_all": 3457.5,
+            "vs_all": 43,
+            "vs_uc": 37,
+            "am_all": 2361.0,
+            "pri_all": 3541.5,
             "items_count": 1,
             "didstd_list": [
               "410000000109150020182748"
@@ -5914,10 +5914,10 @@
           },
           {
             "drug_name": "ไพล, น้ำมัน",
-            "vs_all": 5,
+            "vs_all": 6,
             "vs_uc": 4,
-            "am_all": 5.0,
-            "pri_all": 215.0,
+            "am_all": 6.0,
+            "pri_all": 258.0,
             "items_count": 1,
             "didstd_list": [
               "410000000450000040111144"
@@ -5974,12 +5974,12 @@
             "rate": 3.13
           },
           "q4": {
-            "num": 3364.25,
-            "den": 165537.16,
-            "rate": 2.03
+            "num": 3508.25,
+            "den": 181247.42,
+            "rate": 1.94
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 11
       },
@@ -6377,7 +6377,7 @@
             "rate": 1.48
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 12
       },
@@ -6707,7 +6707,7 @@
             "rate": 1.53
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 13
       },
@@ -6855,7 +6855,7 @@
             "rate": 0.0
           }
         },
-        "date_com": "202610101526",
+        "date_com": "202610161402",
         "is_target_unit": false,
         "rank": 14
       }
