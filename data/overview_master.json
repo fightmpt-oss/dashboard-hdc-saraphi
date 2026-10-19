@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "ภาพรวมตัวชี้วัดทั้งหมด อำเภอสารภี",
-    "generated_at": "2026-10-18T21:29:08Z",
+    "generated_at": "2026-10-19T23:02:12Z",
     "source_masters": [
       "saraphi_complete_master.json",
       "ncd_service_plan_master.json"
@@ -2213,9 +2213,9 @@
         },
         "2569": {
           "district": {
-            "num": 1134556,
-            "den": 24267,
-            "rate": 1134556.49
+            "num": 1134700,
+            "den": 24270,
+            "rate": 1134700.49
           },
           "units": {
             "11135": {
@@ -2269,9 +2269,9 @@
               "rate": 13209.09
             },
             "06017": {
-              "num": 12739,
-              "den": 453,
-              "rate": 12739.75
+              "num": 12883,
+              "den": 456,
+              "rate": 12883.75
             },
             "14461": {
               "num": 11302,
