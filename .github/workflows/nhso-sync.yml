@@ -62,8 +62,8 @@ jobs:
             python scripts/sync_nhso_medata_realtime.py
           fi
 
-      - name: Upload debug screenshot (on failure)
-        if: failure()
+      - name: Upload debug screenshot (if generated)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: medata-debug-screenshot

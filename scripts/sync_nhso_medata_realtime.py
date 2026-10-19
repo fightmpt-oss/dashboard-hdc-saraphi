@@ -181,9 +181,22 @@ async def run_sync():
     print("==================================================================", flush=True)
 
     async with async_playwright() as p:
-        print("กำลังเปิดเบราว์เซอร์ Chromium Headless...", flush=True)
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page(viewport={"width": 1680, "height": 1100})
+        print("กำลังเปิดเบราว์เซอร์ Chromium Headless (anti-detection flags)...", flush=True)
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-blink-features=AutomationControlled"
+            ]
+        )
+        page = await browser.new_page(
+            viewport={"width": 1680, "height": 1100},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            locale="th-TH",
+            timezone_id="Asia/Bangkok"
+        )
 
         print("กำลังเชื่อมต่อไปยัง https://medata.nhso.go.th/dashboard.viz?ref=wEJcuu5y ...", flush=True)
         # คลาวด์/Tableau อาจโหลดช้าหรือตอบสนองไม่สม่ำเสมอ — ลองซ้ำได้ 3 ครั้ง
@@ -227,6 +240,34 @@ async def run_sync():
         await asyncio.sleep(4)
 
         process_date = "N/A"
+        # สกัดวันที่ประมวลผลเริ่มต้นทันทีจาก Sheet ที่มี
+        try:
+            pDate_init = await page.evaluate('''async () => {
+                const viz = document.querySelector('tableau-viz');
+                if (!viz || !viz.workbook) return null;
+                let s = viz.workbook.activeSheet;
+                let wsDate = s ? s.worksheets.find(w => w.name.includes("วันที่")) : null;
+                if (!wsDate) {
+                    try {
+                        await viz.workbook.activateSheetAsync("3-บริการแพทย์แผนไทย");
+                        await new Promise(r => setTimeout(r, 2000));
+                        s = viz.workbook.activeSheet;
+                        wsDate = s ? s.worksheets.find(w => w.name.includes("วันที่")) : null;
+                    } catch(e){}
+                }
+                if (wsDate) {
+                    try {
+                        const d = await wsDate.getSummaryDataAsync({ maxRows: 5 });
+                        if (d.data.length && d.data[0].length) return d.data[0][0].formattedValue;
+                    } catch(e){}
+                }
+                return null;
+            }''')
+            if pDate_init and pDate_init != "N/A":
+                process_date = pDate_init
+                print(f"  -> สปสช. ประมวลผลข้อมูล ณ (ระบบ Tableau): {process_date}", flush=True)
+        except Exception as e:
+            print(f"  [Init Date] หมายเหตุ: {e}", flush=True)
 
         # -------------------------------------------------------------
         # SYNC SHEET 4: ยาสมุนไพร 55 รายการ
@@ -423,10 +464,19 @@ async def run_sync():
                 await new Promise(r => setTimeout(r, 4000));
                 const sheet = viz.workbook.activeSheet;
                 
+                let pDate = "N/A";
+                const wsDate = sheet.worksheets.find(w => w.name.includes("วันที่"));
+                if (wsDate) {
+                    try {
+                        const d = await wsDate.getSummaryDataAsync({ maxRows: 5 });
+                        if (d.data.length && d.data[0].length) pDate = d.data[0][0].formattedValue;
+                    } catch(e){}
+                }
+
                 const wsUnitCnt = sheet.worksheets.find(w => w.name.includes("หน่วย-ครั้ง"));
                 const wsHerbCnt = sheet.worksheets.find(w => w.name.includes("บริการ-ครั้ง"));
 
-                if (!wsUnitCnt) return { error: "wsUnitCnt not found" };
+                if (!wsUnitCnt) return { error: "wsUnitCnt not found", pDate };
 
                 // Apply geographic filters (amphur_name is lowercase in sheet 5!)
                 await wsUnitCnt.applyFilterAsync("Nhso Zonename", ["เขต 1 เชียงใหม่"], "replace");
@@ -440,7 +490,7 @@ async def run_sync():
                     await wsHerbCnt.applyFilterAsync("amphur_name", ["สารภี"], "replace");
                 }
 
-                const res = { years: {} };
+                const res = { pDate, years: {} };
 
                 for (const yr of years) {
                     res.years[yr] = { all: {}, monthly: {} };
@@ -484,6 +534,10 @@ async def run_sync():
                 }
                 return res;
             }''', {"years": args.years, "yearMonths": YEAR_MONTHS})
+
+            if isinstance(s5_raw, dict) and s5_raw.get("pDate") and s5_raw["pDate"] != "N/A":
+                process_date = s5_raw["pDate"]
+                print(f"  -> สปสช. ประมวลผลข้อมูล ณ (Sheet 5): {process_date}", flush=True)
 
             herb9_dataset = {
                 "timestamp": datetime.now().isoformat(),
@@ -586,10 +640,19 @@ async def run_sync():
                 await new Promise(r => setTimeout(r, 4000));
                 const sheet = viz.workbook.activeSheet;
                 
+                let pDate = "N/A";
+                const wsDate = sheet.worksheets.find(w => w.name.includes("วันที่"));
+                if (wsDate) {
+                    try {
+                        const d = await wsDate.getSummaryDataAsync({ maxRows: 5 });
+                        if (d.data.length && d.data[0].length) pDate = d.data[0][0].formattedValue;
+                    } catch(e){}
+                }
+
                 const wsUnitCnt = sheet.worksheets.find(w => w.name.includes("หน่วย-ครั้ง"));
                 const wsHerbCnt = sheet.worksheets.find(w => w.name.includes("บริการ-ครั้ง"));
 
-                if (!wsUnitCnt) return { error: "wsUnitCnt not found" };
+                if (!wsUnitCnt) return { error: "wsUnitCnt not found", pDate };
 
                 // Apply geographic filters
                 await wsUnitCnt.applyFilterAsync("Nhso Zonename", ["เขต 1 เชียงใหม่"], "replace");
@@ -603,7 +666,7 @@ async def run_sync():
                     await wsHerbCnt.applyFilterAsync("amphur_name", ["สารภี"], "replace");
                 }
 
-                const res = { years: {} };
+                const res = { pDate, years: {} };
 
                 for (const yr of years) {
                     res.years[yr] = { all: {}, monthly: {} };
@@ -647,6 +710,10 @@ async def run_sync():
                 }
                 return res;
             }''', {"years": args.years, "yearMonths": YEAR_MONTHS})
+
+            if isinstance(s6_raw, dict) and s6_raw.get("pDate") and s6_raw["pDate"] != "N/A":
+                process_date = s6_raw["pDate"]
+                print(f"  -> สปสช. ประมวลผลข้อมูล ณ (Sheet 6): {process_date}", flush=True)
 
             herb32_dataset = {
                 "timestamp": datetime.now().isoformat(),
@@ -749,11 +816,20 @@ async def run_sync():
                 await new Promise(r => setTimeout(r, 4000));
                 const sheet = viz.workbook.activeSheet;
 
+                let pDate = "N/A";
+                const wsDate = sheet.worksheets.find(w => w.name.includes("วันที่"));
+                if (wsDate) {
+                    try {
+                        const d = await wsDate.getSummaryDataAsync({ maxRows: 5 });
+                        if (d.data.length && d.data[0].length) pDate = d.data[0][0].formattedValue;
+                    } catch(e){}
+                }
+
                 const wsTimeline = sheet.worksheets.find(w => w.name.includes("timeline"));
                 const wsUnit = sheet.worksheets.find(w => w.name.includes("ตารางรายหน่วย") || w.name.includes("หน่วย") || w.name.includes("ตารางล่าง"));
                 const wsSummary = sheet.worksheets.find(w => w.name.includes("ตารางราย Error") || w.name.includes("ตารางจำนวน Error"));
 
-                if (!wsUnit) return { error: "wsUnit in sheet 9 not found" };
+                if (!wsUnit) return { error: "wsUnit in sheet 9 not found", pDate };
 
                 // Apply geographic filters
                 await wsUnit.applyFilterAsync("เขต", ["เขต 1 เชียงใหม่"], "replace");
@@ -762,7 +838,7 @@ async def run_sync():
                 await new Promise(r => setTimeout(r, 800));
 
                 const activities = ["ยาสมุนไพร", "หัตถการ"];
-                const res = { catalog: {}, records: {} };
+                const res = { pDate, catalog: {}, records: {} };
 
                 for (const act of activities) {
                     res.records[act] = {};
@@ -784,6 +860,10 @@ async def run_sync():
                 }
                 return res;
             }''', args.years)
+
+            if isinstance(s9_raw, dict) and s9_raw.get("pDate") and s9_raw["pDate"] != "N/A":
+                process_date = s9_raw["pDate"]
+                print(f"  -> สปสช. ประมวลผลข้อมูล ณ (Sheet 9): {process_date}", flush=True)
 
             # Build structured dataset for Error codes
             error_dataset = {
@@ -884,9 +964,19 @@ async def run_sync():
                 await viz.workbook.activateSheetAsync("3-บริการแพทย์แผนไทย");
                 await new Promise(r => setTimeout(r, 4000));
                 const s3 = viz.workbook.activeSheet;
+
+                let pDate = "N/A";
+                const wsDate = s3.worksheets.find(w => w.name.includes("วันที่"));
+                if (wsDate) {
+                    try {
+                        const d = await wsDate.getSummaryDataAsync({ maxRows: 5 });
+                        if (d.data.length && d.data[0].length) pDate = d.data[0][0].formattedValue;
+                    } catch(e){}
+                }
+
                 const wsPoint = s3.worksheets.find(w => w.name.includes("หน่วย-point"));
 
-                if (!wsPoint) return { error: "wsPoint not found" };
+                if (!wsPoint) return { error: "wsPoint not found", pDate };
 
                 await wsPoint.applyFilterAsync("nhso_zonename", ["เขต 1 เชียงใหม่"], "replace");
                 await new Promise(r => setTimeout(r, 400));
@@ -922,14 +1012,19 @@ async def run_sync():
                         }
                     }
                 }
-                return res;
+                return { pDate, years: res };
             }''', { "years": args.years, "yearMonths": YEAR_MONTHS, "services": SERVICES })
 
+            if isinstance(s3_raw, dict) and s3_raw.get("pDate") and s3_raw["pDate"] != "N/A":
+                process_date = s3_raw["pDate"]
+                print(f"  -> สปสช. ประมวลผลข้อมูล ณ (Sheet 3): {process_date}", flush=True)
+
+            s3_data = s3_raw.get("years", {}) if isinstance(s3_raw, dict) else s3_raw
             if isinstance(s3_raw, dict) and s3_raw.get("error"):
                 print(f"  [Sheet 3] error: {s3_raw.get('error')} — ข้ามรอบนี้ (master คงใช้ข้อมูลเดิม)", flush=True)
-                s3_raw = None
+                s3_data = None
 
-            s3_dataset = build_procedure_types_dataset(s3_raw, process_date)
+            s3_dataset = build_procedure_types_dataset(s3_data, process_date)
             s3_path = os.path.join(DATA_DIR, "nhso_procedure_types.json")
             # merge รักษาปีเก่าที่รอบนี้ไม่ได้ดึง (เช่น รัน --years 2569 เฉพาะปีเดียว)
             merged = {}
@@ -1279,11 +1374,6 @@ async def run_sync():
         except Exception:
             master = {}
 
-    master["timestamp"] = datetime.now().isoformat()
-    master["district"] = "สารภี"
-    master["province"] = "เชียงใหม่"
-    master["process_date"] = process_date
-
     # Attach loaded datasets
     s4_path = os.path.join(DATA_DIR, "nhso_herb55_monthly.json")
     if os.path.exists(s4_path):
@@ -1309,6 +1399,23 @@ async def run_sync():
     if os.path.exists(s9_path):
         with open(s9_path, "r", encoding="utf-8") as f:
             master["error_codes"] = json.load(f)
+
+    if not process_date or process_date == "N/A":
+        for p in [s3_path, s4_path, s5_path, s6_path, s9_path]:
+            if os.path.exists(p):
+                try:
+                    with open(p, "r", encoding="utf-8") as f:
+                        pd_val = json.load(f).get("process_date")
+                        if pd_val and pd_val != "N/A":
+                            process_date = pd_val
+                            break
+                except Exception:
+                    pass
+
+    master["timestamp"] = datetime.now().isoformat()
+    master["district"] = "สารภี"
+    master["province"] = "เชียงใหม่"
+    master["process_date"] = process_date
 
     # Re-verify aggregated unit summary for 2569
     unit_summary = {}
@@ -1409,4 +1516,7 @@ async def run_sync():
     return True
 
 if __name__ == "__main__":
-    asyncio.run(run_sync())
+    ok = asyncio.run(run_sync())
+    if not ok:
+        print("❌ เกิดข้อผิดพลาดในการดึงข้อมูล MeData — สคริปต์จบการทำงานด้วย exit code 1", flush=True)
+        sys.exit(1)
