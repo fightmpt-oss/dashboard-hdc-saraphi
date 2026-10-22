@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-19T23:02:15Z",
+  "generated_at": "2026-10-22T22:25:05Z",
   "pipeline_ok": true,
   "masters": {
-    "saraphi_complete_master": "2026-10-19T23:02:02Z",
-    "ncd_service_plan_master": "2026-10-19",
+    "saraphi_complete_master": "2026-10-22T22:24:52Z",
+    "ncd_service_plan_master": "2026-10-22",
     "ncd_total_reports": 36
   },
   "counts": {
@@ -135,7 +135,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 14,
-          "date_com": "202610190636"
+          "date_com": "202610221241"
         },
         "2568": {
           "saraphi_rows": 14,
@@ -318,8 +318,8 @@
       "source": "opendata",
       "years": {
         "2569": {
-          "saraphi_rows": 549,
-          "date_com": "202610160121"
+          "saraphi_rows": 548,
+          "date_com": "202610230420"
         },
         "2568": {
           "saraphi_rows": 607,
@@ -411,7 +411,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610152345"
+          "date_com": "202610230259"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -434,7 +434,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 114,
-          "date_com": "202610152354"
+          "date_com": "202610230308"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -457,7 +457,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 114,
-          "date_com": "202610160040"
+          "date_com": "202610230351"
         },
         "2568": {
           "saraphi_rows": 113,
@@ -526,7 +526,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 55,
-          "date_com": "202610160121"
+          "date_com": "202610230420"
         },
         "2568": {
           "saraphi_rows": 60,
@@ -1055,7 +1055,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610160100"
+          "date_com": "202610230407"
         },
         "2568": {
           "saraphi_rows": 13,
@@ -1262,7 +1262,7 @@
       "years": {
         "2569": {
           "saraphi_rows": 13,
-          "date_com": "202610160101"
+          "date_com": "202610230409"
         },
         "2568": {
           "saraphi_rows": 12,
