@@ -95,7 +95,7 @@
         "type": "ศสม."
       }
     },
-    "generated_at": "2026-10-26T23:15:08Z"
+    "generated_at": "2026-10-27T23:04:07Z"
   },
   "indicators": {
     "ttm_val": {
@@ -12491,7 +12491,7 @@
               "rate": 23.96
             }
           },
-          "date_com": "202610261057",
+          "date_com": "202610270730",
           "units": [
             {
               "hospcode": "06016",
@@ -114612,19 +114612,19 @@
               "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง",
               "hdc_name": "06017:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านหัวดง ตำบลขัวมุง",
               "subdistrict": "ขัวมุง",
-              "b1": 559,
+              "b1": 561,
               "a1": 330,
-              "rate1": 59.03,
+              "rate1": 58.82,
               "a3": 18,
-              "rate3": 3.22,
+              "rate3": 3.21,
               "b2": 221,
               "a2": 172,
               "rate2": 77.83,
               "a4": 0,
               "rate4": 0.0,
               "num": 330,
-              "den": 559,
-              "rate": 59.03,
+              "den": 561,
+              "rate": 58.82,
               "pass": false
             },
             {
@@ -114675,19 +114675,19 @@
               "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก",
               "hdc_name": "06021:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านสันต้นกอก ตำบลดอนแก้ว",
               "subdistrict": "ดอนแก้ว",
-              "b1": 354,
+              "b1": 353,
               "a1": 202,
-              "rate1": 57.06,
+              "rate1": 57.22,
               "a3": 12,
-              "rate3": 3.39,
+              "rate3": 3.4,
               "b2": 97,
               "a2": 87,
               "rate2": 89.69,
               "a4": 0,
               "rate4": 0.0,
               "num": 202,
-              "den": 354,
-              "rate": 57.06,
+              "den": 353,
+              "rate": 57.22,
               "pass": false
             },
             {
@@ -114717,19 +114717,19 @@
               "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา",
               "hdc_name": "06023:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านป่าสา ตำบลสันทราย",
               "subdistrict": "สันทราย",
-              "b1": 392,
+              "b1": 391,
               "a1": 270,
-              "rate1": 68.88,
+              "rate1": 69.05,
               "a3": 20,
-              "rate3": 5.1,
+              "rate3": 5.12,
               "b2": 138,
               "a2": 125,
               "rate2": 90.58,
               "a4": 7,
               "rate4": 5.07,
               "num": 270,
-              "den": 392,
-              "rate": 68.88,
+              "den": 391,
+              "rate": 69.05,
               "pass": false
             },
             {
@@ -114738,19 +114738,19 @@
               "full_name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู",
               "hdc_name": "06024:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านศรีคำชมภู ตำบลป่าบง",
               "subdistrict": "ป่าบง",
-              "b1": 277,
+              "b1": 278,
               "a1": 170,
-              "rate1": 61.37,
+              "rate1": 61.15,
               "a3": 57,
-              "rate3": 20.58,
+              "rate3": 20.5,
               "b2": 151,
               "a2": 130,
               "rate2": 86.09,
               "a4": 34,
               "rate4": 22.52,
               "num": 170,
-              "den": 277,
-              "rate": 61.37,
+              "den": 278,
+              "rate": 61.15,
               "pass": false
             },
             {
@@ -114823,9 +114823,9 @@
               "full_name": "ศูนย์สุขภาพชุมชนตำบลสารภี",
               "hdc_name": "99758:ศูนย์สุขภาพชุมชนตำบลสารภี ตำบลสารภี",
               "subdistrict": "สารภี",
-              "b1": 577,
+              "b1": 576,
               "a1": 268,
-              "rate1": 46.45,
+              "rate1": 46.53,
               "a3": 14,
               "rate3": 2.43,
               "b2": 35,
@@ -114834,8 +114834,8 @@
               "a4": 0,
               "rate4": 0.0,
               "num": 268,
-              "den": 577,
-              "rate": 46.45,
+              "den": 576,
+              "rate": 46.53,
               "pass": false
             }
           ],
@@ -115258,8 +115258,8 @@
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
               "num": 162,
-              "den": 559,
-              "rate": 28.98,
+              "den": 561,
+              "rate": 28.88,
               "pass": false,
               "fu_num": 96,
               "fu_den": 221,
@@ -115282,24 +115282,12 @@
               "name": "ศสม.สารภี",
               "subdistrict": "สารภี",
               "num": 146,
-              "den": 577,
-              "rate": 25.3,
+              "den": 576,
+              "rate": 25.35,
               "pass": false,
               "fu_num": 20,
               "fu_den": 35,
               "fu_rate": 57.14
-            },
-            {
-              "hospcode": "06024",
-              "name": "รพ.สต.บ้านศรีคำชมภู",
-              "subdistrict": "ป่าบง",
-              "num": 70,
-              "den": 277,
-              "rate": 25.27,
-              "pass": false,
-              "fu_num": 50,
-              "fu_den": 151,
-              "fu_rate": 33.11
             },
             {
               "hospcode": "06018",
@@ -115314,12 +115302,24 @@
               "fu_rate": 31.03
             },
             {
+              "hospcode": "06024",
+              "name": "รพ.สต.บ้านศรีคำชมภู",
+              "subdistrict": "ป่าบง",
+              "num": 70,
+              "den": 278,
+              "rate": 25.18,
+              "pass": false,
+              "fu_num": 50,
+              "fu_den": 151,
+              "fu_rate": 33.11
+            },
+            {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
               "num": 94,
-              "den": 392,
-              "rate": 23.98,
+              "den": 391,
+              "rate": 24.04,
               "pass": false,
               "fu_num": 38,
               "fu_den": 138,
@@ -115330,8 +115330,8 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 84,
-              "den": 354,
-              "rate": 23.73,
+              "den": 353,
+              "rate": 23.8,
               "pass": false,
               "fu_num": 33,
               "fu_den": 97,
@@ -115791,14 +115791,14 @@
           ]
         },
         "2569": {
-          "num": 4724,
-          "den": 14979,
-          "rate": 31.54,
+          "num": 4723,
+          "den": 14980,
+          "rate": 31.53,
           "pass": false,
           "fu": {
             "num": 5398,
-            "den": 8318,
-            "rate": 64.9
+            "den": 8321,
+            "rate": 64.87
           },
           "units": [
             {
@@ -115818,8 +115818,8 @@
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
               "num": 537,
-              "den": 1217,
-              "rate": 44.12,
+              "den": 1220,
+              "rate": 44.02,
               "pass": false,
               "fu_num": 424,
               "fu_den": 438,
@@ -115829,9 +115829,9 @@
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
-              "num": 373,
-              "den": 882,
-              "rate": 42.29,
+              "num": 372,
+              "den": 881,
+              "rate": 42.22,
               "pass": false,
               "fu_num": 306,
               "fu_den": 403,
@@ -115841,13 +115841,13 @@
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
-              "num": 213,
-              "den": 537,
-              "rate": 39.66,
+              "num": 212,
+              "den": 536,
+              "rate": 39.55,
               "pass": false,
-              "fu_num": 162,
-              "fu_den": 224,
-              "fu_rate": 72.32
+              "fu_num": 161,
+              "fu_den": 223,
+              "fu_rate": 72.2
             },
             {
               "hospcode": "06024",
@@ -115866,8 +115866,8 @@
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
               "num": 670,
-              "den": 1755,
-              "rate": 38.18,
+              "den": 1757,
+              "rate": 38.13,
               "pass": false,
               "fu_num": 443,
               "fu_den": 670,
@@ -115877,13 +115877,13 @@
               "hospcode": "06020",
               "name": "รพ.สต.บ้านแคว (ท่ากว้าง)",
               "subdistrict": "ท่ากว้าง",
-              "num": 268,
-              "den": 711,
-              "rate": 37.69,
+              "num": 269,
+              "den": 712,
+              "rate": 37.78,
               "pass": false,
-              "fu_num": 200,
-              "fu_den": 284,
-              "fu_rate": 70.42
+              "fu_num": 201,
+              "fu_den": 285,
+              "fu_rate": 70.53
             },
             {
               "hospcode": "99758",
@@ -115902,8 +115902,8 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 228,
-              "den": 822,
-              "rate": 27.74,
+              "den": 821,
+              "rate": 27.77,
               "pass": false,
               "fu_num": 78,
               "fu_den": 91,
@@ -115914,8 +115914,8 @@
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
               "num": 206,
-              "den": 833,
-              "rate": 24.73,
+              "den": 831,
+              "rate": 24.79,
               "pass": false,
               "fu_num": 86,
               "fu_den": 88,
@@ -115937,9 +115937,9 @@
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 468,
-              "den": 2315,
-              "rate": 20.22,
+              "num": 469,
+              "den": 2317,
+              "rate": 20.24,
               "pass": false,
               "fu_num": 36,
               "fu_den": 47,
@@ -115949,9 +115949,9 @@
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
-              "num": 106,
-              "den": 808,
-              "rate": 13.12,
+              "num": 105,
+              "den": 806,
+              "rate": 13.03,
               "pass": false,
               "fu_num": 3,
               "fu_den": 11,
@@ -115966,8 +115966,8 @@
               "rate": 0.0,
               "pass": false,
               "fu_num": 2825,
-              "fu_den": 5003,
-              "fu_rate": 56.47,
+              "fu_den": 5006,
+              "fu_rate": 56.43,
               "no_data": true
             }
           ]
@@ -116391,7 +116391,7 @@
               "name": "ศสม.สารภี",
               "subdistrict": "สารภี",
               "num": 6,
-              "den": 577,
+              "den": 576,
               "rate": 1.04,
               "pass": true,
               "fu_num": 0,
@@ -116403,7 +116403,7 @@
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
               "num": 5,
-              "den": 392,
+              "den": 391,
               "rate": 1.28,
               "pass": true,
               "fu_num": 1,
@@ -116463,8 +116463,8 @@
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
               "num": 11,
-              "den": 559,
-              "rate": 1.97,
+              "den": 561,
+              "rate": 1.96,
               "pass": true,
               "fu_num": 0,
               "fu_den": 221,
@@ -116475,7 +116475,7 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 7,
-              "den": 354,
+              "den": 353,
               "rate": 1.98,
               "pass": true,
               "fu_num": 0,
@@ -116523,8 +116523,8 @@
               "name": "รพ.สต.บ้านศรีคำชมภู",
               "subdistrict": "ป่าบง",
               "num": 10,
-              "den": 277,
-              "rate": 3.61,
+              "den": 278,
+              "rate": 3.6,
               "pass": true,
               "fu_num": 0,
               "fu_den": 151,
@@ -118680,53 +118680,53 @@
         },
         "2569": {
           "num": 712,
-          "den": 867,
-          "rate": 82.12,
+          "den": 870,
+          "rate": 81.84,
           "pass": false,
           "clinical": {
-            "target": 867,
+            "target": 870,
             "screened": 712,
-            "screen_rate": 82.12,
+            "screen_rate": 81.84,
             "normal_first": 623,
-            "normal_first_rate": 71.86,
+            "normal_first_rate": 71.61,
             "suspect_delay": 89,
             "suspect_delay_rate": 12.5,
             "followed": 67,
             "follow_rate": 75.28,
             "normal_follow": 64,
             "normal_final": 687,
-            "normal_final_rate": 79.24
+            "normal_final_rate": 78.97
           },
           "milestones": {
             "9": {
               "age_label": "9 เดือน",
               "target": 115,
-              "result": 94,
-              "rate": 81.74,
-              "normal_first": 79,
-              "normal_first_rate": 68.7,
+              "result": 93,
+              "rate": 80.87,
+              "normal_first": 78,
+              "normal_first_rate": 67.83,
               "suspect_delay": 15,
-              "suspect_delay_rate": 15.96,
+              "suspect_delay_rate": 16.13,
               "followed": 9,
               "follow_rate": 60.0,
               "normal_follow": 9,
-              "normal_final": 88,
-              "normal_final_rate": 76.52
+              "normal_final": 87,
+              "normal_final_rate": 75.65
             },
             "18": {
               "age_label": "18 เดือน",
-              "target": 182,
+              "target": 183,
               "result": 142,
-              "rate": 78.02,
+              "rate": 77.6,
               "normal_first": 121,
-              "normal_first_rate": 66.48,
+              "normal_first_rate": 66.12,
               "suspect_delay": 21,
               "suspect_delay_rate": 14.79,
               "followed": 14,
               "follow_rate": 66.67,
               "normal_follow": 14,
               "normal_final": 135,
-              "normal_final_rate": 74.18
+              "normal_final_rate": 73.77
             },
             "30": {
               "age_label": "30 เดือน",
@@ -118745,33 +118745,33 @@
             },
             "42": {
               "age_label": "42 เดือน",
-              "target": 188,
+              "target": 189,
               "result": 163,
-              "rate": 86.7,
+              "rate": 86.24,
               "normal_first": 142,
-              "normal_first_rate": 75.53,
+              "normal_first_rate": 75.13,
               "suspect_delay": 21,
               "suspect_delay_rate": 12.88,
               "followed": 16,
               "follow_rate": 76.19,
               "normal_follow": 14,
               "normal_final": 156,
-              "normal_final_rate": 82.98
+              "normal_final_rate": 82.54
             },
             "60": {
               "age_label": "60 เดือน",
-              "target": 234,
-              "result": 188,
-              "rate": 80.34,
-              "normal_first": 175,
-              "normal_first_rate": 74.79,
+              "target": 235,
+              "result": 189,
+              "rate": 80.43,
+              "normal_first": 176,
+              "normal_first_rate": 74.89,
               "suspect_delay": 13,
-              "suspect_delay_rate": 6.91,
+              "suspect_delay_rate": 6.88,
               "followed": 13,
               "follow_rate": 100.0,
               "normal_follow": 13,
-              "normal_final": 188,
-              "normal_final_rate": 80.34
+              "normal_final": 189,
+              "normal_final_rate": 80.43
             }
           },
           "units": [
@@ -118793,13 +118793,13 @@
               "normal_final_rate": 93.65,
               "by_month": {
                 "9": {
-                  "target": 8,
-                  "result": 8,
-                  "normal_first": 7,
+                  "target": 7,
+                  "result": 7,
+                  "normal_first": 6,
                   "suspect_delay": 1,
                   "followed": 0,
                   "normal_follow": 0,
-                  "normal_final": 7,
+                  "normal_final": 6,
                   "rate": 100.0
                 },
                 "18": {
@@ -118833,13 +118833,13 @@
                   "rate": 100.0
                 },
                 "60": {
-                  "target": 19,
-                  "result": 19,
-                  "normal_first": 19,
+                  "target": 20,
+                  "result": 20,
+                  "normal_first": 20,
                   "suspect_delay": 0,
                   "followed": 0,
                   "normal_follow": 0,
-                  "normal_final": 19,
+                  "normal_final": 20,
                   "rate": 100.0
                 }
               }
@@ -118987,8 +118987,8 @@
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
               "num": 63,
-              "den": 64,
-              "rate": 98.44,
+              "den": 65,
+              "rate": 96.92,
               "pass": true,
               "normal_first": 54,
               "suspect_delay": 9,
@@ -118997,7 +118997,7 @@
               "follow_rate": 100.0,
               "normal_follow": 9,
               "normal_final": 63,
-              "normal_final_rate": 98.44,
+              "normal_final_rate": 96.92,
               "by_month": {
                 "9": {
                   "target": 6,
@@ -119010,14 +119010,14 @@
                   "rate": 100.0
                 },
                 "18": {
-                  "target": 11,
+                  "target": 12,
                   "result": 11,
                   "normal_first": 9,
                   "suspect_delay": 2,
                   "followed": 2,
                   "normal_follow": 2,
                   "normal_final": 11,
-                  "rate": 100.0
+                  "rate": 91.67
                 },
                 "30": {
                   "target": 12,
@@ -119056,8 +119056,8 @@
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
               "num": 56,
-              "den": 59,
-              "rate": 94.92,
+              "den": 60,
+              "rate": 93.33,
               "pass": true,
               "normal_first": 56,
               "suspect_delay": 0,
@@ -119066,7 +119066,7 @@
               "follow_rate": 0.0,
               "normal_follow": 0,
               "normal_final": 56,
-              "normal_final_rate": 94.92,
+              "normal_final_rate": 93.33,
               "by_month": {
                 "9": {
                   "target": 6,
@@ -119099,14 +119099,14 @@
                   "rate": 100.0
                 },
                 "42": {
-                  "target": 18,
+                  "target": 19,
                   "result": 18,
                   "normal_first": 18,
                   "suspect_delay": 0,
                   "followed": 0,
                   "normal_follow": 0,
                   "normal_final": 18,
-                  "rate": 100.0
+                  "rate": 94.74
                 },
                 "60": {
                   "target": 19,
@@ -119259,75 +119259,6 @@
               }
             },
             {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 37,
-              "den": 47,
-              "rate": 78.72,
-              "pass": false,
-              "normal_first": 31,
-              "suspect_delay": 6,
-              "suspect_rate": 16.22,
-              "followed": 4,
-              "follow_rate": 66.67,
-              "normal_follow": 4,
-              "normal_final": 35,
-              "normal_final_rate": 74.47,
-              "by_month": {
-                "9": {
-                  "target": 6,
-                  "result": 4,
-                  "normal_first": 4,
-                  "suspect_delay": 0,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 4,
-                  "rate": 66.67
-                },
-                "18": {
-                  "target": 11,
-                  "result": 9,
-                  "normal_first": 7,
-                  "suspect_delay": 2,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 7,
-                  "rate": 81.82
-                },
-                "30": {
-                  "target": 6,
-                  "result": 5,
-                  "normal_first": 4,
-                  "suspect_delay": 1,
-                  "followed": 1,
-                  "normal_follow": 1,
-                  "normal_final": 5,
-                  "rate": 83.33
-                },
-                "42": {
-                  "target": 8,
-                  "result": 7,
-                  "normal_first": 7,
-                  "suspect_delay": 0,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 7,
-                  "rate": 87.5
-                },
-                "60": {
-                  "target": 16,
-                  "result": 12,
-                  "normal_first": 9,
-                  "suspect_delay": 3,
-                  "followed": 3,
-                  "normal_follow": 3,
-                  "normal_final": 12,
-                  "rate": 75.0
-                }
-              }
-            },
-            {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
@@ -119393,6 +119324,75 @@
                   "normal_follow": 0,
                   "normal_final": 22,
                   "rate": 73.33
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 37,
+              "den": 48,
+              "rate": 77.08,
+              "pass": false,
+              "normal_first": 31,
+              "suspect_delay": 6,
+              "suspect_rate": 16.22,
+              "followed": 4,
+              "follow_rate": 66.67,
+              "normal_follow": 4,
+              "normal_final": 35,
+              "normal_final_rate": 72.92,
+              "by_month": {
+                "9": {
+                  "target": 7,
+                  "result": 4,
+                  "normal_first": 4,
+                  "suspect_delay": 0,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 4,
+                  "rate": 57.14
+                },
+                "18": {
+                  "target": 11,
+                  "result": 9,
+                  "normal_first": 7,
+                  "suspect_delay": 2,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 7,
+                  "rate": 81.82
+                },
+                "30": {
+                  "target": 6,
+                  "result": 5,
+                  "normal_first": 4,
+                  "suspect_delay": 1,
+                  "followed": 1,
+                  "normal_follow": 1,
+                  "normal_final": 5,
+                  "rate": 83.33
+                },
+                "42": {
+                  "target": 8,
+                  "result": 7,
+                  "normal_first": 7,
+                  "suspect_delay": 0,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 7,
+                  "rate": 87.5
+                },
+                "60": {
+                  "target": 16,
+                  "result": 12,
+                  "normal_first": 9,
+                  "suspect_delay": 3,
+                  "followed": 3,
+                  "normal_follow": 3,
+                  "normal_final": 12,
+                  "rate": 75.0
                 }
               }
             },
@@ -120447,8 +120447,8 @@
         },
         "2569": {
           "num": 490,
-          "den": 3113,
-          "rate": 15.74,
+          "den": 3111,
+          "rate": 15.75,
           "pass": false,
           "units": [
             {
@@ -120456,8 +120456,8 @@
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
               "num": 74,
-              "den": 191,
-              "rate": 38.74,
+              "den": 192,
+              "rate": 38.54,
               "pass": false
             },
             {
@@ -120483,8 +120483,8 @@
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
               "num": 47,
-              "den": 209,
-              "rate": 22.49,
+              "den": 208,
+              "rate": 22.6,
               "pass": false
             },
             {
@@ -120492,8 +120492,8 @@
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
               "num": 56,
-              "den": 326,
-              "rate": 17.18,
+              "den": 325,
+              "rate": 17.23,
               "pass": false
             },
             {
@@ -120537,8 +120537,8 @@
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
               "num": 45,
-              "den": 483,
-              "rate": 9.32,
+              "den": 482,
+              "rate": 9.34,
               "pass": false
             },
             {
@@ -120866,8 +120866,8 @@
         },
         "2569": {
           "num": 97,
-          "den": 2598,
-          "rate": 3.73,
+          "den": 2595,
+          "rate": 3.74,
           "pass": false,
           "units": [
             {
@@ -120911,8 +120911,8 @@
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
               "num": 13,
-              "den": 282,
-              "rate": 4.61,
+              "den": 281,
+              "rate": 4.63,
               "pass": false
             },
             {
@@ -120974,7 +120974,7 @@
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
               "num": 1,
-              "den": 172,
+              "den": 171,
               "rate": 0.58,
               "pass": false
             },
@@ -120983,7 +120983,7 @@
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
               "num": 2,
-              "den": 423,
+              "den": 422,
               "rate": 0.47,
               "pass": false
             },
@@ -121284,9 +121284,9 @@
           ]
         },
         "2569": {
-          "num": 11903,
-          "den": 21726,
-          "rate": 54.79,
+          "num": 11783,
+          "den": 21716,
+          "rate": 54.26,
           "pass": false,
           "units": [
             {
@@ -121296,15 +121296,6 @@
               "num": 2058,
               "den": 2325,
               "rate": 88.52,
-              "pass": true
-            },
-            {
-              "hospcode": "06015",
-              "name": "รพ.สต.บ้านพญาชมภู",
-              "subdistrict": "ชมภู",
-              "num": 1043,
-              "den": 1249,
-              "rate": 83.51,
               "pass": true
             },
             {
@@ -121321,26 +121312,35 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 956,
-              "den": 1226,
-              "rate": 77.98,
-              "pass": false
-            },
-            {
-              "hospcode": "06023",
-              "name": "รพ.สต.บ้านป่าสา",
-              "subdistrict": "สันทราย",
-              "num": 1103,
-              "den": 1434,
-              "rate": 76.92,
+              "den": 1224,
+              "rate": 78.1,
               "pass": false
             },
             {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
-              "num": 1342,
+              "num": 1343,
               "den": 1748,
-              "rate": 76.77,
+              "rate": 76.83,
+              "pass": false
+            },
+            {
+              "hospcode": "06023",
+              "name": "รพ.สต.บ้านป่าสา",
+              "subdistrict": "สันทราย",
+              "num": 1100,
+              "den": 1432,
+              "rate": 76.82,
+              "pass": false
+            },
+            {
+              "hospcode": "06015",
+              "name": "รพ.สต.บ้านพญาชมภู",
+              "subdistrict": "ชมภู",
+              "num": 930,
+              "den": 1247,
+              "rate": 74.58,
               "pass": false
             },
             {
@@ -121356,27 +121356,27 @@
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
-              "num": 778,
-              "den": 1172,
-              "rate": 66.38,
+              "num": 774,
+              "den": 1169,
+              "rate": 66.21,
               "pass": false
             },
             {
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
-              "num": 1339,
-              "den": 2616,
-              "rate": 51.19,
+              "num": 1340,
+              "den": 2617,
+              "rate": 51.2,
               "pass": false
             },
             {
               "hospcode": "13994",
               "name": "รพ.สต.บ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
-              "num": 334,
+              "num": 333,
               "den": 715,
-              "rate": 46.71,
+              "rate": 46.57,
               "pass": false
             },
             {
@@ -121401,9 +121401,9 @@
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 415,
-              "den": 3761,
-              "rate": 11.03,
+              "num": 414,
+              "den": 3759,
+              "rate": 11.01,
               "pass": false
             },
             {
@@ -121701,17 +121701,17 @@
           ]
         },
         "2569": {
-          "num": 19416,
-          "den": 21774,
-          "rate": 89.17,
+          "num": 19409,
+          "den": 21764,
+          "rate": 89.18,
           "pass": true,
           "units": [
             {
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
-              "num": 1169,
-              "den": 1172,
+              "num": 1166,
+              "den": 1169,
               "rate": 99.74,
               "pass": true
             },
@@ -121719,8 +121719,8 @@
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
-              "num": 1417,
-              "den": 1434,
+              "num": 1415,
+              "den": 1432,
               "rate": 98.81,
               "pass": true
             },
@@ -121737,9 +121737,9 @@
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
-              "num": 1218,
-              "den": 1249,
-              "rate": 97.52,
+              "num": 1216,
+              "den": 1247,
+              "rate": 97.51,
               "pass": true
             },
             {
@@ -121756,8 +121756,8 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 1172,
-              "den": 1226,
-              "rate": 95.6,
+              "den": 1224,
+              "rate": 95.75,
               "pass": true
             },
             {
@@ -121809,18 +121809,18 @@
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
-              "num": 2129,
-              "den": 2616,
-              "rate": 81.38,
+              "num": 2130,
+              "den": 2617,
+              "rate": 81.39,
               "pass": true
             },
             {
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 2980,
-              "den": 3761,
-              "rate": 79.23,
+              "num": 2979,
+              "den": 3759,
+              "rate": 79.25,
               "pass": false
             },
             {
@@ -122117,17 +122117,17 @@
           ]
         },
         "2569": {
-          "num": 12138,
-          "den": 21774,
-          "rate": 55.75,
+          "num": 12132,
+          "den": 21764,
+          "rate": 55.74,
           "pass": false,
           "units": [
             {
               "hospcode": "06016",
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
-              "num": 1168,
-              "den": 1172,
+              "num": 1165,
+              "den": 1169,
               "rate": 99.66,
               "pass": true
             },
@@ -122144,18 +122144,18 @@
               "hospcode": "06015",
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
-              "num": 1078,
-              "den": 1249,
-              "rate": 86.31,
+              "num": 1076,
+              "den": 1247,
+              "rate": 86.29,
               "pass": true
             },
             {
               "hospcode": "06023",
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
-              "num": 1159,
-              "den": 1434,
-              "rate": 80.82,
+              "num": 1158,
+              "den": 1432,
+              "rate": 80.87,
               "pass": true
             },
             {
@@ -122172,8 +122172,8 @@
               "name": "รพ.สต.บ้านสันต้นกอก",
               "subdistrict": "ดอนแก้ว",
               "num": 971,
-              "den": 1226,
-              "rate": 79.2,
+              "den": 1224,
+              "rate": 79.33,
               "pass": false
             },
             {
@@ -122198,9 +122198,9 @@
               "hospcode": "06014",
               "name": "รพ.สต.บ้านยางเนิ้ง",
               "subdistrict": "ยางเนิ้ง",
-              "num": 1390,
-              "den": 2616,
-              "rate": 53.13,
+              "num": 1391,
+              "den": 2617,
+              "rate": 53.15,
               "pass": false
             },
             {
@@ -122234,9 +122234,9 @@
               "hospcode": "14461",
               "name": "รพ.สต.บ้านหนองผึ้ง",
               "subdistrict": "หนองผึ้ง",
-              "num": 431,
-              "den": 3761,
-              "rate": 11.46,
+              "num": 430,
+              "den": 3759,
+              "rate": 11.44,
               "pass": false
             },
             {
@@ -122537,8 +122537,8 @@
         },
         "2569": {
           "num": 39,
-          "den": 85,
-          "rate": 45.88,
+          "den": 84,
+          "rate": 46.43,
           "pass": false,
           "units": [
             {
@@ -122618,8 +122618,8 @@
               "name": "รพ.สต.บ้านหัวดง",
               "subdistrict": "ขัวมุง",
               "num": 1,
-              "den": 6,
-              "rate": 16.67,
+              "den": 5,
+              "rate": 20.0,
               "pass": false
             },
             {
@@ -122956,9 +122956,9 @@
           ]
         },
         "2569": {
-          "num": 2339,
-          "den": 3180,
-          "rate": 73.55,
+          "num": 2340,
+          "den": 3181,
+          "rate": 73.56,
           "pass": true,
           "units": [
             {
@@ -123029,8 +123029,8 @@
               "name": "รพ.สต.บ้านท่าต้นกวาว",
               "subdistrict": "ชมภู",
               "num": 114,
-              "den": 163,
-              "rate": 69.94,
+              "den": 164,
+              "rate": 69.51,
               "pass": false
             },
             {
@@ -123038,17 +123038,17 @@
               "name": "รพ.สต.บ้านป่าสา",
               "subdistrict": "สันทราย",
               "num": 30,
-              "den": 45,
-              "rate": 66.67,
+              "den": 44,
+              "rate": 68.18,
               "pass": false
             },
             {
               "hospcode": "06022",
               "name": "รพ.สต.บ้านบวกครกเหนือ",
               "subdistrict": "ท่าวังตาล",
-              "num": 75,
-              "den": 114,
-              "rate": 65.79,
+              "num": 76,
+              "den": 115,
+              "rate": 66.09,
               "pass": false
             },
             {
@@ -125238,53 +125238,53 @@
         },
         "2569": {
           "num": 712,
-          "den": 867,
-          "rate": 82.12,
+          "den": 870,
+          "rate": 81.84,
           "pass": false,
           "clinical": {
-            "target": 867,
+            "target": 870,
             "screened": 712,
-            "screen_rate": 82.12,
+            "screen_rate": 81.84,
             "normal_first": 623,
-            "normal_first_rate": 71.86,
+            "normal_first_rate": 71.61,
             "suspect_delay": 89,
             "suspect_delay_rate": 12.5,
             "followed": 67,
             "follow_rate": 75.28,
             "normal_follow": 64,
             "normal_final": 687,
-            "normal_final_rate": 79.24
+            "normal_final_rate": 78.97
           },
           "milestones": {
             "9": {
               "age_label": "9 เดือน",
               "target": 115,
-              "result": 94,
-              "rate": 81.74,
-              "normal_first": 79,
-              "normal_first_rate": 68.7,
+              "result": 93,
+              "rate": 80.87,
+              "normal_first": 78,
+              "normal_first_rate": 67.83,
               "suspect_delay": 15,
-              "suspect_delay_rate": 15.96,
+              "suspect_delay_rate": 16.13,
               "followed": 9,
               "follow_rate": 60.0,
               "normal_follow": 9,
-              "normal_final": 88,
-              "normal_final_rate": 76.52
+              "normal_final": 87,
+              "normal_final_rate": 75.65
             },
             "18": {
               "age_label": "18 เดือน",
-              "target": 182,
+              "target": 183,
               "result": 142,
-              "rate": 78.02,
+              "rate": 77.6,
               "normal_first": 121,
-              "normal_first_rate": 66.48,
+              "normal_first_rate": 66.12,
               "suspect_delay": 21,
               "suspect_delay_rate": 14.79,
               "followed": 14,
               "follow_rate": 66.67,
               "normal_follow": 14,
               "normal_final": 135,
-              "normal_final_rate": 74.18
+              "normal_final_rate": 73.77
             },
             "30": {
               "age_label": "30 เดือน",
@@ -125303,33 +125303,33 @@
             },
             "42": {
               "age_label": "42 เดือน",
-              "target": 188,
+              "target": 189,
               "result": 163,
-              "rate": 86.7,
+              "rate": 86.24,
               "normal_first": 142,
-              "normal_first_rate": 75.53,
+              "normal_first_rate": 75.13,
               "suspect_delay": 21,
               "suspect_delay_rate": 12.88,
               "followed": 16,
               "follow_rate": 76.19,
               "normal_follow": 14,
               "normal_final": 156,
-              "normal_final_rate": 82.98
+              "normal_final_rate": 82.54
             },
             "60": {
               "age_label": "60 เดือน",
-              "target": 234,
-              "result": 188,
-              "rate": 80.34,
-              "normal_first": 175,
-              "normal_first_rate": 74.79,
+              "target": 235,
+              "result": 189,
+              "rate": 80.43,
+              "normal_first": 176,
+              "normal_first_rate": 74.89,
               "suspect_delay": 13,
-              "suspect_delay_rate": 6.91,
+              "suspect_delay_rate": 6.88,
               "followed": 13,
               "follow_rate": 100.0,
               "normal_follow": 13,
-              "normal_final": 188,
-              "normal_final_rate": 80.34
+              "normal_final": 189,
+              "normal_final_rate": 80.43
             }
           },
           "units": [
@@ -125351,13 +125351,13 @@
               "normal_final_rate": 93.65,
               "by_month": {
                 "9": {
-                  "target": 8,
-                  "result": 8,
-                  "normal_first": 7,
+                  "target": 7,
+                  "result": 7,
+                  "normal_first": 6,
                   "suspect_delay": 1,
                   "followed": 0,
                   "normal_follow": 0,
-                  "normal_final": 7,
+                  "normal_final": 6,
                   "rate": 100.0
                 },
                 "18": {
@@ -125391,13 +125391,13 @@
                   "rate": 100.0
                 },
                 "60": {
-                  "target": 19,
-                  "result": 19,
-                  "normal_first": 19,
+                  "target": 20,
+                  "result": 20,
+                  "normal_first": 20,
                   "suspect_delay": 0,
                   "followed": 0,
                   "normal_follow": 0,
-                  "normal_final": 19,
+                  "normal_final": 20,
                   "rate": 100.0
                 }
               }
@@ -125545,8 +125545,8 @@
               "name": "รพ.สต.บ้านพญาชมภู",
               "subdistrict": "ชมภู",
               "num": 63,
-              "den": 64,
-              "rate": 98.44,
+              "den": 65,
+              "rate": 96.92,
               "pass": true,
               "normal_first": 54,
               "suspect_delay": 9,
@@ -125555,7 +125555,7 @@
               "follow_rate": 100.0,
               "normal_follow": 9,
               "normal_final": 63,
-              "normal_final_rate": 98.44,
+              "normal_final_rate": 96.92,
               "by_month": {
                 "9": {
                   "target": 6,
@@ -125568,14 +125568,14 @@
                   "rate": 100.0
                 },
                 "18": {
-                  "target": 11,
+                  "target": 12,
                   "result": 11,
                   "normal_first": 9,
                   "suspect_delay": 2,
                   "followed": 2,
                   "normal_follow": 2,
                   "normal_final": 11,
-                  "rate": 100.0
+                  "rate": 91.67
                 },
                 "30": {
                   "target": 12,
@@ -125614,8 +125614,8 @@
               "name": "รพ.สต.บ้านศรีสองเมือง",
               "subdistrict": "ไชยสถาน",
               "num": 56,
-              "den": 59,
-              "rate": 94.92,
+              "den": 60,
+              "rate": 93.33,
               "pass": true,
               "normal_first": 56,
               "suspect_delay": 0,
@@ -125624,7 +125624,7 @@
               "follow_rate": 0.0,
               "normal_follow": 0,
               "normal_final": 56,
-              "normal_final_rate": 94.92,
+              "normal_final_rate": 93.33,
               "by_month": {
                 "9": {
                   "target": 6,
@@ -125657,14 +125657,14 @@
                   "rate": 100.0
                 },
                 "42": {
-                  "target": 18,
+                  "target": 19,
                   "result": 18,
                   "normal_first": 18,
                   "suspect_delay": 0,
                   "followed": 0,
                   "normal_follow": 0,
                   "normal_final": 18,
-                  "rate": 100.0
+                  "rate": 94.74
                 },
                 "60": {
                   "target": 19,
@@ -125817,75 +125817,6 @@
               }
             },
             {
-              "hospcode": "13994",
-              "name": "รพ.สต.บ้านท่าต้นกวาว",
-              "subdistrict": "ชมภู",
-              "num": 37,
-              "den": 47,
-              "rate": 78.72,
-              "pass": false,
-              "normal_first": 31,
-              "suspect_delay": 6,
-              "suspect_rate": 16.22,
-              "followed": 4,
-              "follow_rate": 66.67,
-              "normal_follow": 4,
-              "normal_final": 35,
-              "normal_final_rate": 74.47,
-              "by_month": {
-                "9": {
-                  "target": 6,
-                  "result": 4,
-                  "normal_first": 4,
-                  "suspect_delay": 0,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 4,
-                  "rate": 66.67
-                },
-                "18": {
-                  "target": 11,
-                  "result": 9,
-                  "normal_first": 7,
-                  "suspect_delay": 2,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 7,
-                  "rate": 81.82
-                },
-                "30": {
-                  "target": 6,
-                  "result": 5,
-                  "normal_first": 4,
-                  "suspect_delay": 1,
-                  "followed": 1,
-                  "normal_follow": 1,
-                  "normal_final": 5,
-                  "rate": 83.33
-                },
-                "42": {
-                  "target": 8,
-                  "result": 7,
-                  "normal_first": 7,
-                  "suspect_delay": 0,
-                  "followed": 0,
-                  "normal_follow": 0,
-                  "normal_final": 7,
-                  "rate": 87.5
-                },
-                "60": {
-                  "target": 16,
-                  "result": 12,
-                  "normal_first": 9,
-                  "suspect_delay": 3,
-                  "followed": 3,
-                  "normal_follow": 3,
-                  "normal_final": 12,
-                  "rate": 75.0
-                }
-              }
-            },
-            {
               "hospcode": "06018",
               "name": "รพ.สต.บ้านหนองแฝก",
               "subdistrict": "หนองแฝก",
@@ -125951,6 +125882,75 @@
                   "normal_follow": 0,
                   "normal_final": 22,
                   "rate": 73.33
+                }
+              }
+            },
+            {
+              "hospcode": "13994",
+              "name": "รพ.สต.บ้านท่าต้นกวาว",
+              "subdistrict": "ชมภู",
+              "num": 37,
+              "den": 48,
+              "rate": 77.08,
+              "pass": false,
+              "normal_first": 31,
+              "suspect_delay": 6,
+              "suspect_rate": 16.22,
+              "followed": 4,
+              "follow_rate": 66.67,
+              "normal_follow": 4,
+              "normal_final": 35,
+              "normal_final_rate": 72.92,
+              "by_month": {
+                "9": {
+                  "target": 7,
+                  "result": 4,
+                  "normal_first": 4,
+                  "suspect_delay": 0,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 4,
+                  "rate": 57.14
+                },
+                "18": {
+                  "target": 11,
+                  "result": 9,
+                  "normal_first": 7,
+                  "suspect_delay": 2,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 7,
+                  "rate": 81.82
+                },
+                "30": {
+                  "target": 6,
+                  "result": 5,
+                  "normal_first": 4,
+                  "suspect_delay": 1,
+                  "followed": 1,
+                  "normal_follow": 1,
+                  "normal_final": 5,
+                  "rate": 83.33
+                },
+                "42": {
+                  "target": 8,
+                  "result": 7,
+                  "normal_first": 7,
+                  "suspect_delay": 0,
+                  "followed": 0,
+                  "normal_follow": 0,
+                  "normal_final": 7,
+                  "rate": 87.5
+                },
+                "60": {
+                  "target": 16,
+                  "result": 12,
+                  "normal_first": 9,
+                  "suspect_delay": 3,
+                  "followed": 3,
+                  "normal_follow": 3,
+                  "normal_final": 12,
+                  "rate": 75.0
                 }
               }
             },
