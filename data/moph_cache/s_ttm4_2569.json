@@ -12,7 +12,7 @@
   "hdc_url": "https://hdc.moph.go.th/cmi/public/standard-report-detail/8d38925724b0bbb4b11844b18df088e4",
   "year": 2569,
   "source": "MOPH Open Data API (HDC s_ttm4)",
-  "last_updated": "202610231613",
+  "last_updated": "202610280921",
   "target_unit": {
     "hospcode": "06020",
     "hospname": "06020:โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านแคว ตำบลท่ากว้าง",
@@ -423,7 +423,7 @@
         "rate": 5.23
       }
     },
-    "date_com": "202610231613",
+    "date_com": "202610280921",
     "is_target_unit": true,
     "rank": 8
   },
@@ -1657,7 +1657,7 @@
             "rate": 7.35
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 1
       },
@@ -1961,7 +1961,7 @@
             "rate": 20.73
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 2
       },
@@ -2593,7 +2593,7 @@
             "rate": 4.99
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 3
       },
@@ -3105,7 +3105,7 @@
             "rate": 7.34
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 4
       },
@@ -3451,7 +3451,7 @@
             "rate": 4.55
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 5
       },
@@ -3959,11 +3959,11 @@
           },
           "q4": {
             "num": 7010.25,
-            "den": 165779.95,
+            "den": 165575.45,
             "rate": 4.23
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 6
       },
@@ -4449,7 +4449,7 @@
             "rate": 6.42
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 7
       },
@@ -4863,7 +4863,7 @@
             "rate": 5.23
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": true,
         "rank": 8
       },
@@ -5251,7 +5251,7 @@
             "rate": 2.04
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 9
       },
@@ -5685,7 +5685,7 @@
             "rate": 5.88
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 10
       },
@@ -6005,7 +6005,7 @@
             "rate": 1.94
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 11
       },
@@ -6403,7 +6403,7 @@
             "rate": 1.48
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 12
       },
@@ -6733,7 +6733,7 @@
             "rate": 1.53
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 13
       },
@@ -6881,7 +6881,7 @@
             "rate": 0.0
           }
         },
-        "date_com": "202610231613",
+        "date_com": "202610280921",
         "is_target_unit": false,
         "rank": 14
       }
