@@ -7,16 +7,13 @@ output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file
 os.makedirs(output_dir, exist_ok=True)
 
 tables_to_fetch = [
-    # TTM
+    # TTM (ที่เหลือจาก fetch_all_saraphi_data)
     's_ttm3', 's_ttm8',
-    # PCC
-    's_dm_hba1c', 's_dm_control', 's_ht_control', 's_dm_hypo',
     # PPB
     's_childdev_specialpp', 's_kpi_height614', 's_kpi_dental63', 's_kpi_dental64', 's_2q_adl_test',
     # Elderly & MCH
     's_aged9', 's_ageing', 's_kpi_food', 's_nutrition_11', 's_childdev_specialpp48'
-    # (ถอดออก: s_dm_complication / s_child0_5_pshyche_develop_workload /
-    #  s_anc12ga / s_kpi_height05 — ไม่มีตัวชี้วัดไหนใช้ข้อมูลเหล่านี้)
+    # (หมายเหตุ: PCC s_dm_control/s_ht_control/s_dm_hba1c/s_dm_hypo ดึงแล้วใน step 1 fetch_pcc ไม่ต้องดึงซ้ำ)
 ]
 
 years = ['2567', '2568', '2569']
@@ -36,7 +33,7 @@ for tbl in tables_to_fetch:
         with open(target_file, "w", encoding="utf-8") as f:
             json.dump(all_rows, f, ensure_ascii=False, indent=2)
         print(f"  Fetched {tbl} {y}: {len(all_rows)} Saraphi rows")
-        time.sleep(0.3)
+        time.sleep(1.0)
 
 if failures:
     print("\nFAILED table/year fetches (existing files were left untouched):")

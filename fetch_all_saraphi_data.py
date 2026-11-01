@@ -25,7 +25,7 @@ for t in indicators:
         with open(target_file, "w", encoding="utf-8") as f:
             json.dump(all_rows, f, ensure_ascii=False, indent=2)
         print(f"  Saved {t} {y}: {len(all_rows)} Saraphi rows")
-        time.sleep(0.3)
+        time.sleep(1.0)
 
 if failures:
     print("\nFAILED table/year fetches (existing files were left untouched):")
