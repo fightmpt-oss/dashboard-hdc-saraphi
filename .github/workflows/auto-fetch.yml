@@ -11,8 +11,9 @@
 name: auto-fetch
 
 on:
-  schedule:
-    - cron: "0 19 * * *" # 02:00 Asia/Bangkok ทุกวัน
+  # ปิดการรันอัตโนมัติแบบ schedule (cron) เพื่อป้องกันอีเมลแจ้งเตือนเมื่อ API ต้นทางขัดข้อง
+  # schedule:
+  #   - cron: "0 19 * * *" # 02:00 Asia/Bangkok ทุกวัน
   workflow_dispatch: {} # ปุ่มรันมือในหน้า Actions
 
 concurrency:

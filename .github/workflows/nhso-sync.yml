@@ -16,8 +16,10 @@
 name: nhso-sync
 
 on:
-  schedule:
-    - cron: "30 19 * * *" # 02:30 Asia/Bangkok ทุกวัน (หลัง auto-fetch MoPH 02:00)
+  # ปิดการรันอัตโนมัติแบบ schedule (cron) เนื่องจากระบบ MeData สปสช. (medata.nhso.go.th)
+  # บล็อก IP ของ Cloud Runner ใน GitHub Actions ทำให้รันไม่สำเร็จและมีอีเมลแจ้งเตือน
+  # schedule:
+  #   - cron: "30 19 * * *" # 02:30 Asia/Bangkok ทุกวัน (หลัง auto-fetch MoPH 02:00)
   workflow_dispatch:
     inputs:
       fast:
