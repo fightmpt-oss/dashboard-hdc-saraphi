@@ -1224,9 +1224,9 @@ async def run_sync():
                    "herb": "บริการ-ครั้ง",
                    "monthField": "MY(xyyyamm)"}
 
-        g4 = {"units": {}, "months": {}, "skipped": []} if "4" in args.sheets else None
-        g6 = {"units": {}, "months": {}, "skipped": []} if "6" in args.sheets else None
-        g5 = {"units": {}, "months": {}, "skipped": []} if "5" in args.sheets else None
+        g4 = {"units": {}, "months": {}, "skipped": []} if ("4" in args.sheets and not skip_g) else None
+        g6 = {"units": {}, "months": {}, "skipped": []} if ("6" in args.sheets and not skip_g) else None
+        g5 = {"units": {}, "months": {}, "skipped": []} if ("5" in args.sheets and not skip_g) else None
 
         for yr in args.years:
             month_list = YEAR_MONTHS.get(yr, [])
